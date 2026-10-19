@@ -1,0 +1,1787 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Aplikasi Teorema Pythagoras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f5f1e8;
+        --paper: #fffdf7;
+        --paper-2: #efe9da;
+        --ink: #17352c;
+        --ink-soft: #4c675c;
+        --line: #ddd3bd;
+        --teal: #0e7c66;
+        --teal-dark: #095c4a;
+        --teal-tint: #dcefe6;
+        --amber: #e9a13b;
+        --amber-tint: #fbeed3;
+        --coral: #d9532b;
+        --coral-tint: #fbe3d8;
+        --blue: #2f7fa8;
+        --blue-tint: #d9ecf5;
+        --good: #1d8a4e;
+        --good-tint: #dcf2e3;
+        --bad: #c23325;
+        --bad-tint: #fbe0dc;
+        --grid: rgba(23, 53, 44, 0.055);
+        --shadow: 0 2px 6px rgba(23, 53, 44, 0.08), 0 14px 34px rgba(23, 53, 44, 0.07);
+        --radius: 18px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0c1611;
+          --paper: #152219;
+          --paper-2: #1b2c20;
+          --ink: #ecf4ee;
+          --ink-soft: #a9bfae;
+          --line: #2c4234;
+          --teal: #3cb894;
+          --teal-dark: #7fd6ba;
+          --teal-tint: #17392c;
+          --amber: #f2b95c;
+          --amber-tint: #3d2f14;
+          --coral: #f07b54;
+          --coral-tint: #40241a;
+          --blue: #62aacd;
+          --blue-tint: #17303e;
+          --good: #4cc57e;
+          --good-tint: #173626;
+          --bad: #f2836f;
+          --bad-tint: #3d1f1a;
+          --grid: rgba(236, 244, 238, 0.05);
+          --shadow: 0 2px 6px rgba(0, 0, 0, 0.35), 0 14px 34px rgba(0, 0, 0, 0.3);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        background-color: var(--bg);
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 26px 26px;
+        color: var(--ink);
+        font-size: 17px;
+        line-height: 1.6;
+      }
+      h1, h2, h3, .display { font-family: "Bricolage Grotesque", "Plus Jakarta Sans", sans-serif; line-height: 1.15; }
+      button { font: inherit; cursor: pointer; }
+      input, select { font: inherit; }
+      sup { font-size: 0.62em; }
+
+      /* ---------- Navigasi ---------- */
+      .topbar {
+        position: sticky; top: 0; z-index: 50;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1.5px solid var(--line);
+      }
+      .topbar-in {
+        max-width: 1180px; margin: 0 auto; padding: 10px 16px;
+        display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      }
+      .formula-chip {
+        font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 1.05rem;
+        background: var(--teal); color: #fff; border-radius: 12px; padding: 7px 14px;
+        white-space: nowrap; letter-spacing: 0.01em;
+      }
+      @media (prefers-color-scheme: dark) { .formula-chip { color: #0c1611; } }
+      nav.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+      .tab {
+        display: inline-flex; align-items: center; gap: 7px;
+        border: 1.5px solid transparent; background: transparent; color: var(--ink-soft);
+        font-weight: 700; font-size: 0.95rem; padding: 9px 14px; border-radius: 999px;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+      }
+      .tab svg { width: 19px; height: 19px; flex: none; }
+      .tab:hover { background: var(--paper-2); color: var(--ink); }
+      .tab.active { background: var(--ink); color: var(--bg); }
+      .tab:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible {
+        outline: 3px solid var(--amber); outline-offset: 2px;
+      }
+
+      main { max-width: 1180px; margin: 0 auto; padding: 26px 16px 70px; }
+      .panel { display: none; animation: fadein 0.25s ease; }
+      .panel.active { display: block; }
+      @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      @media (prefers-reduced-motion: reduce) {
+        .panel { animation: none; }
+        html { scroll-behavior: auto; }
+        * { transition: none !important; }
+      }
+
+      .panel-head { margin-bottom: 20px; }
+      .panel-head h2 { font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 800; margin: 0 0 6px; }
+      .panel-head p { margin: 0; color: var(--ink-soft); font-size: 1.05rem; max-width: 68ch; }
+
+      .card {
+        background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius);
+        padding: 22px; box-shadow: var(--shadow);
+      }
+      .card h3 { margin: 0 0 10px; font-size: 1.3rem; font-weight: 700; }
+      .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+      @media (max-width: 860px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+      .stack { display: grid; gap: 18px; }
+
+      .formula-big {
+        font-family: "Bricolage Grotesque", sans-serif; font-weight: 800;
+        font-size: clamp(2rem, 6vw, 3.2rem); text-align: center; letter-spacing: 0.01em;
+        padding: 14px 8px;
+      }
+      .formula-big .fa { color: var(--blue); }
+      .formula-big .fb { color: var(--amber); }
+      .formula-big .fc { color: var(--coral); }
+      .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; font-weight: 600; }
+      .legend span::before {
+        content: ""; display: inline-block; width: 13px; height: 13px; border-radius: 4px;
+        margin-right: 7px; vertical-align: -1px;
+      }
+      .legend .la::before { background: var(--blue); }
+      .legend .lb::before { background: var(--amber); }
+      .legend .lc::before { background: var(--coral); }
+
+      .note {
+        border-radius: 14px; padding: 14px 18px; font-size: 0.98rem;
+        background: var(--amber-tint); border: 1.5px dashed color-mix(in srgb, var(--amber) 65%, var(--line));
+      }
+      .note strong { display: block; margin-bottom: 2px; }
+      .tip { background: var(--teal-tint); border-color: color-mix(in srgb, var(--teal) 55%, var(--line)); }
+
+      table { border-collapse: collapse; width: 100%; font-size: 1rem; }
+      th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+      th { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; }
+      td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+      tr:last-child td { border-bottom: none; }
+
+      ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 7px; }
+      ol.steps li::marker { font-weight: 800; color: var(--teal); }
+      .mono { font-variant-numeric: tabular-nums; font-weight: 700; }
+      .hl-a { color: var(--blue); font-weight: 800; }
+      .hl-b { color: var(--amber); font-weight: 800; }
+      .hl-c { color: var(--coral); font-weight: 800; }
+
+      /* ---------- Kontrol umum ---------- */
+      .btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: var(--teal); color: #fff; border: none; border-radius: 12px;
+        padding: 12px 22px; font-weight: 800; font-size: 1rem;
+        transition: transform 0.12s, background 0.15s;
+      }
+      @media (prefers-color-scheme: dark) { .btn { color: #0c1611; } }
+      .btn:hover { background: var(--teal-dark); }
+      .btn:active { transform: scale(0.97); }
+      .btn.ghost { background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); }
+      .btn.ghost:hover { background: var(--paper-2); }
+      .btn.small { padding: 8px 14px; font-size: 0.92rem; border-radius: 10px; }
+      .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+      .field label { display: block; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+      .field input[type="number"], .field select {
+        width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--line);
+        background: var(--paper); color: var(--ink); font-size: 1.1rem; font-weight: 700;
+      }
+      .field input[type="number"]:focus, .field select:focus { border-color: var(--teal); outline: none; box-shadow: 0 0 0 3px var(--teal-tint); }
+
+      input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 34px; background: transparent; }
+      input[type="range"]::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: var(--line); }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%;
+        background: var(--teal); border: 3.5px solid var(--paper); box-shadow: 0 1px 5px rgba(0,0,0,0.3); margin-top: -10px; cursor: grab;
+      }
+      input[type="range"]::-moz-range-track { height: 8px; border-radius: 99px; background: var(--line); }
+      input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--teal); border: 3.5px solid var(--paper); box-shadow: 0 1px 5px rgba(0,0,0,0.3); cursor: grab; }
+
+      .segmented { display: flex; background: var(--paper-2); border-radius: 13px; padding: 4px; gap: 4px; }
+      .segmented button {
+        flex: 1; border: none; background: transparent; border-radius: 10px; padding: 10px 6px;
+        font-weight: 700; color: var(--ink-soft); font-size: 0.98rem;
+      }
+      .segmented button.active { background: var(--paper); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.14); }
+
+      .badge {
+        display: inline-flex; align-items: center; gap: 6px; border-radius: 999px;
+        padding: 5px 13px; font-weight: 800; font-size: 0.9rem;
+        background: var(--good-tint); color: var(--good);
+      }
+      .badge.warn { background: var(--amber-tint); color: color-mix(in srgb, var(--amber) 62%, var(--ink)); }
+
+      .error-box {
+        background: var(--bad-tint); color: var(--bad); border-radius: 12px;
+        padding: 12px 16px; font-weight: 600;
+      }
+      .result-box {
+        background: var(--teal-tint); border-radius: 14px; padding: 16px 18px;
+      }
+      .result-box .big { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.9rem; font-weight: 800; }
+
+      /* ---------- Lab ---------- */
+      .lab-wrap { display: grid; grid-template-columns: 1.65fr 1fr; gap: 18px; align-items: start; }
+      @media (max-width: 920px) { .lab-wrap { grid-template-columns: 1fr; } }
+      .lab-svg-box { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; }
+      .lab-svg-box svg { display: block; width: 100%; height: auto; touch-action: none; }
+      .handle { cursor: grab; }
+      .handle:active { cursor: grabbing; }
+      .slider-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px 12px; margin-bottom: 6px; }
+      .slider-row .sname { font-weight: 800; font-size: 1.05rem; min-width: 118px; }
+      .slider-row .sval { font-weight: 800; font-size: 1.15rem; min-width: 52px; text-align: right; font-variant-numeric: tabular-nums; }
+      .eq-chips { display: grid; gap: 8px; margin-top: 12px; }
+      .eq-chip {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+        background: var(--paper-2); border-radius: 11px; padding: 9px 14px; font-weight: 700;
+      }
+      .eq-chip .v { font-variant-numeric: tabular-nums; font-weight: 800; }
+      .preset-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+      /* ---------- Bukti ---------- */
+      .proof-wrap { display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; align-items: start; }
+      @media (max-width: 920px) { .proof-wrap { grid-template-columns: 1fr; } }
+
+      /* ---------- Penerapan ---------- */
+      .soal {
+        background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow); overflow: hidden;
+      }
+      .soal .soal-body { padding: 20px 22px 16px; display: grid; grid-template-columns: 150px 1fr; gap: 18px; }
+      @media (max-width: 640px) { .soal .soal-body { grid-template-columns: 1fr; } .soal .soal-img { max-width: 190px; } }
+      .soal h3 { margin: 0 0 6px; font-size: 1.2rem; }
+      .soal p { margin: 0 0 10px; }
+      .soal summary {
+        list-style: none; cursor: pointer; padding: 14px 22px; font-weight: 800; color: var(--teal-dark);
+        border-top: 1.5px dashed var(--line); display: flex; align-items: center; gap: 8px;
+      }
+      .soal summary::-webkit-details-marker { display: none; }
+      .soal summary .chev { transition: transform 0.2s; margin-left: auto; }
+      .soal details[open ] summary .chev { transform: rotate(180deg); }
+      .soal .penyelesaian { padding: 4px 22px 20px; }
+      .diket { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+      .diket span { background: var(--paper-2); border-radius: 8px; padding: 3px 10px; font-weight: 700; font-size: 0.92rem; }
+
+      /* ---------- Kuis ---------- */
+      .quiz-progress { height: 12px; border-radius: 99px; background: var(--paper-2); overflow: hidden; }
+      .quiz-progress > div { height: 100%; background: var(--teal); border-radius: 99px; transition: width 0.3s ease; width: 0%; }
+      .quiz-q { font-size: 1.22rem; font-weight: 600; margin: 4px 0 16px; }
+      .quiz-opts { display: grid; gap: 10px; }
+      .quiz-opt {
+        text-align: left; background: var(--paper); border: 2px solid var(--line); border-radius: 14px;
+        padding: 14px 18px; font-weight: 700; font-size: 1.08rem; display: flex; gap: 12px; align-items: center;
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .quiz-opt:hover:not(:disabled) { border-color: var(--teal); }
+      .quiz-opt .letter {
+        flex: none; width: 32px; height: 32px; border-radius: 9px; background: var(--paper-2);
+        display: grid; place-items: center; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800;
+      }
+      .quiz-opt.correct { border-color: var(--good); background: var(--good-tint); }
+      .quiz-opt.correct .letter { background: var(--good); color: #fff; }
+      .quiz-opt.wrong { border-color: var(--bad); background: var(--bad-tint); }
+      .quiz-opt.wrong .letter { background: var(--bad); color: #fff; }
+      .quiz-opt:disabled { cursor: default; opacity: 0.92; }
+      .quiz-feedback { border-radius: 14px; padding: 14px 18px; margin-top: 14px; display: none; }
+      .quiz-feedback.show { display: block; }
+      .quiz-feedback.ok { background: var(--good-tint); }
+      .quiz-feedback.no { background: var(--bad-tint); }
+      .quiz-feedback strong { display: block; margin-bottom: 3px; }
+      .score-big { font-family: "Bricolage Grotesque", sans-serif; font-size: clamp(3rem, 10vw, 4.6rem); font-weight: 800; text-align: center; }
+      .stars { text-align: center; font-size: 2rem; letter-spacing: 6px; color: var(--amber); }
+
+      /* Warna SVG ditegakkan sebagai properti CSS asli: var() di dalam atribut
+         presentasi SVG (fill="var(--…)") tidak didukung sebagian browser/WebView
+         sehingga gambar Lab & Bukti bisa tidak tampil di perangkat tertentu. */
+      [fill="var(--blue)"] { fill: var(--blue); }
+      [fill="var(--amber)"] { fill: var(--amber); }
+      [fill="var(--coral)"] { fill: var(--coral); }
+      [fill="var(--ink)"] { fill: var(--ink); }
+      [fill="var(--ink-soft)"] { fill: var(--ink-soft); }
+      [fill="var(--teal)"] { fill: var(--teal); }
+      [fill="var(--teal-tint)"] { fill: var(--teal-tint); }
+      [fill="var(--paper)"] { fill: var(--paper); }
+      [fill="var(--paper-2)"] { fill: var(--paper-2); }
+      [stroke="var(--blue)"] { stroke: var(--blue); }
+      [stroke="var(--amber)"] { stroke: var(--amber); }
+      [stroke="var(--coral)"] { stroke: var(--coral); }
+      [stroke="var(--ink)"] { stroke: var(--ink); }
+      [stroke="var(--paper)"] { stroke: var(--paper); }
+
+      /* ---------- Layar masuk siswa ---------- */
+      .gate {
+        position: fixed; inset: 0; z-index: 200; overflow-y: auto;
+        display: grid; place-items: center; padding: 22px 16px;
+        background-color: var(--bg);
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 26px 26px;
+      }
+      .gate.hidden { display: none; }
+      .gate-card {
+        width: 100%; max-width: 430px; background: var(--paper);
+        border: 1.5px solid var(--line); border-radius: 22px; box-shadow: var(--shadow);
+        padding: 28px 26px 24px;
+      }
+      .gate-card .formula-chip { font-size: 1.15rem; padding: 8px 16px; }
+      .gate-card h1 { font-size: 1.65rem; font-weight: 800; margin: 16px 0 4px; }
+      .gate-card .sub { margin: 0 0 20px; color: var(--ink-soft); }
+      .gate-card form { display: grid; gap: 14px; }
+      .gate-card .field input[type="text"] {
+        width: 100%; padding: 13px 14px; border-radius: 12px; border: 1.5px solid var(--line);
+        background: var(--paper); color: var(--ink); font-size: 1.08rem; font-weight: 600;
+      }
+      .gate-card .field input[type="text"]:focus { border-color: var(--teal); outline: none; box-shadow: 0 0 0 3px var(--teal-tint); }
+      .gate-err { display: none; }
+      .gate-err.show { display: block; }
+      .gate-note { margin: 16px 0 0; font-size: 0.9rem; color: var(--ink-soft); }
+
+      .student-chip {
+        display: none; align-items: center; gap: 9px; margin-left: auto;
+        background: var(--paper); border: 1.5px solid var(--line); border-radius: 999px;
+        padding: 5px 6px 5px 14px; font-weight: 700; font-size: 0.93rem; max-width: 100%;
+      }
+      .student-chip.show { display: inline-flex; }
+      .student-chip .who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .student-chip .who span { color: var(--ink-soft); font-weight: 600; }
+
+      /* ---------- Data Guru ---------- */
+      .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+      @media (max-width: 860px) { .stat-grid { grid-template-columns: 1fr; } }
+      .stat-card .stat-num { font-family: "Bricolage Grotesque", sans-serif; font-size: 2.4rem; font-weight: 800; line-height: 1.1; }
+      .stat-card .stat-label { color: var(--ink-soft); font-weight: 700; font-size: 0.95rem; }
+      .table-stack { display: grid; gap: 10px; }
+      @media (max-width: 700px) {
+        .table-stack table, .table-stack tbody, .table-stack tr, .table-stack td { display: block; width: 100%; }
+        .table-stack thead { display: none; }
+        .table-stack tr { border: 1.5px solid var(--line); border-radius: 13px; padding: 10px 14px; background: var(--paper-2); }
+        .table-stack td { border-bottom: none; padding: 3px 0; }
+        .table-stack td::before { content: attr(data-th) " · "; font-weight: 800; color: var(--ink-soft); }
+        .table-stack td.num { text-align: left; }
+      }
+      .menu-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+      .menu-tags span { background: var(--teal-tint); color: var(--teal-dark); border-radius: 7px; padding: 1px 8px; font-size: 0.8rem; font-weight: 700; }
+
+      /* ---------- Google Sheets ---------- */
+      .field input[type="text"], .field input[type="url"] {
+        width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--line);
+        background: var(--paper); color: var(--ink); font-size: 1.02rem; font-weight: 600;
+      }
+      .field input[type="text"]:focus, .field input[type="url"]:focus { border-color: var(--teal); outline: none; box-shadow: 0 0 0 3px var(--teal-tint); }
+      .script-box {
+        width: 100%; min-height: 250px; resize: vertical; margin-top: 10px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82rem; line-height: 1.5;
+        background: var(--paper-2); color: var(--ink); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px;
+      }
+      .sheet-status { margin: 12px 0 0; font-weight: 600; color: var(--ink-soft); }
+      .sheet-status.ok { color: var(--good); }
+      details.sheet-steps { margin-top: 6px; }
+      details.sheet-steps summary {
+        cursor: pointer; font-weight: 800; color: var(--teal-dark); list-style: none;
+        display: flex; align-items: center; gap: 8px; padding: 6px 0;
+      }
+      details.sheet-steps summary::-webkit-details-marker { display: none; }
+      details.sheet-steps summary .chev { transition: transform 0.2s; margin-left: auto; }
+      details.sheet-steps[open ] summary .chev { transform: rotate(180deg); }
+
+      footer { max-width: 1180px; margin: 0 auto; padding: 0 16px 34px; color: var(--ink-soft); font-size: 0.92rem; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <!-- ================= LAYAR MASUK SISWA ================= -->
+    <div class="gate" id="loginGate">
+      <div class="gate-card">
+        <span class="formula-chip">a² + b² = c²</span>
+        <h1>Selamat Datang!</h1>
+        <p class="sub">Sebelum mulai belajar Teorema Pythagoras, isi dulu nama dan kelasmu ya.</p>
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="loginNama">Nama lengkap</label>
+            <input type="text" id="loginNama" placeholder="Contoh: Siti Rahma" autocomplete="name" maxlength="60" />
+          </div>
+          <div class="field">
+            <label for="loginKelas">Kelas</label>
+            <input type="text" id="loginKelas" placeholder="Contoh: 8B" list="kelasList" maxlength="10" />
+            <datalist id="kelasList">
+              <option value="8A"></option>
+              <option value="8B"></option>
+              <option value="8C"></option>
+              <option value="8D"></option>
+              <option value="8E"></option>
+              <option value="8F"></option>
+            </datalist>
+          </div>
+          <div class="error-box gate-err" id="loginErr">Nama dan kelas wajib diisi dulu ya, supaya hasil belajarmu tercatat dengan benar.</div>
+          <button type="submit" class="btn" style="justify-content:center; padding:14px 22px">Mulai Belajar</button>
+        </form>
+        <p class="gate-note">Untuk guru: masuk dengan nama sendiri, lalu buka menu <strong>Data Guru</strong> untuk melihat siapa saja yang sudah masuk beserta perkembangan kuis mereka — pada sesi ini, atau dari Google Sheet Bapak/Ibu bila sudah dihubungkan lewat menu tersebut.</p>
+      </div>
+    </div>
+
+    <div class="topbar">
+      <div class="topbar-in">
+        <span class="formula-chip">a² + b² = c²</span>
+        <nav class="tabs" role="tablist" aria-label="Menu materi">
+          <button class="tab active" data-tab="materi" role="tab" aria-selected="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5v13z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
+            Materi
+          </button>
+          <button class="tab" data-tab="lab" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18L9 4 3 20z"/><path d="M9 16h4v4"/></svg>
+            Lab Segitiga
+          </button>
+          <button class="tab" data-tab="bukti" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="12" height="12" rx="1"/><rect x="9" y="9" width="12" height="12" rx="1"/></svg>
+            Bukti Visual
+          </button>
+          <button class="tab" data-tab="kalkulator" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M9 7h6"/><path d="M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01"/></svg>
+            Kalkulator
+          </button>
+          <button class="tab" data-tab="triple" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6l1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></svg>
+            Triple Pythagoras
+          </button>
+          <button class="tab" data-tab="penerapan" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5.5 9.5V21h13V9.5"/><path d="M10 21v-6h4v6"/></svg>
+            Penerapan
+          </button>
+          <button class="tab" data-tab="kuis" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.5"/></svg>
+            Kuis
+          </button>
+          <button class="tab" data-tab="guru" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>
+            Data Guru
+          </button>
+        </nav>
+        <div class="student-chip" id="studentChip">
+          <span class="who" id="studentWho"></span>
+          <button class="btn ghost small" id="btnGantiSiswa" type="button">Ganti Siswa</button>
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <!-- ================= MATERI ================= -->
+      <section class="panel active" id="panel-materi">
+        <div class="panel-head">
+          <h2>Teorema Pythagoras</h2>
+          <p>Materi Matematika SMP Kelas 8 — memahami hubungan istimewa antara ketiga sisi segitiga siku-siku.</p>
+        </div>
+
+        <div class="stack">
+          <div class="grid-2">
+            <div class="card">
+              <h3>Kenali Segitiga Siku-Siku</h3>
+              <svg viewBox="0 0 340 250" style="width:100%;height:auto" role="img" aria-label="Diagram segitiga siku-siku ABC dengan sisi a, b, dan c">
+                <polygon points="70,200 290,200 70,45" fill="var(--teal-tint)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M70 178 h22 v22" fill="none" stroke="var(--ink)" stroke-width="2"/>
+                <polygon points="70,200 290,200 202,200 70,112" fill="var(--blue)" opacity="0.28"/>
+                <polygon points="70,45 70,200 14,200 14,45" fill="var(--amber)" opacity="0.3"/>
+                <text x="180" y="228" text-anchor="middle" font-weight="800" fill="var(--blue)" font-size="19">a (sisi alas)</text>
+                <text x="30" y="128" text-anchor="middle" font-weight="800" fill="#b97a16" font-size="19" transform="rotate(-90 30 128)">b (sisi tegak)</text>
+                <text x="205" y="105" text-anchor="middle" font-weight="800" fill="var(--coral)" font-size="19" transform="rotate(35 205 105)">c (hipotenusa)</text>
+                <text x="56" y="222" font-weight="800" font-size="17">C</text>
+                <text x="296" y="222" font-weight="800" font-size="17">B</text>
+                <text x="58" y="38" font-weight="800" font-size="17">A</text>
+                <text x="98" y="190" font-size="14.5" font-weight="700" fill="var(--ink-soft)">90°</text>
+              </svg>
+              <p style="margin:10px 0 0">Segitiga siku-siku memiliki satu sudut sebesar <strong>90°</strong>. Sisi di hadapan sudut siku-siku adalah sisi terpanjang, disebut <strong>hipotenusa</strong> atau <strong>sisi miring (c)</strong>. Dua sisi lainnya disebut sisi siku-siku: <strong>sisi alas (a)</strong> dan <strong>sisi tegak (b)</strong>.</p>
+            </div>
+
+            <div class="card">
+              <h3>Bunyi Teorema Pythagoras</h3>
+              <p style="margin-top:0">Pada segitiga siku-siku, <strong>kuadrat panjang hipotenusa sama dengan jumlah kuadrat panjang kedua sisi siku-sikunya</strong>.</p>
+              <div class="formula-big"><span class="fc">c²</span> = <span class="fa">a²</span> + <span class="fb">b²</span></div>
+              <div class="legend">
+                <span class="la">a = sisi alas</span>
+                <span class="lb">b = sisi tegak</span>
+                <span class="lc">c = hipotenusa</span>
+              </div>
+              <div class="note tip" style="margin-top:16px">
+                <strong>Syarat utama</strong>
+                Teorema ini <em>hanya berlaku untuk segitiga siku-siku</em>. Langkah pertama setiap soal: pastikan dulu mana sudut siku-sikunya, karena hipotenusa selalu berada di hadapannya.
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h3>Tiga Rumus Mencari Sisi</h3>
+              <p style="margin-top:0">Dari satu teorema, kita bisa mencari sisi mana pun asalkan dua sisi lainnya diketahui:</p>
+              <table>
+                <tr><th>Yang dicari</th><th>Rumus</th><th>Contoh a=3, b=4</th></tr>
+                <tr><td>Hipotenusa (c)</td><td class="mono">c = √(a² + b²)</td><td class="mono">c = √(9 + 16) = 5</td></tr>
+                <tr><td>Sisi alas (a)</td><td class="mono">a = √(c² − b²)</td><td class="mono">a = √(25 − 16) = 3</td></tr>
+                <tr><td>Sisi tegak (b)</td><td class="mono">b = √(c² − a²)</td><td class="mono">b = √(25 − 9) = 4</td></tr>
+              </table>
+              <div class="note" style="margin-top:14px">
+                <strong>Cara mengingat</strong>
+                Mencari hipotenusa selalu <em>ditambah</em> lalu diakar. Mencari sisi tegak/alas selalu <em>dikurang</em> lalu diakar — karena hipotenusa adalah sisi terpanjang.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Contoh Soal</h3>
+              <p style="margin-top:0">Sebuah segitiga siku-siku memiliki sisi alas 6 cm dan sisi tegak 8 cm. Berapa panjang hipotenusanya?</p>
+              <ol class="steps">
+                <li>Tulis yang diketahui: a = 6 cm, b = 8 cm, dicari c.</li>
+                <li>Gunakan rumus: <span class="mono">c² = a² + b²</span></li>
+                <li>Substitusi: <span class="mono">c² = 6² + 8² = 36 + 64 = 100</span></li>
+                <li>Akarkan: <span class="mono">c = √100 = 10</span></li>
+                <li>Jadi, panjang hipotenusanya adalah <strong>10 cm</strong>.</li>
+              </ol>
+              <p style="margin-bottom:0">Perhatikan: 6, 8, 10 adalah kelipatan dari 3, 4, 5 — salah satu <strong>Triple Pythagoras</strong> yang dibahas di menu khusus.</p>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h3>Kebalikan Teorema &amp; Jenis Segitiga</h3>
+              <p style="margin-top:0">Teorema ini juga bekerja terbalik: kita bisa menentukan jenis segitiga dari panjang ketiga sisinya. Misalkan <strong>c adalah sisi terpanjang</strong>, maka:</p>
+              <table>
+                <tr><th>Perbandingan</th><th>Jenis segitiga</th></tr>
+                <tr><td class="mono">a² + b² = c²</td><td><strong>Siku-siku</strong> di hadapan sisi c</td></tr>
+                <tr><td class="mono">a² + b² &gt; c²</td><td><strong>Lancip</strong> (semua sudut &lt; 90°)</td></tr>
+                <tr><td class="mono">a² + b² &lt; c²</td><td><strong>Tumpul</strong> (satu sudut &gt; 90°)</td></tr>
+              </table>
+              <p style="margin-bottom:0">Contoh: sisi 4, 5, 6 → 4² + 5² = 41 &gt; 36 = 6², jadi segitiganya <strong>lancip</strong>.</p>
+            </div>
+
+            <div class="card">
+              <h3>Siapa Pythagoras?</h3>
+              <p style="margin-top:0">Pythagoras adalah matematikawan dan filsuf Yunani kuno yang lahir di Pulau Samos, hidup sekitar tahun <strong>570–495 SM</strong>. Namanya diabadikan pada teorema ini karena ia dan para pengikutnya (kaum Pythagorean) yang menyusun pembuktian formalnya.</p>
+              <p>Menariknya, hubungan sisi segitiga siku-siku ini sebenarnya sudah dikenal jauh sebelumnya oleh bangsa <strong>Babilonia</strong> dan <strong>India</strong> kuno — mereka menggunakannya untuk mengukur tanah dan membangun altar.</p>
+              <p style="margin-bottom:0">Sampai hari ini teorema Pythagoras dipakai tukang bangunan (untuk memastikan sudut ruangan benar-benar siku), pelaut dan pilot (menghitung jarak terpendek), sampai pembuat gim dan peta digital.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= LAB SEGITIGA ================= -->
+      <section class="panel" id="panel-lab">
+        <div class="panel-head">
+          <h2>Lab Segitiga Interaktif</h2>
+          <p>Geser titik <strong>A</strong> dan <strong>B</strong> pada gambar (atau gunakan penggeser) lalu perhatikan: persegi yang dibangun pada hipotenusa selalu tepat terisi oleh jumlah luas dua persegi lainnya.</p>
+        </div>
+        <div class="lab-wrap">
+          <div class="lab-svg-box">
+            <svg id="labSvg" viewBox="0 0 640 480" role="img" aria-label="Segitiga siku-siku interaktif beserta persegi pada setiap sisinya"><text x="320" y="240" text-anchor="middle" font-size="22" font-weight="700" fill="var(--ink-soft)">Memuat gambar segitiga…</text></svg>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <h3>Atur Panjang Sisi</h3>
+              <div class="slider-row">
+                <span class="sname"><span class="hl-a">a</span> — sisi alas</span>
+                <input type="range" id="sliderA" min="1" max="15" step="0.5" value="3" aria-label="Panjang sisi alas a" />
+                <span class="sval" id="valA">3</span>
+              </div>
+              <div class="slider-row">
+                <span class="sname"><span class="hl-b">b</span> — sisi tegak</span>
+                <input type="range" id="sliderB" min="1" max="15" step="0.5" value="4" aria-label="Panjang sisi tegak b" />
+                <span class="sval" id="valB">4</span>
+              </div>
+              <p style="margin:10px 0 6px; font-weight:700">Coba Triple Pythagoras:</p>
+              <div class="preset-row">
+                <button class="btn ghost small" data-preset="3,4">3 – 4 – 5</button>
+                <button class="btn ghost small" data-preset="6,8">6 – 8 – 10</button>
+                <button class="btn ghost small" data-preset="5,12">5 – 12 – 13</button>
+                <button class="btn ghost small" data-preset="9,12">9 – 12 – 15</button>
+                <button class="btn ghost small" data-preset="8,15">8 – 15 – 17</button>
+              </div>
+              <label style="display:flex;gap:9px;align-items:center;margin-top:14px;font-weight:600;cursor:pointer">
+                <input type="checkbox" id="toggleSquares" checked style="width:20px;height:20px;accent-color:var(--teal)" />
+                Tampilkan persegi pada setiap sisi
+              </label>
+            </div>
+            <div class="card">
+              <h3>Pembuktian Angka</h3>
+              <div class="eq-chips">
+                <div class="eq-chip"><span><span class="hl-a">a²</span> = luas persegi biru</span><span class="v" id="eqA">9</span></div>
+                <div class="eq-chip"><span><span class="hl-b">b²</span> = luas persegi kuning</span><span class="v" id="eqB">16</span></div>
+                <div class="eq-chip"><span>a² + b²</span><span class="v" id="eqSum">25</span></div>
+                <div class="eq-chip"><span><span class="hl-c">c²</span> = luas persegi merah</span><span class="v" id="eqC2">25</span></div>
+                <div class="eq-chip"><span><span class="hl-c">c</span> = hipotenusa = √c²</span><span class="v" id="eqC">5</span></div>
+              </div>
+              <p id="labBadge" style="margin:12px 0 0"></p>
+              <p style="margin:10px 0 0; color:var(--ink-soft); font-size:0.95rem">Karena a² + b² selalu sama dengan c², teorema Pythagoras terbukti untuk segitiga ukuran berapa pun yang kamu buat.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BUKTI VISUAL ================= -->
+      <section class="panel" id="panel-bukti">
+        <div class="panel-head">
+          <h2>Pembuktian Visual: Susun Ulang Potongan</h2>
+          <p>Salah satu pembuktian Pythagoras yang paling terkenal. Empat segitiga yang sama persis disusun di dalam persegi besar dengan dua cara berbeda — dan luas sisa yang tertinggal menceritakan teoremanya.</p>
+        </div>
+        <div class="proof-wrap">
+          <div class="lab-svg-box">
+            <svg id="proofSvg" viewBox="0 0 460 460" role="img" aria-label="Animasi pembuktian Pythagoras dengan menyusun ulang empat segitiga" style="display:block;width:100%;height:auto"><text x="230" y="230" text-anchor="middle" font-size="20" font-weight="700" fill="var(--ink-soft)">Memuat animasi pembuktian…</text></svg>
+          </div>
+          <div class="stack">
+            <div class="card">
+              <h3>Susun Ulang Potongannya</h3>
+              <p style="margin-top:0">Kita pakai segitiga 3–4–5 di dalam persegi besar bersisi a + b = 7. Geser penggeser atau tekan tombol putar.</p>
+              <div class="slider-row" style="grid-template-columns:1fr auto">
+                <input type="range" id="proofSlider" min="0" max="100" step="1" value="0" aria-label="Kemajuan susun ulang pembuktian" />
+                <button class="btn small" id="proofPlay">Putar Animasi</button>
+              </div>
+              <div class="result-box" id="proofCaption" style="margin-top:10px"></div>
+            </div>
+            <div class="card">
+              <h3>Mengapa Ini Membuktikan Teorema?</h3>
+              <ol class="steps">
+                <li>Luas persegi besar selalu <span class="mono">(a + b)² = 7² = 49</span>, tidak berubah di kedua susunan.</li>
+                <li>Luas keempat segitiga juga tidak berubah: <span class="mono">4 × (½ × 3 × 4) = 24</span>.</li>
+                <li>Jadi luas sisa pada kedua susunan pasti sama: <span class="mono">49 − 24 = 25</span>.</li>
+                <li>Pada susunan pertama, sisa itu adalah persegi miring <span class="hl-c">c²</span>. Pada susunan kedua, sisa itu adalah <span class="hl-a">a²</span> + <span class="hl-b">b²</span>.</li>
+                <li>Kesimpulannya: <span class="mono">c² = a² + b²</span>. Terbukti!</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= KALKULATOR ================= -->
+      <section class="panel" id="panel-kalkulator">
+        <div class="panel-head">
+          <h2>Kalkulator Sisi Segitiga</h2>
+          <p>Masukkan dua sisi yang diketahui, kalkulator akan mencari sisi ketiga lengkap dengan langkah penyelesaiannya — persis seperti cara mengerjakan di buku tulis.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Sisi apa yang ingin dicari?</h3>
+            <div class="segmented" id="calcTarget" role="group" aria-label="Sisi yang dicari">
+              <button data-target="c" class="active">Hipotenusa (c)</button>
+              <button data-target="a">Sisi alas (a)</button>
+              <button data-target="b">Sisi tegak (b)</button>
+            </div>
+            <div class="grid-2" style="margin-top:18px; gap:14px">
+              <div class="field">
+                <label for="calcIn1" id="calcLabel1">Sisi alas a</label>
+                <input type="number" id="calcIn1" value="6" min="0" step="any" inputmode="decimal" />
+              </div>
+              <div class="field">
+                <label for="calcIn2" id="calcLabel2">Sisi tegak b</label>
+                <input type="number" id="calcIn2" value="8" min="0" step="any" inputmode="decimal" />
+              </div>
+            </div>
+            <svg viewBox="0 0 300 190" style="width:100%;max-width:330px;height:auto;display:block;margin:16px auto 4px" role="img" aria-label="Sketsa segitiga siku-siku untuk kalkulator">
+              <polygon points="50,150 260,150 50,30" fill="var(--teal-tint)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M50 132 h18 v18" fill="none" stroke="var(--ink)" stroke-width="2"/>
+              <text id="calcSvgA" x="155" y="172" text-anchor="middle" font-weight="800" font-size="17" fill="var(--blue)">a</text>
+              <text id="calcSvgB" x="24" y="95" text-anchor="middle" font-weight="800" font-size="17" fill="#b97a16">b</text>
+              <text id="calcSvgC" x="180" y="72" text-anchor="middle" font-weight="800" font-size="17" fill="var(--coral)">c</text>
+            </svg>
+            <p style="text-align:center;margin:0;color:var(--ink-soft);font-size:0.92rem">Sisi bertanda <strong>?</strong> pada hasil adalah sisi yang dicari.</p>
+          </div>
+          <div class="card">
+            <h3>Langkah Penyelesaian</h3>
+            <div id="calcOut"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TRIPLE PYTHAGORAS ================= -->
+      <section class="panel" id="panel-triple">
+        <div class="panel-head">
+          <h2>Triple Pythagoras &amp; Jenis Segitiga</h2>
+          <p><strong>Triple Pythagoras</strong> adalah tiga bilangan bulat positif yang memenuhi a² + b² = c². Jika kamu mengenali polanya, banyak soal bisa dijawab tanpa menghitung dari awal.</p>
+        </div>
+        <div class="stack">
+          <div class="grid-2">
+            <div class="card">
+              <h3>Tabel Triple Pythagoras</h3>
+              <p style="margin-top:0">Triple <strong>primitif</strong> adalah triple yang ketiga bilangannya tidak punya faktor persekutuan selain 1.</p>
+              <table>
+                <tr><th>a</th><th>b</th><th>c</th><th>Keterangan</th></tr>
+                <tr><td class="mono">3</td><td class="mono">4</td><td class="mono">5</td><td>Primitif — paling terkenal</td></tr>
+                <tr><td class="mono">5</td><td class="mono">12</td><td class="mono">13</td><td>Primitif</td></tr>
+                <tr><td class="mono">8</td><td class="mono">15</td><td class="mono">17</td><td>Primitif</td></tr>
+                <tr><td class="mono">7</td><td class="mono">24</td><td class="mono">25</td><td>Primitif</td></tr>
+                <tr><td class="mono">20</td><td class="mono">21</td><td class="mono">29</td><td>Primitif</td></tr>
+                <tr><td class="mono">9</td><td class="mono">40</td><td class="mono">41</td><td>Primitif</td></tr>
+                <tr><td class="mono">6</td><td class="mono">8</td><td class="mono">10</td><td>Kelipatan 2 dari 3–4–5</td></tr>
+                <tr><td class="mono">9</td><td class="mono">12</td><td class="mono">15</td><td>Kelipatan 3 dari 3–4–5</td></tr>
+                <tr><td class="mono">10</td><td class="mono">24</td><td class="mono">26</td><td>Kelipatan 2 dari 5–12–13</td></tr>
+              </table>
+              <div class="note" style="margin-top:14px">
+                <strong>Trik cepat</strong>
+                Mengalikan triple dengan bilangan berapa pun menghasilkan triple baru. Jadi 30–40–50 pun triple, karena kelipatan 10 dari 3–4–5.
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Pembangkit Triple (Rumus Euclides)</h3>
+              <p style="margin-top:0">Matematikawan Yunani kuno, Euclides, menemukan cara membuat triple dari dua bilangan m &gt; n:</p>
+              <p class="mono" style="background:var(--paper-2);border-radius:11px;padding:10px 14px">a = m² − n² &nbsp;·&nbsp; b = 2mn &nbsp;·&nbsp; c = m² + n²</p>
+              <div class="grid-2" style="gap:14px">
+                <div class="field"><label for="euM">Nilai m</label><input type="number" id="euM" value="3" min="1" step="1" /></div>
+                <div class="field"><label for="euN">Nilai n (harus &lt; m)</label><input type="number" id="euN" value="2" min="1" step="1" /></div>
+              </div>
+              <div id="euOut" style="margin-top:16px"></div>
+              <div class="field" style="margin-top:18px">
+                <label for="multBase">Kalikan triple dasar dengan pengali k</label>
+                <select id="multBase">
+                  <option value="3,4,5">3 – 4 – 5</option>
+                  <option value="5,12,13">5 – 12 – 13</option>
+                  <option value="8,15,17">8 – 15 – 17</option>
+                  <option value="7,24,25">7 – 24 – 25</option>
+                </select>
+              </div>
+              <div class="slider-row" style="grid-template-columns:auto 1fr auto; margin-top:8px">
+                <span class="sname" style="min-width:70px">Pengali k</span>
+                <input type="range" id="multK" min="1" max="12" step="1" value="3" aria-label="Pengali triple" />
+                <span class="sval" id="multKVal">3</span>
+              </div>
+              <div id="multOut"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Cek Sendiri: Triple atau Bukan? Segitiga Apa?</h3>
+            <p style="margin-top:0">Masukkan panjang ketiga sisi (urutan bebas), lalu lihat apakah membentuk triple Pythagoras dan jenis segitiganya.</p>
+            <div class="grid-3" style="gap:14px">
+              <div class="field"><label for="chk1">Sisi pertama</label><input type="number" id="chk1" value="9" min="0" step="any" /></div>
+              <div class="field"><label for="chk2">Sisi kedua</label><input type="number" id="chk2" value="12" min="0" step="any" /></div>
+              <div class="field"><label for="chk3">Sisi ketiga</label><input type="number" id="chk3" value="15" min="0" step="any" /></div>
+            </div>
+            <div id="chkOut" style="margin-top:16px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PENERAPAN ================= -->
+      <section class="panel" id="panel-penerapan">
+        <div class="panel-head">
+          <h2>Pythagoras dalam Kehidupan Sehari-hari</h2>
+          <p>Soal cerita adalah tempat teorema ini paling sering muncul — di ujian maupun di dunia nyata. Baca soalnya, coba pikirkan sendiri, lalu buka penyelesaiannya untuk memeriksa caramu.</p>
+        </div>
+        <div class="stack" id="soalList"></div>
+      </section>
+
+      <!-- ================= KUIS ================= -->
+      <section class="panel" id="panel-kuis">
+        <div class="panel-head">
+          <h2>Kuis: Uji Pemahamanmu</h2>
+          <p>10 soal pilihan ganda seputar teorema Pythagoras. Setiap jawaban langsung dibahas — jadi salah pun tetap belajar.</p>
+        </div>
+        <div class="card" style="max-width:820px">
+          <div id="quizMain">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap">
+              <strong id="quizCounter">Soal 1 dari 10</strong>
+              <span style="color:var(--ink-soft);font-weight:700">Skor: <span id="quizScore">0</span></span>
+            </div>
+            <div class="quiz-progress" style="margin:10px 0 18px"><div id="quizBar"></div></div>
+            <p class="quiz-q" id="quizQ"></p>
+            <div class="quiz-opts" id="quizOpts"></div>
+            <div class="quiz-feedback" id="quizFb"></div>
+            <div style="margin-top:16px; display:flex; justify-content:flex-end">
+              <button class="btn" id="quizNext" disabled>Soal Berikutnya</button>
+            </div>
+          </div>
+          <div id="quizEnd" style="display:none; text-align:center">
+            <p style="margin:0;color:var(--ink-soft);font-weight:700">Skor akhir kamu</p>
+            <div class="score-big" id="finalScore">0</div>
+            <div class="stars" id="finalStars" aria-hidden="true"></div>
+            <p id="finalMsg" style="font-size:1.1rem;font-weight:600;max-width:52ch;margin:10px auto 20px"></p>
+            <button class="btn" id="quizRestart">Ulangi Kuis</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= DATA GURU ================= -->
+      <section class="panel" id="panel-guru">
+        <div class="panel-head">
+          <h2>Data Guru: Pantau Perkembangan Siswa</h2>
+          <p>Siapa saja yang sudah masuk, menu apa yang mereka pelajari, dan bagaimana perkembangan skor kuisnya — tercatat otomatis selama aplikasi ini terbuka.</p>
+        </div>
+        <div class="stack">
+          <div class="stat-grid">
+            <div class="card stat-card">
+              <div class="stat-num" id="statSiswa">0</div>
+              <div class="stat-label">Siswa yang sudah masuk</div>
+            </div>
+            <div class="card stat-card">
+              <div class="stat-num" id="statKuis">0</div>
+              <div class="stat-label">Total percobaan kuis selesai</div>
+            </div>
+            <div class="card stat-card">
+              <div class="stat-num" id="statRata">–</div>
+              <div class="stat-label">Rata-rata skor kuis (dari 100)</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Database Google Sheets</h3>
+            <p style="margin-top:0">Hubungkan aplikasi ini ke Google Sheet milik Bapak/Ibu sebagai database. Setiap siswa yang masuk dan setiap hasil kuis akan tercatat otomatis sebagai baris baru di Sheet (tab <strong>Login</strong> dan <strong>Kuis</strong>), dan data yang sudah ada di Sheet bisa ditarik kembali ke dasbor ini. Pemasangannya sekali saja, sekitar 5 menit:</p>
+            <details class="sheet-steps">
+              <summary>Langkah pemasangan &amp; kode Apps Script
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+              </summary>
+              <ol class="steps" style="margin-top:8px">
+                <li>Buat Google Sheet baru untuk menampung data siswa, misalnya lewat <strong>sheets.new</strong> di browser.</li>
+                <li>Di Sheet itu, klik menu <strong>Ekstensi → Apps Script</strong>.</li>
+                <li>Hapus isi editor yang ada, lalu tempel seluruh kode di bawah ini dan simpan (Ctrl+S).</li>
+                <li>Klik <strong>Deploy → Deployment baru</strong>, pilih jenis <strong>Aplikasi web</strong>. Atur "Jalankan sebagai: <em>Saya</em>" dan "Yang memiliki akses: <em>Siapa saja</em>", lalu klik Deploy dan izinkan aksesnya.</li>
+                <li>Salin <strong>URL Aplikasi web</strong> yang muncul (berakhiran <span class="mono">/exec</span>) dan tempel pada kolom di bawah, lalu klik Hubungkan.</li>
+              </ol>
+              <textarea class="script-box" id="appsScriptCode" readonly spellcheck="false">// Kode Apps Script untuk Google Sheet — tempel di Ekstensi → Apps Script,
+// lalu Deploy sebagai Aplikasi Web dengan akses "Siapa saja".
+
+function ambilSheet(ss, nama, header) {
+  var sh = ss.getSheetByName(nama);
+  if (!sh) {
+    sh = ss.insertSheet(nama);
+    sh.appendRow(header);
+  }
+  return sh;
+}
+
+function doPost(e) {
+  var data = JSON.parse(e.postData.contents);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (data.type === "login") {
+    ambilSheet(ss, "Login", ["Waktu", "Nama", "Kelas"])
+      .appendRow([new Date(data.time), data.nama, data.kelas]);
+  } else if (data.type === "kuis") {
+    ambilSheet(ss, "Kuis", ["Waktu Selesai", "Nama", "Kelas", "Percobaan ke", "Skor"])
+      .appendRow([new Date(data.time), data.nama, data.kelas, data.attemptNo, data.score]);
+  } else if (data.type === "ringkasan") {
+    ambilSheet(ss, "Ringkasan", ["Waktu Kirim", "Nama", "Kelas", "Menu Dipelajari", "Percobaan Kuis", "Skor Terakhir", "Skor Terbaik", "Rata-rata Skor"])
+      .appendRow([new Date(), data.nama, data.kelas, data.menus, data.attempts, data.last, data.best, data.avg]);
+  }
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function bacaBaris(ss, nama) {
+  var sh = ss.getSheetByName(nama);
+  if (!sh || sh.getLastRow() < 2) return [];
+  return sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();
+}
+
+function doGet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var login = bacaBaris(ss, "Login").map(function (r) {
+    return { time: r[0], nama: r[1], kelas: r[2] };
+  });
+  var kuis = bacaBaris(ss, "Kuis").map(function (r) {
+    return { time: r[0], nama: r[1], kelas: r[2], attemptNo: r[3], score: r[4] };
+  });
+  return ContentService
+    .createTextOutput(JSON.stringify({ login: login, kuis: kuis }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</textarea>
+              <div style="margin-top:10px">
+                <button class="btn ghost small" id="btnCopyScript" type="button">Salin Kode Apps Script</button>
+              </div>
+            </details>
+            <div class="field" style="margin-top:16px">
+              <label for="sheetUrl">URL Aplikasi Web Apps Script</label>
+              <input type="url" id="sheetUrl" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" spellcheck="false" />
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px">
+              <button class="btn" id="btnSheetConnect" type="button">Hubungkan</button>
+              <button class="btn ghost" id="btnSheetLoad" type="button" disabled>Muat Data dari Sheet</button>
+              <button class="btn ghost" id="btnSheetSummary" type="button" disabled>Kirim Ringkasan Sesi ke Sheet</button>
+            </div>
+            <p class="sheet-status" id="sheetStatus">Belum terhubung — data saat ini hanya tampil di halaman ini selama aplikasi terbuka.</p>
+            <div class="note" style="margin-top:14px">
+              <strong>Jaga URL Aplikasi Web Anda</strong>
+              Siapa pun yang memiliki URL tersebut dapat mengirim data ke Sheet Anda, jadi jangan dibagikan ke sembarang orang. Jika kode Apps Script diubah, jangan lupa Deploy ulang sebagai versi baru agar perubahan berlaku.
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Daftar Siswa &amp; Perkembangannya</h3>
+            <div id="guruTableWrap" class="table-stack"></div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px">
+              <button class="btn" id="btnCsv" type="button">Unduh Laporan (CSV)</button>
+            </div>
+            <div class="note" style="margin-top:16px">
+              <strong>Simpan laporan sebelum menutup aplikasi</strong>
+              Data pada halaman ini tersimpan selama aplikasi terbuka di perangkat ini. Unduh laporannya sebagai CSV agar tersimpan permanen, atau hubungkan Google Sheets pada kartu di atas agar setiap login dan hasil kuis terkirim otomatis ke Sheet milik Bapak/Ibu.
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Riwayat Percobaan Kuis</h3>
+            <div id="guruAttemptsWrap" class="table-stack"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>Media pembelajaran Matematika SMP Kelas 8 · Materi Teorema Pythagoras · Kurikulum Merdeka<br />Dibangun oleh <strong>Dody Adyansyah</strong></footer>
+
+    <script>
+      "use strict";
+      const $ = (s, el) => (el || document).querySelector(s);
+      const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+      const fmt = (n) => {
+        const r = Math.round(n * 100) / 100;
+        if (Number.isInteger(r)) return String(r);
+        return String(r).replace(".", ",");
+      };
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      /* ---------- Navigasi tab ---------- */
+      $$(".tab").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          $$(".tab").forEach((b) => { b.classList.remove("active"); b.setAttribute("aria-selected", "false"); });
+          btn.classList.add("active");
+          btn.setAttribute("aria-selected", "true");
+          $$(".panel").forEach((p) => p.classList.remove("active"));
+          $("#panel-" + btn.dataset.tab).classList.add("active");
+          trackVisit(btn.dataset.tab);
+          if (btn.dataset.tab === "guru") renderGuru();
+          window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+        });
+      });
+
+      /* ---------- Lab Segitiga ---------- */
+      const lab = { a: 3, b: 4, squares: true };
+      const labSvg = $("#labSvg");
+      const labView = { minX: 0, maxY: 0, pad: 1.3, S: 40 };
+      let dragTarget = null;
+
+      const SVGNS = "http://www.w3.org/2000/svg";
+      function svgEl(tag, attrs) {
+        const node = document.createElementNS(SVGNS, tag);
+        Object.keys(attrs || {}).forEach((k) => {
+          // fill & stroke diterapkan sebagai gaya sebaris (properti CSS asli),
+          // bukan atribut presentasi — var() di atribut presentasi tidak
+          // didukung sebagian browser/WebView sehingga gambar tidak tampil.
+          if (k === "fill" || k === "stroke") node.style[k] = attrs[k];
+          else node.setAttribute(k, attrs[k]);
+        });
+        return node;
+      }
+
+      function renderLab() {
+        const { a, b } = lab;
+        const c = Math.hypot(a, b);
+        const S = 40;
+        const sqBase = [[0, 0], [a, 0], [a, -a], [0, -a]];
+        const sqH = [[0, b], [0, 0], [-b, 0], [-b, b]];
+        const sqC = [[0, b], [a, 0], [a + b, a], [b, a + b]];
+        const tri = [[0, 0], [a, 0], [0, b]];
+        const all = [...sqBase, ...sqH, ...sqC, ...tri];
+        const minX = Math.min(...all.map((p) => p[0]));
+        const maxX = Math.max(...all.map((p) => p[0]));
+        const minY = Math.min(...all.map((p) => p[1]));
+        const maxY = Math.max(...all.map((p) => p[1]));
+        const pad = 1.35;
+        Object.assign(labView, { minX, maxY, pad, S });
+        const W = (maxX - minX + 2 * pad) * S;
+        const H = (maxY - minY + 2 * pad) * S;
+        labSvg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+        const P = (x, y) => [(x - minX + pad) * S, (maxY - y + pad) * S];
+        const poly = (pts) => pts.map((p) => P(p[0], p[1]).join(",")).join(" ");
+        const fs = Math.min(30, Math.max(16, W / 30));
+        const R = fs * 0.6;
+        while (labSvg.firstChild) labSvg.removeChild(labSvg.firstChild);
+        const add = (node) => { labSvg.appendChild(node); return node; };
+        const txt = (x, y, str, opt) => {
+          const [tx, ty] = P(x, y);
+          const o = opt || {};
+          const t = add(svgEl("text", {
+            x: tx, y: ty,
+            "text-anchor": o.anchor || "middle",
+            "dominant-baseline": "middle",
+            "font-size": o.size || fs,
+            "font-weight": o.weight || 700,
+            fill: o.fill || "var(--ink)",
+          }));
+          t.textContent = str;
+          return t;
+        };
+        if (lab.squares) {
+          add(svgEl("polygon", { points: poly(sqBase), fill: "var(--blue)", "fill-opacity": "0.26", stroke: "var(--blue)", "stroke-width": "2.5", "stroke-linejoin": "round" }));
+          add(svgEl("polygon", { points: poly(sqH), fill: "var(--amber)", "fill-opacity": "0.3", stroke: "var(--amber)", "stroke-width": "2.5", "stroke-linejoin": "round" }));
+          add(svgEl("polygon", { points: poly(sqC), fill: "var(--coral)", "fill-opacity": "0.26", stroke: "var(--coral)", "stroke-width": "2.5", "stroke-linejoin": "round" }));
+          txt(a / 2, -a / 2, `a² = ${fmt(a * a)}`, { fill: "var(--blue)", weight: 800 });
+          txt(-b / 2, b / 2, `b² = ${fmt(b * b)}`, { fill: "#b97a16", weight: 800 });
+          txt((a + b) / 2, (a + b) / 2, `c² = ${fmt(c * c)}`, { fill: "var(--coral)", weight: 800 });
+        }
+        add(svgEl("polygon", { points: poly(tri), fill: "var(--teal-tint)", stroke: "var(--ink)", "stroke-width": "3.2", "stroke-linejoin": "round" }));
+        const ra1 = P(0.5, 0), ra2 = P(0.5, 0.5), ra3 = P(0, 0.5);
+        add(svgEl("path", { d: `M ${ra1.join(" ")} L ${ra2.join(" ")} L ${ra3.join(" ")}`, fill: "none", stroke: "var(--ink)", "stroke-width": "2.2" }));
+        txt(a / 2, 0.5, fmt(a), { fill: "var(--blue)", weight: 800 });
+        txt(0.55, b / 2, fmt(b), { fill: "#b97a16", weight: 800 });
+        const nx = (0.55 * b) / c, ny = (0.55 * a) / c;
+        txt(a / 2 + nx, b / 2 + ny, fmt(c), { fill: "var(--coral)", weight: 800 });
+        txt(-0.45, -0.55, "C", { weight: 800 });
+        txt(a + 0.85, -0.35, "B", { weight: 800 });
+        txt(-0.3, b + 0.55, "A", { weight: 800 });
+        const handle = (x, y, id, color) => {
+          const [hx, hy] = P(x, y);
+          const g = svgEl("g", { "class": "handle", "data-handle": id });
+          g.appendChild(svgEl("circle", { cx: hx, cy: hy, r: R * 2.1, fill: "transparent" }));
+          g.appendChild(svgEl("circle", { cx: hx, cy: hy, r: R, fill: color, stroke: "var(--paper)", "stroke-width": "3.5" }));
+          g.addEventListener("pointerdown", (e) => {
+            dragTarget = id;
+            labSvg.setPointerCapture(e.pointerId);
+            e.preventDefault();
+          });
+          return add(g);
+        };
+        handle(a, 0, "B", "var(--blue)");
+        handle(0, b, "A", "var(--amber)");
+        // Panel angka
+        $("#eqA").textContent = fmt(a * a);
+        $("#eqB").textContent = fmt(b * b);
+        $("#eqSum").textContent = fmt(a * a + b * b);
+        $("#eqC2").textContent = fmt(c * c);
+        $("#eqC").textContent = fmt(c);
+        $("#valA").textContent = fmt(a);
+        $("#valB").textContent = fmt(b);
+        const badge = $("#labBadge");
+        const isInt = Number.isInteger(a) && Number.isInteger(b);
+        if (isInt && Number.isInteger(c)) {
+          badge.innerHTML = `<span class="badge">Triple Pythagoras! ${a} – ${b} – ${c} memenuhi teorema ini.</span>`;
+        } else if (!isInt || !Number.isInteger(c)) {
+          badge.innerHTML = `<span class="badge warn">c bukan bilangan bulat di sini (c ≈ ${fmt(c)}), tetapi a² + b² tetap sama dengan c².</span>`;
+        }
+      }
+      labSvg.addEventListener("pointermove", (e) => {
+        if (!dragTarget) return;
+        const pt = labSvg.createSVGPoint();
+        pt.x = e.clientX; pt.y = e.clientY;
+        const p = pt.matrixTransform(labSvg.getScreenCTM().inverse());
+        const mx = p.x / labView.S + labView.minX - labView.pad;
+        const my = labView.maxY + labView.pad - p.y / labView.S;
+        const snap = (v) => Math.min(15, Math.max(1, Math.round(v * 2) / 2));
+        if (dragTarget === "B") { lab.a = snap(mx); $("#sliderA").value = lab.a; }
+        if (dragTarget === "A") { lab.b = snap(my); $("#sliderB").value = lab.b; }
+        renderLab();
+      });
+      ["pointerup", "pointercancel"].forEach((ev) => labSvg.addEventListener(ev, () => { dragTarget = null; }));
+      $("#sliderA").addEventListener("input", (e) => { lab.a = parseFloat(e.target.value); renderLab(); });
+      $("#sliderB").addEventListener("input", (e) => { lab.b = parseFloat(e.target.value); renderLab(); });
+      $("#toggleSquares").addEventListener("change", (e) => { lab.squares = e.target.checked; renderLab(); });
+      $$("[data-preset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const [pa, pb] = btn.dataset.preset.split(",").map(Number);
+          lab.a = pa; lab.b = pb;
+          $("#sliderA").value = pa; $("#sliderB").value = pb;
+          renderLab();
+        });
+      });
+      renderLab();
+
+      /* ---------- Bukti Visual ---------- */
+      const A3 = 3, B4 = 4;
+      const proofTris = [
+        { s1: [[0, 7], [3, 7], [0, 3]], s2: [[4, 7], [4, 4], [0, 7]] },
+        { s1: [[7, 7], [7, 4], [3, 7]], s2: [[4, 4], [7, 4], [4, 0]] },
+        { s1: [[7, 0], [4, 0], [7, 4]], s2: [[7, 0], [4, 0], [7, 4]] },
+        { s1: [[0, 0], [0, 3], [4, 0]], s2: [[0, 4], [0, 7], [4, 4]] },
+      ];
+      const proofC = [[3, 7], [7, 4], [4, 0], [0, 3]];
+      const proofA = [[4, 4], [7, 4], [7, 7], [4, 7]];
+      const proofB = [[0, 0], [4, 0], [4, 4], [0, 4]];
+      const proofSvg = $("#proofSvg");
+      let proofT = 0, proofAnim = null;
+      const PP = (x, y) => [41 + x * 54, 41 + y * 54];
+      const ppoly = (pts) => pts.map((p) => PP(p[0], p[1]).join(",")).join(" ");
+      const lerpPt = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
+
+      function renderProof() {
+        while (proofSvg.firstChild) proofSvg.removeChild(proofSvg.firstChild);
+        const add = (node) => { proofSvg.appendChild(node); return node; };
+        add(svgEl("rect", { x: 41, y: 41, width: 378, height: 378, fill: "var(--paper-2)", stroke: "var(--ink)", "stroke-width": "3" }));
+        add(svgEl("polygon", { points: ppoly(proofB), fill: "var(--amber)", "fill-opacity": 0.45 * proofT, stroke: "none" }));
+        add(svgEl("polygon", { points: ppoly(proofA), fill: "var(--blue)", "fill-opacity": 0.45 * proofT, stroke: "none" }));
+        add(svgEl("polygon", { points: ppoly(proofC), fill: "var(--coral)", "fill-opacity": 0.42 * (1 - proofT), stroke: "none" }));
+        proofTris.forEach((tr) => {
+          const pts = tr.s1.map((p, i) => lerpPt(p, tr.s2[i], proofT));
+          add(svgEl("polygon", { points: ppoly(pts), fill: "var(--teal)", "fill-opacity": "0.5", stroke: "var(--ink)", "stroke-width": "2", "stroke-linejoin": "round" }));
+        });
+        const label = (x, y, str, op, fill) => {
+          const [tx, ty] = PP(x, y);
+          const t = add(svgEl("text", {
+            x: tx, y: ty,
+            "text-anchor": "middle",
+            "dominant-baseline": "middle",
+            "font-size": "21",
+            "font-weight": "800",
+            fill: fill,
+            opacity: op,
+          }));
+          t.textContent = str;
+          return t;
+        };
+        label(3.5, 3.5, "c² = 25", 1 - proofT, "var(--coral)");
+        label(2, 2, "b² = 16", proofT, "#b97a16");
+        label(5.5, 5.5, "a² = 9", proofT, "var(--blue)");
+        const [tx1, ty1] = PP(3.5, 7.62);
+        const capText = add(svgEl("text", { x: tx1, y: ty1, "text-anchor": "middle", "font-size": "17", "font-weight": "700", fill: "var(--ink-soft)" }));
+        capText.textContent = "sisi persegi besar = a + b = 7";
+        $("#proofSlider").value = Math.round(proofT * 100);
+        const cap = $("#proofCaption");
+        if (proofT < 0.35) {
+          cap.innerHTML = `<strong>Susunan 1:</strong> keempat segitiga menempel di sudut-sudut. Ruang kosong di tengah adalah persegi miring bersisi c — luasnya <span class="mono">c² = 25</span>.`;
+        } else if (proofT > 0.65) {
+          cap.innerHTML = `<strong>Susunan 2:</strong> segitiga yang sama, hanya dipindah. Ruang kosongnya kini dua persegi: <span class="mono">b² = 16</span> dan <span class="mono">a² = 9</span>. Karena luas sisa tidak berubah, <span class="mono">c² = a² + b² = 25</span>.`;
+        } else {
+          cap.innerHTML = `<strong>Sedang menyusun ulang…</strong> perhatikan: tidak ada potongan yang ditambah atau dikurangi, jadi luas ruang kosongnya tetap sama.`;
+        }
+      }
+      function animateProof(to) {
+        if (proofAnim) cancelAnimationFrame(proofAnim);
+        if (reducedMotion) { proofT = to; renderProof(); return; }
+        const from = proofT, start = performance.now(), dur = 1500;
+        const step = (now) => {
+          const k = Math.min(1, (now - start) / dur);
+          const ease = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+          proofT = from + (to - from) * ease;
+          renderProof();
+          if (k < 1) proofAnim = requestAnimationFrame(step);
+        };
+        proofAnim = requestAnimationFrame(step);
+      }
+      $("#proofPlay").addEventListener("click", () => animateProof(proofT < 0.5 ? 1 : 0));
+      $("#proofSlider").addEventListener("input", (e) => {
+        if (proofAnim) cancelAnimationFrame(proofAnim);
+        proofT = parseFloat(e.target.value) / 100;
+        renderProof();
+      });
+      renderProof();
+
+      /* ---------- Kalkulator ---------- */
+      const calc = { target: "c" };
+      const calcCfg = {
+        c: { l1: "Sisi alas a", l2: "Sisi tegak b", d1: 6, d2: 8 },
+        a: { l1: "Hipotenusa c", l2: "Sisi tegak b", d1: 10, d2: 6 },
+        b: { l1: "Hipotenusa c", l2: "Sisi alas a", d1: 13, d2: 5 },
+      };
+      function rootResult(n2) {
+        const s = Math.sqrt(n2);
+        if (Math.abs(s - Math.round(s)) < 1e-9) return { text: fmt(Math.round(s)), exact: true };
+        if (Number.isInteger(n2) && n2 > 0) {
+          let k = 1, m = n2;
+          for (let i = 2; i * i <= m; i++) { while (m % (i * i) === 0) { m /= i * i; k *= i; } }
+          if (m === 1) return { text: fmt(k), exact: true };
+          const rad = k > 1 ? `${k}√${m}` : `√${m}`;
+          return { text: `${rad} ≈ ${fmt(s)}`, exact: false };
+        }
+        return { text: `≈ ${fmt(s)}`, exact: false };
+      }
+      function computeCalc() {
+        const t = calc.target;
+        const v1 = parseFloat($("#calcIn1").value);
+        const v2 = parseFloat($("#calcIn2").value);
+        const out = $("#calcOut");
+        const name = { c: "Hipotenusa (c)", a: "Sisi alas (a)", b: "Sisi tegak (b)" }[t];
+        const sym = { c: "c", a: "a", b: "b" }[t];
+        const otherNames = t === "c" ? ["a", "b"] : t === "a" ? ["c", "b"] : ["c", "a"];
+        $("#calcSvgA").textContent = t === "a" ? "a = ?" : `a = ${fmt(t === "c" ? v1 : v2) || "?"}`;
+        $("#calcSvgB").textContent = t === "b" ? "b = ?" : `b = ${fmt(t === "c" ? v2 : v2) || "?"}`;
+        $("#calcSvgC").textContent = t === "c" ? "c = ?" : `c = ${fmt(v1) || "?"}`;
+        if (!(v1 > 0) || !(v2 > 0)) {
+          out.innerHTML = `<p style="color:var(--ink-soft);margin:0">Masukkan kedua sisi yang diketahui (bilangan positif) untuk melihat langkah penyelesaiannya di sini.</p>`;
+          return;
+        }
+        if (t !== "c" && v1 <= v2) {
+          out.innerHTML = `<div class="error-box">Hipotenusa (c = ${fmt(v1)}) harus lebih panjang dari sisi siku-siku lainnya (${fmt(v2)}). Periksa lagi angkamu — sisi miring selalu yang terpanjang.</div>`;
+          return;
+        }
+        let steps = [];
+        let n2, res;
+        if (t === "c") {
+          n2 = v1 * v1 + v2 * v2; res = rootResult(n2);
+          steps = [
+            `Rumus mencari hipotenusa: <span class="mono">c² = a² + b²</span>`,
+            `Substitusi nilai yang diketahui: <span class="mono">c² = ${fmt(v1)}² + ${fmt(v2)}²</span>`,
+            `Hitung kuadratnya: <span class="mono">c² = ${fmt(v1 * v1)} + ${fmt(v2 * v2)} = ${fmt(n2)}</span>`,
+            `Akarkan kedua ruas: <span class="mono">c = √${fmt(n2)} = ${res.text}</span>`,
+          ];
+        } else {
+          n2 = v1 * v1 - v2 * v2; res = rootResult(n2);
+          const other = otherNames[1];
+          steps = [
+            `Rumus mencari sisi siku-siku: <span class="mono">${sym}² = c² − ${other}²</span>`,
+            `Substitusi nilai yang diketahui: <span class="mono">${sym}² = ${fmt(v1)}² − ${fmt(v2)}²</span>`,
+            `Hitung kuadratnya: <span class="mono">${sym}² = ${fmt(v1 * v1)} − ${fmt(v2 * v2)} = ${fmt(n2)}</span>`,
+            `Akarkan kedua ruas: <span class="mono">${sym} = √${fmt(n2)} = ${res.text}</span>`,
+          ];
+        }
+        out.innerHTML = `
+          <div class="result-box" style="margin-bottom:14px">
+            <div style="font-weight:700">${name} adalah</div>
+            <div class="big">${res.text}</div>
+            ${res.exact && Number.isInteger(v1) && Number.isInteger(v2) && Number.isInteger(Math.sqrt(n2)) ? `<span class="badge" style="margin-top:6px">Hasilnya bilangan bulat — ini Triple Pythagoras!</span>` : ``}
+          </div>
+          <ol class="steps">${steps.map((s) => `<li>${s}</li>`).join("")}</ol>`;
+      }
+      $$("#calcTarget button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          $$("#calcTarget button").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          calc.target = btn.dataset.target;
+          const cfg = calcCfg[calc.target];
+          $("#calcLabel1").textContent = cfg.l1;
+          $("#calcLabel2").textContent = cfg.l2;
+          $("#calcIn1").value = cfg.d1;
+          $("#calcIn2").value = cfg.d2;
+          computeCalc();
+        });
+      });
+      ["calcIn1", "calcIn2"].forEach((id) => $("#" + id).addEventListener("input", computeCalc));
+      computeCalc();
+
+      /* ---------- Triple: Euclides, pengali, pengecek ---------- */
+      function euclid() {
+        const m = parseInt($("#euM").value, 10);
+        const n = parseInt($("#euN").value, 10);
+        const out = $("#euOut");
+        if (!Number.isInteger(m) || !Number.isInteger(n) || n < 1 || m <= n) {
+          out.innerHTML = `<div class="error-box">Syaratnya: m dan n bilangan bulat, n minimal 1, dan m harus lebih besar dari n.</div>`;
+          return;
+        }
+        const a = m * m - n * n, b = 2 * m * n, c = m * m + n * n;
+        const g = (x, y) => (y ? g(y, x % y) : x);
+        const primitif = g(g(a, b), c) === 1;
+        out.innerHTML = `
+          <div class="result-box">
+            <div style="font-weight:700">Triple yang dihasilkan</div>
+            <div class="big">${a} – ${b} – ${c}</div>
+            <div class="mono" style="font-size:0.95rem">${a}² + ${b}² = ${a * a} + ${b * b} = ${a * a + b * b} = ${c}² ✓</div>
+            <span class="badge" style="margin-top:8px">${primitif ? "Triple primitif" : "Bukan primitif (punya faktor persekutuan)"}</span>
+          </div>`;
+      }
+      ["euM", "euN"].forEach((id) => $("#" + id).addEventListener("input", euclid));
+      euclid();
+
+      function mult() {
+        const [a, b, c] = $("#multBase").value.split(",").map(Number);
+        const k = parseInt($("#multK").value, 10);
+        $("#multKVal").textContent = k;
+        $("#multOut").innerHTML = `
+          <div class="result-box" style="margin-top:6px">
+            <div style="font-weight:700">${a} – ${b} – ${c} dikali ${k}</div>
+            <div class="big">${a * k} – ${b * k} – ${c * k}</div>
+            <div class="mono" style="font-size:0.95rem">${a * k}² + ${b * k}² = ${(a * k) ** 2 + (b * k) ** 2} = ${c * k}² ✓</div>
+          </div>`;
+      }
+      $("#multBase").addEventListener("change", mult);
+      $("#multK").addEventListener("input", mult);
+      mult();
+
+      function checker() {
+        const vals = [$("#chk1").value, $("#chk2").value, $("#chk3").value].map((v) => parseFloat(v));
+        const out = $("#chkOut");
+        if (vals.some((v) => !(v > 0))) {
+          out.innerHTML = `<p style="color:var(--ink-soft);margin:0">Isi ketiga sisi dengan bilangan positif.</p>`;
+          return;
+        }
+        const [x, y, z] = [...vals].sort((p, q) => p - q);
+        if (x + y <= z) {
+          out.innerHTML = `<div class="error-box">Ketiga sisi ini <strong>tidak dapat membentuk segitiga</strong>: jumlah dua sisi terpendek (${fmt(x)} + ${fmt(y)} = ${fmt(x + y)}) harus lebih besar dari sisi terpanjang (${fmt(z)}).</div>`;
+          return;
+        }
+        const lhs = x * x + y * y, rhs = z * z;
+        const eq = Math.abs(lhs - rhs) < 1e-9;
+        const jenis = eq ? "Siku-siku" : lhs > rhs ? "Lancip" : "Tumpul";
+        const isTriple = eq && vals.every((v) => Number.isInteger(v));
+        out.innerHTML = `
+          <div class="result-box">
+            <div style="font-weight:700">Dengan c = sisi terpanjang = ${fmt(z)}:</div>
+            <div class="mono" style="font-size:1.05rem">${fmt(x)}² + ${fmt(y)}² = ${fmt(lhs)} &nbsp;${eq ? "=" : lhs > rhs ? ">" : "<"}&nbsp; ${fmt(rhs)} = ${fmt(z)}²</div>
+            <div class="big" style="font-size:1.5rem">Segitiga ${jenis}</div>
+            ${isTriple ? `<span class="badge">Ya, ini Triple Pythagoras!</span>` : eq ? `<span class="badge warn">Siku-siku, tetapi bukan triple karena ada sisi bukan bilangan bulat.</span>` : `<span class="badge warn">Bukan Triple Pythagoras</span>`}
+          </div>`;
+      }
+      ["chk1", "chk2", "chk3"].forEach((id) => $("#" + id).addEventListener("input", checker));
+      checker();
+
+      /* ---------- Penerapan (soal cerita) ---------- */
+      const soalData = [
+        {
+          title: "Tangga Bersandar di Tembok",
+          img: `<svg viewBox="0 0 200 150" style="width:100%;height:auto" role="img" aria-label="Ilustrasi tangga bersandar di tembok"><line x1="42" y1="8" x2="42" y2="140" stroke="var(--ink)" stroke-width="4"/><line x1="20" y1="140" x2="185" y2="140" stroke="var(--ink)" stroke-width="4"/><line x1="42" y1="28" x2="128" y2="140" stroke="var(--coral)" stroke-width="5" stroke-linecap="round"/><path d="M42 122 h16 v18" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="86" y="70" font-weight="800" fill="var(--coral)" font-size="15">5 m</text><text x="82" y="134" font-weight="800" fill="var(--blue)" font-size="15">3 m</text><text x="16" y="80" font-weight="800" fill="#b97a16" font-size="15">?</text></svg>`,
+          text: "Sebuah tangga sepanjang 5 m disandarkan pada tembok. Jarak ujung bawah tangga ke tembok adalah 3 m. Berapa tinggi tembok yang dicapai ujung atas tangga?",
+          diket: ["Hipotenusa (tangga) c = 5 m", "Sisi alas a = 3 m", "Dicari: sisi tegak b"],
+          steps: [
+            "Tembok, tanah, dan tangga membentuk segitiga siku-siku di kaki tembok.",
+            "Gunakan rumus sisi tegak: <span class='mono'>b² = c² − a²</span>",
+            "Substitusi: <span class='mono'>b² = 5² − 3² = 25 − 9 = 16</span>",
+            "Akarkan: <span class='mono'>b = √16 = 4</span>",
+          ],
+          answer: "Tinggi tembok yang dicapai tangga adalah 4 m.",
+        },
+        {
+          title: "Diagonal Layar Televisi",
+          img: `<svg viewBox="0 0 200 150" style="width:100%;height:auto" role="img" aria-label="Ilustrasi layar televisi dengan diagonal"><rect x="28" y="32" width="144" height="86" rx="6" fill="var(--teal-tint)" stroke="var(--ink)" stroke-width="3"/><line x1="28" y1="118" x2="172" y2="32" stroke="var(--coral)" stroke-width="3.5"/><line x1="92" y1="118" x2="108" y2="140" stroke="var(--ink)" stroke-width="3"/><line x1="70" y1="140" x2="130" y2="140" stroke="var(--ink)" stroke-width="3"/><text x="100" y="132" text-anchor="middle" font-weight="800" fill="var(--blue)" font-size="14"></text><text x="92" y="66" font-weight="800" fill="var(--coral)" font-size="15">?</text><text x="86" y="24" font-weight="800" fill="var(--blue)" font-size="14">32 cm</text><text x="178" y="80" font-weight="800" fill="#b97a16" font-size="14">24</text></svg>`,
+          text: "Ukuran televisi biasanya dinyatakan dari panjang diagonal layarnya. Sebuah layar berbentuk persegi panjang dengan panjang 32 cm dan lebar 24 cm. Berapa ukuran televisi tersebut dalam cm?",
+          diket: ["Sisi alas a = 32 cm", "Sisi tegak b = 24 cm", "Dicari: diagonal (hipotenusa) c"],
+          steps: [
+            "Diagonal persegi panjang membagi layar menjadi dua segitiga siku-siku.",
+            "Gunakan rumus hipotenusa: <span class='mono'>c² = a² + b²</span>",
+            "Substitusi: <span class='mono'>c² = 32² + 24² = 1.024 + 576 = 1.600</span>",
+            "Akarkan: <span class='mono'>c = √1.600 = 40</span>",
+          ],
+          answer: "Ukuran televisi tersebut adalah 40 cm (dijual sebagai TV 16 inci, karena 40 cm ≈ 16 inci).",
+        },
+        {
+          title: "Jarak Terpendek Kapal",
+          img: `<svg viewBox="0 0 200 150" style="width:100%;height:auto" role="img" aria-label="Ilustrasi rute kapal membentuk segitiga siku-siku"><path d="M35 128 L35 42 L158 42" fill="none" stroke="var(--ink)" stroke-width="3"/><line x1="35" y1="128" x2="158" y2="42" stroke="var(--coral)" stroke-width="3.5" stroke-dasharray="7 5"/><path d="M35 108 v14 h14" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="12" y="88" font-weight="800" fill="#b97a16" font-size="14">12 km</text><text x="86" y="32" font-weight="800" fill="var(--blue)" font-size="14">5 km</text><text x="104" y="98" font-weight="800" fill="var(--coral)" font-size="14">?</text><circle cx="35" cy="128" r="4.5" fill="var(--ink)"/><circle cx="158" cy="42" r="4.5" fill="var(--ink)"/></svg>`,
+          text: "Sebuah kapal berlayar dari pelabuhan ke arah utara sejauh 12 km, kemudian berbelok ke arah timur sejauh 5 km. Berapa jarak terpendek kapal dari pelabuhan sekarang?",
+          diket: ["Sisi tegak (ke utara) b = 12 km", "Sisi alas (ke timur) a = 5 km", "Dicari: jarak langsung c"],
+          steps: [
+            "Arah utara dan timur saling tegak lurus, jadi rute kapal membentuk segitiga siku-siku.",
+            "Jarak terpendek adalah garis lurus dari pelabuhan — yaitu hipotenusanya.",
+            "Substitusi: <span class='mono'>c² = 5² + 12² = 25 + 144 = 169</span>",
+            "Akarkan: <span class='mono'>c = √169 = 13</span>",
+          ],
+          answer: "Jarak terpendek kapal dari pelabuhan adalah 13 km.",
+        },
+        {
+          title: "Ketinggian Layang-Layang",
+          img: `<svg viewBox="0 0 200 150" style="width:100%;height:auto" role="img" aria-label="Ilustrasi layang-layang dan talinya"><line x1="15" y1="140" x2="185" y2="140" stroke="var(--ink)" stroke-width="3.5"/><line x1="48" y1="140" x2="152" y2="26" stroke="var(--coral)" stroke-width="3"/><line x1="152" y1="26" x2="152" y2="140" stroke="var(--ink)" stroke-width="2" stroke-dasharray="6 5"/><line x1="48" y1="140" x2="152" y2="140" stroke="var(--blue)" stroke-width="3"/><path d="M152 122 h-14 v18" fill="none" stroke="var(--ink)" stroke-width="2"/><path d="M140 14 l24 12 l-12 10 l-12 -8 z" fill="var(--amber)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><circle cx="48" cy="132" r="5" fill="var(--ink)"/><text x="80" y="74" font-weight="800" fill="var(--coral)" font-size="14">25 m</text><text x="92" y="134" font-weight="800" fill="var(--blue)" font-size="14">7 m</text><text x="160" y="86" font-weight="800" fill="#b97a16" font-size="14">?</text></svg>`,
+          text: "Budi bermain layang-layang dengan panjang tali 25 m. Jarak mendatar antara Budi dan titik tepat di bawah layang-layang adalah 7 m. Berapa ketinggian layang-layang dari tanah? (Anggap tali lurus dan diukur dari tangan Budi yang tingginya diabaikan.)",
+          diket: ["Hipotenusa (tali) c = 25 m", "Sisi alas a = 7 m", "Dicari: sisi tegak b"],
+          steps: [
+            "Tali, garis mendatar, dan garis tegak dari layang-layang membentuk segitiga siku-siku.",
+            "Gunakan rumus sisi tegak: <span class='mono'>b² = c² − a²</span>",
+            "Substitusi: <span class='mono'>b² = 25² − 7² = 625 − 49 = 576</span>",
+            "Akarkan: <span class='mono'>b = √576 = 24</span>",
+          ],
+          answer: "Ketinggian layang-layang dari tanah adalah 24 m.",
+        },
+        {
+          title: "Jalan Pintas di Lapangan",
+          img: `<svg viewBox="0 0 200 150" style="width:100%;height:auto" role="img" aria-label="Ilustrasi lapangan dengan jalan pintas diagonal"><rect x="25" y="28" width="150" height="94" fill="var(--teal-tint)" stroke="var(--ink)" stroke-width="3"/><line x1="25" y1="122" x2="175" y2="28" stroke="var(--coral)" stroke-width="3.5" stroke-dasharray="7 5"/><text x="84" y="140" font-weight="800" fill="var(--blue)" font-size="14">40 m</text><text x="182" y="80" font-weight="800" fill="#b97a16" font-size="14">30</text><text x="86" y="66" font-weight="800" fill="var(--coral)" font-size="14">?</text></svg>`,
+          text: "Sebuah lapangan berbentuk persegi panjang berukuran 40 m × 30 m. Sinta ingin berjalan dari satu sudut lapangan ke sudut berlawanan. Jika ia memotong lurus melintasi lapangan, berapa jarak yang ditempuhnya?",
+          diket: ["Sisi alas a = 40 m", "Sisi tegak b = 30 m", "Dicari: lintasan lurus (hipotenusa) c"],
+          steps: [
+            "Lintasan lurus Sinta adalah diagonal lapangan — hipotenusa dari segitiga siku-siku.",
+            "Gunakan rumus: <span class='mono'>c² = a² + b²</span>",
+            "Substitusi: <span class='mono'>c² = 40² + 30² = 1.600 + 900 = 2.500</span>",
+            "Akarkan: <span class='mono'>c = √2.500 = 50</span>",
+            "Bandingkan: berjalan menyusuri tepi lapangan = 40 + 30 = 70 m.",
+          ],
+          answer: "Jarak lintasan lurusnya 50 m — menghemat 20 m dibanding berjalan menyusuri tepi lapangan.",
+        },
+      ];
+      $("#soalList").innerHTML = soalData.map((s) => `
+        <div class="soal">
+          <div class="soal-body">
+            <div class="soal-img">${s.img}</div>
+            <div>
+              <h3>${s.title}</h3>
+              <p>${s.text}</p>
+              <div class="diket">${s.diket.map((d) => `<span>${d}</span>`).join("")}</div>
+            </div>
+          </div>
+          <details>
+            <summary>Lihat penyelesaian
+              <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+            </summary>
+            <div class="penyelesaian">
+              <ol class="steps">${s.steps.map((st) => `<li>${st}</li>`).join("")}</ol>
+              <p style="margin:12px 0 0"><strong>Jawaban:</strong> ${s.answer}</p>
+            </div>
+          </details>
+        </div>`).join("");
+
+      /* ---------- Kuis ---------- */
+      const quizData = [
+        { q: "Sebuah segitiga siku-siku memiliki sisi alas 6 cm dan sisi tegak 8 cm. Panjang hipotenusanya adalah …", opts: ["10 cm", "12 cm", "14 cm", "48 cm"], ans: 0, exp: "c² = 6² + 8² = 36 + 64 = 100, sehingga c = √100 = 10 cm." },
+        { q: "Hipotenusa sebuah segitiga siku-siku adalah 13 cm dan salah satu sisi siku-sikunya 5 cm. Panjang sisi siku-siku lainnya adalah …", opts: ["8 cm", "12 cm", "18 cm", "19 cm"], ans: 1, exp: "Sisi lain = √(13² − 5²) = √(169 − 25) = √144 = 12 cm." },
+        { q: "Sisi terpanjang pada segitiga siku-siku, yang terletak di hadapan sudut 90°, disebut …", opts: ["Sisi tegak", "Sisi alas", "Hipotenusa", "Diagonal"], ans: 2, exp: "Sisi di hadapan sudut siku-siku disebut hipotenusa atau sisi miring. Ia selalu merupakan sisi terpanjang." },
+        { q: "Kelompok bilangan berikut yang merupakan Triple Pythagoras adalah …", opts: ["2, 3, 4", "4, 5, 6", "3, 4, 5", "6, 7, 9"], ans: 2, exp: "3² + 4² = 9 + 16 = 25 = 5². Kelompok lain tidak memenuhi a² + b² = c²." },
+        { q: "Sebuah tangga sepanjang 10 m bersandar pada dinding. Jarak kaki tangga ke dinding adalah 6 m. Tinggi dinding yang dicapai tangga adalah …", opts: ["8 m", "12 m", "16 m", "4 m"], ans: 0, exp: "Tinggi = √(10² − 6²) = √(100 − 36) = √64 = 8 m." },
+        { q: "Segitiga dengan panjang sisi 9 cm, 12 cm, dan 15 cm merupakan segitiga …", opts: ["Lancip", "Tumpul", "Siku-siku", "Sama kaki"], ans: 2, exp: "9² + 12² = 81 + 144 = 225 = 15², jadi segitiga tersebut siku-siku (kebalikan teorema Pythagoras)." },
+        { q: "Sebuah persegi panjang berukuran 12 cm × 5 cm. Panjang diagonalnya adalah …", opts: ["17 cm", "13 cm", "15 cm", "11 cm"], ans: 1, exp: "Diagonal = √(12² + 5²) = √(144 + 25) = √169 = 13 cm." },
+        { q: "Jika a = 7 dan b = 24 pada teorema Pythagoras, maka nilai c adalah …", opts: ["25", "26", "31", "17"], ans: 0, exp: "c² = 7² + 24² = 49 + 576 = 625, sehingga c = √625 = 25." },
+        { q: "Segitiga dengan panjang sisi 4 cm, 5 cm, dan 6 cm merupakan segitiga …", opts: ["Tumpul", "Siku-siku", "Lancip", "Tidak dapat dibentuk"], ans: 2, exp: "Sisi terpanjang 6: 4² + 5² = 41 > 36 = 6². Karena a² + b² > c², segitiganya lancip." },
+        { q: "Sebuah perahu berlayar ke timur sejauh 9 km, lalu ke utara sejauh 12 km. Jarak terpendek perahu dari titik awal adalah …", opts: ["21 km", "15 km", "13 km", "18 km"], ans: 1, exp: "Jarak = √(9² + 12²) = √(81 + 144) = √225 = 15 km." },
+      ];
+      const quiz = { idx: 0, score: 0, locked: false, order: [] };
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      function renderQuiz() {
+        const item = quizData[quiz.idx];
+        quiz.locked = false;
+        quiz.order = shuffle(item.opts.map((_, i) => i));
+        $("#quizCounter").textContent = `Soal ${quiz.idx + 1} dari ${quizData.length}`;
+        $("#quizScore").textContent = quiz.score * 10;
+        $("#quizBar").style.width = `${(quiz.idx / quizData.length) * 100}%`;
+        $("#quizQ").textContent = item.q;
+        const fb = $("#quizFb");
+        fb.className = "quiz-feedback";
+        fb.innerHTML = "";
+        const next = $("#quizNext");
+        next.disabled = true;
+        next.textContent = quiz.idx === quizData.length - 1 ? "Lihat Hasil" : "Soal Berikutnya";
+        $("#quizOpts").innerHTML = quiz.order.map((oi, pos) => `
+          <button class="quiz-opt" data-oi="${oi}">
+            <span class="letter">${"ABCD"[pos]}</span><span>${item.opts[oi]}</span>
+          </button>`).join("");
+        $$("#quizOpts .quiz-opt").forEach((btn) => {
+          btn.addEventListener("click", () => answerQuiz(btn, item));
+        });
+      }
+      function answerQuiz(btn, item) {
+        if (quiz.locked) return;
+        quiz.locked = true;
+        const chosen = parseInt(btn.dataset.oi, 10);
+        const correct = chosen === item.ans;
+        if (correct) quiz.score++;
+        $$("#quizOpts .quiz-opt").forEach((b) => {
+          b.disabled = true;
+          if (parseInt(b.dataset.oi, 10) === item.ans) b.classList.add("correct");
+        });
+        if (!correct) btn.classList.add("wrong");
+        $("#quizScore").textContent = quiz.score * 10;
+        $("#quizBar").style.width = `${((quiz.idx + 1) / quizData.length) * 100}%`;
+        const fb = $("#quizFb");
+        fb.className = "quiz-feedback show " + (correct ? "ok" : "no");
+        fb.innerHTML = `<strong>${correct ? "Betul! Kerja bagus." : "Belum tepat — jawaban yang benar ditandai hijau."}</strong>${item.exp}`;
+        $("#quizNext").disabled = false;
+      }
+      $("#quizNext").addEventListener("click", () => {
+        if (quiz.idx < quizData.length - 1) {
+          quiz.idx++;
+          renderQuiz();
+        } else {
+          $("#quizMain").style.display = "none";
+          $("#quizEnd").style.display = "block";
+          const final = quiz.score * 10;
+          recordQuizAttempt(final);
+          $("#finalScore").textContent = `${final} / 100`;
+          $("#finalStars").textContent = final >= 90 ? "★★★" : final >= 70 ? "★★☆" : final >= 50 ? "★☆☆" : "☆☆☆";
+          $("#finalMsg").textContent =
+            final >= 90 ? "Luar biasa! Kamu sudah menguasai teorema Pythagoras. Siap lanjut ke materi berikutnya." :
+            final >= 70 ? "Bagus! Pemahamanmu sudah kuat — tinjau lagi pembahasan soal yang tadi keliru agar makin mantap." :
+            final >= 50 ? "Cukup baik. Coba pelajari lagi bagian Materi dan Lab Segitiga, lalu ulangi kuisnya." :
+            "Tidak apa-apa, ini bagian dari belajar. Mulai lagi dari menu Materi, coba-coba di Lab Segitiga, lalu kerjakan kuisnya sekali lagi.";
+        }
+      });
+      $("#quizRestart").addEventListener("click", () => {
+        quiz.idx = 0; quiz.score = 0;
+        $("#quizEnd").style.display = "none";
+        $("#quizMain").style.display = "block";
+        renderQuiz();
+      });
+      renderQuiz();
+
+      /* ---------- Sesi siswa & data perkembangan (tersimpan selama aplikasi terbuka) ---------- */
+      const TAB_LABELS = {
+        materi: "Materi", lab: "Lab Segitiga", bukti: "Bukti Visual",
+        kalkulator: "Kalkulator", triple: "Triple", penerapan: "Penerapan", kuis: "Kuis",
+      };
+      const studentRecords = []; // {nama, kelas, firstLogin, logins, visits:{}, lastActivity, attempts:[{score, time}]}
+      let currentStudent = null;
+
+      const fmtTime = (d) => d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }).replace(":", ".");
+      const fmtDateTime = (d) => d.toLocaleDateString("id-ID", { day: "numeric", month: "short" }) + " · " + fmtTime(d);
+      const escapeHtml = (s) => s.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+
+      function trackVisit(tab) {
+        if (!currentStudent || tab === "guru") return;
+        currentStudent.visits[tab] = true;
+        currentStudent.lastActivity = new Date();
+      }
+      function recordQuizAttempt(score) {
+        if (!currentStudent) return;
+        const when = new Date();
+        currentStudent.attempts.push({ score: score, time: when });
+        currentStudent.lastActivity = when;
+        sheetSend({
+          type: "kuis", time: when.toISOString(),
+          nama: currentStudent.nama, kelas: currentStudent.kelas,
+          attemptNo: currentStudent.attempts.length, score: score,
+        });
+      }
+
+      /* ---------- Integrasi Google Sheets (Apps Script Web App milik guru) ---------- */
+      let sheetEndpoint = "";
+      function setSheetStatus(msg, ok) {
+        const el = $("#sheetStatus");
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.toggle("ok", !!ok);
+      }
+      function sheetSend(payload) {
+        if (!sheetEndpoint) return Promise.resolve(false);
+        return fetch(sheetEndpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload),
+        }).then(() => true).catch(() => false);
+      }
+
+      $("#btnCopyScript").addEventListener("click", () => {
+        const box = $("#appsScriptCode");
+        const btn = $("#btnCopyScript");
+        const done = () => {
+          btn.textContent = "Kode Tersalin ✓";
+          setTimeout(() => { btn.textContent = "Salin Kode Apps Script"; }, 2200);
+        };
+        box.select();
+        box.setSelectionRange(0, box.value.length);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(box.value).then(done).catch(() => { try { document.execCommand("copy"); } catch (err) { /* abaikan */ } done(); });
+        } else {
+          try { document.execCommand("copy"); } catch (err) { /* abaikan */ }
+          done();
+        }
+      });
+
+      $("#btnSheetConnect").addEventListener("click", () => {
+        const url = $("#sheetUrl").value.trim();
+        if (!/^https:\/\//i.test(url)) {
+          setSheetStatus("Tempel dulu URL Aplikasi Web Apps Script yang valid (diawali https:// dan biasanya berakhiran /exec).");
+          $("#sheetUrl").focus();
+          return;
+        }
+        sheetEndpoint = url;
+        $("#btnSheetLoad").disabled = false;
+        $("#btnSheetSummary").disabled = false;
+        setSheetStatus("Terhubung. Login siswa dan hasil kuis mulai sekarang akan otomatis terkirim ke Sheet Anda — periksa tab Login dan Kuis di Sheet untuk memastikannya masuk. Untuk menarik data lama dari Sheet ke dasbor ini, klik \"Muat Data dari Sheet\".", true);
+      });
+
+      $("#btnSheetSummary").addEventListener("click", () => {
+        if (!sheetEndpoint) return;
+        if (!studentRecords.length) {
+          setSheetStatus("Belum ada data siswa pada sesi ini untuk dikirim.");
+          return;
+        }
+        setSheetStatus("Mengirim ringkasan sesi ke Sheet…");
+        const jobs = studentRecords.map((r) => {
+          const scores = r.attempts.map((a) => a.score);
+          return sheetSend({
+            type: "ringkasan",
+            nama: r.nama, kelas: r.kelas,
+            menus: Object.keys(r.visits).map((t) => TAB_LABELS[t] || t).join(", "),
+            attempts: r.attempts.length,
+            last: scores.length ? scores[scores.length - 1] : "",
+            best: scores.length ? Math.max(...scores) : "",
+            avg: scores.length ? fmt(scores.reduce((x, y) => x + y, 0) / scores.length) : "",
+          });
+        });
+        Promise.all(jobs).then(() => {
+          setSheetStatus("Ringkasan sesi terkirim — silakan periksa tab \"Ringkasan\" pada Sheet Anda untuk memastikan datanya masuk.", true);
+        });
+      });
+
+      function mergeSheetData(data) {
+        let siswaBaru = 0, kuisBaru = 0;
+        const keyOf = (nama, kelas) => (nama + "|" + kelas).toLowerCase();
+        const findRec = (nama, kelas) => studentRecords.find((r) => keyOf(r.nama, r.kelas) === keyOf(nama, kelas));
+        const makeRec = (nama, kelas, t) => ({
+          nama: nama, kelas: kelas,
+          firstLogin: isNaN(t) ? new Date() : t,
+          logins: 1, visits: {},
+          lastActivity: isNaN(t) ? new Date() : t,
+          attempts: [],
+        });
+        (data.login || []).forEach((row) => {
+          if (!row.nama || !row.kelas) return;
+          const t = new Date(row.time);
+          const rec = findRec(String(row.nama), String(row.kelas));
+          if (!rec) {
+            studentRecords.push(makeRec(String(row.nama), String(row.kelas), t));
+            siswaBaru++;
+          } else if (!isNaN(t) && t < rec.firstLogin) {
+            rec.firstLogin = t;
+          }
+        });
+        (data.kuis || []).forEach((row) => {
+          if (!row.nama || !row.kelas) return;
+          const t = new Date(row.time);
+          let rec = findRec(String(row.nama), String(row.kelas));
+          if (!rec) {
+            rec = makeRec(String(row.nama), String(row.kelas), t);
+            studentRecords.push(rec);
+            siswaBaru++;
+          }
+          const score = Number(row.score);
+          if (isNaN(score)) return;
+          const dup = rec.attempts.some((a) => a.score === score && Math.abs(a.time - t) < 60000);
+          if (!dup) {
+            rec.attempts.push({ score: score, time: isNaN(t) ? new Date() : t });
+            rec.attempts.sort((x, y) => x.time - y.time);
+            rec.visits.kuis = true;
+            if (!isNaN(t) && t > rec.lastActivity) rec.lastActivity = t;
+            kuisBaru++;
+          }
+        });
+        return { siswaBaru: siswaBaru, kuisBaru: kuisBaru };
+      }
+
+      $("#btnSheetLoad").addEventListener("click", () => {
+        if (!sheetEndpoint) return;
+        setSheetStatus("Memuat data dari Google Sheet…");
+        fetch(sheetEndpoint, { method: "GET" })
+          .then((res) => {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+          })
+          .then((data) => {
+            const m = mergeSheetData(data);
+            renderGuru();
+            setSheetStatus(`Data dari Sheet dimuat: ${m.kuisBaru} percobaan kuis baru ditambahkan${m.siswaBaru ? ` dan ${m.siswaBaru} siswa baru dikenali` : ""}. Tabel di bawah sudah diperbarui.`, true);
+          })
+          .catch(() => {
+            setSheetStatus("Gagal memuat data dari Sheet. Pastikan URL-nya benar dan deployment Apps Script diatur untuk akses \"Siapa saja\", lalu coba lagi.");
+          });
+      });
+
+      $("#loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nama = $("#loginNama").value.trim().replace(/\s+/g, " ");
+        const kelas = $("#loginKelas").value.trim().replace(/\s+/g, " ").toUpperCase();
+        if (!nama || !kelas) {
+          $("#loginErr").classList.add("show");
+          (!nama ? $("#loginNama") : $("#loginKelas")).focus();
+          return;
+        }
+        $("#loginErr").classList.remove("show");
+        const now = new Date();
+        let rec = studentRecords.find((r) => r.nama.toLowerCase() === nama.toLowerCase() && r.kelas === kelas);
+        if (!rec) {
+          rec = { nama: nama, kelas: kelas, firstLogin: now, logins: 0, visits: {}, lastActivity: now, attempts: [] };
+          studentRecords.push(rec);
+        }
+        rec.logins++;
+        rec.lastActivity = now;
+        currentStudent = rec;
+        sheetSend({ type: "login", time: now.toISOString(), nama: rec.nama, kelas: rec.kelas });
+        $("#studentWho").innerHTML = `${escapeHtml(rec.nama)} <span>· Kelas ${escapeHtml(rec.kelas)}</span>`;
+        $("#studentChip").classList.add("show");
+        $("#loginGate").classList.add("hidden");
+        trackVisit("materi");
+        document.querySelector('.tab[data-tab="materi"]').focus();
+      });
+
+      $("#btnGantiSiswa").addEventListener("click", () => {
+        currentStudent = null;
+        $("#studentChip").classList.remove("show");
+        $("#loginNama").value = "";
+        $("#loginKelas").value = "";
+        $("#loginGate").classList.remove("hidden");
+        window.scrollTo({ top: 0 });
+        $("#loginNama").focus();
+      });
+
+      function renderGuru() {
+        const totalAttempts = studentRecords.reduce((n, r) => n + r.attempts.length, 0);
+        const allScores = studentRecords.flatMap((r) => r.attempts.map((a) => a.score));
+        $("#statSiswa").textContent = studentRecords.length;
+        $("#statKuis").textContent = totalAttempts;
+        $("#statRata").textContent = allScores.length ? fmt(allScores.reduce((x, y) => x + y, 0) / allScores.length) : "–";
+
+        const wrap = $("#guruTableWrap");
+        if (!studentRecords.length) {
+          wrap.innerHTML = `<p style="margin:0;color:var(--ink-soft)">Belum ada siswa yang masuk pada sesi ini. Data akan muncul di sini begitu ada siswa yang masuk dengan nama dan kelasnya.</p>`;
+        } else {
+          const rows = studentRecords.map((r) => {
+            const last = r.attempts.length ? r.attempts[r.attempts.length - 1].score : null;
+            const best = r.attempts.length ? Math.max(...r.attempts.map((a) => a.score)) : null;
+            const menus = Object.keys(r.visits).map((t) => `<span>${TAB_LABELS[t] || t}</span>`).join("");
+            return `<tr>
+              <td data-th="Nama"><strong>${escapeHtml(r.nama)}</strong></td>
+              <td data-th="Kelas">${escapeHtml(r.kelas)}</td>
+              <td data-th="Masuk pertama">${fmtDateTime(r.firstLogin)}${r.logins > 1 ? ` (${r.logins}× masuk)` : ""}</td>
+              <td data-th="Menu dipelajari"><div class="menu-tags">${menus || "–"}</div></td>
+              <td data-th="Kuis selesai" class="num">${r.attempts.length}×</td>
+              <td data-th="Skor terakhir" class="num">${last === null ? "–" : last}</td>
+              <td data-th="Skor terbaik" class="num">${best === null ? "–" : best}</td>
+              <td data-th="Aktivitas terakhir">${fmtTime(r.lastActivity)}</td>
+            </tr>`;
+          }).join("");
+          wrap.innerHTML = `<table>
+            <thead><tr><th>Nama</th><th>Kelas</th><th>Masuk pertama</th><th>Menu dipelajari</th><th class="num">Kuis selesai</th><th class="num">Skor terakhir</th><th class="num">Skor terbaik</th><th>Aktivitas terakhir</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+        }
+
+        const attWrap = $("#guruAttemptsWrap");
+        const attempts = [];
+        studentRecords.forEach((r) => r.attempts.forEach((a, i) => {
+          const prev = i > 0 ? r.attempts[i - 1].score : null;
+          const trend = prev === null ? "Percobaan pertama"
+            : a.score > prev ? `Naik ${a.score - prev} dari percobaan sebelumnya`
+            : a.score < prev ? `Turun ${prev - a.score} dari percobaan sebelumnya`
+            : "Sama seperti percobaan sebelumnya";
+          attempts.push({ nama: r.nama, kelas: r.kelas, score: a.score, time: a.time, trend: trend });
+        }));
+        attempts.sort((x, y) => y.time - x.time);
+        if (!attempts.length) {
+          attWrap.innerHTML = `<p style="margin:0;color:var(--ink-soft)">Belum ada kuis yang diselesaikan pada sesi ini.</p>`;
+        } else {
+          attWrap.innerHTML = `<table>
+            <thead><tr><th>Nama</th><th>Kelas</th><th>Waktu selesai</th><th class="num">Skor</th><th>Perkembangan</th></tr></thead>
+            <tbody>${attempts.map((a) => `<tr>
+                <td data-th="Nama"><strong>${escapeHtml(a.nama)}</strong></td>
+                <td data-th="Kelas">${escapeHtml(a.kelas)}</td>
+                <td data-th="Waktu selesai">${fmtDateTime(a.time)}</td>
+                <td data-th="Skor" class="num"><strong>${a.score}</strong></td>
+                <td data-th="Perkembangan">${a.trend}</td>
+              </tr>`).join("")}</tbody>
+          </table>`;
+        }
+        $("#btnCsv").disabled = !studentRecords.length;
+      }
+
+      $("#btnCsv").addEventListener("click", () => {
+        const q = (v) => `"${String(v).replace(/"/g, '""')}"`;
+        const row = (cells) => cells.map(q).join(";");
+        const lines = [];
+        lines.push(q("RINGKASAN PER SISWA"));
+        lines.push(row(["Nama", "Kelas", "Masuk Pertama", "Jumlah Masuk", "Menu Dipelajari", "Percobaan Kuis", "Skor Terakhir", "Skor Terbaik", "Rata-rata Skor", "Aktivitas Terakhir"]));
+        studentRecords.forEach((r) => {
+          const scores = r.attempts.map((a) => a.score);
+          lines.push(row([
+            r.nama, r.kelas, fmtDateTime(r.firstLogin), r.logins,
+            Object.keys(r.visits).map((t) => TAB_LABELS[t] || t).join(", "),
+            r.attempts.length,
+            scores.length ? scores[scores.length - 1] : "",
+            scores.length ? Math.max(...scores) : "",
+            scores.length ? fmt(scores.reduce((x, y) => x + y, 0) / scores.length) : "",
+            fmtDateTime(r.lastActivity),
+          ]));
+        });
+        lines.push("");
+        lines.push(q("RIWAYAT PERCOBAAN KUIS"));
+        lines.push(row(["Nama", "Kelas", "Percobaan ke", "Waktu Selesai", "Skor"]));
+        studentRecords.forEach((r) => r.attempts.forEach((a, i) => {
+          lines.push(row([r.nama, r.kelas, i + 1, fmtDateTime(a.time), a.score]));
+        }));
+        const blob = new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "laporan-perkembangan-pythagoras.csv";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      });
+    </script>
+  </body>
+</html>
