@@ -371,11 +371,15 @@
       .menu-tags span { background: var(--teal-tint); color: var(--teal-dark); border-radius: 7px; padding: 1px 8px; font-size: 0.8rem; font-weight: 700; }
 
       /* ---------- Google Sheets ---------- */
-      .field input[type="text"], .field input[type="url"] {
+      .field input[type="text"], .field input[type="url"], .field input[type="password"] {
         width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--line);
         background: var(--paper); color: var(--ink); font-size: 1.02rem; font-weight: 600;
       }
-      .field input[type="text"]:focus, .field input[type="url"]:focus { border-color: var(--teal); outline: none; box-shadow: 0 0 0 3px var(--teal-tint); }
+      .field input[type="text"]:focus, .field input[type="url"]:focus, .field input[type="password"]:focus { border-color: var(--teal); outline: none; box-shadow: 0 0 0 3px var(--teal-tint); }
+
+      /* ---------- Kunci PIN Data Guru ---------- */
+      .guru-hidden { display: none !important; }
+      .pin-card { max-width: 480px; margin: 0 auto; }
       .script-box {
         width: 100%; min-height: 250px; resize: vertical; margin-top: 10px;
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82rem; line-height: 1.5;
@@ -422,7 +426,7 @@
           <div class="error-box gate-err" id="loginErr">Nama dan kelas wajib diisi dulu ya, supaya hasil belajarmu tercatat dengan benar.</div>
           <button type="submit" class="btn" style="justify-content:center; padding:14px 22px">Mulai Belajar</button>
         </form>
-        <p class="gate-note">Untuk guru: masuk dengan nama sendiri, lalu buka menu <strong>Data Guru</strong> untuk melihat siapa saja yang sudah masuk beserta perkembangan kuis mereka — pada sesi ini, atau dari Google Sheet Bapak/Ibu bila sudah dihubungkan lewat menu tersebut.</p>
+        <p class="gate-note">Untuk guru: masuk dengan nama sendiri, lalu buka menu <strong>Data Guru</strong> dan masukkan PIN guru untuk melihat siapa saja yang sudah masuk beserta perkembangan kuis mereka — pada sesi ini, atau dari Google Sheet bila ditarik lewat menu tersebut. Data login dan kuis siswa otomatis terkirim ke Google Sheet dari perangkat mana pun.</p>
       </div>
     </div>
 
@@ -807,7 +811,19 @@
           <h2>Data Guru: Pantau Perkembangan Siswa</h2>
           <p>Siapa saja yang sudah masuk, menu apa yang mereka pelajari, dan bagaimana perkembangan skor kuisnya — tercatat otomatis selama aplikasi ini terbuka.</p>
         </div>
-        <div class="stack">
+        <div class="card pin-card" id="guruPinCard">
+          <h3>Menu Khusus Guru</h3>
+          <p style="margin-top:0">Menu ini berisi data seluruh siswa, jadi terkunci dengan PIN. Masukkan PIN guru untuk membukanya. (Pengiriman data login dan kuis dari perangkat siswa tetap berjalan otomatis tanpa PIN.)</p>
+          <form id="pinForm" novalidate>
+            <div class="field">
+              <label for="pinInput">PIN Guru</label>
+              <input type="password" id="pinInput" placeholder="Masukkan PIN guru" autocomplete="off" maxlength="32" />
+            </div>
+            <div class="error-box gate-err" id="pinErr" style="margin-top:12px">PIN salah. Silakan periksa lagi dan coba kembali.</div>
+            <button type="submit" class="btn" style="margin-top:14px">Buka Data Guru</button>
+          </form>
+        </div>
+        <div class="stack guru-hidden" id="guruContent">
           <div class="stat-grid">
             <div class="card stat-card">
               <div class="stat-num" id="statSiswa">0</div>
@@ -825,7 +841,7 @@
 
           <div class="card">
             <h3>Database Google Sheets</h3>
-            <p style="margin-top:0">Hubungkan aplikasi ini ke Google Sheet milik Bapak/Ibu sebagai database. Setiap siswa yang masuk dan setiap hasil kuis akan tercatat otomatis sebagai baris baru di Sheet (tab <strong>Login</strong> dan <strong>Kuis</strong>), dan data yang sudah ada di Sheet bisa ditarik kembali ke dasbor ini. Pemasangannya sekali saja, sekitar 5 menit:</p>
+            <p style="margin-top:0">Aplikasi ini <strong>sudah terhubung otomatis</strong> ke Google Sheet milik Bapak/Ibu sebagai database pusat: siswa dari perangkat mana pun yang membuka aplikasi ini akan tercatat otomatis sebagai baris baru di Sheet (tab <strong>Login</strong> dan <strong>Kuis</strong>), tanpa perlu menempel URL lagi. Data yang sudah ada di Sheet juga bisa ditarik kembali ke dasbor ini. Kolom URL di bawah sudah terisi URL yang tertanam — ganti hanya bila Bapak/Ibu berpindah ke Sheet lain. Panduan pemasangan Sheet baru, sekali saja sekitar 5 menit:</p>
             <details class="sheet-steps">
               <summary>Langkah pemasangan &amp; kode Apps Script
                 <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -835,7 +851,7 @@
                 <li>Di Sheet itu, klik menu <strong>Ekstensi → Apps Script</strong>.</li>
                 <li>Hapus isi editor yang ada, lalu tempel seluruh kode di bawah ini dan simpan (Ctrl+S).</li>
                 <li>Klik <strong>Deploy → Deployment baru</strong>, pilih jenis <strong>Aplikasi web</strong>. Atur "Jalankan sebagai: <em>Saya</em>" dan "Yang memiliki akses: <em>Siapa saja</em>", lalu klik Deploy dan izinkan aksesnya.</li>
-                <li>Salin <strong>URL Aplikasi web</strong> yang muncul (berakhiran <span class="mono">/exec</span>) dan tempel pada kolom di bawah, lalu klik Hubungkan.</li>
+                <li>Salin <strong>URL Aplikasi web</strong> yang muncul (berakhiran <span class="mono">/exec</span>) dan tempel pada kolom di bawah menggantikan URL tertanam, lalu klik Hubungkan.</li>
               </ol>
               <textarea class="script-box" id="appsScriptCode" readonly spellcheck="false">// Kode Apps Script untuk Google Sheet — tempel di Ekstensi → Apps Script,
 // lalu Deploy sebagai Aplikasi Web dengan akses "Siapa saja".
@@ -898,10 +914,10 @@ function doGet() {
               <button class="btn ghost" id="btnSheetLoad" type="button" disabled>Muat Data dari Sheet</button>
               <button class="btn ghost" id="btnSheetSummary" type="button" disabled>Kirim Ringkasan Sesi ke Sheet</button>
             </div>
-            <p class="sheet-status" id="sheetStatus">Belum terhubung — data saat ini hanya tampil di halaman ini selama aplikasi terbuka.</p>
+            <p class="sheet-status" id="sheetStatus">Terhubung otomatis ke Google Sheet guru — login siswa dan hasil kuis akan otomatis terkirim ke Sheet dari perangkat mana pun.</p>
             <div class="note" style="margin-top:14px">
-              <strong>Jaga URL Aplikasi Web Anda</strong>
-              Siapa pun yang memiliki URL tersebut dapat mengirim data ke Sheet Anda, jadi jangan dibagikan ke sembarang orang. Jika kode Apps Script diubah, jangan lupa Deploy ulang sebagai versi baru agar perubahan berlaku.
+              <strong>Tentang URL Aplikasi Web</strong>
+              URL yang tertanam di aplikasi ini memang dipakai semua perangkat siswa untuk mengirim data ke Sheet Anda, dan Sheet-nya sendiri tetap hanya bisa dibuka lewat akun Google Bapak/Ibu. Menu Data Guru di aplikasi ini juga terkunci PIN. Jika kode Apps Script diubah, jangan lupa Deploy ulang sebagai versi baru agar perubahan berlaku.
             </div>
           </div>
 
@@ -913,7 +929,7 @@ function doGet() {
             </div>
             <div class="note" style="margin-top:16px">
               <strong>Simpan laporan sebelum menutup aplikasi</strong>
-              Data pada halaman ini tersimpan selama aplikasi terbuka di perangkat ini. Unduh laporannya sebagai CSV agar tersimpan permanen, atau hubungkan Google Sheets pada kartu di atas agar setiap login dan hasil kuis terkirim otomatis ke Sheet milik Bapak/Ibu.
+              Data pada halaman ini tersimpan selama aplikasi terbuka di perangkat ini. Unduh laporannya sebagai CSV agar tersimpan permanen. Selain tampil di sini, setiap login dan hasil kuis juga otomatis terkirim ke Google Sheet guru yang sudah tertanam di aplikasi, jadi data dari semua perangkat siswa terkumpul di satu tempat.
             </div>
           </div>
 
@@ -947,7 +963,12 @@ function doGet() {
           $$(".panel").forEach((p) => p.classList.remove("active"));
           $("#panel-" + btn.dataset.tab).classList.add("active");
           trackVisit(btn.dataset.tab);
-          if (btn.dataset.tab === "guru") renderGuru();
+          if (btn.dataset.tab === "guru") {
+            if (guruUnlocked) renderGuru();
+            else setTimeout(() => { const inp = $("#pinInput"); if (inp) inp.focus(); }, 60);
+          } else {
+            lockGuru();
+          }
           window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
         });
       });
@@ -1517,7 +1538,13 @@ function doGet() {
       }
 
       /* ---------- Integrasi Google Sheets (Apps Script Web App milik guru) ---------- */
-      let sheetEndpoint = "";
+      // URL Aplikasi Web Apps Script milik guru, tertanam permanen di aplikasi:
+      // setiap perangkat yang membuka aplikasi ini otomatis terhubung ke Google
+      // Sheet yang sama tanpa perlu menempel URL. Tetap bisa diganti lewat
+      // kolom pengaturan pada kartu Database Google Sheets di menu Data Guru.
+      // Kode Apps Script guru tidak memakai kunci, jadi data dikirim apa adanya.
+      const DEFAULT_SHEET_URL = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
+      let sheetEndpoint = DEFAULT_SHEET_URL;
       function setSheetStatus(msg, ok) {
         const el = $("#sheetStatus");
         if (!el) return;
@@ -1553,15 +1580,23 @@ function doGet() {
 
       $("#btnSheetConnect").addEventListener("click", () => {
         const url = $("#sheetUrl").value.trim();
+        if (!url) {
+          sheetEndpoint = DEFAULT_SHEET_URL;
+          $("#sheetUrl").value = DEFAULT_SHEET_URL;
+          $("#btnSheetLoad").disabled = false;
+          $("#btnSheetSummary").disabled = false;
+          setSheetStatus("Kolom URL dikosongkan — aplikasi kembali memakai URL Google Sheet yang tertanam. Login siswa dan hasil kuis otomatis terkirim ke Sheet tersebut dari perangkat mana pun.", true);
+          return;
+        }
         if (!/^https:\/\//i.test(url)) {
-          setSheetStatus("Tempel dulu URL Aplikasi Web Apps Script yang valid (diawali https:// dan biasanya berakhiran /exec).");
+          setSheetStatus("URL tidak valid (harus diawali https:// dan biasanya berakhiran /exec) — URL sebelumnya tetap dipakai. Periksa lagi URL-nya lalu klik Hubungkan.");
           $("#sheetUrl").focus();
           return;
         }
         sheetEndpoint = url;
         $("#btnSheetLoad").disabled = false;
         $("#btnSheetSummary").disabled = false;
-        setSheetStatus("Terhubung. Login siswa dan hasil kuis mulai sekarang akan otomatis terkirim ke Sheet Anda — periksa tab Login dan Kuis di Sheet untuk memastikannya masuk. Untuk menarik data lama dari Sheet ke dasbor ini, klik \"Muat Data dari Sheet\".", true);
+        setSheetStatus("Terhubung ke URL baru. Login siswa dan hasil kuis mulai sekarang akan otomatis terkirim ke Sheet pada URL tersebut — periksa tab Login dan Kuis di Sheet untuk memastikannya masuk. Untuk menarik data lama dari Sheet ke dasbor ini, klik \"Muat Data dari Sheet\".", true);
       });
 
       $("#btnSheetSummary").addEventListener("click", () => {
@@ -1649,6 +1684,44 @@ function doGet() {
           .catch(() => {
             setSheetStatus("Gagal memuat data dari Sheet. Pastikan URL-nya benar dan deployment Apps Script diatur untuk akses \"Siapa saja\", lalu coba lagi.");
           });
+      });
+
+      // Koneksi otomatis saat aplikasi dibuka: URL tertanam langsung aktif,
+      // kolom pengaturan terisi URL tersebut, dan tombol Sheet langsung bisa dipakai.
+      (function initSheet() {
+        $("#sheetUrl").value = sheetEndpoint;
+        $("#btnSheetLoad").disabled = false;
+        $("#btnSheetSummary").disabled = false;
+        setSheetStatus("Terhubung otomatis ke Google Sheet guru. Setiap siswa yang masuk dan setiap hasil kuis akan otomatis tercatat di Sheet (tab Login dan Kuis) dari perangkat mana pun yang membuka aplikasi ini. Untuk menarik data dari Sheet ke dasbor ini, klik \"Muat Data dari Sheet\".", true);
+      })();
+
+      /* ---------- Kunci PIN menu Data Guru ---------- */
+      const GURU_PIN = "d4pm4t";
+      let guruUnlocked = false;
+      function lockGuru() {
+        guruUnlocked = false;
+        const content = $("#guruContent");
+        const card = $("#guruPinCard");
+        if (content) content.classList.add("guru-hidden");
+        if (card) card.classList.remove("guru-hidden");
+        const inp = $("#pinInput");
+        if (inp) inp.value = "";
+        const err = $("#pinErr");
+        if (err) err.classList.remove("show");
+      }
+      $("#pinForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        if ($("#pinInput").value === GURU_PIN) {
+          guruUnlocked = true;
+          $("#pinErr").classList.remove("show");
+          $("#guruPinCard").classList.add("guru-hidden");
+          $("#guruContent").classList.remove("guru-hidden");
+          renderGuru();
+        } else {
+          $("#pinErr").classList.add("show");
+          $("#pinInput").select();
+          $("#pinInput").focus();
+        }
       });
 
       $("#loginForm").addEventListener("submit", (e) => {
