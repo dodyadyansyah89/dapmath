@@ -1,0 +1,1392 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Persamaan Kuadrat — DapMath Kelas 9</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0@400;0@600;0@700;0@800;1@400&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg1:#fff7ed; --bg2:#fef3c7; --bg3:#e0f2fe;
+        --card:#ffffff; --card2:#fffbeb;
+        --ink:#1e293b; --muted:#64748b; --line:#e2e8f0;
+        --brand:#ea580c; --brand2:#f97316;
+        --teal:#0d9488; --teal-bg:#ccfbf1;
+        --sky:#0284c7; --sky-bg:#e0f2fe;
+        --amber:#d97706; --amber-bg:#fef3c7;
+        --pink:#db2777; --pink-bg:#fce7f3;
+        --green:#16a34a; --green-bg:#dcfce7;
+        --red:#dc2626; --red-bg:#fee2e2;
+        --violet:#7c3aed; --violet-bg:#ede9fe;
+        --shadow:0 10px 30px rgba(30,41,59,.10);
+        --radius:20px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg1:#0b1220; --bg2:#111c33; --bg3:#0e2436;
+          --card:#16213a; --card2:#1a2745;
+          --ink:#f1f5f9; --muted:#94a3b8; --line:#2b3b5c;
+          --teal-bg:#134e4a; --sky-bg:#0c3a57; --amber-bg:#57400c;
+          --pink-bg:#571b38; --green-bg:#14532d; --red-bg:#5b1a1a; --violet-bg:#33235e;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0; color:var(--ink);
+        font-family:"Nunito",system-ui,sans-serif; font-size:17px; line-height:1.55;
+        background:linear-gradient(155deg,var(--bg1),var(--bg2) 45%,var(--bg3));
+        background-attachment:fixed; min-height:100vh;
+      }
+      h1,h2,h3,.display{font-family:"Baloo 2","Nunito",sans-serif; line-height:1.15; margin:0}
+      button,input,select{font:inherit}
+      button{cursor:pointer}
+      .wrap{max-width:1060px; margin:0 auto; padding:0 16px 40px}
+
+      /* ---------- Top bar ---------- */
+      .topbar{
+        position:sticky; top:0; z-index:40;
+        background:color-mix(in srgb, var(--card) 88%, transparent);
+        backdrop-filter:blur(10px); border-bottom:2px solid var(--line);
+      }
+      .topbar-in{max-width:1060px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+      .logo-badge{
+        width:44px; height:44px; border-radius:14px; flex:none;
+        background:linear-gradient(135deg,var(--brand2),var(--amber));
+        display:grid; place-items:center; color:#fff; font-family:"Baloo 2"; font-weight:800; font-size:20px;
+        box-shadow:0 6px 14px rgba(234,88,12,.35);
+      }
+      .topbar h1{font-size:clamp(19px,3.4vw,25px); font-weight:800}
+      .topbar .sub{font-size:13px; color:var(--muted); font-weight:700}
+      .student-chip{
+        margin-left:auto; display:flex; align-items:center; gap:10px;
+        background:var(--card2); border:2px solid var(--line); border-radius:999px; padding:5px 6px 5px 5px;
+      }
+      .avatar{
+        width:38px; height:38px; border-radius:50%; flex:none; display:grid; place-items:center;
+        background:linear-gradient(135deg,var(--teal),var(--sky)); color:#fff; font-weight:800; font-family:"Baloo 2";
+      }
+      .student-chip .who{line-height:1.15}
+      .student-chip .who b{display:block; font-size:15px}
+      .student-chip .who span{font-size:12.5px; color:var(--muted); font-weight:700}
+      .btn{
+        border:none; border-radius:14px; padding:12px 20px; min-height:52px;
+        font-weight:800; font-size:16px; display:inline-flex; align-items:center; gap:8px; justify-content:center;
+        transition:transform .15s ease, box-shadow .15s ease, filter .15s;
+      }
+      .btn:active{transform:scale(.97)}
+      .btn-primary{background:linear-gradient(135deg,var(--brand2),var(--brand)); color:#fff; box-shadow:0 8px 18px rgba(234,88,12,.35)}
+      .btn-primary:hover{filter:brightness(1.06)}
+      .btn-teal{background:var(--teal); color:#fff}
+      .btn-sky{background:var(--sky); color:#fff}
+      .btn-ghost{background:var(--card); color:var(--ink); border:2px solid var(--line)}
+      .btn-small{min-height:44px; padding:8px 14px; font-size:14.5px; border-radius:12px}
+      .btn:disabled{opacity:.5; cursor:not-allowed}
+
+      /* ---------- Nav ---------- */
+      nav.menu{display:flex; flex-wrap:wrap; gap:9px; padding:18px 0 6px}
+      nav.menu button{
+        border:2px solid var(--line); background:var(--card); color:var(--ink);
+        border-radius:999px; padding:11px 18px; min-height:50px; font-weight:800; font-size:15.5px;
+        display:inline-flex; align-items:center; gap:8px; transition:all .18s ease;
+      }
+      nav.menu button .dot{width:11px; height:11px; border-radius:50%; flex:none}
+      nav.menu button:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
+      nav.menu button.active{color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--brand2),var(--brand)); box-shadow:0 8px 18px rgba(234,88,12,.35)}
+      nav.menu button.active .dot{background:#fff !important}
+
+      /* ---------- Sections & cards ---------- */
+      section.page{display:none}
+      section.page.show{display:block; animation:pageIn .38s ease both}
+      @keyframes pageIn{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+      .card{
+        background:var(--card); border:2px solid var(--line); border-radius:var(--radius);
+        padding:22px; margin:16px 0; box-shadow:var(--shadow);
+      }
+      .card h2{font-size:clamp(21px,3.6vw,28px); font-weight:800; margin-bottom:6px}
+      .card h3{font-size:19px; font-weight:800; margin:14px 0 6px}
+      .lead{color:var(--muted); font-weight:600; margin:0 0 8px}
+      .hue{height:8px; border-radius:99px; margin:-22px -22px 16px; }
+      .hue-orange{background:linear-gradient(90deg,var(--brand2),var(--amber))}
+      .hue-teal{background:linear-gradient(90deg,var(--teal),#2dd4bf)}
+      .hue-sky{background:linear-gradient(90deg,var(--sky),#38bdf8)}
+      .hue-pink{background:linear-gradient(90deg,var(--pink),#fb7185)}
+      .hue-violet{background:linear-gradient(90deg,var(--violet),#a78bfa)}
+      .hue-green{background:linear-gradient(90deg,var(--green),#4ade80)}
+      .formula-big{
+        font-family:"Baloo 2"; font-weight:800; text-align:center;
+        font-size:clamp(26px,5.5vw,40px); padding:20px 10px; border-radius:16px;
+        background:var(--amber-bg); border:2px dashed var(--amber); margin:12px 0;
+      }
+      .math{font-weight:800; white-space:nowrap}
+      .note{border-radius:14px; padding:13px 16px; font-weight:600; margin:12px 0}
+      .note-teal{background:var(--teal-bg)} .note-sky{background:var(--sky-bg)}
+      .note-amber{background:var(--amber-bg)} .note-pink{background:var(--pink-bg)}
+      .note-green{background:var(--green-bg)} .note-red{background:var(--red-bg)}
+      .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+      .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+      @media (max-width:760px){ .grid2,.grid3{grid-template-columns:1fr} }
+
+      /* sliders & inputs */
+      .ctl{margin:14px 0}
+      .ctl label{display:flex; justify-content:space-between; font-weight:800; margin-bottom:4px}
+      .ctl label output{
+        background:var(--card2); border:2px solid var(--line); border-radius:10px; padding:1px 12px; min-width:58px; text-align:center;
+      }
+      input[type=range]{width:100%; height:14px; accent-color:var(--brand); cursor:pointer}
+      .field label{display:block; font-weight:800; margin-bottom:6px}
+      .field input,.field select{
+        width:100%; min-height:54px; padding:12px 14px; border-radius:14px;
+        border:2px solid var(--line); background:var(--card); color:var(--ink); font-weight:700; font-size:17px;
+      }
+      .field input:focus,.field select:focus{outline:3px solid var(--amber-bg); border-color:var(--amber)}
+      .numrow{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+      @media (max-width:560px){ .numrow{grid-template-columns:1fr} }
+      canvas.plot{width:100%; height:auto; display:block; background:var(--card2); border:2px solid var(--line); border-radius:16px}
+      .eq-live{
+        text-align:center; font-family:"Baloo 2"; font-weight:800; font-size:clamp(21px,4.4vw,30px);
+        padding:12px; border-radius:14px; background:var(--sky-bg); margin:12px 0;
+      }
+      .stat-chips{display:flex; flex-wrap:wrap; gap:9px; margin-top:10px}
+      .chip{border-radius:999px; padding:8px 15px; font-weight:800; font-size:15px; border:2px solid var(--line); background:var(--card)}
+      .chip b{font-family:"Baloo 2"}
+
+      /* steps */
+      .steps{list-style:none; margin:14px 0; padding:0; counter-reset:st}
+      .steps li{
+        position:relative; padding:14px 16px 14px 58px; margin:10px 0; border-radius:14px;
+        background:var(--card2); border:2px solid var(--line); font-weight:600;
+        opacity:0; transform:translateX(-12px); transition:all .35s ease;
+      }
+      .steps li.on{opacity:1; transform:none}
+      .steps li::before{
+        counter-increment:st; content:counter(st);
+        position:absolute; left:13px; top:50%; transform:translateY(-50%);
+        width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
+        background:var(--brand); color:#fff; font-family:"Baloo 2"; font-weight:800;
+      }
+      .steps li .big{font-family:"Baloo 2"; font-weight:800; font-size:19px; display:block; margin-top:2px}
+
+      /* factor game */
+      .game-eq{text-align:center; font-family:"Baloo 2"; font-weight:800; font-size:clamp(24px,5vw,34px); padding:16px; background:var(--pink-bg); border-radius:16px; border:2px dashed var(--pink)}
+      .feedback{border-radius:14px; padding:13px 16px; font-weight:800; margin-top:12px; display:none}
+      .feedback.show{display:block; animation:pop .3s ease}
+      .feedback.ok{background:var(--green-bg); color:var(--green)}
+      .feedback.bad{background:var(--red-bg); color:var(--red)}
+      @keyframes pop{0%{transform:scale(.92)} 60%{transform:scale(1.03)} 100%{transform:scale(1)}}
+
+      /* quiz */
+      .quiz-hud{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:6px}
+      .hud-box{border:2px solid var(--line); background:var(--card2); border-radius:14px; padding:8px 15px; font-weight:800; display:flex; align-items:center; gap:8px}
+      .flame{width:22px; height:22px; flex:none}
+      .flame.hot{animation:wiggle .5s ease infinite alternate}
+      @keyframes wiggle{from{transform:scale(1) rotate(-4deg)} to{transform:scale(1.18) rotate(4deg)}}
+      .progress{height:16px; border-radius:99px; background:var(--line); overflow:hidden; margin:10px 0 4px}
+      .progress > div{height:100%; width:0%; border-radius:99px; background:linear-gradient(90deg,var(--amber),var(--brand2),var(--pink)); transition:width .45s ease}
+      .q-text{font-family:"Baloo 2"; font-weight:700; font-size:clamp(19px,3.6vw,23px); margin:10px 0 14px}
+      .opt{
+        display:block; width:100%; text-align:left; margin:9px 0; padding:15px 17px; min-height:58px;
+        border-radius:15px; border:2.5px solid var(--line); background:var(--card); font-weight:700; font-size:17px;
+        transition:all .15s ease;
+      }
+      .opt:hover:not(:disabled){border-color:var(--amber); transform:translateX(4px)}
+      .opt.correct{background:var(--green-bg); border-color:var(--green); color:var(--green)}
+      .opt.wrong{background:var(--red-bg); border-color:var(--red); color:var(--red)}
+      .opt:disabled{cursor:default; opacity:.92}
+      .explain{display:none; border-radius:14px; padding:14px 16px; background:var(--sky-bg); font-weight:600; margin-top:12px}
+      .explain.show{display:block; animation:pageIn .3s ease}
+      .badge-big{
+        width:110px; height:110px; margin:8px auto; border-radius:50%; display:grid; place-items:center;
+        background:linear-gradient(135deg,var(--amber),var(--brand2)); box-shadow:0 14px 28px rgba(217,119,6,.4);
+        animation:pop .5s ease;
+      }
+      .score-big{font-family:"Baloo 2"; font-weight:800; font-size:clamp(44px,9vw,64px); text-align:center}
+      .center{text-align:center}
+      #confetti{position:fixed; inset:0; pointer-events:none; z-index:90}
+
+      /* tables */
+      .tbl-wrap{overflow-x:auto; border:2px solid var(--line); border-radius:14px; margin:10px 0}
+      table{border-collapse:collapse; width:100%; min-width:520px; background:var(--card)}
+      th,td{padding:10px 13px; text-align:left; border-bottom:1px solid var(--line); font-size:15px}
+      th{background:var(--card2); font-family:"Baloo 2"}
+      .empty-note{color:var(--muted); font-weight:600; padding:8px 0}
+
+      /* login gate */
+      #loginGate{
+        position:fixed; inset:0; z-index:100; overflow:auto;
+        background:linear-gradient(150deg,#fff7ed,#fef3c7 45%,#e0f2fe);
+        display:flex; align-items:center; justify-content:center; padding:20px 14px;
+      }
+      @media (prefers-color-scheme: dark){ #loginGate{background:linear-gradient(150deg,#0b1220,#16213a 50%,#0e2436)} }
+      .login-card{
+        background:var(--card); border-radius:26px; border:2px solid var(--line); box-shadow:var(--shadow);
+        max-width:480px; width:100%; padding:30px 26px; position:relative; animation:pageIn .45s ease both;
+      }
+      .login-card h2{font-size:29px; font-weight:800; text-align:center}
+      .login-card .tagline{text-align:center; color:var(--muted); font-weight:700; margin:4px 0 18px}
+      .shape{position:absolute; border-radius:50%; opacity:.5; animation:floaty 5s ease-in-out infinite alternate}
+      @keyframes floaty{from{transform:translateY(0) rotate(0)} to{transform:translateY(-16px) rotate(14deg)}}
+      .parabola-deco{display:block; margin:0 auto 6px}
+
+      /* PIN modal */
+      #pinModal{
+        position:fixed; inset:0; z-index:110; display:none; align-items:center; justify-content:center;
+        background:rgba(15,23,42,.55); padding:16px;
+      }
+      #pinModal.open{display:flex}
+      .pin-card{background:var(--card); border-radius:22px; padding:26px; max-width:380px; width:100%; box-shadow:var(--shadow)}
+      .pin-card.shake{animation:shake .4s ease}
+      @keyframes shake{0%,100%{transform:none} 25%{transform:translateX(-9px)} 75%{transform:translateX(9px)}}
+
+      footer{
+        text-align:center; padding:26px 16px 34px; color:var(--muted); font-weight:700; font-size:15px;
+      }
+      footer b{color:var(--ink)}
+      .hidden{display:none !important}
+      @media (prefers-reduced-motion: reduce){
+        *,*::before,*::after{animation-duration:.001s !important; transition-duration:.001s !important}
+        html{scroll-behavior:auto}
+      }
+    </style>
+  </head>
+  <body>
+
+  <!-- ================= LOGIN GATE ================= -->
+  <div id="loginGate">
+    <div class="login-card">
+      <span class="shape" style="width:54px;height:54px;background:#fdba74;top:-22px;left:-16px"></span>
+      <span class="shape" style="width:36px;height:36px;background:#5eead4;bottom:26px;right:-12px;animation-delay:1s"></span>
+      <span class="shape" style="width:26px;height:26px;background:#f9a8d4;top:34px;right:22px;animation-delay:.5s"></span>
+      <svg class="parabola-deco" width="120" height="72" viewBox="0 0 120 72" aria-hidden="true">
+        <path d="M8 8 Q60 104 112 8" fill="none" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="30" cy="33" r="5" fill="#0d9488"/><circle cx="90" cy="33" r="5" fill="#0d9488"/>
+        <circle cx="60" cy="57" r="5" fill="#db2777"/>
+      </svg>
+      <h2>Persamaan Kuadrat</h2>
+      <p class="tagline">Matematika Kelas 9 · DapMath<br />Halo! Siapa nama kamu?</p>
+      <form id="loginForm">
+        <div class="field" style="margin-bottom:14px">
+          <label for="inNama">Nama Lengkap</label>
+          <input id="inNama" type="text" placeholder="Contoh: Siti Rahma" autocomplete="name" required />
+        </div>
+        <div class="field" style="margin-bottom:20px">
+          <label for="inKelas">Kelas</label>
+          <select id="inKelas" required>
+            <option value="">— Pilih kelas —</option>
+            <option>9A</option><option>9B</option><option>9C</option><option>9D</option>
+            <option>9E</option><option>9F</option><option>9G</option><option>9H</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit" style="width:100%; font-size:18px">Mulai Belajar</button>
+        <p id="loginErr" class="hidden" style="color:var(--red); font-weight:800; text-align:center; margin:12px 0 0">Isi nama dan pilih kelas dulu ya!</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= PIN MODAL ================= -->
+  <div id="pinModal" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+    <div class="pin-card" id="pinCard">
+      <h3 id="pinTitle" style="font-size:21px; margin-bottom:4px">Menu Data Guru</h3>
+      <p class="lead">Masukkan PIN guru untuk membuka menu ini.</p>
+      <div class="field" style="margin:12px 0">
+        <label for="inPin">PIN</label>
+        <input id="inPin" type="password" inputmode="text" placeholder="••••••" autocomplete="off" />
+      </div>
+      <p id="pinErr" class="hidden" style="color:var(--red); font-weight:800; margin:0 0 10px">PIN salah, coba lagi.</p>
+      <div style="display:flex; gap:10px">
+        <button class="btn btn-primary" id="btnPinOk" style="flex:1">Buka</button>
+        <button class="btn btn-ghost" id="btnPinCancel" style="flex:1">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confetti" class="hidden"></canvas>
+
+  <!-- ================= TOP BAR ================= -->
+  <header class="topbar">
+    <div class="topbar-in">
+      <div class="logo-badge" aria-hidden="true">x²</div>
+      <div>
+        <h1>Persamaan Kuadrat</h1>
+        <div class="sub">DapMath · Kelas 9</div>
+      </div>
+      <div class="student-chip">
+        <div class="avatar" id="avatarInit">?</div>
+        <div class="who"><b id="chipNama">Belum login</b><span id="chipKelas">—</span></div>
+        <button class="btn btn-ghost btn-small" id="btnGanti">Ganti Siswa</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <nav class="menu" id="mainNav" aria-label="Menu utama">
+      <button data-page="materi" class="active"><span class="dot" style="background:#f97316"></span>Materi</button>
+      <button data-page="lab"><span class="dot" style="background:#0d9488"></span>Lab Parabola</button>
+      <button data-page="faktor"><span class="dot" style="background:#db2777"></span>Pemfaktoran</button>
+      <button data-page="sempurna"><span class="dot" style="background:#7c3aed"></span>Kuadrat Sempurna</button>
+      <button data-page="abc"><span class="dot" style="background:#0284c7"></span>Rumus ABC</button>
+      <button data-page="diskriminan"><span class="dot" style="background:#d97706"></span>Diskriminan</button>
+      <button data-page="kalkulator"><span class="dot" style="background:#16a34a"></span>Kalkulator</button>
+      <button data-page="kuis"><span class="dot" style="background:#ea580c"></span>Kuis Seru</button>
+      <button data-page="guru"><span class="dot" style="background:#475569"></span>Data Guru</button>
+    </nav>
+
+    <!-- ================= MATERI ================= -->
+    <section class="page show" id="page-materi">
+      <div class="card">
+        <div class="hue hue-orange"></div>
+        <h2>Bentuk Umum Persamaan Kuadrat</h2>
+        <p class="lead">Persamaan kuadrat adalah persamaan yang pangkat tertinggi variabelnya adalah <b>dua</b>. Bentuk umumnya:</p>
+        <div class="formula-big">ax² + bx + c = 0</div>
+        <div class="grid3">
+          <div class="note note-amber" style="margin:0"><b>a</b> = koefisien x²<br /><span style="color:var(--muted)">syarat: a ≠ 0</span></div>
+          <div class="note note-sky" style="margin:0"><b>b</b> = koefisien x</div>
+          <div class="note note-teal" style="margin:0"><b>c</b> = konstanta (suku bebas)</div>
+        </div>
+        <h3>Kenali Koefisiennya!</h3>
+        <p class="lead">Persamaan: <span class="math" id="coefEq">3x² − 5x + 2 = 0</span>. Tuliskan nilai a, b, dan c-nya:</p>
+        <div class="numrow">
+          <div class="field"><label for="coefA">a =</label><input id="coefA" type="number" inputmode="numeric" placeholder="?" /></div>
+          <div class="field"><label for="coefB">b =</label><input id="coefB" type="number" inputmode="numeric" placeholder="?" /></div>
+          <div class="field"><label for="coefC">c =</label><input id="coefC" type="number" inputmode="numeric" placeholder="?" /></div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+          <button class="btn btn-primary" id="btnCoef">Periksa Jawaban</button>
+          <button class="btn btn-ghost" id="btnCoefBaru">Soal Baru</button>
+        </div>
+        <div class="feedback" id="coefFb"></div>
+        <div class="note note-sky">
+          <b>Ingat tanda minusnya!</b> Pada 3x² − 5x + 2 = 0, nilai b adalah <b>−5</b> (bukan 5), karena tanda di depan suku ikut menjadi milik koefisiennya.
+        </div>
+        <h3>Tiga Cara Menyelesaikan Persamaan Kuadrat</h3>
+        <div class="grid3">
+          <div class="note note-pink" style="margin:0"><b>1. Pemfaktoran</b><br />Menguraikan menjadi dua faktor. Cepat kalau akar-akarnya bilangan bulat. Coba di menu <b>Pemfaktoran</b>!</div>
+          <div class="note note-sky" style="margin:0"><b>2. Kuadrat Sempurna</b><br />Melengkapkan bentuk (x + p)². Lihat langkahnya di menu <b>Kuadrat Sempurna</b>.</div>
+          <div class="note note-teal" style="margin:0"><b>3. Rumus ABC</b><br />Senjata pamungkas yang selalu berhasil untuk akar real. Pelajari di menu <b>Rumus ABC</b>.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LAB PARABOLA ================= -->
+    <section class="page" id="page-lab">
+      <div class="card">
+        <div class="hue hue-teal"></div>
+        <h2>Lab Parabola</h2>
+        <p class="lead">Geser slider <b>a</b>, <b>b</b>, dan <b>c</b> lalu perhatikan: grafik fungsi f(x) = ax² + bx + c berubah langsung! Titik hijau adalah <b>akar-akar</b> (titik potong dengan sumbu-x), titik merah muda adalah <b>titik puncak</b>.</p>
+        <canvas class="plot" id="labCanvas" width="940" height="560" aria-label="Grafik parabola interaktif"></canvas>
+        <div class="eq-live" id="labEq">f(x) = x² − 3x + 2</div>
+        <div class="ctl">
+          <label for="slA">a (membuka ke atas / bawah) <output id="outA">1</output></label>
+          <input type="range" id="slA" min="-5" max="5" step="0.5" value="1" />
+        </div>
+        <div class="ctl">
+          <label for="slB">b (menggeser puncak) <output id="outB">−3</output></label>
+          <input type="range" id="slB" min="-10" max="10" step="1" value="-3" />
+        </div>
+        <div class="ctl">
+          <label for="slC">c (titik potong sumbu-y) <output id="outC">2</output></label>
+          <input type="range" id="slC" min="-10" max="10" step="1" value="2" />
+        </div>
+        <div class="stat-chips" id="labStats"></div>
+        <div class="note note-teal" id="labNote"></div>
+      </div>
+    </section>
+
+    <!-- ================= PEMFAKTORAN ================= -->
+    <section class="page" id="page-faktor">
+      <div class="card">
+        <div class="hue hue-pink"></div>
+        <h2>Pemfaktoran: Tebak Dua Bilangan!</h2>
+        <p class="lead">Untuk memfaktorkan <span class="math">x² + px + q</span>, kita mencari dua bilangan yang <b>hasil kalinya = q</b> dan <b>jumlahnya = p</b>. Yuk bermain: tebak dua bilangan untuk soal di bawah ini!</p>
+        <div class="game-eq" id="gameEq">x² + 5x + 6 = 0</div>
+        <p class="center" style="font-weight:700; margin:12px 0 4px">Cari dua bilangan yang <b>dikalikan hasilnya <span id="gameQ">6</span></b> dan <b>dijumlahkan hasilnya <span id="gameP">5</span></b>.</p>
+        <div class="numrow" style="grid-template-columns:1fr 1fr">
+          <div class="field"><label for="gM">Bilangan pertama</label><input id="gM" type="number" inputmode="numeric" placeholder="?" /></div>
+          <div class="field"><label for="gN">Bilangan kedua</label><input id="gN" type="number" inputmode="numeric" placeholder="?" /></div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+          <button class="btn btn-primary" id="btnGameCheck">Periksa Tebakan</button>
+          <button class="btn btn-ghost" id="btnGameHint">Minta Petunjuk</button>
+          <button class="btn btn-teal" id="btnGameBaru">Soal Baru</button>
+        </div>
+        <div class="quiz-hud" style="margin-top:16px">
+          <div class="hud-box">Skor permainan: <b id="gameScore">0</b></div>
+          <div class="hud-box">Ronde: <b id="gameRound">1</b></div>
+          <div class="hud-box">Percobaan ronde ini: <b id="gameTry">0</b></div>
+        </div>
+        <div class="feedback" id="gameFb"></div>
+        <div id="gameSteps" class="hidden">
+          <h3>Langkah Pemfaktorannya</h3>
+          <ol class="steps" id="gameStepList"></ol>
+        </div>
+        <div class="note note-pink">
+          <b>Trik cepat:</b> mulai dari pasangan faktor dari q. Misalnya q = 6 → pasangan (1,6), (2,3), (−1,−6), (−2,−3). Cek pasangan mana yang jumlahnya sama dengan p!
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= KUADRAT SEMPURNA ================= -->
+    <section class="page" id="page-sempurna">
+      <div class="card">
+        <div class="hue hue-violet"></div>
+        <h2>Melengkapkan Kuadrat Sempurna</h2>
+        <p class="lead">Metode ini mengubah <span class="math">x² + bx</span> menjadi bentuk kuadrat sempurna <span class="math">(x + b/2)²</span> dengan menambahkan <span class="math">(b/2)²</span> di kedua ruas. Ikuti langkahnya satu per satu!</p>
+        <div class="numrow" style="grid-template-columns:1fr 1fr">
+          <div class="field"><label for="csB">Nilai b (koefisien x)</label><input id="csB" type="number" inputmode="numeric" value="6" /></div>
+          <div class="field"><label for="csC">Nilai c (konstanta)</label><input id="csC" type="number" inputmode="numeric" value="5" /></div>
+        </div>
+        <p class="lead" style="margin-top:10px">Persamaan yang akan diselesaikan: <span class="math" id="csEq">x² + 6x + 5 = 0</span> <span style="color:var(--muted)">(koefisien a = 1)</span></p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn btn-primary" id="btnCsStart">Mulai Langkah</button>
+          <button class="btn btn-teal" id="btnCsNext" disabled>Langkah Berikutnya</button>
+          <button class="btn btn-ghost" id="btnCsPreset">Contoh Lain</button>
+        </div>
+        <ol class="steps" id="csSteps"></ol>
+        <div class="note note-sky">
+          <b>Mengapa ditambah (b/2)²?</b> Karena (x + b/2)² = x² + bx + (b/2)². Menambah (b/2)² "melengkapkan" ruas kiri menjadi kuadrat sempurna — dan supaya persamaan tetap setara, ruas kanan juga harus ditambah nilai yang sama.
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= RUMUS ABC ================= -->
+    <section class="page" id="page-abc">
+      <div class="card">
+        <div class="hue hue-sky"></div>
+        <h2>Rumus ABC</h2>
+        <p class="lead">Rumus andalan untuk mencari akar-akar persamaan kuadrat ax² + bx + c = 0:</p>
+        <div class="formula-big" style="background:var(--sky-bg); border-color:var(--sky)">x = (−b ± √D) / 2a, &nbsp;D = b² − 4ac</div>
+        <div class="numrow">
+          <div class="field"><label for="abcA">a</label><input id="abcA" type="number" inputmode="decimal" value="1" /></div>
+          <div class="field"><label for="abcB">b</label><input id="abcB" type="number" inputmode="decimal" value="-3" /></div>
+          <div class="field"><label for="abcC">c</label><input id="abcC" type="number" inputmode="decimal" value="2" /></div>
+        </div>
+        <p class="lead" style="margin-top:10px">Persamaan: <span class="math" id="abcEq">x² − 3x + 2 = 0</span></p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn btn-primary" id="btnAbcPlay">Putar Animasi Langkah</button>
+          <button class="btn btn-teal" id="btnAbcNext">Langkah Berikutnya</button>
+        </div>
+        <ol class="steps" id="abcSteps"></ol>
+      </div>
+    </section>
+
+    <!-- ================= DISKRIMINAN ================= -->
+    <section class="page" id="page-diskriminan">
+      <div class="card">
+        <div class="hue hue-orange"></div>
+        <h2>Diskriminan &amp; Jenis-Jenis Akar</h2>
+        <p class="lead"><b>Diskriminan</b> adalah nilai <span class="math">D = b² − 4ac</span>. Tanpa menyelesaikan persamaan, D memberi tahu kita <b>jenis akar-akarnya</b> — dan bentuk parabolanya!</p>
+        <div class="grid3">
+          <div>
+            <canvas class="plot" id="disc1" width="300" height="220" aria-label="Parabola memotong sumbu x di dua titik"></canvas>
+            <div class="note note-green"><b>D &gt; 0</b> — dua akar real <b>berbeda</b>. Parabola memotong sumbu-x di <b>2 titik</b>.</div>
+          </div>
+          <div>
+            <canvas class="plot" id="disc2" width="300" height="220" aria-label="Parabola menyinggung sumbu x"></canvas>
+            <div class="note note-amber"><b>D = 0</b> — dua akar real <b>kembar</b> (sama). Puncak parabola tepat <b>menyinggung</b> sumbu-x.</div>
+          </div>
+          <div>
+            <canvas class="plot" id="disc3" width="300" height="220" aria-label="Parabola tidak memotong sumbu x"></canvas>
+            <div class="note note-red"><b>D &lt; 0</b> — <b>tidak punya</b> akar real. Parabola <b>melayang</b>, tidak menyentuh sumbu-x.</div>
+          </div>
+        </div>
+        <h3>Cek Jenis Akar Sendiri</h3>
+        <div class="numrow">
+          <div class="field"><label for="dA">a</label><input id="dA" type="number" inputmode="decimal" value="1" /></div>
+          <div class="field"><label for="dB">b</label><input id="dB" type="number" inputmode="decimal" value="2" /></div>
+          <div class="field"><label for="dC">c</label><input id="dC" type="number" inputmode="decimal" value="5" /></div>
+        </div>
+        <div style="margin-top:14px"><button class="btn btn-primary" id="btnDisc">Cek Diskriminan</button></div>
+        <div class="feedback" id="discFb"></div>
+        <canvas class="plot hidden" id="discCanvas" width="940" height="480" style="margin-top:14px" aria-label="Grafik parabola dari persamaan yang dicek"></canvas>
+      </div>
+    </section>
+
+    <!-- ================= KALKULATOR ================= -->
+    <section class="page" id="page-kalkulator">
+      <div class="card">
+        <div class="hue hue-green"></div>
+        <h2>Kalkulator Persamaan Kuadrat</h2>
+        <p class="lead">Masukkan nilai a, b, c — kalkulator menyelesaikan persamaanmu <b>lengkap dengan langkah-langkahnya</b>, seperti cara mengerjakan di buku tulis.</p>
+        <div class="numrow">
+          <div class="field"><label for="kA">a</label><input id="kA" type="number" inputmode="decimal" value="2" /></div>
+          <div class="field"><label for="kB">b</label><input id="kB" type="number" inputmode="decimal" value="-7" /></div>
+          <div class="field"><label for="kC">c</label><input id="kC" type="number" inputmode="decimal" value="3" /></div>
+        </div>
+        <p class="lead" style="margin-top:10px">Persamaan: <span class="math" id="kEq">2x² − 7x + 3 = 0</span></p>
+        <button class="btn btn-primary" id="btnCalc">Selesaikan!</button>
+        <ol class="steps" id="calcSteps"></ol>
+        <div id="calcResult"></div>
+      </div>
+    </section>
+
+    <!-- ================= KUIS ================= -->
+    <section class="page" id="page-kuis">
+      <div class="card">
+        <div class="hue hue-orange"></div>
+        <h2>Kuis Seru: Persamaan Kuadrat</h2>
+        <div id="quizStart">
+          <p class="lead">10 soal pilihan ganda. Jawab benar beruntun untuk menyalakan <b>api streak</b> dan kumpulkan lencana di akhir. Setiap soal langsung dibahas setelah kamu menjawab. Siap?</p>
+          <div class="grid3">
+            <div class="note note-amber" style="margin:0"><b>Skor 90–100</b><br />Lencana Master Kuadrat</div>
+            <div class="note note-sky" style="margin:0"><b>Skor 70–89</b><br />Lencana Ahli Parabola</div>
+            <div class="note note-teal" style="margin:0"><b>Skor 50–69</b><br />Lencana Pejuang Akar</div>
+          </div>
+          <div class="center" style="margin-top:18px"><button class="btn btn-primary" id="btnQuizStart" style="font-size:18px">Mulai Kuis</button></div>
+        </div>
+        <div id="quizPlay" class="hidden">
+          <div class="quiz-hud">
+            <div class="hud-box">Soal <b id="qNum">1</b>/10</div>
+            <div class="hud-box">
+              <svg class="flame" id="qFlame" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4-3 5-3 9a3.5 3.5 0 0 0 7 0c0-1-.5-2-1-3 2 1.5 4 4 4 7A7 7 0 0 1 5 15c0-5 6-8 7-13z" fill="#f97316"/></svg>
+              Streak <b id="qStreak">0</b>
+            </div>
+            <div class="hud-box">Benar: <b id="qRight">0</b></div>
+            <div class="hud-box" id="qMsg" style="flex:1; min-width:180px">Semangat!</div>
+          </div>
+          <div class="progress"><div id="qBar"></div></div>
+          <p class="q-text" id="qText"></p>
+          <div id="qOpts"></div>
+          <div class="explain" id="qExplain"></div>
+          <div style="margin-top:16px; display:flex; justify-content:flex-end">
+            <button class="btn btn-primary hidden" id="btnQNext">Soal Berikutnya</button>
+          </div>
+        </div>
+        <div id="quizDone" class="hidden center">
+          <div class="badge-big">
+            <svg width="58" height="58" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6" fill="#fff"/><path d="M12 5.5 13.2 8l2.7.4-2 1.9.5 2.7L12 11.7 9.6 13l.5-2.7-2-1.9L10.8 8z" fill="#d97706"/><path d="M8.5 13.5 7 21l5-2.6L17 21l-1.5-7.5" fill="#fff" opacity=".85"/></svg>
+          </div>
+          <h3 id="badgeName" style="font-size:24px">Master Kuadrat</h3>
+          <div class="score-big" id="finalScore">0</div>
+          <p class="lead" id="finalMsg"></p>
+          <div class="stat-chips" style="justify-content:center" id="finalStats"></div>
+          <div style="margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+            <button class="btn btn-primary" id="btnQuizRetry">Main Lagi</button>
+            <button class="btn btn-ghost" id="btnQuizReview">Kembali ke Materi</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= DATA GURU ================= -->
+    <section class="page" id="page-guru">
+      <div class="card">
+        <div class="hue hue-sky"></div>
+        <h2>Data Guru</h2>
+        <p class="lead">Data tersimpan terpusat di Google Sheet DapMath dan difilter untuk aplikasi <b>Persamaan Kuadrat</b>. Data sesi ini di perangkat ini juga ditampilkan sebagai cadangan.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn btn-sky" id="btnLoadSheet">Muat Data dari Sheet</button>
+          <button class="btn btn-teal" id="btnTestSend">Uji Kirim Data</button>
+          <button class="btn btn-primary" id="btnCsv">Unduh Laporan (CSV)</button>
+        </div>
+        <div class="feedback" id="guruStatus"></div>
+
+        <h3>Siswa yang Login</h3>
+        <div class="tbl-wrap"><table id="tblLogin">
+          <thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Sumber</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+        <p class="empty-note hidden" id="emptyLogin">Belum ada data login.</p>
+
+        <h3>Menu yang Dipelajari (ringkasan terakhir per siswa)</h3>
+        <div class="tbl-wrap"><table id="tblRingkasan">
+          <thead><tr><th>Nama</th><th>Kelas</th><th>Menu Dipelajari</th><th>Percobaan Kuis</th><th>Skor Terakhir</th><th>Skor Terbaik</th><th>Rata-rata</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+        <p class="empty-note hidden" id="emptyRingkasan">Belum ada ringkasan belajar.</p>
+
+        <h3>Riwayat &amp; Perkembangan Skor Kuis</h3>
+        <div class="tbl-wrap"><table id="tblKuis">
+          <thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Percobaan ke</th><th>Skor</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+        <p class="empty-note hidden" id="emptyKuis">Belum ada riwayat kuis.</p>
+
+        <h3>Pengaturan Database</h3>
+        <div class="field">
+          <label for="inSheetUrl">URL Web App Google Apps Script</label>
+          <input id="inSheetUrl" type="url" />
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px">
+          <button class="btn btn-ghost" id="btnSaveUrl">Pakai URL Ini</button>
+          <button class="btn btn-ghost" id="btnResetUrl">Kembalikan URL Bawaan</button>
+        </div>
+        <p class="lead" style="margin-top:10px">URL bawaan sudah tertanam permanen, jadi semua perangkat otomatis terhubung ke Sheet yang sama. Ganti hanya bila Bapak/Ibu guru membuat deployment baru.</p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    Dibangun oleh <b>Dody Adyansyah</b> · DapMath — Belajar Matematika Jadi Seru
+  </footer>
+
+  <script>
+  "use strict";
+  /* ================= KONFIGURASI ================= */
+  var APP_ID = "persamaan-kuadrat";
+  var DEFAULT_SHEET_URL = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
+  var GURU_PIN = "d4pm4t";
+  var sheetURL = DEFAULT_SHEET_URL;
+
+  var state = {
+    nama: "", kelas: "",
+    menus: {},               // menu -> jumlah kunjungan (sesi ini)
+    loginLog: [],            // sesi perangkat ini
+    quizLog: [],             // sesi perangkat ini
+    quizAttempts: 0,
+    sheetData: null          // {login:[], kuis:[], ringkasan:[]}
+  };
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(ch){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]; }); }
+  function fmt(n){
+    if (typeof n !== "number" || !isFinite(n)) return String(n);
+    var r = Math.round(n*1000)/1000;
+    return String(r).replace("-", "−").replace(".", ",");
+  }
+  function fmtPlain(n){ var r = Math.round(n*1000)/1000; return String(r); }
+  function sgn(n){ return n < 0 ? "−" : "+"; }
+  function termCoef(coef, sym, first){
+    // suku seperti 3x² / −5x / +2 untuk tampilan HTML
+    var a = Math.abs(coef);
+    var num = (a === 1 && sym) ? "" : fmt(a);
+    var s = first ? (coef < 0 ? "−" : "") : (coef < 0 ? " − " : " + ");
+    return s + num + sym;
+  }
+  function eqHTML(a, b, c, vari){
+    vari = vari || "x";
+    var s = "";
+    s += termCoef(a, vari + "²", true);
+    if (b !== 0) s += termCoef(b, vari, false);
+    if (c !== 0) s += (c < 0 ? " − " : " + ") + fmt(Math.abs(c));
+    if (b === 0 && c === 0) s += "";
+    return s + " = 0";
+  }
+  function fnHTML(a, b, c){
+    var s = termCoef(a, "x²", true);
+    if (b !== 0) s += termCoef(b, "x", false);
+    if (c !== 0) s += (c < 0 ? " − " : " + ") + fmt(Math.abs(c));
+    return "f(x) = " + s;
+  }
+  function nowISO(){ return new Date().toISOString(); }
+  function nowLabel(){ return new Date().toLocaleString("id-ID"); }
+
+  /* ================= KIRIM DATA KE SHEET ================= */
+  function postSheet(payload){
+    payload.app = APP_ID;
+    if (!payload.time) payload.time = nowISO();
+    var body = JSON.stringify(payload);
+    try {
+      fetch(sheetURL, { method: "POST", headers: { "Content-Type": "text/plain" }, body: body, keepalive: true })
+        .catch(function(){ beaconFallback(body); });
+    } catch(e){ beaconFallback(body); }
+  }
+  function beaconFallback(body){
+    try { if (navigator.sendBeacon) navigator.sendBeacon(sheetURL, new Blob([body], { type: "text/plain" })); } catch(e){}
+  }
+  function sendRingkasan(){
+    if (!state.nama) return;
+    var scores = state.quizLog.map(function(q){ return q.score; });
+    var last = scores.length ? scores[scores.length-1] : "";
+    var best = scores.length ? Math.max.apply(null, scores) : "";
+    var avg = scores.length ? Math.round(scores.reduce(function(x,y){return x+y;},0)/scores.length) : "";
+    postSheet({
+      type: "ringkasan", nama: state.nama, kelas: state.kelas,
+      menus: Object.keys(state.menus).join(", "),
+      attempts: state.quizAttempts, last: last, best: best, avg: avg
+    });
+  }
+
+  /* ================= LOGIN ================= */
+  $("loginForm").addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var nama = $("inNama").value.trim();
+    var kelas = $("inKelas").value;
+    if (!nama || !kelas){ $("loginErr").classList.remove("hidden"); return; }
+    $("loginErr").classList.add("hidden");
+    state.nama = nama; state.kelas = kelas;
+    $("chipNama").textContent = nama;
+    $("chipKelas").textContent = "Kelas " + kelas;
+    $("avatarInit").textContent = nama.charAt(0).toUpperCase();
+    $("loginGate").style.display = "none";
+    state.loginLog.push({ time: nowLabel(), nama: nama, kelas: kelas });
+    postSheet({ type: "login", nama: nama, kelas: kelas });
+    trackMenu("materi");
+    sendRingkasan();
+  });
+  $("btnGanti").addEventListener("click", function(){
+    sendRingkasan();
+    state.nama = ""; state.kelas = ""; state.menus = {}; state.quizAttempts = 0; state.quizLog = [];
+    $("chipNama").textContent = "Belum login";
+    $("chipKelas").textContent = "—";
+    $("avatarInit").textContent = "?";
+    $("inNama").value = "";
+    $("loginGate").style.display = "flex";
+    showPage("materi");
+  });
+
+  /* ================= NAVIGASI ================= */
+  var guruUnlocked = false;
+  var MENU_NAMES = {
+    materi: "Materi", lab: "Lab Parabola", faktor: "Pemfaktoran", sempurna: "Kuadrat Sempurna",
+    abc: "Rumus ABC", diskriminan: "Diskriminan", kalkulator: "Kalkulator", kuis: "Kuis", guru: "Data Guru"
+  };
+  function trackMenu(key){
+    if (!MENU_NAMES[key] || key === "guru") return;
+    state.menus[MENU_NAMES[key]] = (state.menus[MENU_NAMES[key]] || 0) + 1;
+  }
+  function showPage(key){
+    var pages = document.querySelectorAll("section.page");
+    for (var i = 0; i < pages.length; i++) pages[i].classList.remove("show");
+    $("page-" + key).classList.add("show");
+    var btns = document.querySelectorAll("#mainNav button");
+    for (var j = 0; j < btns.length; j++) btns[j].classList.toggle("active", btns[j].getAttribute("data-page") === key);
+    if (key !== "guru") guruUnlocked = false; // PIN diminta lagi setiap membuka Data Guru
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (key === "lab") drawLab();
+    if (key === "diskriminan") drawDiscMinis();
+  }
+  document.querySelectorAll("#mainNav button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var key = btn.getAttribute("data-page");
+      if (key === "guru" && !guruUnlocked){ openPin(key); return; }
+      trackMenu(key);
+      showPage(key);
+      if (key !== "guru") sendRingkasan();
+    });
+  });
+
+  /* ================= PIN GURU ================= */
+  var pendingPage = null;
+  function openPin(key){
+    pendingPage = key;
+    $("inPin").value = "";
+    $("pinErr").classList.add("hidden");
+    $("pinModal").classList.add("open");
+    setTimeout(function(){ $("inPin").focus(); }, 60);
+  }
+  function closePin(){ $("pinModal").classList.remove("open"); pendingPage = null; }
+  function tryPin(){
+    if ($("inPin").value === GURU_PIN){
+      guruUnlocked = true;
+      closePin();
+      showPage("guru");
+      renderGuru();
+    } else {
+      $("pinErr").classList.remove("hidden");
+      var card = $("pinCard");
+      card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+    }
+  }
+  $("btnPinOk").addEventListener("click", tryPin);
+  $("btnPinCancel").addEventListener("click", closePin);
+  $("inPin").addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); tryPin(); } });
+
+  /* ================= CANVAS PARABOLA ================= */
+  function setupCanvas(cv){
+    var dpr = window.devicePixelRatio || 1;
+    var w = cv.clientWidth || cv.width, h = Math.round(w * (cv.height / cv.width));
+    cv.width = w * dpr; cv.height = h * dpr;
+    cv.style.height = h + "px";
+    var ctx = cv.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx: ctx, w: w, h: h };
+  }
+  function drawParabola(cv, a, b, c, opts){
+    opts = opts || {};
+    var s = setupCanvas(cv), ctx = s.ctx, W = s.w, H = s.h;
+    var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var colGrid = dark ? "#2b3b5c" : "#e2e8f0";
+    var colAxis = dark ? "#94a3b8" : "#64748b";
+    var colCurve = opts.color || "#ea580c";
+    // rentang tampilan
+    var vx = a !== 0 ? -b / (2 * a) : 0;
+    var vy = a * vx * vx + b * vx + c;
+    var xR = Math.max(6, Math.abs(vx) + 5);
+    var yLo = Math.min(-2, vy - 2), yHi = Math.max(6, vy + 6);
+    // pastikan akar terlihat
+    if (a !== 0){
+      var D = b * b - 4 * a * c;
+      if (D >= 0){ var sq = Math.sqrt(D); xR = Math.max(xR, Math.abs((-b + sq) / (2 * a)) + 2, Math.abs((-b - sq) / (2 * a)) + 2); }
+    }
+    yHi = Math.max(yHi, Math.abs(c) + 3);
+    function X(x){ return (x + xR) / (2 * xR) * W; }
+    function Y(y){ return H - (y - yLo) / (yHi - yLo) * H; }
+    // grid
+    ctx.strokeStyle = colGrid; ctx.lineWidth = 1;
+    for (var gx = Math.ceil(-xR); gx <= xR; gx++){ ctx.beginPath(); ctx.moveTo(X(gx), 0); ctx.lineTo(X(gx), H); ctx.stroke(); }
+    for (var gy = Math.ceil(yLo); gy <= yHi; gy++){ ctx.beginPath(); ctx.moveTo(0, Y(gy)); ctx.lineTo(W, Y(gy)); ctx.stroke(); }
+    // sumbu
+    ctx.strokeStyle = colAxis; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(W, Y(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(X(0), 0); ctx.lineTo(X(0), H); ctx.stroke();
+    ctx.fillStyle = colAxis; ctx.font = "700 12px Nunito, sans-serif";
+    ctx.fillText("x", W - 16, Y(0) - 6); ctx.fillText("y", X(0) + 7, 15);
+    ctx.fillText("0", X(0) - 14, Y(0) + 15);
+    // kurva
+    ctx.strokeStyle = colCurve; ctx.lineWidth = 3.5; ctx.lineJoin = "round";
+    ctx.beginPath();
+    var started = false;
+    for (var px = 0; px <= W; px += 2){
+      var x = px / W * 2 * xR - xR;
+      var y = a * x * x + b * x + c;
+      var py = Y(y);
+      if (py < -60 || py > H + 60){ started = false; continue; }
+      if (!started){ ctx.moveTo(px, py); started = true; } else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    // akar-akar
+    function dot(x, y, color, label){
+      ctx.beginPath(); ctx.arc(X(x), Y(y), 6.5, 0, Math.PI * 2);
+      ctx.fillStyle = color; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = "#fff"; ctx.stroke();
+      if (label){ ctx.fillStyle = color; ctx.font = "800 13px Nunito, sans-serif"; ctx.fillText(label, X(x) - 12, Y(y) - 13); }
+    }
+    if (a !== 0){
+      var Dd = b * b - 4 * a * c;
+      if (Dd > 0){ var s2 = Math.sqrt(Dd); dot((-b - s2) / (2 * a), 0, "#0d9488", "x₁"); dot((-b + s2) / (2 * a), 0, "#0d9488", "x₂"); }
+      else if (Dd === 0){ dot(vx, 0, "#0d9488", "x₁=x₂"); }
+      dot(vx, vy, "#db2777", "puncak");
+    }
+    dot(0, c, "#0284c7", "");
+  }
+
+  /* ================= LAB PARABOLA ================= */
+  function drawLab(){
+    var a = parseFloat($("slA").value), b = parseFloat($("slB").value), c = parseFloat($("slC").value);
+    $("outA").textContent = fmt(a); $("outB").textContent = fmt(b); $("outC").textContent = fmt(c);
+    $("labEq").innerHTML = fnHTML(a, b, c);
+    drawParabola($("labCanvas"), a, b, c);
+    var chips = "", note = "";
+    if (a === 0){
+      chips = '<span class="chip">a = 0 → bukan parabola, melainkan <b>garis lurus</b>!</span>';
+      note = "<b>Perhatian:</b> syarat persamaan kuadrat adalah a ≠ 0. Jika a = 0, suku x² hilang dan grafiknya menjadi garis lurus.";
+    } else {
+      var D = b * b - 4 * a * c;
+      var vx = -b / (2 * a), vy = a * vx * vx + b * vx + c;
+      chips += '<span class="chip">Membuka ke <b>' + (a > 0 ? "atas ☝" : "bawah") + "</b></span>";
+      chips += '<span class="chip">Diskriminan D = <b>' + fmt(D) + "</b></span>";
+      chips += '<span class="chip">Puncak di <b>(' + fmt(vx) + "; " + fmt(vy) + ")</b></span>";
+      if (D > 0){ var sq = Math.sqrt(D); chips += '<span class="chip">Akar: x₁ = <b>' + fmt((-b - sq) / (2 * a)) + "</b>, x₂ = <b>" + fmt((-b + sq) / (2 * a)) + "</b></span>"; note = "D &gt; 0: parabola memotong sumbu-x di <b>dua titik</b> — kedua titik hijau itu adalah akar-akarnya."; }
+      else if (D === 0){ chips += '<span class="chip">Akar kembar: x = <b>' + fmt(vx) + "</b></span>"; note = "D = 0: puncak parabola tepat <b>menyinggung</b> sumbu-x, akar-akarnya kembar."; }
+      else { chips += '<span class="chip"><b>Tidak ada akar real</b></span>'; note = "D &lt; 0: parabola <b>melayang</b> dan tidak menyentuh sumbu-x, jadi tidak punya akar real."; }
+      chips += '<span class="chip">Potong sumbu-y di <b>(0; ' + fmt(c) + ")</b></span>";
+    }
+    $("labStats").innerHTML = chips;
+    $("labNote").innerHTML = note;
+  }
+  ["slA", "slB", "slC"].forEach(function(id){ $(id).addEventListener("input", drawLab); });
+
+  /* ================= MATERI: KENALI KOEFISIEN ================= */
+  var coefAns = { a: 3, b: -5, c: 2 };
+  function coefBaru(){
+    var a; do { a = Math.floor(Math.random() * 9) - 4; } while (a === 0 || a === 1);
+    var b; do { b = Math.floor(Math.random() * 17) - 8; } while (b === 0);
+    var c; do { c = Math.floor(Math.random() * 17) - 8; } while (c === 0);
+    coefAns = { a: a, b: b, c: c };
+    $("coefEq").innerHTML = eqHTML(a, b, c);
+    $("coefA").value = ""; $("coefB").value = ""; $("coefC").value = "";
+    $("coefFb").className = "feedback";
+  }
+  $("btnCoefBaru").addEventListener("click", coefBaru);
+  $("btnCoef").addEventListener("click", function(){
+    var fb = $("coefFb");
+    var ok = parseFloat($("coefA").value) === coefAns.a && parseFloat($("coefB").value) === coefAns.b && parseFloat($("coefC").value) === coefAns.c;
+    fb.className = "feedback show " + (ok ? "ok" : "bad");
+    fb.innerHTML = ok
+      ? "Betul semua! a = " + fmt(coefAns.a) + ", b = " + fmt(coefAns.b) + ", c = " + fmt(coefAns.c) + ". Kamu siap lanjut ke Lab Parabola!"
+      : "Belum tepat. Jawaban yang benar: a = " + fmt(coefAns.a) + ", b = " + fmt(coefAns.b) + ", c = " + fmt(coefAns.c) + ". Ingat, tanda minus di depan suku ikut terbawa ya!";
+  });
+
+  /* ================= PEMFAKTORAN: PERMAINAN ================= */
+  var game = { r1: 2, r2: 3, score: 0, round: 1, tries: 0, solved: false };
+  function gameBaru(){
+    do { game.r1 = Math.floor(Math.random() * 13) - 6; } while (game.r1 === 0);
+    do { game.r2 = Math.floor(Math.random() * 13) - 6; } while (game.r2 === 0 || game.r2 === game.r1);
+    game.tries = 0; game.solved = false;
+    var p = game.r1 + game.r2, q = game.r1 * game.r2;
+    $("gameEq").innerHTML = eqHTML(1, p, q);
+    $("gameP").textContent = fmt(p); $("gameQ").textContent = fmt(q);
+    $("gM").value = ""; $("gN").value = "";
+    $("gameTry").textContent = "0"; $("gameRound").textContent = game.round;
+    $("gameFb").className = "feedback";
+    $("gameSteps").classList.add("hidden");
+  }
+  function factorStr(r){ return r > 0 ? "(x − " + fmt(r) + ")" : "(x + " + fmt(-r) + ")"; }
+  $("btnGameCheck").addEventListener("click", function(){
+    var fb = $("gameFb");
+    if (game.solved){ fb.className = "feedback show ok"; fb.textContent = "Ronde ini sudah selesai — klik Soal Baru untuk lanjut!"; return; }
+    var m = parseFloat($("gM").value), n = parseFloat($("gN").value);
+    if (isNaN(m) || isNaN(n)){ fb.className = "feedback show bad"; fb.textContent = "Isi dulu kedua bilangannya ya!"; return; }
+    game.tries++; $("gameTry").textContent = game.tries;
+    var p = game.r1 + game.r2, q = game.r1 * game.r2;
+    var benar = (m === game.r1 && n === game.r2) || (m === game.r2 && n === game.r1);
+    if (benar){
+      game.solved = true;
+      var poin = game.tries === 1 ? 20 : game.tries === 2 ? 15 : 10;
+      game.score += poin; $("gameScore").textContent = game.score;
+      fb.className = "feedback show ok";
+      fb.innerHTML = "Keren! " + fmt(m) + " dan " + fmt(n) + " adalah pasangan yang tepat (+" + poin + " poin). Lihat langkah pemfaktorannya di bawah!";
+      var list = $("gameStepList");
+      list.innerHTML =
+        "<li class='on'>Persamaannya <span class='big'>" + eqHTML(1, p, q) + "</span></li>" +
+        "<li class='on'>Cari dua bilangan hasil kalinya " + fmt(q) + " dan jumlahnya " + fmt(p) + " → <span class='big'>" + fmt(game.r1) + " dan " + fmt(game.r2) + "</span></li>" +
+        "<li class='on'>Faktorkan <span class='big'>" + factorStr(game.r1) + factorStr(game.r2) + " = 0</span></li>" +
+        "<li class='on'>Setiap faktor sama dengan nol <span class='big'>x = " + fmt(game.r1) + " &nbsp;atau&nbsp; x = " + fmt(game.r2) + "</span></li>";
+      $("gameSteps").classList.remove("hidden");
+      game.round++;
+    } else {
+      fb.className = "feedback show bad";
+      var s = m + n, pr = m * n;
+      var msg = "Belum tepat: " + fmt(m) + " × " + fmt(n) + " = " + fmt(pr) + " (perlu " + fmt(q) + "), dan " + fmt(m) + " + " + fmt(n) + " = " + fmt(s) + " (perlu " + fmt(p) + "). ";
+      if (pr === q) msg += "Hasil kalinya sudah benar — tinggal jumlahnya yang belum pas!";
+      else if (s === p) msg += "Jumlahnya sudah benar — tinggal hasil kalinya yang belum pas!";
+      else msg += "Coba cek lagi kedua syaratnya.";
+      fb.textContent = msg;
+    }
+  });
+  $("btnGameHint").addEventListener("click", function(){
+    var fb = $("gameFb"), q = game.r1 * game.r2, p = game.r1 + game.r2;
+    var pairs = [];
+    for (var d = -12; d <= 12; d++){ if (d !== 0 && q % d === 0){ var e = q / d; if (d <= e) pairs.push(fmt(d) + " dan " + fmt(e)); } }
+    fb.className = "feedback show ok";
+    fb.style.background = "var(--amber-bg)"; fb.style.color = "var(--amber)";
+    fb.textContent = "Petunjuk: pasangan faktor dari " + fmt(q) + " adalah " + pairs.join("; ") + ". Jumlah dari salah satu pasangan itu sama dengan " + fmt(p) + ". Pasangan yang mana?";
+    setTimeout(function(){ fb.style.background = ""; fb.style.color = ""; }, 100);
+  });
+  $("btnGameBaru").addEventListener("click", function(){ gameBaru(); });
+
+  /* ================= KUADRAT SEMPURNA ================= */
+  var csState = { steps: [], idx: -1 };
+  var csPresets = [ [6, 5], [4, -5], [-8, 7], [10, 9], [-2, -8], [12, 20] ];
+  var csPresetIdx = 0;
+  function csBuild(){
+    var b = parseFloat($("csB").value), c = parseFloat($("csC").value);
+    if (isNaN(b) || isNaN(c)){ b = 6; c = 5; }
+    $("csEq").innerHTML = eqHTML(1, b, c);
+    var half = b / 2, sq = half * half, rhs = sq - c;
+    var steps = [];
+    steps.push({ t: "Pindahkan konstanta ke ruas kanan.", big: "x² " + (b !== 0 ? (b < 0 ? "− " + fmt(-b) : "+ " + fmt(b)) + "x" : "") + " = " + fmt(-c) });
+    steps.push({ t: "Hitung (b/2)² = (" + fmt(b) + "/2)² = (" + fmt(half) + ")² = " + fmt(sq) + ", lalu tambahkan ke kedua ruas.", big: "x² " + (b !== 0 ? (b < 0 ? "− " + fmt(-b) : "+ " + fmt(b)) + "x" : "") + " + " + fmt(sq) + " = " + fmt(-c) + " + " + fmt(sq) });
+    steps.push({ t: "Ruas kiri kini menjadi kuadrat sempurna.", big: "(x " + (half < 0 ? "− " + fmt(-half) : "+ " + fmt(half)) + ")² = " + fmt(rhs) });
+    if (rhs < 0){
+      steps.push({ t: "Ruas kanan bernilai negatif. Kuadrat suatu bilangan tidak mungkin negatif, jadi persamaan ini tidak memiliki akar real.", big: "Tidak ada penyelesaian real" });
+    } else if (rhs === 0){
+      steps.push({ t: "Ambil akar kuadrat kedua ruas.", big: "x " + (half < 0 ? "− " + fmt(-half) : "+ " + fmt(half)) + " = 0" });
+      steps.push({ t: "Selesaikan untuk x (akar kembar).", big: "x = " + fmt(-half) });
+    } else {
+      var root = Math.sqrt(rhs);
+      var exact = Math.abs(root - Math.round(root)) < 1e-9;
+      steps.push({ t: "Ambil akar kuadrat kedua ruas — jangan lupa tanda ±!", big: "x " + (half < 0 ? "− " + fmt(-half) : "+ " + fmt(half)) + " = ±" + (exact ? fmt(root) : "√" + fmt(rhs) + " ≈ " + fmt(root)) });
+      steps.push({ t: "Selesaikan untuk x.", big: "x₁ = " + fmt(-half + root) + " &nbsp;atau&nbsp; x₂ = " + fmt(-half - root) });
+    }
+    csState.steps = steps; csState.idx = -1;
+    $("csSteps").innerHTML = steps.map(function(s){ return "<li>" + esc(s.t) + "<span class='big'>" + s.big + "</span></li>"; }).join("");
+    $("btnCsNext").disabled = false;
+  }
+  function csReveal(){
+    var items = $("csSteps").children;
+    if (csState.idx < items.length - 1){ csState.idx++; items[csState.idx].classList.add("on"); }
+    if (csState.idx >= items.length - 1) $("btnCsNext").disabled = true;
+  }
+  $("btnCsStart").addEventListener("click", function(){ csBuild(); csReveal(); });
+  $("btnCsNext").addEventListener("click", csReveal);
+  $("btnCsPreset").addEventListener("click", function(){
+    csPresetIdx = (csPresetIdx + 1) % csPresets.length;
+    $("csB").value = csPresets[csPresetIdx][0]; $("csC").value = csPresets[csPresetIdx][1];
+    csBuild(); csReveal();
+  });
+  ["csB", "csC"].forEach(function(id){ $(id).addEventListener("input", function(){
+    var b = parseFloat($("csB").value) || 0, c = parseFloat($("csC").value) || 0;
+    $("csEq").innerHTML = eqHTML(1, b, c);
+  }); });
+
+  /* ================= RUMUS ABC ================= */
+  function solveSteps(a, b, c){
+    // Mengembalikan array langkah {t, big} untuk rumus ABC
+    var steps = [];
+    if (a === 0){
+      steps.push({ t: "a = 0, jadi ini bukan persamaan kuadrat melainkan persamaan linear.", big: b !== 0 ? "x = " + fmt(-c / b) : "Tidak dapat diselesaikan" });
+      return steps;
+    }
+    var D = b * b - 4 * a * c;
+    steps.push({ t: "Kenali koefisiennya.", big: "a = " + fmt(a) + ", &nbsp;b = " + fmt(b) + ", &nbsp;c = " + fmt(c) });
+    steps.push({ t: "Hitung diskriminan D = b² − 4ac.", big: "D = (" + fmt(b) + ")² − 4(" + fmt(a) + ")(" + fmt(c) + ") = " + fmt(b * b) + " − " + fmt(4 * a * c) + " = " + fmt(D) });
+    if (D < 0){
+      steps.push({ t: "D < 0, artinya √D tidak terdefinisi untuk bilangan real.", big: "Tidak memiliki akar real" });
+      return steps;
+    }
+    var sq = Math.sqrt(D);
+    var exact = Math.abs(sq - Math.round(sq)) < 1e-9;
+    steps.push({ t: "Cari akar kuadrat dari D.", big: "√D = " + (exact ? fmt(sq) : "√" + fmt(D) + " ≈ " + fmt(sq)) });
+    steps.push({ t: "Substitusikan ke rumus ABC: x = (−b ± √D) / 2a.", big: "x = (" + fmt(-b) + " ± " + fmt(sq) + ") / " + fmt(2 * a) });
+    if (D === 0){
+      steps.push({ t: "Karena D = 0, kedua akar bernilai sama (kembar).", big: "x₁ = x₂ = " + fmt(-b / (2 * a)) });
+    } else {
+      var x1 = (-b + sq) / (2 * a), x2 = (-b - sq) / (2 * a);
+      steps.push({ t: "Hitung kedua kemungkinan akar.", big: "x₁ = " + fmt(x1) + " &nbsp;atau&nbsp; x₂ = " + fmt(x2) });
+    }
+    return steps;
+  }
+  var abcState = { steps: [], idx: -1, timer: null };
+  function abcBuild(){
+    var a = parseFloat($("abcA").value), b = parseFloat($("abcB").value), c = parseFloat($("abcC").value);
+    if (isNaN(a) || isNaN(b) || isNaN(c)) return;
+    $("abcEq").innerHTML = eqHTML(a, b, c);
+    abcState.steps = solveSteps(a, b, c); abcState.idx = -1;
+    $("abcSteps").innerHTML = abcState.steps.map(function(s){ return "<li>" + esc(s.t) + "<span class='big'>" + s.big + "</span></li>"; }).join("");
+  }
+  function abcReveal(){
+    var items = $("abcSteps").children;
+    if (abcState.idx < items.length - 1){ abcState.idx++; items[abcState.idx].classList.add("on"); return true; }
+    return false;
+  }
+  $("btnAbcNext").addEventListener("click", function(){
+    if (abcState.timer){ clearInterval(abcState.timer); abcState.timer = null; }
+    if (!abcState.steps.length) abcBuild();
+    abcReveal();
+  });
+  $("btnAbcPlay").addEventListener("click", function(){
+    if (abcState.timer){ clearInterval(abcState.timer); abcState.timer = null; }
+    abcBuild();
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce){ while (abcReveal()){} return; }
+    abcState.timer = setInterval(function(){ if (!abcReveal()){ clearInterval(abcState.timer); abcState.timer = null; } }, 900);
+  });
+  ["abcA", "abcB", "abcC"].forEach(function(id){ $(id).addEventListener("input", function(){
+    if (abcState.timer){ clearInterval(abcState.timer); abcState.timer = null; }
+    abcBuild();
+  }); });
+
+  /* ================= DISKRIMINAN ================= */
+  function drawDiscMinis(){
+    drawParabola($("disc1"), 1, -1, -6, { color: "#16a34a" });
+    drawParabola($("disc2"), 1, -2, 1, { color: "#d97706" });
+    drawParabola($("disc3"), 1, 0, 4, { color: "#dc2626" });
+  }
+  $("btnDisc").addEventListener("click", function(){
+    var a = parseFloat($("dA").value), b = parseFloat($("dB").value), c = parseFloat($("dC").value);
+    var fb = $("discFb");
+    if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0){
+      fb.className = "feedback show bad"; fb.textContent = "Pastikan a, b, c terisi dan a ≠ 0 ya!";
+      $("discCanvas").classList.add("hidden"); return;
+    }
+    var D = b * b - 4 * a * c;
+    var jenis = D > 0 ? "D > 0 → dua akar real berbeda. Parabolanya memotong sumbu-x di dua titik!"
+      : D === 0 ? "D = 0 → dua akar real kembar. Puncak parabolanya menyinggung sumbu-x!"
+      : "D < 0 → tidak memiliki akar real. Parabolanya melayang, tidak menyentuh sumbu-x!";
+    fb.className = "feedback show ok";
+    fb.style.background = D > 0 ? "var(--green-bg)" : D === 0 ? "var(--amber-bg)" : "var(--red-bg)";
+    fb.style.color = D > 0 ? "var(--green)" : D === 0 ? "var(--amber)" : "var(--red)";
+    fb.innerHTML = "D = (" + fmt(b) + ")² − 4(" + fmt(a) + ")(" + fmt(c) + ") = <b>" + fmt(D) + "</b>. " + esc(jenis);
+    var cv = $("discCanvas");
+    cv.classList.remove("hidden");
+    drawParabola(cv, a, b, c);
+  });
+
+  /* ================= KALKULATOR ================= */
+  $("btnCalc").addEventListener("click", function(){
+    var a = parseFloat($("kA").value), b = parseFloat($("kB").value), c = parseFloat($("kC").value);
+    var res = $("calcResult");
+    if (isNaN(a) || isNaN(b) || isNaN(c)){ res.innerHTML = "<div class='note note-red'>Isi nilai a, b, dan c dengan angka yang benar dulu ya.</div>"; $("calcSteps").innerHTML = ""; return; }
+    var steps = solveSteps(a, b, c);
+    // langkah pembuka khusus kalkulator
+    var head = [{ t: "Persamaan yang akan diselesaikan:", big: eqHTML(a, b, c) }];
+    var all = head.concat(a === 0 ? steps : steps);
+    $("calcSteps").innerHTML = all.map(function(s, i){ return "<li class='on'>" + esc(s.t) + "<span class='big'>" + s.big + "</span></li>"; }).join("");
+    if (a !== 0){
+      var D = b * b - 4 * a * c;
+      if (D >= 0){
+        var sq = Math.sqrt(D), x1 = (-b + sq) / (2 * a), x2 = (-b - sq) / (2 * a);
+        var hp = D === 0 ? "{ " + fmt(x1) + " }" : "{ " + fmt(Math.min(x1, x2)) + ", " + fmt(Math.max(x1, x2)) + " }";
+        res.innerHTML = "<div class='note note-green'><b>Himpunan penyelesaian: " + hp + "</b><br />Periksa: f(" + fmt(x1) + ") = " + fmt(a * x1 * x1 + b * x1 + c) + " ✓ — mensubstitusikan akar ke persamaan menghasilkan 0.</div>";
+      } else {
+        res.innerHTML = "<div class='note note-red'><b>Tidak ada himpunan penyelesaian real</b> karena D = " + fmt(D) + " &lt; 0. Parabola fungsi ini tidak memotong sumbu-x.</div>";
+      }
+    } else {
+      res.innerHTML = b !== 0 ? "<div class='note note-green'><b>Penyelesaian persamaan linear: x = " + fmt(-c / b) + "</b></div>" : "";
+    }
+  });
+  ["kA", "kB", "kC"].forEach(function(id){ $(id).addEventListener("input", function(){
+    var a = parseFloat($("kA").value) || 0, b = parseFloat($("kB").value) || 0, c = parseFloat($("kC").value) || 0;
+    $("kEq").innerHTML = eqHTML(a, b, c);
+  }); });
+  </script>
+  <script>
+  "use strict";
+  /* ================= KUIS ================= */
+  var QUESTIONS = [
+    { q: "Bentuk umum persamaan kuadrat adalah …",
+      opts: ["ax + b = 0", "ax² + bx + c = 0, dengan a ≠ 0", "ax³ + bx² + c = 0", "a/x + b = 0"], ans: 1,
+      exp: "Persamaan kuadrat memiliki pangkat tertinggi 2, sehingga bentuk umumnya ax² + bx + c = 0 dengan syarat a ≠ 0." },
+    { q: "Akar-akar persamaan x² − 5x + 6 = 0 adalah …",
+      opts: ["1 dan 6", "−2 dan −3", "2 dan 3", "−1 dan −6"], ans: 2,
+      exp: "Cari dua bilangan hasil kalinya 6 dan jumlahnya −5… tanda harus sesuai: 2 × 3 = 6 dan 2 + 3 = 5, lalu sesuaikan tandanya: (x − 2)(x − 3) = 0, jadi x = 2 atau x = 3." },
+    { q: "Pada persamaan 2x² − 3x + 1 = 0, nilai a, b, dan c berturut-turut adalah …",
+      opts: ["2, −3, 1", "2, 3, 1", "−3, 2, 1", "2, −3, −1"], ans: 0,
+      exp: "a adalah koefisien x² = 2, b adalah koefisien x = −3 (tanda minus ikut!), dan c adalah konstanta = 1." },
+    { q: "Diskriminan dari x² + 4x + 4 = 0 adalah …",
+      opts: ["16", "8", "0", "−16"], ans: 2,
+      exp: "D = b² − 4ac = 4² − 4(1)(4) = 16 − 16 = 0. Karena D = 0, akar-akarnya kembar, yaitu x = −2." },
+    { q: "Himpunan penyelesaian dari x² − 9 = 0 adalah …",
+      opts: ["{3}", "{−3}", "{−3, 3}", "{9}"], ans: 2,
+      exp: "x² = 9, maka x = ±√9 = ±3. Jangan lupa kemungkinan negatifnya!" },
+    { q: "Jika x₁ dan x₂ adalah akar-akar 2x² + 6x − 8 = 0, maka x₁ + x₂ = …",
+      opts: ["3", "−3", "4", "−4"], ans: 1,
+      exp: "Jumlah akar-akar: x₁ + x₂ = −b/a = −6/2 = −3." },
+    { q: "Jika x₁ dan x₂ adalah akar-akar x² − 7x + 10 = 0, maka x₁ · x₂ = …",
+      opts: ["−7", "7", "10", "−10"], ans: 2,
+      exp: "Hasil kali akar-akar: x₁ · x₂ = c/a = 10/1 = 10. (Akar-akarnya sendiri adalah 2 dan 5.)" },
+    { q: "Persamaan kuadrat yang akar-akarnya 4 dan −2 adalah …",
+      opts: ["x² + 2x − 8 = 0", "x² − 2x − 8 = 0", "x² − 2x + 8 = 0", "x² + 6x − 8 = 0"], ans: 1,
+      exp: "Gunakan (x − 4)(x + 2) = x² − 2x − 8 = 0. Jumlah akar = 2 = −b dan hasil kali = −8 = c." },
+    { q: "Jenis akar-akar persamaan 3x² + 2x + 5 = 0 adalah …",
+      opts: ["Dua akar real berbeda", "Dua akar real kembar", "Tidak memiliki akar real", "Akar-akarnya 1 dan 5"], ans: 2,
+      exp: "D = 2² − 4(3)(5) = 4 − 60 = −56 < 0. Diskriminan negatif berarti persamaan tidak memiliki akar real." },
+    { q: "Penyelesaian dari x² + 2x − 8 = 0 adalah …",
+      opts: ["x = 4 atau x = −2", "x = −4 atau x = 2", "x = −4 atau x = −2", "x = 8 atau x = −1"], ans: 1,
+      exp: "Faktorkan: cari dua bilangan hasil kalinya −8 dan jumlahnya 2, yaitu 4 dan −2. Maka (x + 4)(x − 2) = 0, sehingga x = −4 atau x = 2." }
+  ];
+  var MSG_GOOD = ["Keren!", "Betul sekali!", "Mantap!", "Luar biasa!", "Kamu hebat!"];
+  var MSG_STREAK = ["Api streak menyala!", "Tak terhentikan!", "Sedang panas-panasnya!", "Terus melaju!"];
+  var MSG_BAD = ["Belum beruntung — baca pembahasannya ya!", "Tidak apa-apa, dari salah kita belajar!", "Hampir! Cek pembahasannya."];
+  var quiz = { idx: 0, right: 0, streak: 0, bestStreak: 0, locked: false, order: [] };
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function startQuiz(){
+    quiz.idx = 0; quiz.right = 0; quiz.streak = 0; quiz.bestStreak = 0; quiz.locked = false;
+    quiz.order = shuffle(QUESTIONS.map(function(_, i){ return i; }));
+    $("quizStart").classList.add("hidden");
+    $("quizDone").classList.add("hidden");
+    $("quizPlay").classList.remove("hidden");
+    renderQuestion();
+  }
+  function renderQuestion(){
+    var item = QUESTIONS[quiz.order[quiz.idx]];
+    quiz.locked = false;
+    $("qNum").textContent = quiz.idx + 1;
+    $("qStreak").textContent = quiz.streak;
+    $("qRight").textContent = quiz.right;
+    $("qFlame").classList.toggle("hot", quiz.streak >= 3);
+    $("qFlame").style.opacity = quiz.streak === 0 ? ".3" : "1";
+    $("qBar").style.width = (quiz.idx / QUESTIONS.length * 100) + "%";
+    $("qText").innerHTML = esc(item.q);
+    $("qExplain").className = "explain";
+    $("btnQNext").classList.add("hidden");
+    $("btnQNext").textContent = quiz.idx === QUESTIONS.length - 1 ? "Lihat Hasil" : "Soal Berikutnya";
+    var opts = shuffle(item.opts.map(function(t, i){ return { t: t, ok: i === item.ans }; }));
+    var box = $("qOpts"); box.innerHTML = "";
+    opts.forEach(function(o){
+      var b = document.createElement("button");
+      b.className = "opt"; b.innerHTML = esc(o.t);
+      b.addEventListener("click", function(){ answer(b, o.ok, item); });
+      box.appendChild(b);
+    });
+  }
+  function answer(btn, ok, item){
+    if (quiz.locked) return;
+    quiz.locked = true;
+    var opts = $("qOpts").children;
+    for (var i = 0; i < opts.length; i++){ opts[i].disabled = true; }
+    if (ok){
+      btn.classList.add("correct");
+      quiz.right++; quiz.streak++;
+      quiz.bestStreak = Math.max(quiz.bestStreak, quiz.streak);
+      $("qMsg").textContent = (quiz.streak >= 3 ? MSG_STREAK[Math.floor(Math.random() * MSG_STREAK.length)] + " Streak " + quiz.streak + "!" : MSG_GOOD[Math.floor(Math.random() * MSG_GOOD.length)]);
+    } else {
+      btn.classList.add("wrong");
+      quiz.streak = 0;
+      for (var j = 0; j < opts.length; j++){ if (opts[j].textContent === item.opts[item.ans]) opts[j].classList.add("correct"); }
+      $("qMsg").textContent = MSG_BAD[Math.floor(Math.random() * MSG_BAD.length)];
+    }
+    $("qStreak").textContent = quiz.streak;
+    $("qRight").textContent = quiz.right;
+    $("qFlame").classList.toggle("hot", quiz.streak >= 3);
+    $("qFlame").style.opacity = quiz.streak === 0 ? ".3" : "1";
+    var ex = $("qExplain");
+    ex.innerHTML = "<b>" + (ok ? "Benar!" : "Pembahasan:") + "</b> " + esc(item.exp);
+    ex.classList.add("show");
+    $("btnQNext").classList.remove("hidden");
+  }
+  $("btnQNext").addEventListener("click", function(){
+    quiz.idx++;
+    if (quiz.idx < QUESTIONS.length){ $("qMsg").textContent = "Semangat!"; renderQuestion(); }
+    else finishQuiz();
+  });
+  function finishQuiz(){
+    $("quizPlay").classList.add("hidden");
+    $("quizDone").classList.remove("hidden");
+    $("qBar").style.width = "100%";
+    var score = quiz.right * 10;
+    $("finalScore").textContent = score;
+    var badge, msg;
+    if (score >= 90){ badge = "Master Kuadrat"; msg = "Sempurna! Kamu benar-benar menguasai persamaan kuadrat. Pertahankan!"; }
+    else if (score >= 70){ badge = "Ahli Parabola"; msg = "Hebat! Sedikit lagi menuju sempurna. Coba lagi untuk meraih lencana Master!"; }
+    else if (score >= 50){ badge = "Pejuang Akar"; msg = "Bagus! Kamu sudah di jalur yang benar. Latih lagi bagian yang masih salah ya."; }
+    else { badge = "Penjelajah Kuadrat"; msg = "Tidak apa-apa! Kembali ke materi, coba Lab Parabola dan permainan pemfaktoran, lalu tantang kuis ini lagi."; }
+    $("badgeName").textContent = "Lencana: " + badge;
+    $("finalMsg").textContent = msg;
+    $("finalStats").innerHTML =
+      '<span class="chip">Jawaban benar: <b>' + quiz.right + "/10</b></span>" +
+      '<span class="chip">Streak terbaik: <b>' + quiz.bestStreak + "</b></span>" +
+      '<span class="chip">Percobaan ke: <b>' + (state.quizAttempts + 1) + "</b></span>";
+    if (score >= 70) fireConfetti();
+    // catat & kirim hasil
+    state.quizAttempts++;
+    state.quizLog.push({ time: nowLabel(), nama: state.nama, kelas: state.kelas, attempt: state.quizAttempts, score: score });
+    if (state.nama){
+      postSheet({ type: "kuis", nama: state.nama, kelas: state.kelas, attemptNo: state.quizAttempts, score: score });
+      sendRingkasan();
+    }
+  }
+  $("btnQuizStart").addEventListener("click", startQuiz);
+  $("btnQuizRetry").addEventListener("click", startQuiz);
+  $("btnQuizReview").addEventListener("click", function(){ trackMenu("materi"); showPage("materi"); });
+
+  /* confetti sederhana */
+  function fireConfetti(){
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var cv = $("confetti"), ctx = cv.getContext("2d");
+    cv.width = window.innerWidth; cv.height = window.innerHeight;
+    cv.classList.remove("hidden");
+    var colors = ["#f97316", "#0d9488", "#0284c7", "#db2777", "#d97706", "#16a34a"];
+    var parts = [];
+    for (var i = 0; i < 130; i++){
+      parts.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.4, w: 6 + Math.random() * 7, h: 8 + Math.random() * 8,
+        vy: 2.2 + Math.random() * 3.2, vx: -1 + Math.random() * 2, rot: Math.random() * Math.PI, vr: -0.12 + Math.random() * 0.24, col: colors[i % colors.length] });
+    }
+    var t0 = Date.now();
+    (function frame(){
+      var el = Date.now() - t0;
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      parts.forEach(function(p){
+        p.y += p.vy; p.x += p.vx; p.rot += p.vr;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.col; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+      });
+      if (el < 2600) requestAnimationFrame(frame);
+      else { ctx.clearRect(0, 0, cv.width, cv.height); cv.classList.add("hidden"); }
+    })();
+  }
+
+  /* ================= DATA GURU ================= */
+  function guruMsg(html, ok){
+    var el = $("guruStatus");
+    el.className = "feedback show " + (ok ? "ok" : "bad");
+    el.innerHTML = html;
+  }
+  function fillTable(id, rows, cols, srcLabel){
+    var tb = $(id).querySelector("tbody");
+    tb.innerHTML = rows.map(function(r){
+      return "<tr>" + cols.map(function(c){ return "<td>" + esc(r[c]) + "</td>"; }).join("") + (srcLabel ? "<td>" + srcLabel + "</td>" : "") + "</tr>";
+    }).join("");
+    return rows.length;
+  }
+  function renderGuru(){
+    $("inSheetUrl").value = sheetURL;
+    var login = [], kuisRows = [], ring = [];
+    if (state.sheetData){
+      login = state.sheetData.login || []; kuisRows = state.sheetData.kuis || []; ring = state.sheetData.ringkasan || [];
+    }
+    // gabungkan data sheet + sesi perangkat ini (tandai sumbernya)
+    var tbL = $("tblLogin").querySelector("tbody"); tbL.innerHTML = "";
+    login.forEach(function(r){ tbL.innerHTML += "<tr><td>" + esc(fmtTime(r.time)) + "</td><td>" + esc(r.nama) + "</td><td>" + esc(r.kelas) + "</td><td>Sheet</td></tr>"; });
+    state.loginLog.forEach(function(r){ tbL.innerHTML += "<tr><td>" + esc(r.time) + "</td><td>" + esc(r.nama) + "</td><td>" + esc(r.kelas) + "</td><td>Perangkat ini</td></tr>"; });
+    $("emptyLogin").classList.toggle("hidden", tbL.children.length > 0);
+
+    var tbK = $("tblKuis").querySelector("tbody"); tbK.innerHTML = "";
+    kuisRows.forEach(function(r){ tbK.innerHTML += "<tr><td>" + esc(fmtTime(r.time)) + "</td><td>" + esc(r.nama) + "</td><td>" + esc(r.kelas) + "</td><td>" + esc(r.attemptNo != null ? r.attemptNo : r.attempt) + "</td><td><b>" + esc(r.score) + "</b></td></tr>"; });
+    state.quizLog.forEach(function(r){ tbK.innerHTML += "<tr><td>" + esc(r.time) + "</td><td>" + esc(r.nama) + "</td><td>" + esc(r.kelas) + "</td><td>" + esc(r.attempt) + "</td><td><b>" + esc(r.score) + "</b></td></tr>"; });
+    $("emptyKuis").classList.toggle("hidden", tbK.children.length > 0);
+
+    var tbR = $("tblRingkasan").querySelector("tbody"); tbR.innerHTML = "";
+    ring.forEach(function(r){
+      tbR.innerHTML += "<tr><td>" + esc(r.nama) + "</td><td>" + esc(r.kelas) + "</td><td>" + esc(r.menus) + "</td><td>" + esc(r.attempts) + "</td><td>" + esc(r.last) + "</td><td>" + esc(r.best) + "</td><td>" + esc(r.avg) + "</td></tr>";
+    });
+    if (state.nama){
+      var scores = state.quizLog.map(function(q){ return q.score; });
+      tbR.innerHTML += "<tr><td>" + esc(state.nama) + " (sesi ini)</td><td>" + esc(state.kelas) + "</td><td>" + esc(Object.keys(state.menus).join(", ") || "—") + "</td><td>" + state.quizAttempts + "</td><td>" +
+        (scores.length ? scores[scores.length - 1] : "—") + "</td><td>" + (scores.length ? Math.max.apply(null, scores) : "—") + "</td><td>" +
+        (scores.length ? Math.round(scores.reduce(function(x, y){ return x + y; }, 0) / scores.length) : "—") + "</td></tr>";
+    }
+    $("emptyRingkasan").classList.toggle("hidden", tbR.children.length > 0);
+  }
+  function fmtTime(t){
+    if (!t) return "";
+    var d = new Date(t);
+    return isNaN(d.getTime()) ? String(t) : d.toLocaleString("id-ID");
+  }
+  $("btnLoadSheet").addEventListener("click", function(){
+    guruMsg("Memuat data dari Google Sheet…", true);
+    fetch(sheetURL + "?app=" + encodeURIComponent(APP_ID))
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        state.sheetData = { login: data.login || [], kuis: data.kuis || [], ringkasan: data.ringkasan || [] };
+        renderGuru();
+        guruMsg("Data berhasil dimuat: " + state.sheetData.login.length + " login, " + state.sheetData.kuis.length + " hasil kuis, " + state.sheetData.ringkasan.length + " ringkasan.", true);
+      })
+      .catch(function(){ guruMsg("Gagal memuat data dari Sheet. Periksa koneksi internet dan URL Web App pada pengaturan di bawah.", false); });
+  });
+  $("btnTestSend").addEventListener("click", function(){
+    guruMsg("Mengirim data uji…", true);
+    postSheet({ type: "login", nama: "UJI KONEKSI", kelas: "-" });
+    setTimeout(function(){
+      fetch(sheetURL + "?app=" + encodeURIComponent(APP_ID))
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          state.sheetData = { login: data.login || [], kuis: data.kuis || [], ringkasan: data.ringkasan || [] };
+          renderGuru();
+          var found = state.sheetData.login.some(function(r){ return r.nama === "UJI KONEKSI"; });
+          guruMsg(found ? "Uji kirim <b>BERHASIL</b> — baris uji terbaca kembali dari Sheet. Koneksi database sehat!" : "Data terkirim, tetapi baris uji belum terbaca (Sheet kadang butuh beberapa detik). Coba tombol Muat Data sebentar lagi.", true);
+        })
+        .catch(function(){ guruMsg("Pengiriman dilakukan, tetapi pembacaan balik gagal. Periksa koneksi atau URL Web App.", false); });
+    }, 2500);
+  });
+  $("btnCsv").addEventListener("click", function(){
+    var lines = ["Aplikasi,Waktu,Jenis,Nama,Kelas,Percobaan Ke,Skor,Menu Dipelajari,Skor Terakhir,Skor Terbaik,Rata-rata"];
+    function q(v){ return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
+    function row(){ return Array.prototype.map.call(arguments, q).join(","); }
+    var src = state.sheetData || { login: [], kuis: [], ringkasan: [] };
+    src.login.forEach(function(r){ lines.push(row(APP_ID, fmtTime(r.time), "Login", r.nama, r.kelas, "", "", "", "", "", "")); });
+    state.loginLog.forEach(function(r){ lines.push(row(APP_ID, r.time, "Login (perangkat ini)", r.nama, r.kelas, "", "", "", "", "", "")); });
+    src.kuis.forEach(function(r){ lines.push(row(APP_ID, fmtTime(r.time), "Kuis", r.nama, r.kelas, r.attemptNo != null ? r.attemptNo : r.attempt, r.score, "", "", "", "")); });
+    state.quizLog.forEach(function(r){ lines.push(row(APP_ID, r.time, "Kuis (perangkat ini)", r.nama, r.kelas, r.attempt, r.score, "", "", "", "")); });
+    src.ringkasan.forEach(function(r){ lines.push(row(APP_ID, fmtTime(r.time), "Ringkasan", r.nama, r.kelas, r.attempts, "", r.menus, r.last, r.best, r.avg)); });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "laporan-persamaan-kuadrat.csv";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+    guruMsg("Laporan CSV diunduh (" + (lines.length - 1) + " baris data).", true);
+  });
+  $("btnSaveUrl").addEventListener("click", function(){
+    var v = $("inSheetUrl").value.trim();
+    if (v){ sheetURL = v; guruMsg("URL database diganti untuk sesi ini. Gunakan tombol Uji Kirim Data untuk memastikan koneksinya.", true); }
+    else guruMsg("URL tidak boleh kosong.", false);
+  });
+  $("btnResetUrl").addEventListener("click", function(){
+    sheetURL = DEFAULT_SHEET_URL; $("inSheetUrl").value = sheetURL;
+    guruMsg("URL dikembalikan ke URL bawaan DapMath.", true);
+  });
+
+  /* ================= INISIALISASI ================= */
+  window.addEventListener("resize", function(){
+    if ($("page-lab").classList.contains("show")) drawLab();
+    if ($("page-diskriminan").classList.contains("show")) drawDiscMinis();
+  });
+  coefBaru();
+  gameBaru();
+  csBuild();
+  abcBuild();
+  drawLab();
+  </script>
+</body>
+</html>
