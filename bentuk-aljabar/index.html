@@ -1,0 +1,1635 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Bentuk Aljabar — DapMath Kelas 7</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#FFF8F0; --bg2:#FFEFE3; --card:#FFFFFF; --card2:#FFF3E8;
+        --ink:#2A2140; --ink-soft:#5B5470; --line:#F0DFD2;
+        --coral:#FF5D3A; --pink:#F43F8E; --amber:#FFB020; --teal:#0BB4A6; --violet:#7C5CFF; --sky:#2E9BFF;
+        --grad:linear-gradient(120deg,#FF8A3D 0%,#FF3D77 55%,#B83DF5 130%);
+        --grad-teal:linear-gradient(120deg,#0BB4A6,#2E9BFF);
+        --good:#12B76A; --bad:#F04438;
+        --shadow:0 10px 30px rgba(255,93,58,.14), 0 2px 6px rgba(42,33,64,.06);
+        --shadow-pop:0 18px 40px rgba(244,63,142,.22);
+        --r-lg:26px; --r-md:18px; --r-sm:12px;
+        --spring:cubic-bezier(.34,1.56,.64,1);
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#171126; --bg2:#1E1533; --card:#251A40; --card2:#2C2049;
+          --ink:#F5F0FF; --ink-soft:#C4B9E4; --line:#3A2C5C;
+          --shadow:0 10px 30px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.3);
+          --shadow-pop:0 18px 40px rgba(0,0,0,.45);
+        }
+      }
+      *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+      html{scroll-behavior:smooth;}
+      body{margin:0; font-family:'Nunito',system-ui,sans-serif; background:var(--bg); color:var(--ink); overflow-x:hidden;}
+      h1,h2,h3,.disp{font-family:'Baloo 2','Nunito',sans-serif; line-height:1.15; margin:0;}
+      button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+      input,select{font-family:inherit; color:var(--ink);}
+      .wrap{max-width:1120px; margin:0 auto; padding:0 18px;}
+      .hidden{display:none !important;}
+
+      /* ---------- LOGIN / HERO ---------- */
+      #loginScreen{position:relative; min-height:100svh; overflow:hidden; background:linear-gradient(160deg,#2A1650 0%,#4A1D6B 45%,#7A1E5E 100%); color:#fff; display:flex; flex-direction:column;}
+      #loginScreen .blob{position:absolute; border-radius:50%; filter:blur(60px); opacity:.55; pointer-events:none;}
+      .blob.b1{width:420px;height:420px;background:#FF5D3A;top:-120px;left:-100px;animation:drift 11s ease-in-out infinite alternate;}
+      .blob.b2{width:360px;height:360px;background:#B83DF5;bottom:-120px;right:-80px;animation:drift 13s ease-in-out infinite alternate-reverse;}
+      .blob.b3{width:240px;height:240px;background:#0BB4A6;top:38%;left:58%;animation:drift 9s ease-in-out infinite alternate;}
+      @keyframes drift{from{transform:translate(0,0) scale(1);}to{transform:translate(46px,30px) scale(1.12);}}
+      .float-sym{position:absolute; font-family:'Baloo 2'; font-weight:800; color:rgba(255,255,255,.16); pointer-events:none; user-select:none; will-change:transform; animation:bob 5s ease-in-out infinite;}
+      @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-18px) rotate(5deg);}}
+      .login-inner{position:relative; z-index:2; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:34px 18px 20px; text-align:center;}
+      .login-badge{display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.14); border:1.5px solid rgba(255,255,255,.3); padding:8px 18px; border-radius:999px; font-weight:800; font-size:.9rem; letter-spacing:.04em; animation:drop .7s var(--spring) both;}
+      .login-title{font-size:clamp(2.6rem,8vw,4.6rem); font-weight:800; margin:16px 0 4px; animation:drop .7s .08s var(--spring) both; text-shadow:0 6px 30px rgba(0,0,0,.3);}
+      .login-title .hl{background:linear-gradient(92deg,#FFD93D,#FF8A3D); -webkit-background-clip:text; background-clip:text; color:transparent;}
+      .login-sub{font-size:clamp(1rem,2.6vw,1.2rem); color:#EFE6FF; max-width:560px; margin:6px auto 0; animation:drop .7s .16s var(--spring) both;}
+      @keyframes drop{from{opacity:0; transform:translateY(-26px) scale(.96);}to{opacity:1; transform:none;}}
+      .mascot-row{display:flex; align-items:flex-end; gap:14px; margin-top:22px; animation:drop .7s .24s var(--spring) both;}
+      .bubble{background:#fff; color:#2A2140; border-radius:20px; border-bottom-left-radius:4px; padding:12px 16px; font-weight:700; max-width:300px; text-align:left; box-shadow:0 12px 28px rgba(0,0,0,.25); font-size:.98rem;}
+      .bubble b{color:#F43F8E;}
+      .mascot{animation:hover 3.2s ease-in-out infinite; filter:drop-shadow(0 14px 18px rgba(0,0,0,.3));}
+      @keyframes hover{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+      .mascot .arm-wave{transform-origin:88px 62px; animation:wave 2.2s ease-in-out infinite;}
+      @keyframes wave{0%,100%{transform:rotate(0deg);}50%{transform:rotate(-24deg);}}
+      .mascot .eye{animation:blink 4.4s infinite;}
+      @keyframes blink{0%,92%,100%{transform:scaleY(1);}95%{transform:scaleY(.08);}}
+      .login-card{background:var(--card); color:var(--ink); border-radius:var(--r-lg); padding:26px 24px 22px; width:min(440px,100%); margin-top:26px; box-shadow:0 24px 60px rgba(0,0,0,.35); text-align:left; animation:drop .7s .32s var(--spring) both;}
+      .login-card h2{font-size:1.35rem; margin-bottom:4px;}
+      .login-card p{margin:0 0 16px; color:var(--ink-soft); font-size:.95rem;}
+      .field{margin-bottom:14px;}
+      .field label{display:block; font-weight:800; font-size:.88rem; margin-bottom:6px;}
+      .field input,.field select{width:100%; padding:14px 16px; font-size:1.05rem; font-weight:700; border:2.5px solid var(--line); border-radius:14px; background:var(--bg); outline:none; transition:border-color .2s, transform .2s;}
+      .field input:focus,.field select:focus{border-color:var(--pink); transform:scale(1.01);}
+      .btn{display:inline-flex; align-items:center; justify-content:center; gap:9px; font-family:'Baloo 2'; font-weight:700; font-size:1.05rem; padding:14px 26px; border-radius:999px; min-height:54px; transition:transform .18s var(--spring), box-shadow .2s, filter .2s; text-decoration:none;}
+      .btn:active{transform:scale(.95);}
+      .btn-grad{background:var(--grad); color:#fff; box-shadow:0 12px 26px rgba(244,63,142,.35);}
+      .btn-grad:hover{transform:translateY(-2px) scale(1.02); box-shadow:var(--shadow-pop);}
+      .btn-teal{background:var(--grad-teal); color:#fff; box-shadow:0 12px 26px rgba(11,180,166,.3);}
+      .btn-teal:hover{transform:translateY(-2px);}
+      .btn-ghost{background:var(--card2); color:var(--ink); border:2px solid var(--line);}
+      .btn-ghost:hover{border-color:var(--pink);}
+      .btn-block{width:100%;}
+      .btn-sm{padding:10px 18px; min-height:46px; font-size:.95rem;}
+      .login-err{color:var(--bad); font-weight:800; font-size:.9rem; min-height:1.2em; margin-top:8px;}
+      .login-foot{position:relative; z-index:2; text-align:center; padding:14px; color:rgba(255,255,255,.75); font-size:.88rem; font-weight:600;}
+
+      /* ---------- APP SHELL ---------- */
+      .topbar{position:sticky; top:0; z-index:40; background:color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter:blur(12px); border-bottom:2px solid var(--line);}
+      .topbar-in{display:flex; align-items:center; gap:12px; padding:10px 0; flex-wrap:wrap;}
+      .brand{display:flex; align-items:center; gap:10px; font-family:'Baloo 2'; font-weight:800; font-size:1.15rem;}
+      .brand .logo{width:40px;height:40px; border-radius:12px; background:var(--grad); color:#fff; display:grid; place-items:center; font-size:1.25rem; box-shadow:0 6px 14px rgba(244,63,142,.35); animation:wobble 5s ease-in-out infinite;}
+      @keyframes wobble{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(5deg) scale(1.06);}}
+      .brand small{display:block; font-family:'Nunito'; font-weight:700; font-size:.72rem; color:var(--ink-soft); letter-spacing:.05em;}
+      .student-chip{margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+      .chip{display:inline-flex; align-items:center; gap:8px; background:var(--card); border:2px solid var(--line); border-radius:999px; padding:7px 8px 7px 14px; font-weight:800; box-shadow:var(--shadow);}
+      .chip .avatar{width:30px;height:30px;border-radius:50%; background:var(--grad-teal); color:#fff; display:grid; place-items:center; font-family:'Baloo 2';}
+      .xp-mini{display:flex; align-items:center; gap:7px; font-weight:800; font-size:.9rem;}
+      .xp-track{width:84px; height:10px; background:var(--line); border-radius:99px; overflow:hidden;}
+      .xp-fill{height:100%; background:linear-gradient(90deg,var(--amber),var(--coral)); border-radius:99px; transition:width .6s var(--spring);}
+      nav.mainnav{display:flex; gap:8px; flex-wrap:wrap; padding:14px 0 4px;}
+      .navbtn{font-family:'Baloo 2'; font-weight:700; font-size:1rem; padding:12px 20px; min-height:50px; border-radius:999px; background:var(--card); border:2px solid var(--line); color:var(--ink-soft); transition:all .2s var(--spring); display:inline-flex; align-items:center; gap:8px;}
+      .navbtn:hover{transform:translateY(-2px); color:var(--ink);}
+      .navbtn.active{background:var(--grad); color:#fff; border-color:transparent; box-shadow:0 10px 22px rgba(244,63,142,.32); transform:translateY(-2px);}
+      main{padding:10px 0 30px; min-height:60vh;}
+      section.page{animation:pageIn .45s var(--spring) both;}
+      @keyframes pageIn{from{opacity:0; transform:translateY(16px);}to{opacity:1; transform:none;}}
+      footer.site{border-top:2px solid var(--line); padding:22px 0 30px; text-align:center; color:var(--ink-soft); font-weight:700; font-size:.92rem;}
+      footer.site b{color:var(--ink);}
+
+      /* ---------- BERANDA ---------- */
+      .hero{position:relative; border-radius:30px; overflow:hidden; padding:38px 30px; color:#fff; background:linear-gradient(135deg,#3B1D63,#8A2064 55%,#C22E5E); box-shadow:var(--shadow-pop);}
+      .hero .float-sym{color:rgba(255,255,255,.14);}
+      .hero h2{font-size:clamp(1.9rem,5.4vw,3rem); font-weight:800; max-width:640px; position:relative; z-index:2;}
+      .hero p{position:relative; z-index:2; max-width:560px; font-size:1.05rem; color:#F6E9FF; margin:10px 0 20px;}
+      .hero .row{position:relative; z-index:2; display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+      .hero-mascot{position:absolute; right:18px; bottom:6px; z-index:1; opacity:.95;}
+      @media (max-width:640px){ .hero-mascot{display:none;} .hero{padding:28px 20px;} }
+      .menu-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-top:22px;}
+      .menu-card{background:var(--card); border:2px solid var(--line); border-radius:var(--r-lg); padding:22px; text-align:left; box-shadow:var(--shadow); transition:transform .25s var(--spring), box-shadow .25s; position:relative; overflow:hidden; width:100%;}
+      .menu-card:hover{transform:translateY(-6px) rotate(-.4deg); box-shadow:var(--shadow-pop);}
+      .menu-card .ic{width:56px;height:56px; border-radius:17px; display:grid; place-items:center; font-size:1.7rem; color:#fff; margin-bottom:12px;}
+      .menu-card h3{font-size:1.25rem; margin-bottom:5px;}
+      .menu-card p{margin:0; color:var(--ink-soft); font-size:.94rem; font-weight:600;}
+      .menu-card .go{margin-top:14px; font-family:'Baloo 2'; font-weight:700; color:var(--pink); display:inline-flex; gap:6px; align-items:center;}
+      .stat-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-top:22px;}
+      .stat-card{background:var(--card); border:2px solid var(--line); border-radius:var(--r-md); padding:16px; text-align:center; box-shadow:var(--shadow);}
+      .stat-card .num{font-family:'Baloo 2'; font-size:1.9rem; font-weight:800;}
+      .stat-card .lbl{color:var(--ink-soft); font-weight:800; font-size:.82rem; letter-spacing:.03em;}
+      .sec-head{margin:30px 0 6px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+      .sec-head h2{font-size:1.6rem;}
+      .sec-head p{color:var(--ink-soft); font-weight:600; margin:0;}
+
+      /* ---------- MATERI ---------- */
+      .subtabs{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 18px;}
+      .subtab{font-family:'Baloo 2'; font-weight:700; padding:11px 18px; min-height:48px; border-radius:999px; background:var(--card); border:2px solid var(--line); color:var(--ink-soft); transition:all .2s var(--spring);}
+      .subtab.active{background:var(--grad-teal); color:#fff; border-color:transparent; box-shadow:0 8px 18px rgba(11,180,166,.3);}
+      .panel{background:var(--card); border:2px solid var(--line); border-radius:var(--r-lg); padding:24px; box-shadow:var(--shadow); margin-bottom:18px;}
+      .panel h3{font-size:1.3rem; margin-bottom:8px;}
+      .panel p{color:var(--ink-soft); font-weight:600; line-height:1.55;}
+      .concept-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:16px 0;}
+      .concept{border-radius:var(--r-md); padding:16px; border:2px dashed var(--line); background:var(--card2);}
+      .concept .t{font-family:'Baloo 2'; font-weight:700; font-size:1.08rem; margin-bottom:4px;}
+      .concept .ex{font-family:'Baloo 2'; font-size:1.5rem; font-weight:800;}
+      .expr-big{font-family:'Baloo 2'; font-weight:800; font-size:clamp(1.5rem,4.5vw,2.3rem); text-align:center; padding:16px 10px; background:var(--card2); border-radius:var(--r-md); border:2px solid var(--line); letter-spacing:.01em;}
+      .expr-big .var-x{color:var(--pink);} .expr-big .var-y{color:var(--sky);} .expr-big .konst{color:var(--teal);}
+      .boxes{display:flex; gap:22px; justify-content:center; flex-wrap:wrap; margin:20px 0 6px;}
+      .mystery{width:130px; height:130px; perspective:700px; cursor:pointer; background:none;}
+      .mystery .flip{position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .65s var(--spring);}
+      .mystery.open .flip{transform:rotateY(180deg);}
+      .mface{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:22px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-family:'Baloo 2';}
+      .mface.front{background:linear-gradient(150deg,#FFB020,#FF5D3A); color:#fff; box-shadow:0 14px 26px rgba(255,93,58,.35); border:3px dashed rgba(255,255,255,.65);}
+      .mface.front .q{font-size:3rem; font-weight:800; animation:bob 2.6s ease-in-out infinite;}
+      .mface.back{transform:rotateY(180deg); color:#fff; box-shadow:0 14px 26px rgba(0,0,0,.25);}
+      .mface.back .val{font-size:2.6rem; font-weight:800;}
+      .mystery small{font-weight:700; opacity:.9;}
+      .slider-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:10px 0;}
+      .slider-row label{font-weight:800; min-width:120px;}
+      input[type=range]{flex:1; min-width:160px; accent-color:var(--pink); height:34px;}
+      .slider-val{font-family:'Baloo 2'; font-weight:800; font-size:1.2rem; background:var(--card2); border:2px solid var(--line); border-radius:12px; padding:4px 14px; min-width:56px; text-align:center;}
+      .steps{list-style:none; margin:14px 0 0; padding:0; counter-reset:st;}
+      .steps li{background:var(--card2); border:2px solid var(--line); border-radius:14px; padding:12px 16px 12px 52px; margin-bottom:9px; font-weight:700; position:relative; animation:pageIn .4s var(--spring) both;}
+      .steps li::before{counter-increment:st; content:counter(st); position:absolute; left:13px; top:50%; transform:translateY(-50%); width:28px; height:28px; border-radius:50%; background:var(--grad); color:#fff; display:grid; place-items:center; font-family:'Baloo 2'; font-size:.95rem;}
+      .steps li .mono{font-family:'Baloo 2'; font-size:1.12rem;}
+      .guide{display:flex; gap:14px; align-items:flex-start; background:linear-gradient(120deg, rgba(255,176,32,.14), rgba(244,63,142,.12)); border:2px solid var(--line); border-radius:var(--r-md); padding:14px 16px; margin:16px 0;}
+      .guide .gtext{font-weight:700; line-height:1.5;}
+      .guide .gtext b{color:var(--pink);}
+
+      /* drag game */
+      .chip-pool{display:flex; flex-wrap:wrap; gap:10px; min-height:64px; padding:14px; border:2.5px dashed var(--line); border-radius:var(--r-md); background:var(--card2); align-items:center; justify-content:center;}
+      .term-chip{font-family:'Baloo 2'; font-weight:800; font-size:1.15rem; padding:12px 20px; min-height:50px; border-radius:14px; background:var(--card); border:2.5px solid var(--violet); color:var(--ink); box-shadow:0 6px 14px rgba(124,92,255,.18); cursor:grab; touch-action:none; user-select:none; transition:transform .15s var(--spring), border-color .2s;}
+      .term-chip.kx{border-color:var(--pink);} .term-chip.ky{border-color:var(--sky);} .term-chip.kk{border-color:var(--teal);}
+      .term-chip.selected{outline:4px solid var(--amber); transform:scale(1.07) rotate(-2deg);}
+      .term-chip.dragging{position:fixed; z-index:99; pointer-events:none; transform:scale(1.1) rotate(-3deg); box-shadow:0 20px 34px rgba(0,0,0,.3);}
+      .term-chip.locked{cursor:default; opacity:.95;}
+      .baskets{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:16px;}
+      .basket{border-radius:var(--r-md); padding:14px; min-height:130px; border:3px dashed var(--line); transition:all .2s;}
+      .basket h4{margin:0 0 10px; font-family:'Baloo 2'; font-size:1.08rem; display:flex; justify-content:space-between; align-items:center;}
+      .basket .items{display:flex; flex-wrap:wrap; gap:8px;}
+      .basket .items .term-chip{font-size:1rem; padding:8px 14px; min-height:42px;}
+      .basket.bx{background:rgba(244,63,142,.07); border-color:rgba(244,63,142,.45);}
+      .basket.by{background:rgba(46,155,255,.07); border-color:rgba(46,155,255,.45);}
+      .basket.bk{background:rgba(11,180,166,.07); border-color:rgba(11,180,166,.45);}
+      .basket.over{transform:scale(1.03); border-style:solid;}
+      .basket .sum{margin-top:10px; font-family:'Baloo 2'; font-weight:800; font-size:1.05rem;}
+      .feedback{font-weight:800; text-align:center; min-height:1.5em; margin-top:12px; font-size:1.05rem;}
+      .feedback.good{color:var(--good);} .feedback.bad{color:var(--bad);}
+      @keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+      .shake{animation:shake .45s ease;}
+
+      /* tiles / operasi */
+      .stepper-row{display:flex; gap:14px; flex-wrap:wrap; margin:12px 0;}
+      .stepper{display:flex; align-items:center; gap:8px; background:var(--card2); border:2px solid var(--line); border-radius:14px; padding:6px 8px;}
+      .stepper .nm{font-family:'Baloo 2'; font-weight:800; padding:0 6px;}
+      .stepper button{width:44px; height:44px; border-radius:12px; background:var(--card); border:2px solid var(--line); font-size:1.3rem; font-weight:800; font-family:'Baloo 2'; transition:transform .15s var(--spring);}
+      .stepper button:active{transform:scale(.88);}
+      .stepper .v{font-family:'Baloo 2'; font-weight:800; font-size:1.2rem; min-width:26px; text-align:center;}
+      .tile-stage{background:var(--card2); border:2px solid var(--line); border-radius:var(--r-md); padding:18px; display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start;}
+      .tile-group{min-width:150px;}
+      .tile-group .cap{font-weight:800; font-size:.85rem; color:var(--ink-soft); margin-bottom:8px;}
+      .tiles{display:flex; flex-wrap:wrap; gap:6px; max-width:300px;}
+      .tile{border-radius:8px; display:grid; place-items:center; font-family:'Baloo 2'; font-weight:800; color:#fff; animation:tileIn .35s var(--spring) both;}
+      @keyframes tileIn{from{transform:scale(.4); opacity:0;}to{transform:scale(1); opacity:1;}}
+      .tile.tx{width:64px; height:30px; background:linear-gradient(120deg,#F43F8E,#FF5D3A); font-size:1rem;}
+      .tile.tu{width:30px; height:30px; background:linear-gradient(120deg,#0BB4A6,#2E9BFF); font-size:.95rem;}
+      .tile.gone{opacity:.18; filter:grayscale(1); transform:scale(.85); position:relative;}
+      .tile.gone::after{content:"✕"; position:absolute; inset:0; display:grid; place-items:center; color:var(--bad); font-size:1.1rem;}
+      .op-sign{font-family:'Baloo 2'; font-size:2rem; font-weight:800; align-self:center; color:var(--ink-soft);}
+      .area-grid{display:grid; gap:4px; margin:6px auto; width:fit-content;}
+      .area-cell{border-radius:10px; display:grid; place-items:center; font-family:'Baloo 2'; font-weight:800; color:#fff; padding:10px; text-align:center; animation:tileIn .4s var(--spring) both;}
+      .area-x2{background:linear-gradient(135deg,#7C5CFF,#B83DF5); min-width:110px; min-height:110px; font-size:1.5rem;}
+      .area-x{background:linear-gradient(135deg,#F43F8E,#FF5D3A); font-size:1.15rem;}
+      .area-k{background:linear-gradient(135deg,#0BB4A6,#2E9BFF); font-size:1.15rem;}
+
+      /* kalkulator */
+      .calc-input{display:flex; gap:10px; flex-wrap:wrap;}
+      .calc-input input{flex:1; min-width:220px; padding:15px 18px; font-size:1.15rem; font-weight:700; border:2.5px solid var(--line); border-radius:14px; background:var(--bg); outline:none; font-family:'Baloo 2';}
+      .calc-input input:focus{border-color:var(--teal);}
+      .kbd-hint{font-size:.88rem; color:var(--ink-soft); font-weight:600; margin-top:8px;}
+      .result-box{margin-top:16px; background:linear-gradient(120deg, rgba(11,180,166,.1), rgba(46,155,255,.1)); border:2px solid var(--teal); border-radius:var(--r-md); padding:16px 18px;}
+      .result-box .final{font-family:'Baloo 2'; font-size:1.6rem; font-weight:800;}
+      .num-inputs{display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;}
+      .num-inputs .field{flex:1; min-width:110px; margin:0;}
+      .num-inputs input{width:100%; padding:13px 14px; font-size:1.1rem; font-weight:800; border:2.5px solid var(--line); border-radius:14px; background:var(--bg); outline:none; font-family:'Baloo 2';}
+      .expr-chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+      .expr-chip{font-family:'Baloo 2'; font-weight:700; padding:10px 16px; min-height:46px; border-radius:999px; border:2px solid var(--line); background:var(--card); transition:all .18s var(--spring);}
+      .expr-chip:hover{border-color:var(--pink); transform:translateY(-2px);}
+      .expr-chip.active{background:var(--grad); color:#fff; border-color:transparent;}
+
+      /* ---------- KUIS ---------- */
+      .quiz-hud{display:flex; gap:10px; flex-wrap:wrap; align-items:stretch; margin-bottom:16px;}
+      .hud-card{flex:1; min-width:110px; background:var(--card); border:2px solid var(--line); border-radius:var(--r-md); padding:10px 14px; text-align:center; box-shadow:var(--shadow);}
+      .hud-card .big{font-family:'Baloo 2'; font-weight:800; font-size:1.45rem;}
+      .hud-card .small{font-size:.78rem; font-weight:800; color:var(--ink-soft); letter-spacing:.04em;}
+      .streak-fire{display:inline-block; animation:firePulse .6s ease-in-out infinite alternate;}
+      @keyframes firePulse{from{transform:scale(1);}to{transform:scale(1.3) rotate(-6deg);}}
+      .qbar{height:14px; background:var(--line); border-radius:99px; overflow:hidden; margin-bottom:18px;}
+      .qbar-fill{height:100%; background:var(--grad); border-radius:99px; transition:width .5s var(--spring);}
+      .q-text{font-family:'Baloo 2'; font-size:clamp(1.25rem,3.4vw,1.6rem); font-weight:700; margin-bottom:18px; line-height:1.4;}
+      .opts{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+      @media (max-width:560px){ .opts{grid-template-columns:1fr;} }
+      .opt{display:flex; align-items:center; gap:12px; text-align:left; background:var(--card); border:2.5px solid var(--line); border-radius:16px; padding:16px; min-height:62px; font-family:'Baloo 2'; font-weight:700; font-size:1.12rem; transition:all .18s var(--spring); width:100%;}
+      .opt .key{width:36px; height:36px; flex:none; border-radius:11px; background:var(--card2); border:2px solid var(--line); display:grid; place-items:center; font-size:1rem;}
+      .opt:hover:not(:disabled){transform:translateY(-3px); border-color:var(--violet); box-shadow:var(--shadow);}
+      .opt:disabled{cursor:default; opacity:.85;}
+      .opt.correct{background:rgba(18,183,106,.14); border-color:var(--good); opacity:1;}
+      .opt.correct .key{background:var(--good); color:#fff; border-color:var(--good);}
+      .opt.wrong{background:rgba(240,68,56,.12); border-color:var(--bad); opacity:1; animation:shake .45s ease;}
+      .opt.wrong .key{background:var(--bad); color:#fff; border-color:var(--bad);}
+      .explain{margin-top:16px; border-radius:var(--r-md); padding:16px 18px; font-weight:700; line-height:1.55; animation:pageIn .4s var(--spring) both;}
+      .explain.good{background:rgba(18,183,106,.12); border:2px solid var(--good);}
+      .explain.bad{background:rgba(240,68,56,.1); border:2px solid var(--bad);}
+      .explain .ttl{font-family:'Baloo 2'; font-size:1.1rem; margin-bottom:4px;}
+      .timer-wrap{display:flex; align-items:center; gap:10px; font-weight:800;}
+      .timer-ring{font-family:'Baloo 2'; font-size:1.3rem; background:var(--card2); border:2px solid var(--line); border-radius:12px; padding:4px 14px; min-width:70px; text-align:center;}
+      .timer-ring.low{color:var(--bad); border-color:var(--bad); animation:firePulse .4s infinite alternate;}
+      .switch-row{display:flex; align-items:center; gap:12px; font-weight:800; flex-wrap:wrap;}
+      .switch{position:relative; width:62px; height:34px; flex:none;}
+      .switch input{opacity:0; width:100%; height:100%; position:absolute; margin:0; cursor:pointer;}
+      .switch .tr{position:absolute; inset:0; background:var(--line); border-radius:99px; transition:.25s; pointer-events:none;}
+      .switch .tr::after{content:""; position:absolute; width:26px; height:26px; border-radius:50%; background:#fff; top:4px; left:4px; transition:.25s var(--spring); box-shadow:0 2px 6px rgba(0,0,0,.25);}
+      .switch input:checked + .tr{background:var(--teal);}
+      .switch input:checked + .tr::after{left:32px;}
+      .score-big{font-family:'Baloo 2'; font-size:clamp(3rem,10vw,4.6rem); font-weight:800; text-align:center; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;}
+      .badge-row{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin:16px 0;}
+      .badge{width:108px; text-align:center; background:var(--card); border:2px solid var(--amber); border-radius:18px; padding:14px 8px; box-shadow:var(--shadow); animation:drop .6s var(--spring) both;}
+      .badge .bic{font-size:2rem;}
+      .badge .bnm{font-family:'Baloo 2'; font-weight:700; font-size:.85rem; margin-top:4px;}
+      .badge.locked{opacity:.45; border-color:var(--line); filter:grayscale(.8);}
+      table.data{width:100%; border-collapse:collapse; font-size:.95rem;}
+      table.data th, table.data td{padding:10px 12px; text-align:left; border-bottom:2px solid var(--line); font-weight:600;}
+      table.data th{font-family:'Baloo 2'; font-weight:700; background:var(--card2);}
+      .table-scroll{overflow-x:auto; border:2px solid var(--line); border-radius:var(--r-md);}
+      .board-list{list-style:none; margin:0; padding:0;}
+      .board-list li{display:flex; align-items:center; gap:12px; padding:11px 14px; background:var(--card); border:2px solid var(--line); border-radius:14px; margin-bottom:8px; font-weight:700;}
+      .board-list .rank{width:34px; height:34px; border-radius:50%; background:var(--card2); display:grid; place-items:center; font-family:'Baloo 2'; flex:none;}
+      .board-list li:nth-child(1) .rank{background:var(--amber); color:#fff;}
+      .board-list .sc{margin-left:auto; font-family:'Baloo 2'; font-size:1.15rem;}
+
+      /* ---------- GURU ---------- */
+      .pin-wrap{max-width:420px; margin:26px auto; text-align:center;}
+      .pin-dots{display:flex; gap:10px; justify-content:center; margin:18px 0;}
+      .pin-dots span{width:18px; height:18px; border-radius:50%; border:3px solid var(--line); transition:all .2s var(--spring);}
+      .pin-dots span.on{background:var(--pink); border-color:var(--pink); transform:scale(1.2);}
+      .pin-input{width:100%; text-align:center; font-size:1.4rem; letter-spacing:.35em; font-family:'Baloo 2'; font-weight:800; padding:14px; border:2.5px solid var(--line); border-radius:14px; background:var(--bg); outline:none; text-transform:lowercase;}
+      .pin-input:focus{border-color:var(--pink);}
+      .guru-actions{display:flex; gap:10px; flex-wrap:wrap; margin:14px 0 20px;}
+      .status-msg{font-weight:800; padding:12px 16px; border-radius:14px; margin:12px 0; display:none;}
+      .status-msg.show{display:block; animation:pageIn .35s var(--spring) both;}
+      .status-msg.ok{background:rgba(18,183,106,.13); border:2px solid var(--good);}
+      .status-msg.err{background:rgba(240,68,56,.1); border:2px solid var(--bad);}
+      .status-msg.info{background:rgba(46,155,255,.1); border:2px solid var(--sky);}
+
+      #confettiCanvas{position:fixed; inset:0; pointer-events:none; z-index:200;}
+      .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(90px); background:var(--ink); color:var(--bg); font-weight:800; padding:13px 22px; border-radius:999px; z-index:210; transition:transform .45s var(--spring); box-shadow:0 16px 34px rgba(0,0,0,.3); max-width:92vw; text-align:center;}
+      .toast.show{transform:translateX(-50%) translateY(0);}
+      .xp-pop{position:fixed; z-index:205; font-family:'Baloo 2'; font-weight:800; color:var(--amber); font-size:1.4rem; pointer-events:none; text-shadow:0 2px 8px rgba(0,0,0,.25); animation:xpFloat 1.1s ease-out forwards;}
+      @keyframes xpFloat{from{opacity:0; transform:translateY(8px) scale(.7);}25%{opacity:1;}to{opacity:0; transform:translateY(-56px) scale(1.15);}}
+      @media (prefers-reduced-motion: reduce){
+        *,*::before,*::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important;}
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ================= LOGIN ================= -->
+    <div id="loginScreen">
+      <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+      <div id="loginSymbols"></div>
+      <div class="login-inner">
+        <span class="login-badge">✦ DapMath · Matematika Kelas 7</span>
+        <h1 class="login-title">Bentuk <span class="hl">Aljabar</span></h1>
+        <p class="login-sub">Petualangan seru mengenal variabel, suku, dan operasi aljabar — lengkap dengan kotak misteri, permainan seret, dan kuis berhadiah XP!</p>
+        <div class="mascot-row">
+          <div id="mascotLogin"></div>
+          <div class="bubble">Halo! Aku <b>Alja</b>, robot penjaga Kotak Misteri. Isi namamu dulu ya, biar kita bisa berpetualang bersama! 🚀</div>
+        </div>
+        <form class="login-card" id="loginForm" autocomplete="off">
+          <h2>Siapa namamu, Penjelajah?</h2>
+          <p>Nama dan kelasmu akan muncul di laporan guru, jadi isi dengan benar ya.</p>
+          <div class="field">
+            <label for="inpNama">Nama lengkap</label>
+            <input id="inpNama" type="text" placeholder="Contoh: Siti Rahmawati" maxlength="60" />
+          </div>
+          <div class="field">
+            <label for="inpKelas">Kelas</label>
+            <select id="inpKelas">
+              <option value="">— Pilih kelas —</option>
+              <option>7A</option><option>7B</option><option>7C</option><option>7D</option>
+              <option>7E</option><option>7F</option><option>7G</option><option>7H</option>
+              <option>7I</option><option>7J</option>
+              <option>Lainnya</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-grad btn-block">Mulai Petualangan →</button>
+          <div class="login-err" id="loginErr"></div>
+        </form>
+      </div>
+      <div class="login-foot">Dibangun oleh <b>Dody Adyansyah</b> · DapMath</div>
+    </div>
+
+    <!-- ================= APP ================= -->
+    <div id="appShell" class="hidden">
+      <div class="topbar">
+        <div class="wrap topbar-in">
+          <div class="brand">
+            <div class="logo">x²</div>
+            <div>Bentuk Aljabar<small>DAPMATH · KELAS 7</small></div>
+          </div>
+          <div class="student-chip">
+            <div class="xp-mini" title="XP dan level kamu">
+              <span id="lvlBadge">Lv 1</span>
+              <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+              <span id="xpText">0 XP</span>
+            </div>
+            <div class="chip">
+              <span class="avatar" id="avatarInit">?</span>
+              <span><span id="chipNama">Siswa</span> · <span id="chipKelas">–</span></span>
+              <button class="btn btn-ghost btn-sm" id="btnGanti" type="button">Ganti Siswa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <nav class="mainnav" id="mainNav">
+          <button class="navbtn active" data-page="beranda" type="button">🏠 Beranda</button>
+          <button class="navbtn" data-page="materi" type="button">🧩 Materi Seru</button>
+          <button class="navbtn" data-page="kalkulator" type="button">🧮 Kalkulator</button>
+          <button class="navbtn" data-page="kuis" type="button">🏆 Kuis XP</button>
+          <button class="navbtn" data-page="guru" type="button">🔐 Data Guru</button>
+        </nav>
+
+        <main>
+          <!-- ========== BERANDA ========== -->
+          <section class="page" id="page-beranda">
+            <div class="hero" id="heroBox">
+              <div id="heroSymbols"></div>
+              <h2>Halo, <span id="heroNama">Penjelajah</span>! Siap membuka Kotak Misteri Aljabar? 🎁</h2>
+              <p>Di sini huruf bisa menyimpan angka rahasia. Kamu akan belajar mengenal variabel, mengelompokkan suku sejenis, berhitung dengan aljabar, dan mengumpulkan XP sebanyak-banyaknya!</p>
+              <div class="row">
+                <button class="btn btn-grad" data-goto="materi" type="button">🧩 Mulai Belajar</button>
+                <button class="btn" style="background:#fff;color:#8A2064;" data-goto="kuis" type="button">🏆 Tantangan Kuis</button>
+              </div>
+              <div class="hero-mascot" id="mascotHero"></div>
+            </div>
+
+            <div class="stat-row">
+              <div class="stat-card"><div class="num" id="stXP" style="color:var(--coral);">0</div><div class="lbl">TOTAL XP KAMU</div></div>
+              <div class="stat-card"><div class="num" id="stLevel" style="color:var(--violet);">1</div><div class="lbl">LEVEL</div></div>
+              <div class="stat-card"><div class="num" id="stBest" style="color:var(--teal);">–</div><div class="lbl">SKOR KUIS TERBAIK</div></div>
+              <div class="stat-card"><div class="num" id="stMenu" style="color:var(--pink);">0/4</div><div class="lbl">MATERI DIBUKA</div></div>
+            </div>
+
+            <div class="sec-head"><h2>Pilih Petualanganmu</h2><p>Empat misi seru menantimu!</p></div>
+            <div class="menu-grid">
+              <button class="menu-card" data-goto="materi" data-sub="kotak" type="button">
+                <div class="ic" style="background:linear-gradient(135deg,#FFB020,#FF5D3A);">🎁</div>
+                <h3>Kotak Misteri</h3><p>Variabel itu seperti kotak tertutup berisi angka rahasia. Buka kotaknya dan lihat keajaibannya!</p>
+                <span class="go">Buka misi →</span>
+              </button>
+              <button class="menu-card" data-goto="materi" data-sub="suku" type="button">
+                <div class="ic" style="background:linear-gradient(135deg,#7C5CFF,#B83DF5);">🧲</div>
+                <h3>Suku Sejenis</h3><p>Seret suku-suku ke keranjang yang tepat. Yang sejenis boleh digabung, yang beda jangan dipaksa!</p>
+                <span class="go">Buka misi →</span>
+              </button>
+              <button class="menu-card" data-goto="materi" data-sub="operasi" type="button">
+                <div class="ic" style="background:linear-gradient(135deg,#F43F8E,#FF3D77);">🧱</div>
+                <h3>Operasi Aljabar</h3><p>Tambah, kurang, dan kali bentuk aljabar divisualkan dengan ubin dan model luas. Jelas banget!</p>
+                <span class="go">Buka misi →</span>
+              </button>
+              <button class="menu-card" data-goto="kalkulator" type="button">
+                <div class="ic" style="background:linear-gradient(135deg,#0BB4A6,#2E9BFF);">🧮</div>
+                <h3>Kalkulator Pintar</h3><p>Sederhanakan bentuk aljabar dan hitung substitusi nilai — lengkap dengan langkah-langkahnya.</p>
+                <span class="go">Buka misi →</span>
+              </button>
+            </div>
+
+            <div class="guide">
+              <div id="mascotGuide1" style="flex:none;"></div>
+              <div class="gtext"><b>Tips dari Alja:</b> selesaikan materi dari Kotak Misteri sampai Substitusi secara berurutan. Setelah itu uji kemampuanmu di Kuis XP — kumpulkan streak api 🔥 dan rebut lencana <b>Master Aljabar</b>!</div>
+            </div>
+          </section>
+
+          <!-- ========== MATERI ========== -->
+          <section class="page hidden" id="page-materi">
+            <div class="sec-head"><h2>🧩 Materi Seru</h2><p>Belajar sambil bermain — klik tab untuk berpindah misi.</p></div>
+            <div class="subtabs" id="subTabs">
+              <button class="subtab active" data-sub="kotak" type="button">🎁 Kotak Misteri</button>
+              <button class="subtab" data-sub="suku" type="button">🧲 Suku Sejenis</button>
+              <button class="subtab" data-sub="operasi" type="button">🧱 Operasi Aljabar</button>
+              <button class="subtab" data-sub="substitusi" type="button">🔢 Substitusi</button>
+            </div>
+
+            <!-- KOTAK MISTERI -->
+            <div class="subpage" id="sub-kotak">
+              <div class="panel">
+                <h3>🎁 Variabel = Kotak Misteri</h3>
+                <p>Dalam aljabar, <b>variabel</b> adalah huruf (misalnya <i>x</i> atau <i>y</i>) yang mewakili sebuah bilangan yang belum diketahui — persis seperti kotak tertutup berisi angka rahasia! Angka di depan huruf disebut <b>koefisien</b>, dan angka yang berdiri sendiri disebut <b>konstanta</b>. Klik kotaknya untuk membuka isinya!</p>
+                <div class="concept-grid">
+                  <div class="concept"><div class="t" style="color:var(--pink);">Variabel</div><div class="ex"><span style="color:var(--pink);">x</span>, <span style="color:var(--sky);">y</span></div><div>Huruf pengganti bilangan rahasia.</div></div>
+                  <div class="concept"><div class="t" style="color:var(--coral);">Koefisien</div><div class="ex">3 pada <span style="color:var(--pink);">3x</span></div><div>Angka pengali di depan variabel.</div></div>
+                  <div class="concept"><div class="t" style="color:var(--teal);">Konstanta</div><div class="ex">+5</div><div>Angka tetap, tidak ikut variabel.</div></div>
+                </div>
+                <div class="expr-big">3<span class="var-x">x</span> + 2<span class="var-y">y</span> + <span class="konst">5</span></div>
+                <div class="boxes">
+                  <div>
+                    <button class="mystery" id="boxX" type="button" aria-label="Kotak variabel x">
+                      <div class="flip">
+                        <div class="mface front"><span class="q">?</span><small>Kotak x — klik!</small></div>
+                        <div class="mface back" style="background:linear-gradient(150deg,#F43F8E,#B83DF5);"><small>Isi kotak x</small><span class="val" id="boxXVal">4</span></div>
+                      </div>
+                    </button>
+                  </div>
+                  <div>
+                    <button class="mystery" id="boxY" type="button" aria-label="Kotak variabel y">
+                      <div class="flip">
+                        <div class="mface front"><span class="q">?</span><small>Kotak y — klik!</small></div>
+                        <div class="mface back" style="background:linear-gradient(150deg,#2E9BFF,#0BB4A6);"><small>Isi kotak y</small><span class="val" id="boxYVal">3</span></div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+                <div class="slider-row"><label>Isi kotak x</label><input type="range" id="rngX" min="0" max="10" value="4" /><span class="slider-val" id="valX">4</span></div>
+                <div class="slider-row"><label>Isi kotak y</label><input type="range" id="rngY" min="0" max="10" value="3" /><span class="slider-val" id="valY">3</span></div>
+                <div class="result-box">
+                  <div style="font-weight:800; color:var(--ink-soft);">NILAI 3x + 2y + 5 SAAT KOTAK DIBUKA</div>
+                  <div class="final" id="kotakHasil">= 3(4) + 2(3) + 5 = 23</div>
+                </div>
+                <div class="guide"><div class="mascot-mini" style="flex:none;"></div><div class="gtext"><b>Alja berkata:</b> geser isi kotaknya! Nilai bentuk aljabar berubah mengikuti isi kotak — itulah gunanya variabel: satu rumus bisa dipakai untuk banyak nilai berbeda.</div></div>
+              </div>
+            </div>
+
+            <!-- SUKU SEJENIS -->
+            <div class="subpage hidden" id="sub-suku">
+              <div class="panel">
+                <h3>🧲 Kelompokkan Suku Sejenis</h3>
+                <p><b>Suku sejenis</b> adalah suku yang variabel dan pangkatnya sama persis: semua suku <i>x</i> berkumpul dengan suku <i>x</i>, suku <i>y</i> dengan suku <i>y</i>, dan konstanta dengan konstanta. <b>Seret</b> setiap keping suku ke keranjang yang benar (atau ketuk kepingnya, lalu ketuk keranjangnya)!</p>
+                <div class="chip-pool" id="chipPool"></div>
+                <div class="baskets">
+                  <div class="basket bx" data-basket="x"><h4>🩷 Keranjang Suku x <span id="cntX"></span></h4><div class="items"></div><div class="sum" id="sumX"></div></div>
+                  <div class="basket by" data-basket="y"><h4>💙 Keranjang Suku y <span id="cntY"></span></h4><div class="items"></div><div class="sum" id="sumY"></div></div>
+                  <div class="basket bk" data-basket="k"><h4>💚 Keranjang Konstanta <span id="cntK"></span></h4><div class="items"></div><div class="sum" id="sumK"></div></div>
+                </div>
+                <div class="feedback" id="dragFeedback"></div>
+                <div class="result-box hidden" id="dragDone">
+                  <div style="font-weight:800; color:var(--ink-soft);">BENTUK PALING SEDERHANA</div>
+                  <div class="final" id="dragFinal"></div>
+                  <p style="margin:8px 0 0;">Suku sejenis boleh dijumlahkan koefisiennya. Suku yang tidak sejenis <b>tidak bisa</b> digabung — 3x + 2y tetap 3x + 2y!</p>
+                </div>
+                <div style="text-align:center; margin-top:16px;"><button class="btn btn-teal" id="btnAcakSuku" type="button">🔀 Acak Suku Baru</button></div>
+              </div>
+            </div>
+
+            <!-- OPERASI -->
+            <div class="subpage hidden" id="sub-operasi">
+              <div class="panel">
+                <h3>➕ Penjumlahan dengan Ubin Aljabar</h3>
+                <p>Ubin panjang merah muda = <b>x</b>, ubin kecil hijau = <b>1 satuan</b>. Menjumlahkan bentuk aljabar artinya menggabungkan ubin yang sejenis. Atur angka-angkanya dan perhatikan hasilnya!</p>
+                <div class="expr-big" id="addExpr">(3x + 2) + (2x + 1)</div>
+                <div class="stepper-row">
+                  <div class="stepper"><span class="nm">a</span><button data-add="a,-1" type="button">−</button><span class="v" id="addA">3</span><button data-add="a,1" type="button">+</button></div>
+                  <div class="stepper"><span class="nm">b</span><button data-add="b,-1" type="button">−</button><span class="v" id="addB">2</span><button data-add="b,1" type="button">+</button></div>
+                  <div class="stepper"><span class="nm">c</span><button data-add="c,-1" type="button">−</button><span class="v" id="addC">2</span><button data-add="c,1" type="button">+</button></div>
+                  <div class="stepper"><span class="nm">d</span><button data-add="d,-1" type="button">−</button><span class="v" id="addD">1</span><button data-add="d,1" type="button">+</button></div>
+                </div>
+                <div class="tile-stage" id="addStage"></div>
+                <div class="result-box"><div style="font-weight:800; color:var(--ink-soft);">HASIL (ax + b) + (cx + d)</div><div class="final" id="addResult"></div></div>
+              </div>
+
+              <div class="panel">
+                <h3>➖ Pengurangan: Coret yang Sejenis</h3>
+                <p>Mengurangkan artinya mengambil ubin. Klik tombol <b>Coret</b> — ubin pada kelompok pertama akan dicoret sebanyak ubin kelompok kedua. Sisanya adalah jawabannya!</p>
+                <div class="expr-big" id="subExpr">(5x + 4) − (2x + 1)</div>
+                <div class="tile-stage" id="subStage"></div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+                  <button class="btn btn-grad btn-sm" id="btnCoret" type="button">✂️ Coret Ubin yang Dikurangkan</button>
+                  <button class="btn btn-ghost btn-sm" id="btnUlangCoret" type="button">↩️ Ulangi</button>
+                </div>
+                <div class="result-box"><div style="font-weight:800; color:var(--ink-soft);">HASIL (5x + 4) − (2x + 1)</div><div class="final" id="subResult">= 5x + 4 − 2x − 1 = 3x + 3</div></div>
+              </div>
+
+              <div class="panel">
+                <h3>✖️ Perkalian dengan Model Luas</h3>
+                <p>Mengalikan <b>(x + a)(x + b)</b> sama seperti menghitung luas persegi panjang bersisi (x + a) dan (x + b). Setiap petak adalah hasil kali kedua sisinya. Ubah a dan b!</p>
+                <div class="stepper-row">
+                  <div class="stepper"><span class="nm">a</span><button data-mul="a,-1" type="button">−</button><span class="v" id="mulA">2</span><button data-mul="a,1" type="button">+</button></div>
+                  <div class="stepper"><span class="nm">b</span><button data-mul="b,-1" type="button">−</button><span class="v" id="mulB">3</span><button data-mul="b,1" type="button">+</button></div>
+                </div>
+                <div class="area-grid" id="areaGrid" style="grid-template-columns:auto auto; grid-template-rows:auto auto;"></div>
+                <div class="result-box"><div style="font-weight:800; color:var(--ink-soft);">HASIL (x + a)(x + b)</div><div class="final" id="mulResult"></div></div>
+                <div class="guide"><div class="mascot-mini" style="flex:none;"></div><div class="gtext"><b>Ingat ya:</b> setiap suku di kurung pertama harus dikalikan dengan setiap suku di kurung kedua. Petak ungu x·x = x², dua petak merah muda adalah suku x, dan petak hijau adalah konstanta a×b.</div></div>
+              </div>
+            </div>
+
+            <!-- SUBSTITUSI -->
+            <div class="subpage hidden" id="sub-substitusi">
+              <div class="panel">
+                <h3>🔢 Substitusi: Ganti Huruf dengan Angka</h3>
+                <p><b>Substitusi</b> artinya mengganti variabel dengan nilai tertentu, lalu menghitung hasilnya. Pilih bentuk aljabarnya, geser nilai x dan y, dan ikuti langkah-langkahnya!</p>
+                <div class="expr-chips" id="subsChips">
+                  <button class="expr-chip active" data-expr="3x+2y-4" type="button">3x + 2y − 4</button>
+                  <button class="expr-chip" data-expr="5x-y+7" type="button">5x − y + 7</button>
+                  <button class="expr-chip" data-expr="x*x+2x-1" data-pretty="x² + 2x − 1" type="button">x² + 2x − 1</button>
+                  <button class="expr-chip" data-expr="4y-3x+10" type="button">4y − 3x + 10</button>
+                </div>
+                <div class="expr-big" id="subsExprBig">3x + 2y − 4</div>
+                <div class="slider-row"><label>Nilai x</label><input type="range" id="subsX" min="-5" max="10" value="2" /><span class="slider-val" id="subsXVal">2</span></div>
+                <div class="slider-row" id="subsYRow"><label>Nilai y</label><input type="range" id="subsY" min="-5" max="10" value="5" /><span class="slider-val" id="subsYVal">5</span></div>
+                <ol class="steps" id="subsSteps"></ol>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== KALKULATOR ========== -->
+          <section class="page hidden" id="page-kalkulator">
+            <div class="sec-head"><h2>🧮 Kalkulator Pintar</h2><p>Sederhanakan bentuk aljabar dan hitung substitusi — dengan langkah lengkap.</p></div>
+
+            <div class="panel">
+              <h3>✨ Penyederhana Bentuk Aljabar</h3>
+              <p>Tulis bentuk aljabar, lalu tekan Sederhanakan. Boleh memakai +, −, kurung, dan perkalian seperti 3(x + 2) atau (x + 1)(x + 4).</p>
+              <div class="expr-chips">
+                <button class="expr-chip simp-chip" data-v="4x+3+2x-5" type="button">4x + 3 + 2x − 5</button>
+                <button class="expr-chip simp-chip" data-v="3(2x-4)+5x" type="button">3(2x − 4) + 5x</button>
+                <button class="expr-chip simp-chip" data-v="7a-3(2a-1)+4" type="button">7a − 3(2a − 1) + 4</button>
+                <button class="expr-chip simp-chip" data-v="(x+2)(x+5)" type="button">(x + 2)(x + 5)</button>
+                <button class="expr-chip simp-chip" data-v="5y-(2y-6)" type="button">5y − (2y − 6)</button>
+              </div>
+              <div class="calc-input" style="margin-top:14px;">
+                <input id="simpInput" type="text" value="4x+3+2x-5" placeholder="Contoh: 4x + 3 + 2x − 5" />
+                <button class="btn btn-grad" id="btnSimp" type="button">Sederhanakan ✨</button>
+              </div>
+              <div class="kbd-hint">Gunakan huruf kecil untuk variabel (x, y, a, b…). Tanda titik dua/titik tidak dipakai; pangkat dua tulis x^2 atau x*x.</div>
+              <div id="simpOut"></div>
+            </div>
+
+            <div class="panel">
+              <h3>🔢 Kalkulator Substitusi</h3>
+              <p>Masukkan bentuk aljabar dan nilai variabelnya — kalkulator mengganti huruf dengan angka langkah demi langkah.</p>
+              <div class="calc-input">
+                <input id="evalInput" type="text" value="3x^2 - 2x + 5" placeholder="Contoh: 3x^2 − 2x + 5" />
+              </div>
+              <div class="num-inputs">
+                <div class="field"><label for="evalX">Nilai x</label><input id="evalX" type="number" value="2" /></div>
+                <div class="field"><label for="evalY">Nilai y</label><input id="evalY" type="number" value="3" /></div>
+                <div class="field" style="display:flex; align-items:flex-end;"><button class="btn btn-teal btn-block" id="btnEval" type="button">Hitung 🎯</button></div>
+              </div>
+              <div id="evalOut"></div>
+            </div>
+          </section>
+
+          <!-- ========== KUIS ========== -->
+          <section class="page hidden" id="page-kuis">
+            <div class="sec-head"><h2>🏆 Kuis XP: Master Aljabar</h2><p>10 soal · kumpulkan XP, jaga streak api, rebut semua lencana!</p></div>
+
+            <!-- layar mulai -->
+            <div class="panel" id="quizStart">
+              <div style="text-align:center;">
+                <div id="mascotQuiz" style="display:inline-block;"></div>
+                <h3 style="font-size:1.5rem;">Siap bertarung, <span id="quizNama">Penjelajah</span>? ⚔️</h3>
+                <p style="max-width:520px; margin:8px auto 4px;">Jawaban benar = <b>+10 XP</b>, streak 3+ = bonus XP membara! Setiap soal langsung dibahas setelah kamu menjawab.</p>
+              </div>
+              <div class="stat-row">
+                <div class="stat-card"><div class="num" style="color:var(--amber);">10</div><div class="lbl">SOAL</div></div>
+                <div class="stat-card"><div class="num" style="color:var(--teal);" id="bestStart">–</div><div class="lbl">SKOR TERBAIKMU</div></div>
+                <div class="stat-card"><div class="num" style="color:var(--pink);" id="attemptStart">0</div><div class="lbl">SUDAH BERMAIN</div></div>
+              </div>
+              <div class="switch-row" style="justify-content:center; margin:18px 0 6px;">
+                <span>⏱️ Mode Timer (30 detik/soal)</span>
+                <label class="switch"><input type="checkbox" id="timerToggle" /><span class="tr"></span></label>
+                <span id="timerState" style="color:var(--ink-soft);">Nonaktif — santai saja</span>
+              </div>
+              <div style="text-align:center; margin-top:14px;">
+                <button class="btn btn-grad" id="btnStartQuiz" type="button" style="font-size:1.2rem; padding:16px 38px;">🚀 Mulai Kuis!</button>
+              </div>
+              <div id="boardWrap" style="margin-top:24px;">
+                <h3 style="text-align:center; margin-bottom:12px;">👑 Papan Skor Terbaik</h3>
+                <ul class="board-list" id="boardList"><li style="justify-content:center; color:var(--ink-soft);">Belum ada skor. Jadilah yang pertama! 🌟</li></ul>
+              </div>
+            </div>
+
+            <!-- layar soal -->
+            <div class="panel hidden" id="quizPlay">
+              <div class="quiz-hud">
+                <div class="hud-card"><div class="big" id="hudQ">1/10</div><div class="small">SOAL</div></div>
+                <div class="hud-card"><div class="big" id="hudStreak">0 <span class="streak-fire" id="fireIco" style="visibility:hidden;">🔥</span></div><div class="small">STREAK</div></div>
+                <div class="hud-card"><div class="big" id="hudXP">0</div><div class="small">XP KUIS INI</div></div>
+                <div class="hud-card"><div class="big" id="hudScore">0</div><div class="small">JAWABAN BENAR</div></div>
+                <div class="hud-card hidden" id="hudTimerCard"><div class="big timer-ring" id="hudTimer" style="border:none; background:none;">30</div><div class="small">DETIK</div></div>
+              </div>
+              <div class="qbar"><div class="qbar-fill" id="qFill" style="width:0%"></div></div>
+              <div class="q-text" id="qText"></div>
+              <div class="opts" id="qOpts"></div>
+              <div id="qExplain"></div>
+              <div style="margin-top:18px; display:flex; justify-content:flex-end;">
+                <button class="btn btn-grad hidden" id="btnNextQ" type="button">Soal Berikutnya →</button>
+              </div>
+            </div>
+
+            <!-- layar hasil -->
+            <div class="panel hidden" id="quizResult">
+              <h3 style="text-align:center; font-size:1.5rem;" id="resTitle">Kuis Selesai! 🎉</h3>
+              <div class="score-big" id="resScore">0</div>
+              <p style="text-align:center;" id="resMsg"></p>
+              <div class="stat-row">
+                <div class="stat-card"><div class="num" style="color:var(--good);" id="resBenar">0</div><div class="lbl">BENAR</div></div>
+                <div class="stat-card"><div class="num" style="color:var(--coral);" id="resStreak">0</div><div class="lbl">STREAK TERBAIK</div></div>
+                <div class="stat-card"><div class="num" style="color:var(--amber);" id="resXP">+0</div><div class="lbl">XP DIDAPAT</div></div>
+                <div class="stat-card"><div class="num" style="color:var(--violet);" id="resLevel">Lv 1</div><div class="lbl">LEVEL SEKARANG</div></div>
+              </div>
+              <h3 style="text-align:center; margin-top:22px;">🎖️ Lencana Kamu</h3>
+              <div class="badge-row" id="badgeRow"></div>
+              <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:8px;">
+                <button class="btn btn-grad" id="btnRetry" type="button">🔁 Main Lagi</button>
+                <button class="btn btn-ghost" data-goto="materi" type="button">📚 Belajar Lagi</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== DATA GURU ========== -->
+          <section class="page hidden" id="page-guru">
+            <div class="sec-head"><h2>🔐 Data Guru</h2><p>Area khusus guru — pantau login, menu yang dipelajari, dan perkembangan skor kuis siswa.</p></div>
+
+            <div class="panel" id="pinPanel">
+              <div class="pin-wrap">
+                <div style="font-size:2.6rem;">🛡️</div>
+                <h3>Masukkan PIN Guru</h3>
+                <p>PIN diminta setiap kali menu ini dibuka.</p>
+                <input class="pin-input" id="pinInput" type="password" inputmode="text" autocomplete="off" placeholder="••••••" maxlength="12" />
+                <div class="login-err" id="pinErr"></div>
+                <button class="btn btn-grad btn-block" id="btnPin" type="button" style="margin-top:10px;">Buka Data Guru</button>
+              </div>
+            </div>
+
+            <div id="guruPanel" class="hidden">
+              <div class="stat-row" style="margin-top:0;">
+                <div class="stat-card"><div class="num" style="color:var(--pink);" id="gSiswa">0</div><div class="lbl">SISWA LOGIN (SESI INI)</div></div>
+                <div class="stat-card"><div class="num" style="color:var(--teal);" id="gKuis">0</div><div class="lbl">TOTAL PERCOBAAN KUIS</div></div>
+                <div class="stat-card"><div class="num" style="color:var(--amber);" id="gRata">–</div><div class="lbl">RATA-RATA SKOR</div></div>
+                <div class="stat-card"><div class="num" style="color:var(--violet);" id="gRemote">–</div><div class="lbl">DATA DARI SHEET</div></div>
+              </div>
+
+              <div class="guru-actions">
+                <button class="btn btn-teal btn-sm" id="btnLoadSheet" type="button">☁️ Muat Data dari Google Sheet</button>
+                <button class="btn btn-grad btn-sm" id="btnUji" type="button">📡 Uji Kirim Data</button>
+                <button class="btn btn-ghost btn-sm" id="btnCSV" type="button">⬇️ Unduh Laporan (CSV)</button>
+                <button class="btn btn-ghost btn-sm" id="btnKunci" type="button">🔒 Kunci Lagi</button>
+              </div>
+              <div class="status-msg" id="guruStatus"></div>
+
+              <div class="panel" style="padding:18px;">
+                <h3>☁️ Database Google Sheets</h3>
+                <p style="margin-top:2px;">URL Web App Apps Script sudah tertanam permanen. Ganti hanya bila Bapak/Ibu membuat deployment baru, lalu tekan Simpan.</p>
+                <div class="calc-input">
+                  <input id="sheetUrlInput" type="text" />
+                  <button class="btn btn-ghost" id="btnSaveUrl" type="button">Simpan URL</button>
+                </div>
+                <div class="kbd-hint">Data terkirim otomatis: login siswa, hasil kuis, dan ringkasan belajar (dengan penanda aplikasi <b>bentuk-aljabar</b>).</div>
+              </div>
+
+              <h3 style="margin:20px 0 10px;">👥 Daftar Siswa Login</h3>
+              <div class="table-scroll"><table class="data"><thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Sumber</th></tr></thead><tbody id="tblLogin"></tbody></table></div>
+
+              <h3 style="margin:22px 0 10px;">📈 Riwayat &amp; Perkembangan Skor Kuis</h3>
+              <div class="table-scroll"><table class="data"><thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Percobaan ke-</th><th>Skor</th><th>Perkembangan</th></tr></thead><tbody id="tblKuis"></tbody></table></div>
+
+              <h3 style="margin:22px 0 10px;">🧭 Menu yang Dipelajari per Siswa</h3>
+              <div class="table-scroll"><table class="data"><thead><tr><th>Nama</th><th>Kelas</th><th>Menu Dipelajari</th><th>Percobaan Kuis</th><th>Skor Terakhir</th><th>Skor Terbaik</th><th>Rata-rata</th></tr></thead><tbody id="tblRingkas"></tbody></table></div>
+            </div>
+          </section>
+        </main>
+
+        <footer class="site">
+          Dibangun oleh <b>Dody Adyansyah</b> · DapMath — Belajar Matematika Jadi Petualangan 🚀
+        </footer>
+      </div>
+    </div>
+
+    <canvas id="confettiCanvas"></canvas>
+    <div class="toast" id="toast"></div>
+
+    <script>
+    "use strict";
+    /* ================= KONSTANTA & STATUS ================= */
+    var SHEET_URL_DEFAULT = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
+    var APP_ID = "bentuk-aljabar";
+    var GURU_PIN = "d4pm4t";
+
+    var state = {
+      nama: "", kelas: "",
+      sheetUrl: SHEET_URL_DEFAULT,
+      xp: 0,
+      menusVisited: {},        // sub-materi yang sudah dibuka
+      logins: [],              // sesi ini (lokal)
+      quizHistory: [],         // sesi ini (lokal): {time,nama,kelas,attemptNo,score}
+      remote: null,            // data dari Sheet: {login:[],kuis:[],ringkasan:[]}
+      guruUnlocked: false
+    };
+
+    function $(id){ return document.getElementById(id); }
+    function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+    function nowStr(){ var d=new Date(); return d.toLocaleDateString("id-ID")+" "+d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"}); }
+    function levelOf(xp){ return Math.floor(xp/100)+1; }
+    function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(function(){ t.classList.remove("show"); }, 3200); }
+
+    /* ================= MASCOT (SVG) ================= */
+    function mascotSVG(size){
+      return '<svg class="mascot" width="'+size+'" height="'+size+'" viewBox="0 0 120 120" aria-hidden="true">'
+      + '<line x1="60" y1="18" x2="60" y2="32" stroke="#FFD93D" stroke-width="5" stroke-linecap="round"/>'
+      + '<circle cx="60" cy="13" r="7" fill="#FFD93D"/>'
+      + '<rect x="22" y="30" width="76" height="60" rx="18" fill="#7C5CFF"/>'
+      + '<rect x="22" y="30" width="76" height="60" rx="18" fill="url(#mg)" opacity=".55"/>'
+      + '<defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B83DF5"/><stop offset="1" stop-color="#2E9BFF"/></linearGradient></defs>'
+      + '<rect x="31" y="42" width="58" height="34" rx="12" fill="#FFF6E9"/>'
+      + '<g class="eye"><circle cx="48" cy="57" r="5.5" fill="#2A2140"/><circle cx="72" cy="57" r="5.5" fill="#2A2140"/></g>'
+      + '<path d="M50 68 Q60 76 70 68" stroke="#2A2140" stroke-width="3.5" fill="none" stroke-linecap="round"/>'
+      + '<circle cx="38" cy="66" r="4.5" fill="#FF9DB1"/><circle cx="82" cy="66" r="4.5" fill="#FF9DB1"/>'
+      + '<g class="arm-wave"><rect x="94" y="52" width="12" height="26" rx="6" fill="#FFB020" transform="rotate(-18 100 65)"/></g>'
+      + '<rect x="12" y="56" width="12" height="24" rx="6" fill="#FFB020" transform="rotate(14 18 68)"/>'
+      + '<rect x="40" y="92" width="16" height="12" rx="5" fill="#4A3A8C"/><rect x="64" y="92" width="16" height="12" rx="5" fill="#4A3A8C"/>'
+      + '<text x="60" y="52" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="11" fill="#F43F8E"></text>'
+      + '</svg>';
+    }
+    $("mascotLogin").innerHTML = mascotSVG(104);
+    $("mascotHero").innerHTML = mascotSVG(150);
+    $("mascotQuiz").innerHTML = mascotSVG(96);
+    document.querySelectorAll(".mascot-mini").forEach(function(el){ el.innerHTML = mascotSVG(64); });
+
+    /* simbol melayang + paralaks */
+    function fillSymbols(el, items){
+      if(!el) return;
+      el.innerHTML = items.map(function(it){
+        return '<span class="float-sym" data-depth="'+it[3]+'" style="left:'+it[0]+'%; top:'+it[1]+'%; font-size:'+it[2]+'rem; animation-delay:'+(Math.random()*2).toFixed(1)+'s;">'+it[4]+'</span>';
+      }).join("");
+    }
+    fillSymbols($("loginSymbols"), [[6,10,3.4,.6,"x"],[88,8,2.6,.9,"+"],[14,72,2.8,.5,"y"],[82,66,3.6,.7,"3x"],[46,4,2.2,.4,"="],[70,26,2,.8,"a²"],[30,32,1.8,.5,"−"],[94,40,2.2,.6,"?"]]);
+    fillSymbols($("heroSymbols"), [[3,12,2.6,.5,"x"],[90,16,2.2,.8,"+"],[76,64,2.8,.6,"y"],[8,68,2,.4,"="],[55,8,1.8,.7,"5"],[36,76,2.2,.5,"×"]]);
+    document.addEventListener("pointermove", function(e){
+      var cx = (e.clientX/window.innerWidth - .5), cy = (e.clientY/window.innerHeight - .5);
+      document.querySelectorAll(".float-sym").forEach(function(s){
+        var d = parseFloat(s.getAttribute("data-depth")||".5");
+        s.style.translate = (-cx*26*d)+"px "+(-cy*20*d)+"px";
+      });
+    });
+
+    /* ================= CONFETTI ================= */
+    var cvs = $("confettiCanvas"), ctx = cvs.getContext("2d"), confettiParts = [], confettiRun = false;
+    function sizeCanvas(){ cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
+    window.addEventListener("resize", sizeCanvas); sizeCanvas();
+    function confettiBurst(n, x, y){
+      var colors = ["#FF5D3A","#F43F8E","#FFB020","#0BB4A6","#7C5CFF","#2E9BFF","#FFD93D"];
+      for(var i=0;i<(n||80);i++){
+        confettiParts.push({ x: x==null? Math.random()*cvs.width : x, y: y==null? -20-Math.random()*cvs.height*.25 : y,
+          w: 6+Math.random()*7, h: 8+Math.random()*9, c: colors[i%colors.length],
+          vx: (Math.random()-.5)*3.4, vy: 2+Math.random()*3.4, rot: Math.random()*Math.PI, vr:(Math.random()-.5)*.25, circ: Math.random()<.3 });
+      }
+      if(!confettiRun){ confettiRun = true; requestAnimationFrame(confettiTick); }
+    }
+    function confettiTick(){
+      ctx.clearRect(0,0,cvs.width,cvs.height);
+      confettiParts = confettiParts.filter(function(p){ return p.y < cvs.height+30; });
+      confettiParts.forEach(function(p){
+        p.x += p.vx + Math.sin(p.y/46)*1.1; p.y += p.vy; p.rot += p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle = p.c;
+        if(p.circ){ ctx.beginPath(); ctx.arc(0,0,p.w/2,0,7); ctx.fill(); } else { ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); }
+        ctx.restore();
+      });
+      if(confettiParts.length){ requestAnimationFrame(confettiTick); } else { confettiRun=false; ctx.clearRect(0,0,cvs.width,cvs.height); }
+    }
+
+    /* ================= GOOGLE SHEET ================= */
+    function sheetSend(payload){
+      payload.app = APP_ID;
+      try{
+        var body = JSON.stringify(payload);
+        fetch(state.sheetUrl, { method:"POST", headers:{"Content-Type":"text/plain"}, body: body, keepalive:true }).catch(function(){});
+      }catch(e){}
+    }
+    function sendLogin(){ sheetSend({ type:"login", time:new Date().toISOString(), nama:state.nama, kelas:state.kelas }); }
+    function sendRingkasan(){
+      var mine = state.quizHistory.filter(function(q){ return q.nama===state.nama && q.kelas===state.kelas; });
+      var scores = mine.map(function(q){ return q.score; });
+      sheetSend({ type:"ringkasan", time:new Date().toISOString(), nama:state.nama, kelas:state.kelas,
+        menus: Object.keys(state.menusVisited).join(", "),
+        attempts: mine.length,
+        last: scores.length? scores[scores.length-1] : "",
+        best: scores.length? Math.max.apply(null,scores) : "",
+        avg: scores.length? Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length) : "" });
+    }
+    function sheetLoad(){
+      return fetch(state.sheetUrl + "?app=" + encodeURIComponent(APP_ID)).then(function(r){ return r.json(); });
+    }
+
+    /* ================= LOGIN ================= */
+    $("loginForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      var nama = $("inpNama").value.trim(), kelas = $("inpKelas").value;
+      if(nama.length < 2){ $("loginErr").textContent = "Tulis namamu dulu ya (minimal 2 huruf). 😊"; return; }
+      if(!kelas){ $("loginErr").textContent = "Pilih kelasmu dulu ya. 🏫"; return; }
+      $("loginErr").textContent = "";
+      state.nama = nama; state.kelas = kelas;
+      state.logins.push({ time: nowStr(), nama:nama, kelas:kelas });
+      $("chipNama").textContent = nama; $("chipKelas").textContent = kelas;
+      $("avatarInit").textContent = nama.charAt(0).toUpperCase();
+      $("heroNama").textContent = nama.split(" ")[0];
+      $("quizNama").textContent = nama.split(" ")[0];
+      $("loginScreen").classList.add("hidden");
+      $("appShell").classList.remove("hidden");
+      window.scrollTo(0,0);
+      sendLogin();
+      confettiBurst(70);
+      toast("Selamat datang, "+nama.split(" ")[0]+"! Selamat berpetualang 🎉");
+      refreshBeranda();
+    });
+    $("btnGanti").addEventListener("click", function(){
+      sendRingkasan();
+      state.nama=""; state.kelas=""; state.menusVisited={};
+      $("appShell").classList.add("hidden");
+      $("loginScreen").classList.remove("hidden");
+      $("inpNama").value=""; $("inpKelas").value="";
+      lockGuru();
+      showPage("beranda");
+      window.scrollTo(0,0);
+    });
+
+    /* ================= NAVIGASI ================= */
+    var SUB_NAMES = { kotak:"Kotak Misteri", suku:"Suku Sejenis", operasi:"Operasi Aljabar", substitusi:"Substitusi" };
+    function showPage(page){
+      ["beranda","materi","kalkulator","kuis","guru"].forEach(function(p){
+        $("page-"+p).classList.toggle("hidden", p!==page);
+      });
+      document.querySelectorAll("#mainNav .navbtn").forEach(function(b){
+        b.classList.toggle("active", b.getAttribute("data-page")===page);
+      });
+      if(page!=="guru"){ lockGuru(); }
+      if(page==="materi"){ markMenu(currentSub); }
+      if(page==="kalkulator"){ markMenu("kalkulator"); }
+      window.scrollTo(0,0);
+    }
+    function lockGuru(){
+      state.guruUnlocked = false;
+      $("pinPanel").classList.remove("hidden");
+      $("guruPanel").classList.add("hidden");
+      $("pinInput").value = ""; $("pinErr").textContent = "";
+    }
+    function markMenu(key){
+      if(!state.menusVisited[key]){
+        state.menusVisited[key] = true;
+        refreshBeranda();
+      }
+    }
+    document.querySelectorAll("#mainNav .navbtn").forEach(function(b){
+      b.addEventListener("click", function(){ showPage(b.getAttribute("data-page")); });
+    });
+    document.querySelectorAll("[data-goto]").forEach(function(b){
+      b.addEventListener("click", function(){
+        var target = b.getAttribute("data-goto");
+        showPage(target);
+        var sub = b.getAttribute("data-sub");
+        if(target==="materi" && sub){ showSub(sub); }
+      });
+    });
+    var currentSub = "kotak";
+    function showSub(sub){
+      currentSub = sub;
+      ["kotak","suku","operasi","substitusi"].forEach(function(s){
+        $("sub-"+s).classList.toggle("hidden", s!==sub);
+      });
+      document.querySelectorAll("#subTabs .subtab").forEach(function(t){
+        t.classList.toggle("active", t.getAttribute("data-sub")===sub);
+      });
+      markMenu(sub);
+    }
+    document.querySelectorAll("#subTabs .subtab").forEach(function(t){
+      t.addEventListener("click", function(){ showSub(t.getAttribute("data-sub")); });
+    });
+
+    function refreshBeranda(){
+      $("stXP").textContent = state.xp;
+      $("stLevel").textContent = levelOf(state.xp);
+      var mine = state.quizHistory.filter(function(q){ return q.nama===state.nama; });
+      $("stBest").textContent = mine.length? Math.max.apply(null, mine.map(function(q){return q.score;})) : "–";
+      var mCount = ["kotak","suku","operasi","substitusi"].filter(function(k){ return state.menusVisited[k]; }).length;
+      $("stMenu").textContent = mCount + "/4";
+      $("lvlBadge").textContent = "Lv " + levelOf(state.xp);
+      $("xpText").textContent = state.xp + " XP";
+      $("xpFill").style.width = (state.xp % 100) + "%";
+      $("bestStart").textContent = mine.length? Math.max.apply(null, mine.map(function(q){return q.score;})) : "–";
+      $("attemptStart").textContent = mine.length;
+      renderBoard();
+    }
+    function addXP(n, anchorEl){
+      state.xp += n;
+      if(anchorEl){
+        var r = anchorEl.getBoundingClientRect();
+        var pop = document.createElement("div");
+        pop.className = "xp-pop"; pop.textContent = "+"+n+" XP";
+        pop.style.left = (r.left + r.width/2 - 30)+"px"; pop.style.top = (r.top - 6)+"px";
+        document.body.appendChild(pop);
+        setTimeout(function(){ pop.remove(); }, 1150);
+      }
+      refreshBeranda();
+    }
+</script>
+
+    <script>
+    /* ================= KOTAK MISTERI ================= */
+    var kx = 4, ky = 3;
+    function updKotak(){
+      $("valX").textContent = kx; $("valY").textContent = ky;
+      $("boxXVal").textContent = kx; $("boxYVal").textContent = ky;
+      $("kotakHasil").textContent = "= 3("+kx+") + 2("+ky+") + 5 = "+(3*kx)+" + "+(2*ky)+" + 5 = "+(3*kx+2*ky+5);
+    }
+    $("rngX").addEventListener("input", function(){ kx = +this.value; $("boxX").classList.add("open"); updKotak(); });
+    $("rngY").addEventListener("input", function(){ ky = +this.value; $("boxY").classList.add("open"); updKotak(); });
+    $("boxX").addEventListener("click", function(){ this.classList.toggle("open"); });
+    $("boxY").addEventListener("click", function(){ this.classList.toggle("open"); });
+    updKotak();
+
+    /* ================= SERET SUKU SEJENIS ================= */
+    var dragState = { terms: [], placed: 0, selected: null };
+    function coefOf(txt){
+      var m = txt.match(/^(-?\d*)([xy])?$/);
+      if(!m) return {coef:0, kind:"k"};
+      var c = m[1]===""||m[1]==="+" ? 1 : (m[1]==="-" ? -1 : parseInt(m[1],10));
+      return { coef: c, kind: m[2] ? m[2] : "k" };
+    }
+    function fmtTerm(coef, kind){
+      if(kind==="k") return String(coef);
+      if(coef===1) return kind; if(coef===-1) return "−"+kind;
+      return coef+kind;
+    }
+    function fmtSigned(coef, kind, first){
+      var core = fmtTerm(Math.abs(coef), kind);
+      if(first) return (coef<0? "−"+core : core);
+      return (coef<0? " − "+core : " + "+core);
+    }
+    function newTerms(){
+      function ri(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+      function tc(kind){
+        var c; do{ c = ri(-6,7); }while(c===0);
+        return fmtTerm(c, kind).replace("-","−");
+      }
+      var arr = [tc("x"), tc("x"), tc("x"), tc("y"), tc("y"), tc("y"), String(ri(2,9)), String(-ri(2,8)), tc("x"), tc("y")];
+      for(var i=arr.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=arr[i]; arr[i]=arr[j]; arr[j]=t; }
+      return arr;
+    }
+    function buildDragGame(){
+      dragState.terms = newTerms(); dragState.placed = 0; dragState.selected = null;
+      var pool = $("chipPool"); pool.innerHTML = "";
+      dragState.terms.forEach(function(txt, i){
+        var info = coefOf(txt.replace("−","-"));
+        var chip = document.createElement("button");
+        chip.type = "button"; chip.className = "term-chip"; chip.textContent = txt;
+        chip.setAttribute("data-kind", info.kind); chip.setAttribute("data-coef", info.coef); chip.setAttribute("data-idx", i);
+        pool.appendChild(chip);
+        attachDrag(chip);
+      });
+      document.querySelectorAll(".basket .items").forEach(function(el){ el.innerHTML=""; });
+      ["sumX","sumY","sumK"].forEach(function(id){ $(id).textContent=""; });
+      ["cntX","cntY","cntK"].forEach(function(id){ $(id).textContent=""; });
+      $("dragDone").classList.add("hidden");
+      $("dragFeedback").textContent = "Seret atau ketuk kepingnya! Ada "+dragState.terms.length+" keping suku.";
+      $("dragFeedback").className = "feedback";
+    }
+    function basketOf(kind){ return document.querySelector('.basket[data-basket="'+kind+'"]'); }
+    function placeChip(chip, basket){
+      var kind = chip.getAttribute("data-kind");
+      if(basket.getAttribute("data-basket") !== kind){
+        basket.classList.add("shake"); setTimeout(function(){ basket.classList.remove("shake"); }, 480);
+        chip.classList.add("shake"); setTimeout(function(){ chip.classList.remove("shake"); }, 480);
+        var fb = $("dragFeedback"); fb.textContent = "Ups! "+chip.textContent+" bukan suku "+(basket.getAttribute("data-basket")==="k"?"konstanta":basket.getAttribute("data-basket"))+". Lihat variabelnya baik-baik ya! 👀"; fb.className = "feedback bad";
+        return;
+      }
+      chip.classList.remove("selected");
+      chip.classList.add("locked", kind==="x"?"kx":kind==="y"?"ky":"kk");
+      chip.disabled = true;
+      basket.querySelector(".items").appendChild(chip);
+      dragState.placed++;
+      var fb2 = $("dragFeedback");
+      fb2.textContent = ["Betul! 🎉","Tepat sekali! ⭐","Keren, lanjut! 🚀","Hebat! 💪"][Math.floor(Math.random()*4)];
+      fb2.className = "feedback good";
+      updateBasketSums();
+      if(dragState.placed === dragState.terms.length){ finishDragGame(); }
+    }
+    function updateBasketSums(){
+      ["x","y","k"].forEach(function(kind){
+        var items = basketOf(kind).querySelectorAll(".term-chip");
+        var sum = 0; items.forEach(function(ch){ sum += parseInt(ch.getAttribute("data-coef"),10); });
+        var sumEl = $(kind==="x"?"sumX":kind==="y"?"sumY":"sumK");
+        var cntEl = $(kind==="x"?"cntX":kind==="y"?"cntY":"cntK");
+        cntEl.textContent = items.length? "("+items.length+" suku)" : "";
+        sumEl.textContent = items.length? "Jumlah: "+fmtSigned(sum, kind==="k"?"":kind, true).replace("−","−") : "";
+        if(kind!=="k" && items.length) sumEl.textContent = "Jumlah: " + (sum===0? "0" : fmtTerm(sum,kind));
+        if(kind==="k" && items.length) sumEl.textContent = "Jumlah: " + sum;
+      });
+    }
+    function finishDragGame(){
+      var sums = {x:0,y:0,k:0};
+      document.querySelectorAll(".basket .term-chip").forEach(function(ch){
+        sums[ch.getAttribute("data-kind")] += parseInt(ch.getAttribute("data-coef"),10);
+      });
+      var parts = [], first = true;
+      if(sums.x!==0){ parts.push(fmtSigned(sums.x,"x",first)); first=false; }
+      if(sums.y!==0){ parts.push(fmtSigned(sums.y,"y",first)); first=false; }
+      if(sums.k!==0){ parts.push(fmtSigned(sums.k,"",first)); first=false; }
+      $("dragFinal").textContent = "= " + (parts.length? parts.join("") : "0");
+      $("dragDone").classList.remove("hidden");
+      var fb = $("dragFeedback"); fb.textContent = "SEMPURNA! Semua suku sudah di keranjang yang benar! 🏆 +15 XP"; fb.className="feedback good";
+      addXP(15, $("dragDone"));
+      confettiBurst(90);
+    }
+    function attachDrag(chip){
+      chip.addEventListener("click", function(){
+        if(chip.classList.contains("locked")) return;
+        if(dragState.selected === chip){ chip.classList.remove("selected"); dragState.selected = null; return; }
+        if(dragState.selected) dragState.selected.classList.remove("selected");
+        dragState.selected = chip; chip.classList.add("selected");
+        $("dragFeedback").textContent = "Sekarang ketuk keranjang tujuannya! 👇";
+        $("dragFeedback").className = "feedback";
+      });
+      chip.addEventListener("pointerdown", function(e){
+        if(chip.classList.contains("locked")) return;
+        var startX = e.clientX, startY = e.clientY, moved = false, clone = null;
+        function mv(ev){
+          if(!moved && Math.hypot(ev.clientX-startX, ev.clientY-startY) > 9){
+            moved = true;
+            clone = chip.cloneNode(true);
+            clone.classList.add("dragging"); clone.classList.remove("selected");
+            clone.style.width = chip.offsetWidth+"px";
+            document.body.appendChild(clone);
+            chip.style.opacity = ".35";
+          }
+          if(moved && clone){
+            clone.style.left = (ev.clientX - clone.offsetWidth/2)+"px";
+            clone.style.top = (ev.clientY - clone.offsetHeight/2)+"px";
+            document.querySelectorAll(".basket").forEach(function(b){
+              var r = b.getBoundingClientRect();
+              b.classList.toggle("over", ev.clientX>=r.left && ev.clientX<=r.right && ev.clientY>=r.top && ev.clientY<=r.bottom);
+            });
+          }
+        }
+        function up(ev){
+          document.removeEventListener("pointermove", mv);
+          document.removeEventListener("pointerup", up);
+          document.querySelectorAll(".basket").forEach(function(b){ b.classList.remove("over"); });
+          if(moved && clone){
+            clone.remove(); chip.style.opacity = "";
+            var target = null;
+            document.querySelectorAll(".basket").forEach(function(b){
+              var r = b.getBoundingClientRect();
+              if(ev.clientX>=r.left && ev.clientX<=r.right && ev.clientY>=r.top && ev.clientY<=r.bottom) target = b;
+            });
+            if(target) placeChip(chip, target);
+          }
+        }
+        document.addEventListener("pointermove", mv);
+        document.addEventListener("pointerup", up);
+      });
+    }
+    document.querySelectorAll(".basket").forEach(function(b){
+      b.addEventListener("click", function(){
+        if(dragState.selected && !dragState.selected.classList.contains("locked")){
+          var chip = dragState.selected; dragState.selected = null;
+          placeChip(chip, b);
+        }
+      });
+    });
+    $("btnAcakSuku").addEventListener("click", buildDragGame);
+    buildDragGame();
+
+    /* ================= OPERASI: TILES ================= */
+    function tilesHTML(nx, nu, goneX, goneU){
+      var h = "";
+      for(var i=0;i<nx;i++) h += '<div class="tile tx'+(goneX && i>=nx-goneX?' gone':'')+'">x</div>';
+      for(var j=0;j<nu;j++) h += '<div class="tile tu'+(goneU && j>=nu-goneU?' gone':'')+'">1</div>';
+      return h || '<span style="font-weight:700;color:var(--ink-soft);">kosong</span>';
+    }
+    /* penjumlahan */
+    var addV = {a:3,b:2,c:2,d:1};
+    function renderAdd(){
+      $("addA").textContent=addV.a; $("addB").textContent=addV.b; $("addC").textContent=addV.c; $("addD").textContent=addV.d;
+      $("addExpr").textContent = "("+addV.a+"x + "+addV.b+") + ("+addV.c+"x + "+addV.d+")";
+      $("addStage").innerHTML =
+        '<div class="tile-group"><div class="cap">Kelompok 1: '+addV.a+'x + '+addV.b+'</div><div class="tiles">'+tilesHTML(addV.a,addV.b)+'</div></div>'
+        + '<div class="op-sign">+</div>'
+        + '<div class="tile-group"><div class="cap">Kelompok 2: '+addV.c+'x + '+addV.d+'</div><div class="tiles">'+tilesHTML(addV.c,addV.d)+'</div></div>'
+        + '<div class="op-sign">=</div>'
+        + '<div class="tile-group"><div class="cap">Gabungan</div><div class="tiles">'+tilesHTML(addV.a+addV.c, addV.b+addV.d)+'</div></div>';
+      $("addResult").textContent = "= "+(addV.a+addV.c)+"x + "+(addV.b+addV.d)+"   (ubin x: "+addV.a+"+"+addV.c+", ubin satuan: "+addV.b+"+"+addV.d+")";
+    }
+    document.querySelectorAll("[data-add]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var p = btn.getAttribute("data-add").split(","), k = p[0], d = parseInt(p[1],10);
+        addV[k] = Math.min(6, Math.max(0, addV[k]+d)); renderAdd();
+      });
+    });
+    renderAdd();
+    /* pengurangan */
+    var subCut = false;
+    function renderSub(){
+      $("subStage").innerHTML =
+        '<div class="tile-group"><div class="cap">(5x + 4) — yang akan dikurangi</div><div class="tiles">'+tilesHTML(5,4, subCut?2:0, subCut?1:0)+'</div></div>'
+        + '<div class="op-sign">−</div>'
+        + '<div class="tile-group"><div class="cap">(2x + 1) — pengurang</div><div class="tiles">'+tilesHTML(2,1)+'</div></div>'
+        + (subCut? '<div class="op-sign">=</div><div class="tile-group"><div class="cap">Sisa</div><div class="tiles">'+tilesHTML(3,3)+'</div></div>' : '');
+      $("subResult").textContent = subCut? "= 5x + 4 − 2x − 1 = 3x + 3" : "Klik tombol Coret untuk mengambil 2 ubin x dan 1 ubin satuan…";
+    }
+    $("btnCoret").addEventListener("click", function(){ subCut = true; renderSub(); });
+    $("btnUlangCoret").addEventListener("click", function(){ subCut = false; renderSub(); });
+    renderSub();
+    /* perkalian model luas */
+    var mulV = {a:2, b:3};
+    function renderMul(){
+      $("mulA").textContent = mulV.a; $("mulB").textContent = mulV.b;
+      $("areaGrid").innerHTML =
+        '<div class="area-cell area-x2">x · x = x²</div><div class="area-cell area-x">x · '+mulV.b+' = '+mulV.b+'x</div>'
+        + '<div class="area-cell area-x">'+mulV.a+' · x = '+mulV.a+'x</div><div class="area-cell area-k">'+mulV.a+' · '+mulV.b+' = '+(mulV.a*mulV.b)+'</div>';
+      $("mulResult").textContent = "= x² + "+mulV.a+"x + "+mulV.b+"x + "+(mulV.a*mulV.b)+" = x² + "+(mulV.a+mulV.b)+"x + "+(mulV.a*mulV.b);
+    }
+    document.querySelectorAll("[data-mul]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var p = btn.getAttribute("data-mul").split(","), k = p[0], d = parseInt(p[1],10);
+        mulV[k] = Math.min(6, Math.max(1, mulV[k]+d)); renderMul();
+      });
+    });
+    renderMul();
+
+    /* ================= SUBSTITUSI MATERI ================= */
+    var subsExpr = "3x+2y-4", subsPretty = "3x + 2y − 4";
+    function renderSubs(){
+      var x = +$("subsX").value, y = +$("subsY").value;
+      $("subsXVal").textContent = x; $("subsYVal").textContent = y;
+      $("subsExprBig").textContent = subsPretty;
+      $("subsYRow").style.display = subsExpr.indexOf("y")>=0 ? "" : "none";
+      var steps = [], sub1, calc;
+      if(subsExpr === "3x+2y-4"){
+        steps.push('Ganti x dengan '+x+' dan y dengan '+y+': <span class="mono">3('+x+') + 2('+y+') − 4</span>');
+        steps.push('Kalikan: <span class="mono">'+(3*x)+' + '+(2*y)+' − 4</span>');
+        steps.push('Jumlahkan: <span class="mono">= '+(3*x+2*y-4)+'</span>');
+      } else if(subsExpr === "5x-y+7"){
+        steps.push('Ganti x dengan '+x+' dan y dengan '+y+': <span class="mono">5('+x+') − '+y+' + 7</span>');
+        steps.push('Kalikan: <span class="mono">'+(5*x)+' − '+y+' + 7</span>');
+        steps.push('Hitung: <span class="mono">'+(5*x)+' + '+(7-y)+' = '+(5*x-y+7)+'</span>');
+      } else if(subsExpr === "x*x+2x-1"){
+        steps.push('Ganti x dengan '+x+': <span class="mono">('+x+')² + 2('+x+') − 1</span>');
+        steps.push('Hitung pangkat dan kali: <span class="mono">'+(x*x)+' + '+(2*x)+' − 1</span>');
+        steps.push('Jumlahkan: <span class="mono">= '+(x*x+2*x-1)+'</span>');
+      } else {
+        steps.push('Ganti x dengan '+x+' dan y dengan '+y+': <span class="mono">4('+y+') − 3('+x+') + 10</span>');
+        steps.push('Kalikan: <span class="mono">'+(4*y)+' − '+(3*x)+' + 10</span>');
+        steps.push('Hitung: <span class="mono">= '+(4*y-3*x+10)+'</span>');
+      }
+      $("subsSteps").innerHTML = steps.map(function(s){ return "<li>"+s+"</li>"; }).join("");
+    }
+    document.querySelectorAll("#subsChips .expr-chip").forEach(function(ch){
+      ch.addEventListener("click", function(){
+        document.querySelectorAll("#subsChips .expr-chip").forEach(function(c){ c.classList.remove("active"); });
+        ch.classList.add("active");
+        subsExpr = ch.getAttribute("data-expr");
+        subsPretty = ch.getAttribute("data-pretty") || ch.textContent;
+        renderSubs();
+      });
+    });
+    $("subsX").addEventListener("input", renderSubs);
+    $("subsY").addEventListener("input", renderSubs);
+    renderSubs();
+    </script>
+
+    <script>
+    /* ================= PARSER ALJABAR =================
+       Polinomial: objek { "": konstanta, "x": koef x, "x^2": ..., "xy": ... } */
+    function polyAdd(a,b,sign){
+      var r = {}; for(var k in a) r[k]=a[k];
+      for(var k2 in b){ r[k2]=(r[k2]||0)+sign*b[k2]; if(r[k2]===0) delete r[k2]; }
+      return r;
+    }
+    function keyMul(k1,k2){
+      function parse(k){ var m={}; if(!k) return m; k.split("·").forEach(function(p){ var mm=p.match(/^([a-z])(?:\^(\d+))?$/); if(mm) m[mm[1]]=(m[mm[1]]||0)+(mm[2]?parseInt(mm[2],10):1); }); return m; }
+      var a=parse(k1), b=parse(k2), r={};
+      for(var v in a) r[v]=a[v]; for(var v2 in b) r[v2]=(r[v2]||0)+b[v2];
+      return Object.keys(r).sort().map(function(v){ return r[v]>1? v+"^"+r[v] : v; }).join("·");
+    }
+    function polyMul(a,b){
+      var r={};
+      for(var k1 in a) for(var k2 in b){
+        var k=keyMul(k1,k2), v=a[k1]*b[k2];
+        r[k]=(r[k]||0)+v; if(r[k]===0) delete r[k];
+      }
+      return r;
+    }
+    function polyFormat(p){
+      var keys = Object.keys(p).filter(function(k){ return p[k]!==0; });
+      if(!keys.length) return "0";
+      keys.sort(function(a,b){
+        function deg(k){ if(!k) return 0; var d=0; k.split("·").forEach(function(pt){ var m=pt.match(/\^(\d+)$/); d+= m?parseInt(m[1],10):1; }); return d; }
+        return deg(b)-deg(a) || (a<b?-1:1);
+      });
+      var out="", first=true;
+      keys.forEach(function(k){
+        var c=p[k], neg=c<0, ac=Math.abs(c);
+        var term;
+        if(!k) term=String(ac);
+        else term = (ac===1? "" : ac) + k.replace(/\^(\d+)/g, function(m,d){ return "<sup>"+d+"</sup>"; }).replace(/·/g,"");
+        out += first? (neg?"−"+term:term) : (neg?" − "+term:" + "+term);
+        first=false;
+      });
+      return out;
+    }
+    function parseAlgebra(str){
+      var s = String(str).replace(/\s+/g,"").replace(/−/g,"-").replace(/×/g,"*").replace(/·/g,"*").toLowerCase();
+      if(!s) throw new Error("Kosong");
+      if(/[^0-9a-z+\-*()^.]/.test(s)) throw new Error("Ada karakter yang tidak dikenal");
+      var pos=0, steps=[];
+      function peek(){ return s[pos]; }
+      function parseExpr(){
+        var val=parseTerm();
+        while(peek()==="+"||peek()==="-"){ var op=s[pos++]; var t=parseTerm(); val=polyAdd(val,t,op==="+"?1:-1); }
+        return val;
+      }
+      function parseTerm(){
+        var val=parseFactor();
+        while(true){
+          var ch=peek();
+          if(ch==="*"){ pos++; val=polyMul(val,parseFactor()); }
+          else if(ch==="("||/[0-9a-z]/.test(ch||"")){ val=polyMul(val,parseFactor()); }
+          else break;
+        }
+        return val;
+      }
+      function parseFactor(){
+        var ch=peek();
+        if(ch==="-"){ pos++; var f=parseFactor(); var r={}; for(var k in f) r[k]=-f[k]; return r; }
+        if(ch==="+"){ pos++; return parseFactor(); }
+        if(ch==="("){
+          pos++; var inside=parseExpr();
+          if(peek()!==")") throw new Error("Kurung tidak ditutup");
+          pos++;
+          if(peek()==="^"){ pos++; var e=parseNum(); if(e===2) inside=polyMul(inside,inside); else if(e!==1) throw new Error("Pangkat selain 2 belum didukung di sini"); }
+          return inside;
+        }
+        if(/[0-9.]/.test(ch||"")){ var n=parseNum(); return n===0? {} : {"":n}; }
+        if(/[a-z]/.test(ch||"")){
+          var v=s[pos++], key=v;
+          if(peek()==="^"){ pos++; var ex=parseNum(); if(ex>1) key=v+"^"+ex; }
+          var o={}; o[key]=1; return o;
+        }
+        throw new Error("Tidak bisa membaca di posisi: '"+(ch||"akhir")+"'");
+      }
+      function parseNum(){
+        var m = s.slice(pos).match(/^\d+(\.\d+)?/);
+        if(!m) throw new Error("Angka diharapkan");
+        pos += m[0].length; return parseFloat(m[0]);
+      }
+      var result = parseExpr();
+      if(pos < s.length) throw new Error("Ada sisa yang tidak terbaca: '"+s.slice(pos)+"'");
+      return result;
+    }
+    function groupSteps(poly){
+      var keys = Object.keys(poly).filter(function(k){ return poly[k]!==0; });
+      return keys.length;
+    }
+
+    /* ================= KALKULATOR ================= */
+    function doSimplify(){
+      var raw = $("simpInput").value, out = $("simpOut");
+      try{
+        var p = parseAlgebra(raw);
+        var steps = [];
+        steps.push('Bentuk awal: <span class="mono">'+esc(raw)+'</span>');
+        if(/\(/.test(raw)) steps.push('Buka kurung: kalikan setiap suku di dalam kurung dengan pengali di depannya (hati-hati tanda negatif membalik semua tanda di dalam kurung!).');
+        steps.push('Kelompokkan suku-suku sejenis: suku dengan variabel & pangkat yang sama dikumpulkan.');
+        steps.push('Jumlahkan koefisien suku sejenis, konstanta dengan konstanta.');
+        out.innerHTML = '<div class="result-box"><div style="font-weight:800; color:var(--ink-soft);">HASIL PALING SEDERHANA</div>'
+          + '<div class="final">'+polyFormat(p)+'</div>'
+          + '<ol class="steps">'+steps.map(function(s){return "<li>"+s+"</li>";}).join("")+'</ol></div>';
+      }catch(err){
+        out.innerHTML = '<div class="status-msg err show">Hmm, Alja belum bisa membaca bentuk itu: '+esc(err.message)+'. Coba contoh seperti 4x + 3 + 2x − 5 ya. 🤖</div>';
+      }
+    }
+    $("btnSimp").addEventListener("click", doSimplify);
+    document.querySelectorAll(".simp-chip").forEach(function(ch){
+      ch.addEventListener("click", function(){ $("simpInput").value = ch.getAttribute("data-v"); doSimplify(); });
+    });
+    function doEval(){
+      var raw = $("evalInput").value, out = $("evalOut");
+      var xv = parseFloat($("evalX").value), yv = parseFloat($("evalY").value);
+      if(isNaN(xv)) xv = 0; if(isNaN(yv)) yv = 0;
+      try{
+        var p = parseAlgebra(raw);
+        var total = 0, parts = [];
+        Object.keys(p).forEach(function(k){
+          if(!k) { total += p[k]; parts.push(p[k]+" (konstanta)"); return; }
+          var val = 1;
+          k.split("·").forEach(function(pt){ var m = pt.match(/^([a-z])(?:\^(\d+))?$/); var base = m[1]==="x"? xv : m[1]==="y"? yv : 0; val *= Math.pow(base, m[2]?parseInt(m[2],10):1); });
+          total += p[k]*val;
+          parts.push(p[k]+" × "+val+" = "+(p[k]*val)+" (suku "+k.replace(/\^(\d+)/g,"^$1").replace(/·/g,"")+")");
+        });
+        var steps = [
+          'Ganti x dengan <b>'+xv+'</b>'+(/y/.test(raw)?' dan y dengan <b>'+yv+'</b>':'')+' pada: <span class="mono">'+esc(raw)+'</span>',
+          'Hitung tiap suku: <span class="mono">'+parts.join(" · ")+'</span>',
+          'Jumlahkan semuanya.'
+        ];
+        out.innerHTML = '<div class="result-box"><div style="font-weight:800; color:var(--ink-soft);">NILAI BENTUK ALJABAR</div>'
+          + '<div class="final">'+esc(raw)+' = '+total+'</div>'
+          + '<ol class="steps">'+steps.map(function(s){return "<li>"+s+"</li>";}).join("")+'</ol></div>';
+      }catch(err){
+        out.innerHTML = '<div class="status-msg err show">Alja belum bisa membaca bentuk itu: '+esc(err.message)+'. 🤖</div>';
+      }
+    }
+    $("btnEval").addEventListener("click", doEval);
+    doSimplify(); doEval();
+
+    /* ================= KUIS ================= */
+    var QUESTIONS = [
+      { q:"🎁 Di dalam kotak misteri x tersembunyi angka. Jika bentuk aljabarnya 4x + 3, berapakah koefisien dari x?", opts:["4","3","x","7"], ans:0, ex:"Koefisien adalah angka di depan variabel. Pada 4x + 3, angka di depan x adalah 4. Angka 3 adalah konstanta." },
+      { q:"Suku yang SEJENIS dengan 5a² adalah …", opts:["5a","−2a²","3a³","a"], ans:1, ex:"Suku sejenis harus punya variabel dan pangkat yang sama persis. 5a² sejenis dengan −2a² karena sama-sama a berpangkat 2." },
+      { q:"Bentuk sederhana dari 6x + 3x − 2x adalah …", opts:["7x","11x","6x","8x"], ans:0, ex:"Jumlahkan koefisien suku sejenis: 6 + 3 − 2 = 7, jadi hasilnya 7x." },
+      { q:"(3x + 5) + (2x − 3) = …", opts:["5x + 8","5x + 2","6x + 2","5x − 2"], ans:1, ex:"Gabungkan suku sejenis: 3x + 2x = 5x dan 5 − 3 = 2. Hasilnya 5x + 2." },
+      { q:"(7y − 4) − (3y − 6) = …", opts:["4y − 10","4y + 2","10y + 2","4y − 2"], ans:1, ex:"Tanda minus membalik tanda di kurung kedua: 7y − 4 − 3y + 6 = 4y + 2. Hati-hati, −(−6) menjadi +6!" },
+      { q:"Hasil dari 4(2x − 3) adalah …", opts:["8x − 3","8x − 12","6x − 12","8x + 12"], ans:1, ex:"Kalikan 4 ke setiap suku di dalam kurung: 4 × 2x = 8x dan 4 × (−3) = −12. Hasilnya 8x − 12." },
+      { q:"Jika x = 5, nilai dari 3x − 7 adalah …", opts:["8","15","22","−2"], ans:0, ex:"Substitusi x = 5: 3(5) − 7 = 15 − 7 = 8." },
+      { q:"Konstanta dari bentuk aljabar 9p − 2q + 6 adalah …", opts:["9","−2","6","p"], ans:2, ex:"Konstanta adalah suku yang tidak memiliki variabel, yaitu 6. Angka 9 dan −2 adalah koefisien." },
+      { q:"Budi membeli 3 kotak pensil (isi x pensil tiap kotak) lalu membeli 2 pensil lagi. Bentuk aljabarnya adalah …", opts:["3x + 2","5x","x + 5","3 + 2x"], ans:0, ex:"3 kotak berisi x pensil = 3x pensil, ditambah 2 pensil lepas menjadi 3x + 2." },
+      { q:"Bentuk sederhana dari 2x + 4y − 5x + y adalah …", opts:["−3x + 5y","7x + 5y","−3x + 4y","3x + 5y"], ans:0, ex:"Kelompokkan: 2x − 5x = −3x dan 4y + y = 5y. Hasilnya −3x + 5y. Suku x dan y tidak bisa digabung!" }
+    ];
+    var quiz = { idx:0, correct:0, streak:0, bestStreak:0, xpGain:0, timerOn:false, timerId:null, timeLeft:30, answered:false, order:[] };
+    var CHEERS = ["Luar biasa! 🌟","Kamu memang Master Aljabar! 🏆","Otakmu berputar kencang! 🧠⚡","Terus melaju, Penjelajah! 🚀","Streak membara! 🔥","Alja bangga padamu! 🤖💖"];
+    var OOPS = ["Belum tepat — baca pembahasannya ya! 💪","Sedikit lagi! Kamu pasti bisa! 🌱","Tidak apa-apa, dari salah kita belajar! 📚","Ayo coba lebih teliti di soal berikutnya! 🔍"];
+
+    $("timerToggle").addEventListener("change", function(){
+      $("timerState").textContent = this.checked? "Aktif — 30 detik per soal, cepat & tepat!" : "Nonaktif — santai saja";
+    });
+    function shuffleIdx(n){ var a=[]; for(var i=0;i<n;i++) a.push(i); for(var i2=a.length-1;i2>0;i2--){ var j=Math.floor(Math.random()*(i2+1)); var t=a[i2]; a[i2]=a[j]; a[j]=t; } return a; }
+    function startQuiz(){
+      quiz.idx=0; quiz.correct=0; quiz.streak=0; quiz.bestStreak=0; quiz.xpGain=0;
+      quiz.timerOn = $("timerToggle").checked;
+      quiz.order = shuffleIdx(QUESTIONS.length);
+      $("quizStart").classList.add("hidden"); $("quizResult").classList.add("hidden"); $("quizPlay").classList.remove("hidden");
+      $("hudTimerCard").classList.toggle("hidden", !quiz.timerOn);
+      renderQuestion();
+    }
+    function stopTimer(){ if(quiz.timerId){ clearInterval(quiz.timerId); quiz.timerId=null; } }
+    function startTimer(){
+      stopTimer();
+      if(!quiz.timerOn) return;
+      quiz.timeLeft = 30; updTimer();
+      quiz.timerId = setInterval(function(){
+        quiz.timeLeft--; updTimer();
+        if(quiz.timeLeft<=0){ stopTimer(); timeOut(); }
+      }, 1000);
+    }
+    function updTimer(){ var el=$("hudTimer"); el.textContent = quiz.timeLeft; el.classList.toggle("low", quiz.timeLeft<=10); }
+    function renderQuestion(){
+      quiz.answered = false;
+      var item = QUESTIONS[quiz.order[quiz.idx]];
+      $("hudQ").textContent = (quiz.idx+1)+"/"+QUESTIONS.length;
+      $("hudStreak").innerHTML = quiz.streak + ' <span class="streak-fire" id="fireIco" style="visibility:'+(quiz.streak>=2?"visible":"hidden")+';">🔥</span>';
+      $("hudXP").textContent = quiz.xpGain;
+      $("hudScore").textContent = quiz.correct;
+      $("qFill").style.width = (quiz.idx/QUESTIONS.length*100)+"%";
+      $("qText").textContent = item.q;
+      $("qExplain").innerHTML = "";
+      $("btnNextQ").classList.add("hidden");
+      var opts = $("qOpts"); opts.innerHTML = "";
+      var order = shuffleIdx(item.opts.length);
+      order.forEach(function(oi, pos){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "opt";
+        b.innerHTML = '<span class="key">'+["A","B","C","D"][pos]+'</span><span>'+esc(item.opts[oi])+'</span>';
+        b.setAttribute("data-oi", oi);
+        b.addEventListener("click", function(){ answer(b, oi===item.ans); });
+        opts.appendChild(b);
+      });
+      startTimer();
+    }
+    function lockOptions(chosenBtn, wasCorrect){
+      var item = QUESTIONS[quiz.order[quiz.idx]];
+      document.querySelectorAll("#qOpts .opt").forEach(function(b){
+        b.disabled = true;
+        if(parseInt(b.getAttribute("data-oi"),10) === item.ans) b.classList.add("correct");
+      });
+      if(chosenBtn && !wasCorrect) chosenBtn.classList.add("wrong");
+    }
+    function showExplain(good, extra){
+      var item = QUESTIONS[quiz.order[quiz.idx]];
+      var cheer = good? CHEERS[Math.floor(Math.random()*CHEERS.length)] : OOPS[Math.floor(Math.random()*OOPS.length)];
+      $("qExplain").innerHTML = '<div class="explain '+(good?"good":"bad")+'"><div class="ttl">'+(good?"✅ Benar! ":"❌ Belum tepat. ")+cheer+'</div>'+(extra||"")+'<div style="margin-top:6px;">💡 <b>Pembahasan:</b> '+esc(item.ex)+'</div></div>';
+      var nb = $("btnNextQ");
+      nb.textContent = quiz.idx === QUESTIONS.length-1? "Lihat Hasil 🏁" : "Soal Berikutnya →";
+      nb.classList.remove("hidden");
+    }
+    function answer(btn, correct){
+      if(quiz.answered) return;
+      quiz.answered = true; stopTimer();
+      lockOptions(btn, correct);
+      if(correct){
+        quiz.correct++; quiz.streak++;
+        quiz.bestStreak = Math.max(quiz.bestStreak, quiz.streak);
+        var gain = 10 + (quiz.streak>=3? (quiz.streak-2)*2 : 0);
+        quiz.xpGain += gain;
+        addXP(gain, btn);
+        if(quiz.streak>=3) confettiBurst(36, window.innerWidth/2, 200);
+        showExplain(true, "Kamu dapat <b>+"+gain+" XP</b>"+(quiz.streak>=3? " (termasuk bonus streak 🔥)" : "")+"!");
+      } else {
+        quiz.streak = 0;
+        showExplain(false, "");
+      }
+      $("hudStreak").innerHTML = quiz.streak + ' <span class="streak-fire" style="visibility:'+(quiz.streak>=2?"visible":"hidden")+';">🔥</span>';
+      $("hudXP").textContent = quiz.xpGain;
+      $("hudScore").textContent = quiz.correct;
+    }
+    function timeOut(){
+      if(quiz.answered) return;
+      quiz.answered = true; quiz.streak = 0;
+      lockOptions(null, false);
+      showExplain(false, "⏰ <b>Waktu habis!</b> ");
+      $("hudStreak").innerHTML = '0 <span class="streak-fire" style="visibility:hidden;">🔥</span>';
+    }
+    $("btnNextQ").addEventListener("click", function(){
+      quiz.idx++;
+      if(quiz.idx >= QUESTIONS.length){ finishQuiz(); } else { renderQuestion(); }
+    });
+    $("btnStartQuiz").addEventListener("click", startQuiz);
+    $("btnRetry").addEventListener("click", startQuiz);
+    function finishQuiz(){
+      stopTimer();
+      $("quizPlay").classList.add("hidden");
+      var score = quiz.correct * 10;
+      var attemptNo = state.quizHistory.filter(function(q){ return q.nama===state.nama; }).length + 1;
+      var rec = { time: nowStr(), nama: state.nama, kelas: state.kelas, attemptNo: attemptNo, score: score };
+      state.quizHistory.push(rec);
+      sheetSend({ type:"kuis", time:new Date().toISOString(), nama:state.nama, kelas:state.kelas, attemptNo:attemptNo, score:score });
+      sendRingkasan();
+      $("resScore").textContent = score;
+      $("resBenar").textContent = quiz.correct + "/10";
+      $("resStreak").textContent = quiz.bestStreak + " 🔥";
+      $("resXP").textContent = "+" + quiz.xpGain;
+      $("resLevel").textContent = "Lv " + levelOf(state.xp);
+      var msg, title;
+      if(score===100){ title="SEMPURNA! 👑"; msg="Luar biasa! Semua soal benar. Kamu resmi menyandang gelar Master Aljabar!"; }
+      else if(score>=80){ title="Hebat Sekali! 🏆"; msg="Sedikit lagi sempurna! Alja sangat bangga dengan kemampuan aljabarmu."; }
+      else if(score>=60){ title="Bagus! 🌟"; msg="Kamu sudah paham dasar-dasarnya. Baca lagi pembahasan soal yang salah, lalu coba raih skor lebih tinggi!"; }
+      else if(score>=40){ title="Terus Berjuang! 💪"; msg="Awal yang baik! Kunjungi lagi materi Kotak Misteri dan Suku Sejenis, lalu tantang kuis ini sekali lagi."; }
+      else { title="Jangan Menyerah! 🌱"; msg="Setiap master pernah jadi pemula. Pelajari materinya pelan-pelan, Alja menemani — lalu buktikan di percobaan berikutnya!"; }
+      $("resTitle").textContent = title;
+      $("resMsg").textContent = msg;
+      var badges = [
+        { icon:"🎖️", name:"Penjelajah Aljabar", got:true },
+        { icon:"🔥", name:"Streak Membara (5+)", got: quiz.bestStreak>=5 },
+        { icon:"🎯", name:"Pembidik Tepat (skor ≥ 80)", got: score>=80 },
+        { icon:"👑", name:"Master Aljabar (skor 100)", got: score===100 },
+        { icon:"⚡", name:"Petir Cepat (timer aktif, ≥ 70)", got: quiz.timerOn && score>=70 }
+      ];
+      $("badgeRow").innerHTML = badges.map(function(b,i){
+        return '<div class="badge'+(b.got?"":" locked")+'" style="animation-delay:'+(i*0.09)+'s;"><div class="bic">'+(b.got?b.icon:"🔒")+'</div><div class="bnm">'+b.name+'</div></div>';
+      }).join("");
+      $("quizResult").classList.remove("hidden");
+      refreshBeranda();
+      confettiBurst(score>=60? 160 : 80);
+      if(score===100) setTimeout(function(){ confettiBurst(140); }, 450);
+    }
+    function renderBoard(){
+      var sorted = state.quizHistory.slice().sort(function(a,b){ return b.score-a.score; }).slice(0,5);
+      if(!sorted.length){
+        $("boardList").innerHTML = '<li style="justify-content:center; color:var(--ink-soft);">Belum ada skor. Jadilah yang pertama! 🌟</li>';
+        return;
+      }
+      $("boardList").innerHTML = sorted.map(function(r,i){
+        return '<li><span class="rank">'+(i+1)+'</span><span>'+esc(r.nama)+' <span style="color:var(--ink-soft);">('+esc(r.kelas)+')</span></span><span class="sc">'+r.score+'</span></li>';
+      }).join("");
+    }
+
+    /* ================= DATA GURU ================= */
+    $("btnPin").addEventListener("click", tryPin);
+    $("pinInput").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); tryPin(); } });
+    function tryPin(){
+      if($("pinInput").value.trim().toLowerCase() === GURU_PIN){
+        state.guruUnlocked = true;
+        $("pinPanel").classList.add("hidden");
+        $("guruPanel").classList.remove("hidden");
+        $("sheetUrlInput").value = state.sheetUrl;
+        renderGuru();
+        toast("Selamat datang, Bapak/Ibu Guru! 👋");
+      } else {
+        $("pinErr").textContent = "PIN salah. Coba lagi ya. 🔐";
+        $("pinInput").classList.add("shake");
+        setTimeout(function(){ $("pinInput").classList.remove("shake"); }, 480);
+      }
+    }
+    function guruStatus(msg, kind){
+      var el = $("guruStatus"); el.textContent = msg; el.className = "status-msg show "+kind;
+    }
+    function allLogins(){
+      var local = state.logins.map(function(l){ return {time:l.time, nama:l.nama, kelas:l.kelas, src:"Perangkat ini"}; });
+      var remote = [];
+      if(state.remote && Array.isArray(state.remote.login)){
+        remote = state.remote.login.map(function(r){
+          if(Array.isArray(r)) return { time: r[0]? new Date(r[0]).toLocaleString("id-ID") : "–", nama:r[1]||"–", kelas:r[2]||"–", src:"Google Sheet" };
+          return { time: r.time? new Date(r.time).toLocaleString("id-ID") : "–", nama:r.nama||"–", kelas:r.kelas||"–", src:"Google Sheet" };
+        });
+      }
+      return remote.concat(local);
+    }
+    function allQuiz(){
+      var local = state.quizHistory.slice();
+      var remote = [];
+      if(state.remote && Array.isArray(state.remote.kuis)){
+        remote = state.remote.kuis.map(function(r){
+          if(Array.isArray(r)) return { time: r[0]? new Date(r[0]).toLocaleString("id-ID"):"–", nama:r[1]||"–", kelas:r[2]||"–", attemptNo:r[3]||"–", score:r[4] };
+          return { time: r.time? new Date(r.time).toLocaleString("id-ID"):"–", nama:r.nama||"–", kelas:r.kelas||"–", attemptNo:r.attemptNo||"–", score:r.score };
+        });
+      }
+      return remote.concat(local);
+    }
+    function renderGuru(){
+      var logins = allLogins(), kuis = allQuiz();
+      $("gSiswa").textContent = state.logins.length;
+      $("gKuis").textContent = kuis.length;
+      $("gRata").textContent = kuis.length? Math.round(kuis.reduce(function(a,q){ return a+(+q.score||0); },0)/kuis.length) : "–";
+      $("gRemote").textContent = state.remote? ( (state.remote.login||[]).length + (state.remote.kuis||[]).length + " baris" ) : "Belum dimuat";
+      $("tblLogin").innerHTML = logins.length? logins.map(function(l){
+        return "<tr><td>"+esc(l.time)+"</td><td>"+esc(l.nama)+"</td><td>"+esc(l.kelas)+"</td><td>"+esc(l.src)+"</td></tr>";
+      }).join("") : '<tr><td colspan="4" style="color:var(--ink-soft);">Belum ada siswa yang login.</td></tr>';
+      // perkembangan: bandingkan dengan percobaan sebelumnya dari siswa yang sama
+      var seen = {};
+      $("tblKuis").innerHTML = kuis.length? kuis.map(function(q){
+        var key = q.nama+"|"+q.kelas, prog = "Percobaan pertama";
+        if(seen[key]!=null){ var d = q.score - seen[key]; prog = d>0? "📈 Naik "+d : d<0? "📉 Turun "+Math.abs(d) : "➡️ Tetap"; }
+        seen[key] = q.score;
+        return "<tr><td>"+esc(q.time)+"</td><td>"+esc(q.nama)+"</td><td>"+esc(q.kelas)+"</td><td>"+esc(q.attemptNo)+"</td><td><b>"+esc(q.score)+"</b></td><td>"+prog+"</td></tr>";
+      }).join("") : '<tr><td colspan="6" style="color:var(--ink-soft);">Belum ada hasil kuis.</td></tr>';
+      // ringkasan per siswa
+      var per = {};
+      logins.forEach(function(l){ var k=l.nama+"|"+l.kelas; if(!per[k]) per[k]={nama:l.nama,kelas:l.kelas,menus:"",scores:[]}; });
+      kuis.forEach(function(q){ var k=q.nama+"|"+q.kelas; if(!per[k]) per[k]={nama:q.nama,kelas:q.kelas,menus:"",scores:[]}; per[k].scores.push(+q.score||0); });
+      if(state.remote && Array.isArray(state.remote.ringkasan)){
+        state.remote.ringkasan.forEach(function(r){
+          var nama = Array.isArray(r)? r[1] : r.nama, kelas = Array.isArray(r)? r[2] : r.kelas;
+          var k = nama+"|"+kelas; if(!per[k]) per[k]={nama:nama,kelas:kelas,menus:"",scores:[]};
+          per[k].menus = Array.isArray(r)? (r[3]||"") : (r.menus||"");
+        });
+      }
+      var curKey = state.nama+"|"+state.kelas;
+      if(per[curKey]) per[curKey].menus = Object.keys(state.menusVisited).map(function(k){ return SUB_NAMES[k]||k; }).join(", ");
+      var rows = Object.keys(per).map(function(k){ return per[k]; });
+      $("tblRingkas").innerHTML = rows.length? rows.map(function(s){
+        var best = s.scores.length? Math.max.apply(null,s.scores) : "–";
+        var last = s.scores.length? s.scores[s.scores.length-1] : "–";
+        var avg = s.scores.length? Math.round(s.scores.reduce(function(a,b){return a+b;},0)/s.scores.length) : "–";
+        return "<tr><td>"+esc(s.nama)+"</td><td>"+esc(s.kelas)+"</td><td>"+esc(s.menus||"–")+"</td><td>"+s.scores.length+"</td><td>"+last+"</td><td>"+best+"</td><td>"+avg+"</td></tr>";
+      }).join("") : '<tr><td colspan="7" style="color:var(--ink-soft);">Belum ada data ringkasan.</td></tr>';
+    }
+    $("btnKunci").addEventListener("click", function(){ lockGuru(); toast("Menu Data Guru dikunci kembali. 🔒"); });
+    $("btnSaveUrl").addEventListener("click", function(){
+      var v = $("sheetUrlInput").value.trim();
+      if(v.indexOf("script.google.com")<0){ guruStatus("URL sepertinya tidak valid — harus URL Web App Apps Script (script.google.com).", "err"); return; }
+      state.sheetUrl = v;
+      guruStatus("URL database berhasil disimpan untuk sesi ini. ✅", "ok");
+    });
+    $("btnLoadSheet").addEventListener("click", function(){
+      guruStatus("Memuat data dari Google Sheet…", "info");
+      sheetLoad().then(function(data){
+        state.remote = data || {};
+        renderGuru();
+        guruStatus("Data dari Google Sheet berhasil dimuat. ✅", "ok");
+      }).catch(function(){
+        guruStatus("Gagal memuat dari Sheet. Periksa koneksi internet dan pastikan Apps Script sudah di-deploy ulang dengan versi terbaru.", "err");
+      });
+    });
+    $("btnUji").addEventListener("click", function(){
+      guruStatus("Mengirim data uji ke Google Sheet…", "info");
+      var payload = { type:"login", time:new Date().toISOString(), nama:"UJI KIRIM — "+(state.nama||"Guru"), kelas: state.kelas||"UJI", app: APP_ID };
+      fetch(state.sheetUrl, { method:"POST", headers:{"Content-Type":"text/plain"}, body: JSON.stringify(payload) })
+        .then(function(){ guruStatus("Uji kirim terkirim! Silakan periksa tab Login di Google Sheet — harus ada baris UJI KIRIM. Jika tidak muncul setelah ±1 menit, deploy ulang Apps Script sebagai versi baru.", "ok"); })
+        .catch(function(){ guruStatus("Uji kirim gagal terkirim. Periksa koneksi internet atau URL Web App.", "err"); });
+    });
+    $("btnCSV").addEventListener("click", function(){
+      var logins = allLogins(), kuis = allQuiz();
+      var lines = ["Laporan Aplikasi Bentuk Aljabar (DapMath) — diekspor "+nowStr()];
+      lines.push(""); lines.push("LOGIN SISWA"); lines.push("Waktu,Nama,Kelas,Sumber");
+      logins.forEach(function(l){ lines.push([l.time,l.nama,l.kelas,l.src].map(csvCell).join(",")); });
+      lines.push(""); lines.push("RIWAYAT KUIS"); lines.push("Waktu,Nama,Kelas,Percobaan ke-,Skor");
+      kuis.forEach(function(q){ lines.push([q.time,q.nama,q.kelas,q.attemptNo,q.score].map(csvCell).join(",")); });
+      var blob = new Blob(["\ufeff"+lines.join("\n")], { type:"text/csv;charset=utf-8" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "laporan-bentuk-aljabar.csv";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+      guruStatus("Laporan CSV berhasil diunduh. 📄", "ok");
+    });
+    function csvCell(v){ v = String(v==null?"":v); return /[",\n]/.test(v)? '"'+v.replace(/"/g,'""')+'"' : v; }
+
+    refreshBeranda();
+    </script>
+  </body>
+</html>
