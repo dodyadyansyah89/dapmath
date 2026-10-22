@@ -1,0 +1,1619 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Bangun Ruang Sisi Lengkung — DapMath Kelas 9</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #fdf6ec;
+        --bg-soft: #fff;
+        --ink: #26314e;
+        --ink-soft: #5b6a8c;
+        --line: #f0dfc8;
+        --card: #ffffff;
+        --tabung: #0e9594;
+        --tabung-soft: #d9f5f2;
+        --kerucut: #f06423;
+        --kerucut-soft: #ffe8d9;
+        --bola: #e83e6b;
+        --bola-soft: #ffe0ea;
+        --sun: #ffc531;
+        --sun-soft: #fff3cf;
+        --good: #1d9e62;
+        --good-soft: #d9f7e7;
+        --bad: #d93636;
+        --bad-soft: #ffe1e1;
+        --primary: #ff7a1a;
+        --primary-dark: #e85d04;
+        --shadow: 0 10px 30px rgba(38, 49, 78, .10);
+        --radius: 20px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+          --bg: #141a2e;
+          --bg-soft: #1c2440;
+          --ink: #eef1ff;
+          --ink-soft: #a7b0cc;
+          --line: #2e3a5f;
+          --card: #1c2440;
+          --tabung-soft: #0d3333;
+          --kerucut-soft: #40220f;
+          --bola-soft: #401c2a;
+          --sun-soft: #403711;
+          --good-soft: #10382a;
+          --bad-soft: #401d1d;
+          --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+        }
+      }
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: "Nunito", system-ui, sans-serif;
+        background:
+          radial-gradient(circle at 12% -4%, var(--sun-soft) 0 180px, transparent 181px),
+          radial-gradient(circle at 96% 8%, var(--tabung-soft) 0 150px, transparent 151px),
+          var(--bg);
+        color: var(--ink);
+        font-size: 17px;
+        line-height: 1.55;
+      }
+      h1, h2, h3, .disp { font-family: "Baloo 2", "Nunito", sans-serif; line-height: 1.15; margin: 0; }
+      button { font-family: inherit; cursor: pointer; }
+      input, select { font-family: inherit; }
+      :focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; border-radius: 8px; }
+      .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px 40px; }
+      .muted { color: var(--ink-soft); }
+      .small { font-size: .88rem; }
+
+      /* ---------- Animasi ---------- */
+      @keyframes floaty { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-12px) rotate(3deg); } }
+      @keyframes popIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+      @keyframes wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-6deg) scale(1.15); } 75% { transform: rotate(6deg) scale(1.15); } }
+      @keyframes flamePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25) rotate(-4deg); } }
+      @keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); opacity: .9; } }
+      @keyframes bounceIn { 0% { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
+      .pop { animation: popIn .45s ease both; }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+        html { scroll-behavior: auto; }
+      }
+
+      /* ---------- Login ---------- */
+      #loginView { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+      .login-card {
+        background: var(--card); border: 2px solid var(--line); border-radius: 28px; box-shadow: var(--shadow);
+        max-width: 480px; width: 100%; padding: 32px 28px; text-align: center; position: relative; overflow: hidden;
+      }
+      .login-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 8px; background: linear-gradient(90deg, var(--tabung) 0 33%, var(--kerucut) 33% 66%, var(--bola) 66% 100%); }
+      .float-shapes { display: flex; justify-content: center; gap: 18px; margin: 6px 0 10px; }
+      .float-shapes svg { animation: floaty 4s ease-in-out infinite; }
+      .float-shapes svg:nth-child(2) { animation-delay: .7s; }
+      .float-shapes svg:nth-child(3) { animation-delay: 1.4s; }
+      .login-card h1 { font-size: 1.9rem; font-weight: 800; }
+      .login-card .sub { color: var(--ink-soft); margin: 6px 0 20px; }
+      .field { text-align: left; margin-bottom: 14px; }
+      .field label { display: block; font-weight: 800; margin-bottom: 6px; }
+      .field input {
+        width: 100%; min-height: 54px; font-size: 1.05rem; padding: 12px 16px;
+        border: 2px solid var(--line); border-radius: 14px; background: var(--bg-soft); color: var(--ink);
+      }
+      .field input:focus { border-color: var(--primary); outline: none; }
+      .err { background: var(--bad-soft); color: var(--bad); border-radius: 12px; padding: 10px 14px; font-weight: 700; margin-bottom: 12px; }
+
+      /* ---------- Tombol ---------- */
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        min-height: 52px; padding: 12px 22px; border: none; border-radius: 16px;
+        background: var(--primary); color: #fff; font-weight: 800; font-size: 1rem;
+        box-shadow: 0 4px 0 var(--primary-dark); transition: transform .12s ease, box-shadow .12s ease, filter .12s;
+      }
+      .btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+      .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--primary-dark); }
+      .btn.block { width: 100%; }
+      .btn.ghost { background: var(--card); color: var(--ink); border: 2px solid var(--line); box-shadow: 0 4px 0 var(--line); }
+      .btn.teal { background: var(--tabung); box-shadow: 0 4px 0 #0a6d6c; }
+      .btn.pink { background: var(--bola); box-shadow: 0 4px 0 #b02a4e; }
+      .btn.sun { background: var(--sun); color: #4a3400; box-shadow: 0 4px 0 #d9a40f; }
+      .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+      .btn.sm { min-height: 44px; padding: 8px 16px; font-size: .92rem; }
+
+      /* ---------- Bilah atas & navigasi ---------- */
+      .topbar {
+        position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(8px); border-bottom: 2px solid var(--line);
+      }
+      .topbar-in { max-width: 1080px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+      .brand { font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; }
+      .brand .tag { background: var(--sun); color: #4a3400; font-size: .72rem; padding: 2px 9px; border-radius: 999px; font-family: "Nunito", sans-serif; font-weight: 800; }
+      .student-chip { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+      .avatar {
+        width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; flex: none;
+        background: var(--kerucut); color: #fff; font-family: "Baloo 2", sans-serif; font-weight: 800;
+      }
+      .student-chip .who { line-height: 1.2; }
+      .student-chip .who b { display: block; }
+      .student-chip .who span { font-size: .8rem; color: var(--ink-soft); }
+      nav.tabs { max-width: 1080px; margin: 0 auto; padding: 10px 16px 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+      .tab-btn {
+        min-height: 48px; padding: 10px 18px; border-radius: 999px; border: 2px solid var(--line);
+        background: var(--card); color: var(--ink); font-weight: 800; font-size: .98rem; transition: all .15s ease;
+      }
+      .tab-btn:hover { transform: translateY(-2px); border-color: var(--sun); }
+      .tab-btn[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+      @media (prefers-color-scheme: dark) { .tab-btn[aria-selected="true"] { background: var(--sun); color: #231a00; border-color: var(--sun); } }
+
+      /* ---------- Kartu & layout ---------- */
+      .card { background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+      .grid { display: grid; gap: 16px; }
+      .grid.c3 { grid-template-columns: repeat(3, 1fr); }
+      .grid.c2 { grid-template-columns: repeat(2, 1fr); }
+      @media (max-width: 820px) { .grid.c3, .grid.c2 { grid-template-columns: 1fr; } }
+      section.page { padding-top: 22px; }
+      .sec-head { display: flex; align-items: center; gap: 12px; margin: 26px 0 14px; flex-wrap: wrap; }
+      .sec-head:first-child { margin-top: 0; }
+      .sec-head h2 { font-size: 1.55rem; font-weight: 800; }
+      .chip-ico { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 1.35rem; flex: none; }
+      .ico-tabung { background: var(--tabung-soft); } .ico-kerucut { background: var(--kerucut-soft); } .ico-bola { background: var(--bola-soft); } .ico-sun { background: var(--sun-soft); }
+
+      .shape-card { text-align: left; width: 100%; transition: transform .18s ease, border-color .18s; position: relative; overflow: hidden; }
+      .shape-card:hover { transform: translateY(-5px) rotate(-.4deg); }
+      .shape-card .bar { position: absolute; inset: 0 0 auto 0; height: 7px; }
+      .shape-card h3 { font-size: 1.3rem; margin: 8px 0 4px; }
+      .shape-card .frm { font-weight: 800; font-size: .95rem; }
+
+      .hero { padding: 30px 26px; position: relative; overflow: hidden; }
+      .hero h2 { font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 800; max-width: 22ch; }
+      .hero p { max-width: 58ch; }
+      .hero .blob { position: absolute; right: -30px; top: -30px; opacity: .16; pointer-events: none; }
+
+      .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+      @media (max-width: 700px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+      .stat { text-align: center; padding: 16px 8px; }
+      .stat b { font-family: "Baloo 2", sans-serif; font-size: 1.8rem; display: block; }
+      .stat span { font-size: .85rem; color: var(--ink-soft); font-weight: 700; }
+
+      /* ---------- Lab / visual ---------- */
+      .lab { display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; align-items: start; }
+      @media (max-width: 820px) { .lab { grid-template-columns: 1fr; } }
+      .stage {
+        background: linear-gradient(180deg, var(--bg-soft), transparent), repeating-linear-gradient(0deg, transparent 0 27px, color-mix(in srgb, var(--line) 55%, transparent) 27px 28px), repeating-linear-gradient(90deg, transparent 0 27px, color-mix(in srgb, var(--line) 55%, transparent) 27px 28px), var(--card);
+        border: 2px dashed var(--line); border-radius: 16px; padding: 10px; text-align: center;
+      }
+      canvas.stage-cv { width: 100%; height: auto; display: block; touch-action: pan-y; cursor: grab; }
+      canvas.stage-cv:active { cursor: grabbing; }
+      .ctl { margin: 12px 0; }
+      .ctl label { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 4px; }
+      .ctl label output { color: var(--primary-dark); }
+      @media (prefers-color-scheme: dark) { .ctl label output { color: var(--sun); } }
+      input[type="range"] { width: 100%; min-height: 40px; accent-color: var(--primary); cursor: pointer; }
+      .readout { background: var(--sun-soft); border-radius: 14px; padding: 12px 16px; font-weight: 700; }
+      .readout b { font-family: "Baloo 2", sans-serif; }
+      .formula-box { border-radius: 16px; padding: 16px 18px; margin: 12px 0; }
+      .formula-box h3 { margin-bottom: 6px; font-size: 1.15rem; }
+      .formula-box .big { font-family: "Baloo 2", sans-serif; font-size: 1.25rem; font-weight: 700; }
+      .fb-tabung { background: var(--tabung-soft); } .fb-kerucut { background: var(--kerucut-soft); } .fb-bola { background: var(--bola-soft); }
+      .part-chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+      .part-chip { min-height: 46px; padding: 8px 16px; border-radius: 999px; border: 2px solid var(--line); background: var(--card); font-weight: 800; transition: all .15s; }
+      .part-chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+      .net-svg { width: 100%; height: auto; display: block; }
+      .anim-msg { min-height: 1.6em; font-weight: 800; text-align: center; margin-top: 8px; }
+
+      /* ---------- Kalkulator ---------- */
+      .calc-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+      .calc-tab { min-height: 50px; padding: 10px 20px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); font-weight: 800; font-size: 1rem; }
+      .calc-tab[aria-selected="true"].ct-tabung { background: var(--tabung); border-color: var(--tabung); color: #fff; }
+      .calc-tab[aria-selected="true"].ct-kerucut { background: var(--kerucut); border-color: var(--kerucut); color: #fff; }
+      .calc-tab[aria-selected="true"].ct-bola { background: var(--bola); border-color: var(--bola); color: #fff; }
+      .num-in { width: 100%; min-height: 54px; font-size: 1.1rem; font-weight: 700; padding: 10px 14px; border: 2px solid var(--line); border-radius: 14px; background: var(--bg-soft); color: var(--ink); }
+      .num-in:focus { border-color: var(--primary); outline: none; }
+      .pi-toggle { display: inline-flex; border: 2px solid var(--line); border-radius: 999px; overflow: hidden; }
+      .pi-toggle button { min-height: 46px; padding: 8px 18px; border: none; background: var(--card); color: var(--ink); font-weight: 800; }
+      .pi-toggle button.on { background: var(--sun); color: #4a3400; }
+      .steps { background: var(--bg-soft); border: 2px solid var(--line); border-radius: 16px; padding: 18px; }
+      .steps ol { margin: 8px 0 0; padding-left: 22px; }
+      .steps li { margin: 6px 0; }
+      .steps .ans { font-family: "Baloo 2", sans-serif; font-size: 1.2rem; font-weight: 700; background: var(--good-soft); border-radius: 12px; padding: 10px 14px; margin-top: 12px; }
+
+      /* ---------- Kuis ---------- */
+      .quiz-top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+      .xp-wrap { flex: 1; min-width: 180px; }
+      .xp-bar { height: 16px; border-radius: 999px; background: var(--line); overflow: hidden; }
+      .xp-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--sun), var(--primary)); transition: width .5s cubic-bezier(.2, .9, .3, 1.2); }
+      .streak { display: inline-flex; align-items: center; gap: 6px; background: var(--kerucut-soft); border-radius: 999px; padding: 8px 16px; font-weight: 800; }
+      .streak .flame { display: inline-block; }
+      .streak.hot .flame { animation: flamePulse .6s ease infinite; }
+      .lvl { display: inline-flex; align-items: center; gap: 6px; background: var(--sun-soft); border-radius: 999px; padding: 8px 16px; font-weight: 800; }
+      .q-card h3 { font-size: 1.25rem; margin-bottom: 6px; }
+      .q-text { font-size: 1.12rem; font-weight: 700; margin: 8px 0 16px; }
+      .opts { display: grid; gap: 10px; }
+      .opt {
+        display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; min-height: 58px;
+        padding: 12px 16px; border-radius: 16px; border: 2px solid var(--line); background: var(--card);
+        color: var(--ink); font-size: 1.05rem; font-weight: 700; transition: all .15s ease;
+      }
+      .opt:hover:not(:disabled) { border-color: var(--sun); transform: translateX(4px); }
+      .opt .key { width: 36px; height: 36px; flex: none; border-radius: 10px; background: var(--sun-soft); display: grid; place-items: center; font-family: "Baloo 2", sans-serif; font-weight: 800; }
+      .opt.right { background: var(--good-soft); border-color: var(--good); }
+      .opt.right .key { background: var(--good); color: #fff; }
+      .opt.wrong { background: var(--bad-soft); border-color: var(--bad); animation: wiggle .4s ease; }
+      .opt.wrong .key { background: var(--bad); color: #fff; }
+      .opt:disabled { cursor: default; opacity: .92; }
+      .explain { border-radius: 16px; padding: 16px 18px; margin-top: 16px; }
+      .explain.good { background: var(--good-soft); }
+      .explain.bad { background: var(--bad-soft); }
+      .explain h4 { margin: 0 0 6px; font-family: "Baloo 2", sans-serif; font-size: 1.1rem; }
+      .cheer { font-family: "Baloo 2", sans-serif; font-weight: 700; font-size: 1.05rem; margin-top: 10px; }
+      .badge-big { font-size: 4rem; text-align: center; animation: bounceIn .6s ease both; }
+      .confetti-bit { position: fixed; top: -4vh; z-index: 99; pointer-events: none; border-radius: 3px; animation: confettiFall linear forwards; }
+
+      /* ---------- Data Guru ---------- */
+      .pin-box { max-width: 420px; margin: 0 auto; text-align: center; }
+      .pin-box input { text-align: center; letter-spacing: .3em; font-size: 1.3rem; }
+      .stu { border: 2px solid var(--line); border-radius: 16px; padding: 16px 18px; margin-bottom: 12px; background: var(--card); }
+      .stu-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+      .stu-head b { font-family: "Baloo 2", sans-serif; font-size: 1.1rem; }
+      .score-track { display: flex; gap: 5px; align-items: flex-end; height: 44px; margin-top: 8px; }
+      .score-bar { flex: 1; max-width: 46px; border-radius: 6px 6px 0 0; background: var(--tabung); position: relative; min-height: 4px; }
+      .score-bar span { position: absolute; top: -1.25em; left: 0; right: 0; text-align: center; font-size: .72rem; font-weight: 800; }
+      .sheet-status { border-radius: 12px; padding: 12px 16px; background: var(--sun-soft); font-weight: 700; margin-top: 12px; }
+      .sheet-status.ok { background: var(--good-soft); }
+      .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+
+      footer { border-top: 2px solid var(--line); margin-top: 34px; }
+      footer .wrap { padding-top: 18px; text-align: center; color: var(--ink-soft); font-weight: 700; }
+      footer b { color: var(--ink); }
+      .hidden { display: none !important; }
+    </style>
+  </head>
+  <body>
+
+    <!-- ================= LOGIN ================= -->
+    <div id="loginView">
+      <div class="login-card pop">
+        <div class="float-shapes" aria-hidden="true">
+          <svg width="52" height="52" viewBox="0 0 52 52"><ellipse cx="26" cy="12" rx="17" ry="6" fill="#0e9594"/><path d="M9 12 v26 a17 6 0 0 0 34 0 V12" fill="#35bcbb"/><ellipse cx="26" cy="12" rx="17" ry="6" fill="#7fe0dd"/></svg>
+          <svg width="52" height="52" viewBox="0 0 52 52"><path d="M26 6 L45 42 a19 7 0 0 1 -38 0 Z" fill="#f06423"/><ellipse cx="26" cy="42" rx="19" ry="7" fill="#ffb38a"/></svg>
+          <svg width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="21" fill="#e83e6b"/><ellipse cx="19" cy="18" rx="7" ry="4.5" fill="#ff9db8" transform="rotate(-24 19 18)"/></svg>
+        </div>
+        <p class="disp" style="font-weight:800; color:var(--primary-dark);">DapMath · Kelas 9</p>
+        <h1>Bangun Ruang Sisi Lengkung</h1>
+        <p class="sub">Yuk kenalan dulu sebelum mulai petualangan tabung, kerucut, dan bola!</p>
+        <div class="err" id="loginErr" hidden>Isi dulu nama dan kelasmu ya, supaya gurumu tahu siapa yang sedang belajar.</div>
+        <form id="loginForm" autocomplete="off">
+          <div class="field">
+            <label for="namaInput">Nama kamu</label>
+            <input id="namaInput" type="text" placeholder="Contoh: Sinta Maharani" maxlength="60" />
+          </div>
+          <div class="field">
+            <label for="kelasInput">Kelas</label>
+            <input id="kelasInput" type="text" placeholder="Contoh: 9A" maxlength="20" />
+          </div>
+          <button class="btn block" type="submit" style="margin-top:6px;">Mulai Belajar</button>
+        </form>
+        <p class="small muted" style="margin:16px 0 0;">Dibangun oleh <b>Dody Adyansyah</b></p>
+      </div>
+    </div>
+
+    <!-- ================= APLIKASI ================= -->
+    <div id="appView" hidden>
+      <div class="topbar">
+        <div class="topbar-in">
+          <div class="brand">
+            <svg width="30" height="30" viewBox="0 0 52 52" aria-hidden="true"><ellipse cx="26" cy="12" rx="17" ry="6" fill="#0e9594"/><path d="M9 12 v26 a17 6 0 0 0 34 0 V12" fill="#35bcbb"/><ellipse cx="26" cy="12" rx="17" ry="6" fill="#7fe0dd"/></svg>
+            Bangun Ruang Sisi Lengkung <span class="tag">Kelas 9</span>
+          </div>
+          <div class="student-chip">
+            <div class="avatar" id="avatarEl">?</div>
+            <div class="who"><b id="studentNameEl">—</b><span id="studentClassEl">—</span></div>
+            <button class="btn ghost sm" id="btnGantiSiswa" type="button">Ganti Siswa</button>
+          </div>
+        </div>
+        <nav class="tabs" aria-label="Menu utama">
+          <button class="tab-btn" type="button" data-tab="beranda" aria-selected="true">Beranda</button>
+          <button class="tab-btn" type="button" data-tab="materi" aria-selected="false">Materi &amp; Lab</button>
+          <button class="tab-btn" type="button" data-tab="kalkulator" aria-selected="false">Kalkulator</button>
+          <button class="tab-btn" type="button" data-tab="kuis" aria-selected="false">Kuis Seru</button>
+          <button class="tab-btn" type="button" data-tab="guru" aria-selected="false">Data Guru</button>
+        </nav>
+      </div>
+
+      <main class="wrap">
+        <!-- ========== BERANDA ========== -->
+        <section class="page" id="sec-beranda">
+          <div class="card hero pop">
+            <svg class="blob" width="230" height="230" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#e83e6b"/></svg>
+            <h2>Halo, <span id="haloNama">Teman</span>! Siap menjelajahi bangun melengkung?</h2>
+            <p>Tabung, kerucut, dan bola ada di sekeliling kita: kaleng susu, topi ulang tahun, sampai bola sepak. Di sini kamu bisa <b>memutar bangunnya</b>, <b>membuka jaring-jaringnya</b>, <b>menuang volume</b>, lalu menguji kemampuanmu di kuis berlevel. Ayo mulai!</p>
+            <div class="btn-row">
+              <button class="btn" type="button" data-goto="materi">Mulai dari Materi</button>
+              <button class="btn sun" type="button" data-goto="kuis">Langsung Kuis</button>
+            </div>
+          </div>
+
+          <div class="sec-head"><span class="chip-ico ico-sun">★</span><h2>Tiga Bangun Bintang Kita</h2></div>
+          <div class="grid c3">
+            <button class="card shape-card" type="button" data-goto="materi" data-anchor="tabungSection">
+              <span class="bar" style="background:var(--tabung);"></span>
+              <svg width="64" height="64" viewBox="0 0 52 52" aria-hidden="true"><ellipse cx="26" cy="12" rx="17" ry="6" fill="#0e9594"/><path d="M9 12 v26 a17 6 0 0 0 34 0 V12" fill="#35bcbb"/><ellipse cx="26" cy="12" rx="17" ry="6" fill="#7fe0dd"/></svg>
+              <h3>Tabung</h3>
+              <p class="muted" style="margin:0;">Dua lingkaran kembar dihubungkan selimut melengkung. Contoh: kaleng, pipa, gelas.</p>
+              <p class="frm" style="color:var(--tabung);">V = π r² t · Lp = 2π r (r + t)</p>
+            </button>
+            <button class="card shape-card" type="button" data-goto="materi" data-anchor="kerucutSection">
+              <span class="bar" style="background:var(--kerucut);"></span>
+              <svg width="64" height="64" viewBox="0 0 52 52" aria-hidden="true"><path d="M26 6 L45 42 a19 7 0 0 1 -38 0 Z" fill="#f06423"/><ellipse cx="26" cy="42" rx="19" ry="7" fill="#ffb38a"/></svg>
+              <h3>Kerucut</h3>
+              <p class="muted" style="margin:0;">Alas lingkaran dengan satu titik puncak. Contoh: topi ulang tahun, corong, es krim cone.</p>
+              <p class="frm" style="color:var(--kerucut);">V = ⅓ π r² t · Lp = π r (r + s)</p>
+            </button>
+            <button class="card shape-card" type="button" data-goto="materi" data-anchor="bolaSection">
+              <span class="bar" style="background:var(--bola);"></span>
+              <svg width="64" height="64" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="21" fill="#e83e6b"/><ellipse cx="19" cy="18" rx="7" ry="4.5" fill="#ff9db8" transform="rotate(-24 19 18)"/></svg>
+              <h3>Bola</h3>
+              <p class="muted" style="margin:0;">Semua titik di permukaannya sama jauh dari pusat. Contoh: bola sepak, kelereng, Bumi.</p>
+              <p class="frm" style="color:var(--bola);">V = ⁴⁄₃ π r³ · Lp = 4 π r²</p>
+            </button>
+          </div>
+
+          <div class="sec-head"><span class="chip-ico ico-tabung">?</span><h2>Istilah Penting</h2></div>
+          <div class="card">
+            <div class="grid c3" style="gap:12px;">
+              <div><b class="disp" style="font-size:1.05rem;">Jari-jari (r)</b><p class="muted" style="margin:4px 0 0;">Jarak dari pusat lingkaran ke tepi lingkaran. Setengah dari diameter.</p></div>
+              <div><b class="disp" style="font-size:1.05rem;">Tinggi (t)</b><p class="muted" style="margin:4px 0 0;">Jarak antara alas dan tutup tabung, atau alas dan puncak kerucut.</p></div>
+              <div><b class="disp" style="font-size:1.05rem;">Garis Pelukis (s)</b><p class="muted" style="margin:4px 0 0;">Sisi miring kerucut. Ingat Pythagoras: s = √(r² + t²).</p></div>
+              <div><b class="disp" style="font-size:1.05rem;">Selimut</b><p class="muted" style="margin:4px 0 0;">Sisi lengkung yang "membungkus" bangun — pada tabung berbentuk persegi panjang jika dibuka.</p></div>
+              <div><b class="disp" style="font-size:1.05rem;">Jaring-jaring</b><p class="muted" style="margin:4px 0 0;">Bangun datar hasil membuka sebuah bangun ruang, seperti membuka kardus.</p></div>
+              <div><b class="disp" style="font-size:1.05rem;">Nilai π (pi)</b><p class="muted" style="margin:4px 0 0;">Pakai 22/7 jika jari-jari kelipatan 7, dan 3,14 untuk jari-jari lainnya.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== MATERI & LAB ========== -->
+        <section class="page" id="sec-materi" hidden>
+          <!-- ===== TABUNG ===== -->
+          <div id="tabungSection">
+            <div class="sec-head"><span class="chip-ico ico-tabung">▮</span><h2>1 · Tabung</h2></div>
+            <div class="card pop">
+              <p style="margin-top:0;">Tabung punya <b>3 sisi</b>: alas dan tutup berupa lingkaran yang sama besar, serta selimut yang melengkung. Seret gambarnya untuk memutar, dan geser pengaturnya untuk mengubah ukuran!</p>
+              <div class="lab">
+                <div class="stage">
+                  <canvas class="stage-cv" id="cvTabung" width="520" height="380" aria-label="Visual tabung yang dapat diputar"></canvas>
+                  <p class="small muted" style="margin:4px 0 2px;">Seret untuk memutar · lepas untuk putaran otomatis</p>
+                </div>
+                <div>
+                  <div class="ctl"><label>Jari-jari (r) <output id="oTabungR">7 cm</output></label><input type="range" id="inTabungR" min="3" max="12" step="1" value="7" /></div>
+                  <div class="ctl"><label>Tinggi (t) <output id="oTabungT">12 cm</output></label><input type="range" id="inTabungT" min="4" max="20" step="1" value="12" /></div>
+                  <div class="readout" id="readTabung"></div>
+                  <div class="formula-box fb-tabung">
+                    <h3>Rumus Tabung</h3>
+                    <p class="big">Volume = π × r² × t</p>
+                    <p class="big">Luas permukaan = 2 × π × r × (r + t)</p>
+                    <p style="margin:6px 0 0;">Luas selimut saja = 2 × π × r × t</p>
+                  </div>
+                </div>
+              </div>
+              <h3 class="disp" style="margin:20px 0 4px; font-size:1.2rem;">Jaring-Jaring Tabung — Geser untuk Membuka!</h3>
+              <p class="muted" style="margin:0 0 6px;">Jika dibuka, selimut tabung menjadi <b>persegi panjang</b> yang panjangnya sama dengan keliling alas (2πr), diapit dua lingkaran.</p>
+              <div class="stage">
+                <svg class="net-svg" id="netTabung" viewBox="0 0 560 300" role="img" aria-label="Jaring-jaring tabung"></svg>
+                <div class="ctl" style="max-width:520px; margin:8px auto 0;"><label>Buka jaring-jaring <output id="oNetTabung">0%</output></label><input type="range" id="inNetTabung" min="0" max="100" value="0" /></div>
+                <div class="btn-row" style="justify-content:center;">
+                  <button class="btn teal sm" type="button" id="btnNetTabungAnim">Putar Animasi Buka–Tutup</button>
+                </div>
+                <p class="anim-msg" id="msgNetTabung">Klik bagian pada jaring-jaring di bawah untuk tahu namanya.</p>
+                <div class="part-chips" style="justify-content:center;">
+                  <button class="part-chip" type="button" data-nettabung="selimut">Selimut (persegi panjang)</button>
+                  <button class="part-chip" type="button" data-nettabung="alas">Alas &amp; Tutup (lingkaran)</button>
+                </div>
+                <p class="muted" id="descNetTabung" style="min-height:1.6em; margin:0;"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== KERUCUT ===== -->
+          <div id="kerucutSection">
+            <div class="sec-head"><span class="chip-ico ico-kerucut">▲</span><h2>2 · Kerucut</h2></div>
+            <div class="card pop">
+              <p style="margin-top:0;">Kerucut punya <b>2 sisi</b>: alas lingkaran dan selimut yang meruncing ke satu titik puncak. Sisi miringnya disebut <b>garis pelukis (s)</b>. Seret untuk memutar!</p>
+              <div class="lab">
+                <div class="stage">
+                  <canvas class="stage-cv" id="cvKerucut" width="520" height="380" aria-label="Visual kerucut yang dapat diputar"></canvas>
+                  <p class="small muted" style="margin:4px 0 2px;">Seret untuk memutar · lepas untuk putaran otomatis</p>
+                </div>
+                <div>
+                  <div class="ctl"><label>Jari-jari (r) <output id="oKerucutR">6 cm</output></label><input type="range" id="inKerucutR" min="3" max="12" step="1" value="6" /></div>
+                  <div class="ctl"><label>Tinggi (t) <output id="oKerucutT">8 cm</output></label><input type="range" id="inKerucutT" min="4" max="20" step="1" value="8" /></div>
+                  <div class="readout" id="readKerucut"></div>
+                  <div class="formula-box fb-kerucut">
+                    <h3>Rumus Kerucut</h3>
+                    <p class="big">Volume = ⅓ × π × r² × t</p>
+                    <p class="big">Luas permukaan = π × r × (r + s)</p>
+                    <p style="margin:6px 0 0;">Garis pelukis: s = √(r² + t²) · Luas selimut = π × r × s</p>
+                  </div>
+                </div>
+              </div>
+              <h3 class="disp" style="margin:20px 0 4px; font-size:1.2rem;">Jaring-Jaring Kerucut — Selimutnya Berbentuk Juring!</h3>
+              <p class="muted" style="margin:0 0 6px;">Selimut kerucut jika dibuka menjadi <b>juring lingkaran</b> berjari-jari s. Panjang busurnya tepat sama dengan keliling alas kerucut (2πr).</p>
+              <div class="stage">
+                <svg class="net-svg" id="netKerucut" viewBox="0 0 560 356" role="img" aria-label="Jaring-jaring kerucut"></svg>
+                <div class="ctl" style="max-width:520px; margin:8px auto 0;"><label>Buka jaring-jaring <output id="oNetKerucut">0%</output></label><input type="range" id="inNetKerucut" min="0" max="100" value="0" /></div>
+                <div class="btn-row" style="justify-content:center;">
+                  <button class="btn sm" type="button" id="btnNetKerucutAnim" style="background:var(--kerucut); box-shadow:0 4px 0 #b34a15;">Putar Animasi Buka–Tutup</button>
+                </div>
+                <p class="anim-msg" id="msgNetKerucut"></p>
+              </div>
+
+              <h3 class="disp" style="margin:22px 0 4px; font-size:1.2rem;">Animasi Volume: Kerucut = ⅓ Tabung</h3>
+              <p class="muted" style="margin:0 0 6px;">Kerucut dan tabung di bawah beralas dan bertinggi <b>sama</b>. Tuang isi kerucut ke tabung dan lihat berapa kali kerucut harus diisi sampai tabung penuh!</p>
+              <div class="stage">
+                <svg class="net-svg" id="volKerucut" viewBox="0 0 560 300" role="img" aria-label="Animasi menuang kerucut ke tabung"></svg>
+                <div class="btn-row" style="justify-content:center;">
+                  <button class="btn" type="button" id="btnTuang">Tuang 1 Kerucut</button>
+                  <button class="btn ghost" type="button" id="btnTuangReset">Ulangi</button>
+                </div>
+                <p class="anim-msg" id="msgTuang">Tabung masih kosong. Klik "Tuang 1 Kerucut" untuk mulai!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== BOLA ===== -->
+          <div id="bolaSection">
+            <div class="sec-head"><span class="chip-ico ico-bola">●</span><h2>3 · Bola</h2></div>
+            <div class="card pop">
+              <p style="margin-top:0;">Bola hanya punya <b>1 sisi lengkung</b> dan tidak punya rusuk maupun titik sudut. Uniknya, bola <b>tidak bisa dibuka menjadi jaring-jaring datar</b> — seperti kulit jeruk yang tidak bisa diratakan tanpa robek. Seret untuk memutar bolanya!</p>
+              <div class="lab">
+                <div class="stage">
+                  <canvas class="stage-cv" id="cvBola" width="520" height="380" aria-label="Visual bola yang dapat diputar"></canvas>
+                  <p class="small muted" style="margin:4px 0 2px;">Seret untuk memutar · lepas untuk putaran otomatis</p>
+                </div>
+                <div>
+                  <div class="ctl"><label>Jari-jari (r) <output id="oBolaR">7 cm</output></label><input type="range" id="inBolaR" min="3" max="12" step="1" value="7" /></div>
+                  <div class="readout" id="readBola"></div>
+                  <div class="formula-box fb-bola">
+                    <h3>Rumus Bola</h3>
+                    <p class="big">Volume = ⁴⁄₃ × π × r³</p>
+                    <p class="big">Luas permukaan = 4 × π × r²</p>
+                    <p style="margin:6px 0 0;">Luas permukaan bola = 4 kali luas lingkaran ber jari-jari sama. Keren, ya!</p>
+                  </div>
+                </div>
+              </div>
+              <h3 class="disp" style="margin:20px 0 4px; font-size:1.2rem;">Animasi Volume: Bola vs Tabung (Penemuan Archimedes)</h3>
+              <p class="muted" style="margin:0 0 6px;">Bungkus bola dengan tabung yang pas: diameter tabung sama dengan diameter bola, dan tinggi tabung juga sama. Ternyata volume bola tepat mengisi <b>⅔ bagian</b> tabung itu!</p>
+              <div class="stage">
+                <svg class="net-svg" id="volBola" viewBox="0 0 560 300" role="img" aria-label="Animasi volume bola dibanding tabung"></svg>
+                <div class="btn-row" style="justify-content:center;">
+                  <button class="btn pink" type="button" id="btnVolBola">Lihat Perbandingannya</button>
+                  <button class="btn ghost" type="button" id="btnVolBolaReset">Ulangi</button>
+                </div>
+                <p class="anim-msg" id="msgVolBola">Klik tombol untuk melihat bola "dituang" ke dalam tabung.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:18px; text-align:center;">
+            <h3 class="disp" style="font-size:1.3rem;">Sudah paham polanya?</h3>
+            <p class="muted">Sekarang coba hitung sendiri dengan kalkulator berlangkah, lalu uji kemampuanmu di kuis berlevel!</p>
+            <div class="btn-row" style="justify-content:center;">
+              <button class="btn teal" type="button" data-goto="kalkulator">Ke Kalkulator</button>
+              <button class="btn sun" type="button" data-goto="kuis">Ke Kuis Seru</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== KALKULATOR ========== -->
+        <section class="page" id="sec-kalkulator" hidden>
+          <div class="sec-head"><span class="chip-ico ico-sun">✚</span><h2>Kalkulator Bangun Ruang</h2></div>
+          <p class="muted" style="margin-top:0;">Pilih bangunnya, masukkan ukurannya, lalu lihat cara menghitungnya langkah demi langkah — seperti dibimbing guru!</p>
+          <div class="calc-tabs" role="tablist" aria-label="Pilih bangun">
+            <button class="calc-tab ct-tabung" type="button" data-calc="tabung" aria-selected="true">Tabung</button>
+            <button class="calc-tab ct-kerucut" type="button" data-calc="kerucut" aria-selected="false">Kerucut</button>
+            <button class="calc-tab ct-bola" type="button" data-calc="bola" aria-selected="false">Bola</button>
+          </div>
+          <div class="card pop">
+            <div class="grid c2">
+              <div>
+                <div class="field">
+                  <label for="calcR">Jari-jari (r) — cm</label>
+                  <input class="num-in" id="calcR" type="number" inputmode="decimal" min="0" step="any" value="7" />
+                </div>
+                <div class="field" id="calcTField">
+                  <label for="calcT">Tinggi (t) — cm</label>
+                  <input class="num-in" id="calcT" type="number" inputmode="decimal" min="0" step="any" value="10" />
+                </div>
+                <div class="field" id="calcSField" hidden>
+                  <label>Garis pelukis (s) — dihitung otomatis</label>
+                  <input class="num-in" id="calcS" type="text" readonly value="—" />
+                </div>
+                <div class="field">
+                  <label>Nilai π yang dipakai</label>
+                  <div class="pi-toggle" role="group" aria-label="Pilih nilai pi">
+                    <button type="button" id="pi227" class="on">22/7</button>
+                    <button type="button" id="pi314">3,14</button>
+                  </div>
+                  <p class="small muted" style="margin:6px 0 0;">Tips: 22/7 enak dipakai jika r kelipatan 7.</p>
+                </div>
+                <button class="btn block" type="button" id="btnHitung">Hitung dengan Langkah</button>
+                <p class="err" id="calcErr" hidden>Masukkan jari-jari (dan tinggi) yang lebih besar dari 0 ya.</p>
+              </div>
+              <div class="steps" id="calcOut">
+                <h3 class="disp" style="font-size:1.15rem;">Hasil &amp; Langkah</h3>
+                <p class="muted">Klik tombol "Hitung dengan Langkah" untuk melihat penyelesaiannya di sini.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-head"><span class="chip-ico ico-kerucut">✎</span><h2>Latihan Cepat</h2></div>
+          <div class="card">
+            <p id="latihanSoal" style="font-weight:700; font-size:1.08rem; margin-top:0;"></p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <input class="num-in" id="latihanInput" type="number" inputmode="decimal" step="any" placeholder="Jawabanmu (angka saja)" style="max-width:260px;" />
+              <button class="btn teal" type="button" id="btnLatihanCek">Periksa</button>
+              <button class="btn ghost" type="button" id="btnLatihanBaru">Soal Lain</button>
+            </div>
+            <p class="anim-msg" id="latihanMsg" style="text-align:left;"></p>
+          </div>
+        </section>
+
+        <!-- ========== KUIS ========== -->
+        <section class="page" id="sec-kuis" hidden>
+          <div class="sec-head"><span class="chip-ico ico-sun">🏆</span><h2>Kuis Seru: Petualangan Bangun Lengkung</h2></div>
+
+          <div id="quizStart" class="card pop" style="text-align:center;">
+            <div class="badge-big" aria-hidden="true">🎯</div>
+            <h3 class="disp" style="font-size:1.5rem;">10 Soal · Kumpulkan XP · Naik Level!</h3>
+            <p class="muted" style="max-width:52ch; margin:8px auto;">Jawaban benar memberi <b>100 XP</b>, plus bonus <b>+10 XP</b> untuk setiap jawaban benar beruntun (streak). Jaga streak-mu tetap menyala dan kumpulkan lencana tertinggi: <b>Master Bangun Lengkung</b>!</p>
+            <div class="part-chips" style="justify-content:center;">
+              <span class="lvl">Level 1 · Pemula</span>
+              <span class="lvl">Level 2 · Penjelajah</span>
+              <span class="lvl">Level 3 · Ahli Lengkung</span>
+              <span class="lvl">Level 4 · Master Bangun Lengkung</span>
+            </div>
+            <button class="btn" type="button" id="btnMulaiKuis" style="margin-top:10px;">Mulai Kuis</button>
+            <p class="small muted" id="quizBestInfo"></p>
+          </div>
+
+          <div id="quizPlay" class="card pop" hidden>
+            <div class="quiz-top">
+              <span class="lvl" id="quizLevel">Level 1 · Pemula</span>
+              <div class="xp-wrap">
+                <div class="small" style="font-weight:800; display:flex; justify-content:space-between;"><span id="quizProgLabel">Soal 1 dari 10</span><span><span id="quizXp">0</span> XP</span></div>
+                <div class="xp-bar"><div class="xp-fill" id="quizBar"></div></div>
+              </div>
+              <span class="streak" id="quizStreak"><span class="flame">🔥</span> Streak <b id="quizStreakN">0</b></span>
+            </div>
+            <div class="q-card">
+              <h3 id="quizQTitle">Soal 1</h3>
+              <p class="q-text" id="quizQText"></p>
+              <div class="opts" id="quizOpts"></div>
+              <div class="explain" id="quizExplain" hidden>
+                <h4 id="quizExplainTitle"></h4>
+                <p id="quizExplainText" style="margin:0;"></p>
+                <p class="cheer" id="quizCheer"></p>
+                <button class="btn" type="button" id="btnSoalLanjut" style="margin-top:12px;">Soal Berikutnya</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="quizDone" class="card pop" hidden style="text-align:center;">
+            <div class="badge-big" id="doneBadge" aria-hidden="true">🏅</div>
+            <h3 class="disp" style="font-size:1.6rem;" id="doneTitle">Kuis Selesai!</h3>
+            <p style="font-size:1.15rem;">Skor akhir kamu: <b class="disp" id="doneScore" style="font-size:1.6rem;">0</b> / 100</p>
+            <p class="muted" id="doneDetail"></p>
+            <p><span class="lvl" id="doneLevel"></span> <span class="streak" id="doneStreak"></span></p>
+            <p class="cheer" id="doneMsg"></p>
+            <div class="btn-row" style="justify-content:center;">
+              <button class="btn" type="button" id="btnKuisUlang">Main Lagi</button>
+              <button class="btn ghost" type="button" data-goto="materi">Belajar Lagi</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== DATA GURU ========== -->
+        <section class="page" id="sec-guru" hidden>
+          <div class="sec-head"><span class="chip-ico ico-bola">▦</span><h2>Data Guru</h2></div>
+
+          <div id="guruGate" class="card pop">
+            <div class="pin-box">
+              <div class="badge-big" style="font-size:3rem;" aria-hidden="true">🔒</div>
+              <h3 class="disp" style="font-size:1.35rem;">Menu Khusus Guru</h3>
+              <p class="muted">Menu ini berisi data seluruh siswa, jadi terkunci dengan PIN. Masukkan PIN guru untuk membukanya. (Pengiriman data login dan kuis dari perangkat siswa tetap berjalan otomatis tanpa PIN.)</p>
+              <div class="err" id="pinErr" hidden>PIN salah. Coba lagi ya.</div>
+              <form id="pinForm" autocomplete="off">
+                <div class="field"><input id="pinInput" type="password" inputmode="numeric" placeholder="PIN Guru" aria-label="PIN Guru" /></div>
+                <button class="btn block" type="submit">Buka Data Guru</button>
+              </form>
+            </div>
+          </div>
+
+          <div id="guruPanel" hidden>
+            <div class="stat-row">
+              <div class="card stat"><b id="statSiswa">0</b><span>Siswa Login</span></div>
+              <div class="card stat"><b id="statKuis">0</b><span>Total Percobaan Kuis</span></div>
+              <div class="card stat"><b id="statRata">—</b><span>Rata-rata Skor Terbaik</span></div>
+              <div class="card stat"><b id="statMenu">0</b><span>Kunjungan Menu</span></div>
+            </div>
+
+            <div class="card" style="margin-top:16px;">
+              <h3 class="disp" style="font-size:1.25rem;">Daftar Siswa &amp; Perkembangannya</h3>
+              <p class="muted small">Data sesi ini (dari perangkat ini) digabung dengan data dari Google Sheet saat Bapak/Ibu menekan "Muat Data dari Sheet".</p>
+              <div id="guruList"></div>
+              <div class="btn-row">
+                <button class="btn" type="button" id="btnCsv">Unduh Laporan (CSV)</button>
+                <button class="btn ghost" type="button" id="btnSheetLoad">Muat Data dari Sheet</button>
+                <button class="btn ghost" type="button" id="btnSheetSummary">Kirim Ringkasan Sesi</button>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:16px;">
+              <h3 class="disp" style="font-size:1.25rem;">Database Google Sheets</h3>
+              <p>Aplikasi ini terhubung permanen ke Google Sheet pusat DapMath. Setiap login siswa, hasil kuis, dan ringkasan otomatis terkirim ke Sheet tersebut dari perangkat mana pun, ditandai aplikasi <b>bangun-ruang-sisi-lengkung</b>.</p>
+              <div class="btn-row">
+                <button class="btn sun" type="button" id="btnUjiKirim">Uji Kirim Data Sekarang</button>
+              </div>
+              <div class="field">
+                <label for="sheetUrl">URL Aplikasi Web (Apps Script)</label>
+                <input id="sheetUrl" type="url" />
+              </div>
+              <div class="btn-row">
+                <button class="btn teal sm" type="button" id="btnSheetConnect">Simpan &amp; Pakai URL Ini</button>
+                <button class="btn ghost sm" type="button" id="btnSheetReset">Kembalikan URL Bawaan</button>
+              </div>
+              <div class="sheet-status" id="sheetStatus">Terhubung ke Sheet pusat DapMath (URL bawaan).</div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <div class="wrap">
+          <p style="margin:0;">DapMath — Belajar Matematika Jadi Petualangan<br />Dibangun oleh <b>Dody Adyansyah</b></p>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      "use strict";
+      const $ = (s, r) => (r || document).querySelector(s);
+      const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const nowISO = () => new Date().toISOString();
+      const fmtTime = (d) => {
+        try { return new Date(d).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); }
+        catch (e) { return "—"; }
+      };
+      /* Format angka gaya Indonesia: ribuan titik, desimal koma, maks 2 desimal */
+      const fmt = (n) => {
+        if (!isFinite(n)) return "—";
+        const v = Math.round(n * 100) / 100;
+        return v.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+      };
+      const PI227 = 22 / 7, PI314 = 3.14;
+      const pickPi = (r) => (Math.abs(r % 7) < 1e-9 ? { v: PI227, label: "22/7" } : { v: PI314, label: "3,14" });
+
+      /* ================= Integrasi Google Sheets ================= */
+      const APP_ID = "bangun-ruang-sisi-lengkung";
+      const DEFAULT_SHEET_URL = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
+      let sheetEndpoint = DEFAULT_SHEET_URL;
+      function setSheetStatus(msg, ok) {
+        const el = $("#sheetStatus");
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.toggle("ok", !!ok);
+      }
+      function sheetSend(payload) {
+        if (!sheetEndpoint) return Promise.resolve(false);
+        payload.app = APP_ID;
+        const body = JSON.stringify(payload);
+        const viaBeacon = () => {
+          try {
+            if (navigator.sendBeacon) {
+              return navigator.sendBeacon(sheetEndpoint, new Blob([body], { type: "text/plain;charset=utf-8" }));
+            }
+          } catch (err) { /* abaikan */ }
+          return false;
+        };
+        return fetch(sheetEndpoint, {
+          method: "POST", mode: "no-cors", keepalive: true,
+          headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body,
+        }).then(() => true).catch(() => viaBeacon());
+      }
+      function sheetLoad() {
+        const sep = sheetEndpoint.indexOf("?") >= 0 ? "&" : "?";
+        return fetch(sheetEndpoint + sep + "app=" + encodeURIComponent(APP_ID)).then((r) => r.json());
+      }
+
+      /* ================= Data sesi (memori perangkat ini) ================= */
+      const TAB_LABELS = {
+        beranda: "Beranda", materi: "Materi & Lab", kalkulator: "Kalkulator", kuis: "Kuis",
+        "materi-tabung": "Materi: Tabung", "materi-kerucut": "Materi: Kerucut", "materi-bola": "Materi: Bola",
+      };
+      let studentRecords = [];
+      let currentStudent = null;
+      const keyOf = (nama, kelas) => (nama + "|" + kelas).toLowerCase();
+      function findRecord(nama, kelas) {
+        return studentRecords.find((r) => keyOf(r.nama, r.kelas) === keyOf(nama, kelas));
+      }
+      function makeRecord(nama, kelas, t) {
+        return { nama: nama, kelas: kelas, firstLogin: t || new Date(), logins: 0, visits: {}, lastActivity: t || new Date(), attempts: [] };
+      }
+      function trackVisit(key) {
+        if (!currentStudent) return;
+        currentStudent.visits[key] = (currentStudent.visits[key] || 0) + 1;
+        currentStudent.lastActivity = new Date();
+      }
+      function studentStats(r) {
+        const scores = r.attempts.map((a) => a.score);
+        if (!scores.length) return { last: null, best: null, avg: null };
+        return {
+          last: scores[scores.length - 1],
+          best: Math.max.apply(null, scores),
+          avg: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length),
+        };
+      }
+
+      /* ================= Login ================= */
+      $("#loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nama = $("#namaInput").value.trim();
+        const kelas = $("#kelasInput").value.trim();
+        if (!nama || !kelas) { $("#loginErr").hidden = false; return; }
+        $("#loginErr").hidden = true;
+        let rec = findRecord(nama, kelas);
+        if (!rec) { rec = makeRecord(nama, kelas, new Date()); studentRecords.push(rec); }
+        rec.logins += 1;
+        rec.lastActivity = new Date();
+        currentStudent = rec;
+        $("#studentNameEl").textContent = rec.nama;
+        $("#studentClassEl").textContent = "Kelas " + rec.kelas;
+        $("#haloNama").textContent = rec.nama.split(" ")[0];
+        $("#avatarEl").textContent = rec.nama.split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+        $("#loginView").hidden = true;
+        $("#appView").hidden = false;
+        sheetSend({ type: "login", time: nowISO(), nama: rec.nama, kelas: rec.kelas });
+        showTab("beranda");
+        window.scrollTo({ top: 0 });
+      });
+      $("#btnGantiSiswa").addEventListener("click", () => {
+        currentStudent = null;
+        guruUnlocked = false;
+        $("#appView").hidden = true;
+        $("#loginView").hidden = false;
+        $("#namaInput").value = "";
+        $("#kelasInput").value = "";
+        $("#namaInput").focus();
+      });
+
+      /* ================= Navigasi ================= */
+      let guruUnlocked = false;
+      function showTab(tab) {
+        $$(".tab-btn").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === tab ? "true" : "false"));
+        ["beranda", "materi", "kalkulator", "kuis", "guru"].forEach((t) => { $("#sec-" + t).hidden = t !== tab; });
+        if (tab !== "guru") guruUnlocked = false;
+        if (tab === "guru") renderGuruGate();
+        if (tab === "beranda" || tab === "kalkulator" || tab === "kuis") trackVisit(tab);
+        if (tab === "materi") trackVisit("materi");
+        window.scrollTo({ top: 0 });
+      }
+      $$(".tab-btn").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+      $$("[data-goto]").forEach((el) => el.addEventListener("click", () => {
+        showTab(el.dataset.goto);
+        if (el.dataset.anchor) {
+          setTimeout(() => {
+            const a = document.getElementById(el.dataset.anchor);
+            if (a) a.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 60);
+        }
+      }));
+
+      /* ================= Visual 3D (kanvas, bisa diputar) ================= */
+      const TAU = Math.PI * 2;
+      function setupRotatable(cv, draw) {
+        const state = { ang: 0.6, vel: 0.008, drag: false, lastX: 0, visible: true };
+        function frame() {
+          if (state.visible) {
+            if (!state.drag) state.ang += state.vel;
+            draw(state.ang);
+          }
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+        if ("IntersectionObserver" in window) {
+          new IntersectionObserver((es) => es.forEach((e) => { state.visible = e.isIntersecting; }), { threshold: 0.05 }).observe(cv);
+        }
+        const pos = (e) => (e.touches ? e.touches[0].clientX : e.clientX);
+        const down = (e) => { state.drag = true; state.lastX = pos(e); };
+        const move = (e) => {
+          if (!state.drag) return;
+          const x = pos(e);
+          state.ang += (x - state.lastX) * 0.012;
+          state.lastX = x;
+        };
+        const up = () => { state.drag = false; };
+        cv.addEventListener("mousedown", down);
+        window.addEventListener("mousemove", move);
+        window.addEventListener("mouseup", up);
+        cv.addEventListener("touchstart", down, { passive: true });
+        cv.addEventListener("touchmove", move, { passive: true });
+        cv.addEventListener("touchend", up);
+        return state;
+      }
+      const darkMode = () => window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      /* ---------- Tabung ---------- */
+      const tabungState = { r: 7, t: 12 };
+      function drawTabung(ang) {
+        const cv = $("#cvTabung"), ctx = cv.getContext("2d");
+        const W = cv.width, H = cv.height;
+        ctx.clearRect(0, 0, W, H);
+        const cx = W / 2, scale = 11;
+        const R = tabungState.r * scale, hPx = tabungState.t * scale * 0.92;
+        const ry = R * 0.30;
+        const topY = H / 2 - hPx / 2, botY = H / 2 + hPx / 2;
+        const ink = darkMode() ? "#8fd8d7" : "#0b6e6d";
+        /* badan */
+        const grad = ctx.createLinearGradient(cx - R, 0, cx + R, 0);
+        grad.addColorStop(0, "#0e9594"); grad.addColorStop(0.35, "#4fc4c2"); grad.addColorStop(0.55, "#a9e9e7"); grad.addColorStop(1, "#0b7a79");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(cx - R, topY);
+        ctx.lineTo(cx - R, botY);
+        ctx.ellipse(cx, botY, R, ry, 0, Math.PI, 0, true);
+        ctx.lineTo(cx + R, topY);
+        ctx.ellipse(cx, topY, R, ry, 0, 0, Math.PI, true);
+        ctx.closePath(); ctx.fill();
+        /* garis putar di badan */
+        ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = 2;
+        for (let k = 0; k < 4; k++) {
+          const a = ang + k * Math.PI / 2;
+          const x = cx + R * Math.sin(a);
+          if (Math.cos(a) > -0.15) {
+            ctx.beginPath(); ctx.moveTo(x, topY + ry * Math.cos(a) * 0.9); ctx.lineTo(x, botY + ry * Math.cos(a) * 0.9); ctx.stroke();
+          }
+        }
+        /* tutup atas */
+        ctx.fillStyle = "#8fe3e0";
+        ctx.beginPath(); ctx.ellipse(cx, topY, R, ry, 0, 0, TAU); ctx.fill();
+        ctx.strokeStyle = ink; ctx.lineWidth = 2.5; ctx.stroke();
+        /* alas bawah */
+        ctx.beginPath(); ctx.ellipse(cx, botY, R, ry, 0, 0, Math.PI); ctx.stroke();
+        /* label r dan t */
+        ctx.fillStyle = darkMode() ? "#eef1ff" : "#26314e";
+        ctx.font = "700 17px Nunito, sans-serif"; ctx.textAlign = "center";
+        ctx.beginPath(); ctx.moveTo(cx, topY); ctx.lineTo(cx + R, topY);
+        ctx.strokeStyle = darkMode() ? "#eef1ff" : "#26314e"; ctx.lineWidth = 1.6; ctx.stroke();
+        ctx.fillText("r = " + tabungState.r, cx + R / 2, topY - 10);
+        ctx.fillText("t = " + tabungState.t, cx + R + 34, (topY + botY) / 2);
+      }
+      setupRotatable($("#cvTabung"), drawTabung);
+      function updTabung() {
+        tabungState.r = +$("#inTabungR").value;
+        tabungState.t = +$("#inTabungT").value;
+        $("#oTabungR").textContent = tabungState.r + " cm";
+        $("#oTabungT").textContent = tabungState.t + " cm";
+        const pi = pickPi(tabungState.r), r = tabungState.r, t = tabungState.t;
+        const V = pi.v * r * r * t, Lp = 2 * pi.v * r * (r + t);
+        $("#readTabung").innerHTML = "Dengan π = " + pi.label + ":<br>Volume = <b>" + fmt(V) + " cm³</b><br>Luas permukaan = <b>" + fmt(Lp) + " cm²</b>";
+      }
+      $("#inTabungR").addEventListener("input", updTabung);
+      $("#inTabungT").addEventListener("input", updTabung);
+
+      /* ---------- Kerucut ---------- */
+      const kerucutState = { r: 6, t: 8 };
+      function drawKerucut(ang) {
+        const cv = $("#cvKerucut"), ctx = cv.getContext("2d");
+        const W = cv.width, H = cv.height;
+        ctx.clearRect(0, 0, W, H);
+        const cx = W / 2, scale = 10.5;
+        const R = kerucutState.r * scale, hPx = kerucutState.t * scale * 0.95;
+        const ry = R * 0.30;
+        const apexY = H / 2 - hPx / 2, baseY = H / 2 + hPx / 2;
+        const grad = ctx.createLinearGradient(cx - R, 0, cx + R, 0);
+        grad.addColorStop(0, "#c24e12"); grad.addColorStop(0.4, "#f06423"); grad.addColorStop(0.6, "#ffb38a"); grad.addColorStop(1, "#d2541a");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(cx, apexY);
+        ctx.lineTo(cx - R, baseY);
+        ctx.ellipse(cx, baseY, R, ry, 0, Math.PI, 0, true);
+        ctx.lineTo(cx, apexY);
+        ctx.closePath(); ctx.fill();
+        /* garis pelukis berputar */
+        ctx.strokeStyle = "rgba(255,255,255,.5)"; ctx.lineWidth = 2;
+        for (let k = 0; k < 3; k++) {
+          const a = ang + k * (TAU / 3);
+          if (Math.cos(a) > -0.1) {
+            ctx.beginPath();
+            ctx.moveTo(cx, apexY);
+            ctx.lineTo(cx + R * Math.sin(a), baseY + ry * Math.cos(a));
+            ctx.stroke();
+          }
+        }
+        /* alas */
+        ctx.fillStyle = "#ffd2ae";
+        ctx.beginPath(); ctx.ellipse(cx, baseY, R, ry, 0, 0, TAU); ctx.fill();
+        ctx.strokeStyle = darkMode() ? "#ffc9a3" : "#a8430f"; ctx.lineWidth = 2.5; ctx.stroke();
+        /* garis s, r, t */
+        const ink = darkMode() ? "#eef1ff" : "#26314e";
+        ctx.strokeStyle = ink; ctx.lineWidth = 1.6; ctx.setLineDash([5, 4]);
+        ctx.beginPath(); ctx.moveTo(cx, apexY); ctx.lineTo(cx, baseY); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx, baseY); ctx.lineTo(cx + R, baseY); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.strokeStyle = "#fff"; ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.moveTo(cx, apexY); ctx.lineTo(cx + R, baseY); ctx.stroke();
+        ctx.fillStyle = ink; ctx.font = "700 17px Nunito, sans-serif"; ctx.textAlign = "center";
+        const s = Math.sqrt(kerucutState.r ** 2 + kerucutState.t ** 2);
+        ctx.fillText("s = " + fmt(s), cx + R / 2 + 26, (apexY + baseY) / 2);
+        ctx.fillText("r = " + kerucutState.r, cx + R / 2, baseY + 30);
+        ctx.fillText("t = " + kerucutState.t, cx - 22, (apexY + baseY) / 2);
+      }
+      setupRotatable($("#cvKerucut"), drawKerucut);
+      function updKerucut() {
+        kerucutState.r = +$("#inKerucutR").value;
+        kerucutState.t = +$("#inKerucutT").value;
+        $("#oKerucutR").textContent = kerucutState.r + " cm";
+        $("#oKerucutT").textContent = kerucutState.t + " cm";
+        const pi = pickPi(kerucutState.r), r = kerucutState.r, t = kerucutState.t;
+        const s = Math.sqrt(r * r + t * t);
+        const V = pi.v * r * r * t / 3, Lp = pi.v * r * (r + s);
+        $("#readKerucut").innerHTML = "Garis pelukis s = <b>" + fmt(s) + " cm</b><br>Dengan π = " + pi.label + ":<br>Volume = <b>" + fmt(V) + " cm³</b><br>Luas permukaan = <b>" + fmt(Lp) + " cm²</b>";
+      }
+      $("#inKerucutR").addEventListener("input", updKerucut);
+      $("#inKerucutT").addEventListener("input", updKerucut);
+
+      /* ---------- Bola ---------- */
+      const bolaState = { r: 7 };
+      function drawBola(ang) {
+        const cv = $("#cvBola"), ctx = cv.getContext("2d");
+        const W = cv.width, H = cv.height;
+        ctx.clearRect(0, 0, W, H);
+        const cx = W / 2, cy = H / 2;
+        const R = bolaState.r * 12.5;
+        const grad = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.35, R * 0.1, cx, cy, R);
+        grad.addColorStop(0, "#ff9db8"); grad.addColorStop(0.45, "#e83e6b"); grad.addColorStop(1, "#b02a4e");
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.fill();
+        /* meridian berputar */
+        ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 2;
+        for (let k = 0; k < 3; k++) {
+          const rx = Math.abs(Math.cos(ang + k * Math.PI / 3)) * R;
+          ctx.beginPath(); ctx.ellipse(cx, cy, Math.max(rx, 1.5), R, 0, 0, TAU); ctx.stroke();
+        }
+        /* ekuator */
+        ctx.beginPath(); ctx.ellipse(cx, cy, R, R * 0.30, 0, 0, TAU); ctx.stroke();
+        /* label r */
+        const ink = darkMode() ? "#eef1ff" : "#26314e";
+        ctx.strokeStyle = ink; ctx.lineWidth = 1.8;
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + R * 0.72, cy - R * 0.72); ctx.stroke();
+        ctx.fillStyle = ink; ctx.beginPath(); ctx.arc(cx, cy, 4, 0, TAU); ctx.fill();
+        ctx.font = "700 17px Nunito, sans-serif"; ctx.textAlign = "center";
+        ctx.fillText("r = " + bolaState.r, cx + R * 0.42, cy - R * 0.52);
+      }
+      setupRotatable($("#cvBola"), drawBola);
+      function updBola() {
+        bolaState.r = +$("#inBolaR").value;
+        $("#oBolaR").textContent = bolaState.r + " cm";
+        const pi = pickPi(bolaState.r), r = bolaState.r;
+        const V = 4 / 3 * pi.v * r * r * r, Lp = 4 * pi.v * r * r;
+        $("#readBola").innerHTML = "Dengan π = " + pi.label + ":<br>Volume = <b>" + fmt(V) + " cm³</b><br>Luas permukaan = <b>" + fmt(Lp) + " cm²</b>";
+      }
+      $("#inBolaR").addEventListener("input", updBola);
+
+      /* ================= Jaring-Jaring Tabung ================= */
+      const NET_T = { r: 7, t: 12 };
+      function drawNetTabung(f, highlight) {
+        const svg = $("#netTabung");
+        const pi = Math.PI, R = 34; /* jari-jari lingkaran di gambar */
+        const rectW = 2 * pi * R * 0.86, rectH = 118;
+        const cx = 280, cy = 150;
+        /* posisi terbentang (f=1): lingkaran di kiri & kanan persegi */
+        const openLX = cx - rectW / 2 - R - 16, openRX = cx + rectW / 2 + R + 16;
+        /* posisi terlipat (f=0): lingkaran menumpuk di tengah */
+        const lx = openLX + (cx - openLX) * (1 - f);
+        const rx2 = openRX + (cx - openRX) * (1 - f);
+        const circOp = 0.25 + 0.75 * f;
+        const selimutFill = highlight === "selimut" ? "#ffb020" : "#4fc4c2";
+        const alasFill = highlight === "alas" ? "#ffb020" : "#0e9594";
+        svg.innerHTML =
+          '<rect x="' + (cx - rectW / 2) + '" y="' + (cy - rectH / 2) + '" width="' + rectW + '" height="' + rectH + '" rx="6" fill="' + selimutFill + '" stroke="#0b6e6d" stroke-width="2.5"/>' +
+          '<circle cx="' + lx + '" cy="' + cy + '" r="' + R + '" fill="' + alasFill + '" fill-opacity="' + circOp + '" stroke="#0b6e6d" stroke-width="2.5"/>' +
+          '<circle cx="' + rx2 + '" cy="' + cy + '" r="' + R + '" fill="' + alasFill + '" fill-opacity="' + circOp + '" stroke="#0b6e6d" stroke-width="2.5"/>' +
+          '<text x="' + cx + '" y="' + (cy + 6) + '" text-anchor="middle" font-weight="800" font-size="16" fill="#083f3e">Selimut: 2πr × t</text>' +
+          (f > 0.55 ? '<text x="' + lx + '" y="' + (cy + R + 26) + '" text-anchor="middle" font-weight="700" font-size="14" fill="currentColor">Alas</text>' +
+                      '<text x="' + rx2 + '" y="' + (cy + R + 26) + '" text-anchor="middle" font-weight="700" font-size="14" fill="currentColor">Tutup</text>' : "") +
+          '<text x="' + cx + '" y="' + (cy - rectH / 2 - 14) + '" text-anchor="middle" font-weight="700" font-size="13.5" fill="currentColor">Panjang selimut = keliling alas = 2πr = ' + fmt(2 * pickPi(NET_T.r).v * NET_T.r) + ' cm</text>';
+      }
+      let netTabungHighlight = null;
+      function updNetTabung() {
+        const f = +$("#inNetTabung").value / 100;
+        $("#oNetTabung").textContent = $("#inNetTabung").value + "%";
+        drawNetTabung(f, netTabungHighlight);
+      }
+      $("#inNetTabung").addEventListener("input", updNetTabung);
+      $$("[data-nettabung]").forEach((chip) => chip.addEventListener("click", () => {
+        const k = chip.dataset.nettabung;
+        netTabungHighlight = netTabungHighlight === k ? null : k;
+        $$("[data-nettabung]").forEach((c) => c.classList.toggle("on", c.dataset.nettabung === netTabungHighlight));
+        $("#descNetTabung").textContent =
+          netTabungHighlight === "selimut" ? "Selimut tabung berbentuk persegi panjang: panjangnya 2πr (keliling alas) dan lebarnya t. Luasnya = 2πr × t." :
+          netTabungHighlight === "alas" ? "Alas dan tutup adalah dua lingkaran yang sama besar. Luas keduanya = 2 × πr². Jadi luas permukaan tabung = 2πr² + 2πrt = 2πr(r + t)." : "";
+        updNetTabung();
+      }));
+      let netTAnim = null;
+      $("#btnNetTabungAnim").addEventListener("click", () => {
+        if (netTAnim) { cancelAnimationFrame(netTAnim); netTAnim = null; $("#btnNetTabungAnim").textContent = "Putar Animasi Buka–Tutup"; return; }
+        $("#btnNetTabungAnim").textContent = "Berhenti";
+        const t0 = performance.now();
+        const step = (now) => {
+          const p = ((now - t0) / 2600) % 2;
+          const f = p < 1 ? p : 2 - p;
+          $("#inNetTabung").value = Math.round(f * 100);
+          updNetTabung();
+          netTAnim = requestAnimationFrame(step);
+        };
+        netTAnim = requestAnimationFrame(step);
+      });
+
+      /* ================= Jaring-Jaring Kerucut ================= */
+      const NET_K = { r: 3, s: 5 }; /* skala contoh: r=3, s=5 → sudut juring = r/s × 360° = 216° */
+      function polar(cx, cy, rad, deg) {
+        const a = (deg - 90) * Math.PI / 180;
+        return [cx + rad * Math.cos(a), cy + rad * Math.sin(a)];
+      }
+      function drawNetKerucut(f) {
+        const svg = $("#netKerucut");
+        const cx = 245, cy = 158, S = 118;
+        const fullSweep = (NET_K.r / NET_K.s) * 360; /* 216° */
+        const sweep = 24 + (fullSweep - 24) * f;
+        const p1 = polar(cx, cy, S, -sweep / 2), p2 = polar(cx, cy, S, sweep / 2);
+        const large = sweep > 180 ? 1 : 0;
+        const sector = "M " + cx + " " + cy + " L " + p1[0].toFixed(1) + " " + p1[1].toFixed(1) +
+          " A " + S + " " + S + " 0 " + large + " 1 " + p2[0].toFixed(1) + " " + p2[1].toFixed(1) + " Z";
+        /* lingkaran alas bergeser menjauh saat juring membuka */
+        const baseR = S * NET_K.r / NET_K.s;
+        const bx = cx + 150 + 95 * f, by = cy + 58;
+        const ink = darkMode() ? "#eef1ff" : "#26314e";
+        svg.innerHTML =
+          '<path d="' + sector + '" fill="#f06423" fill-opacity="' + (0.35 + 0.65 * f) + '" stroke="#a8430f" stroke-width="2.5"/>' +
+          '<circle cx="' + bx + '" cy="' + by + '" r="' + baseR + '" fill="#ffd2ae" stroke="#a8430f" stroke-width="2.5"/>' +
+          '<text x="' + cx + '" y="' + (cy - S - 12) + '" text-anchor="middle" font-weight="800" font-size="15" fill="' + ink + '">Selimut = juring (jari-jari s = 5)</text>' +
+          '<text x="' + bx + '" y="' + (by + baseR + 22) + '" text-anchor="middle" font-weight="700" font-size="14" fill="' + ink + '">Alas: r = 3</text>' +
+          '<text x="280" y="330" text-anchor="middle" font-weight="700" font-size="14" fill="' + ink + '">Sudut juring = (r ÷ s) × 360° = ' + fmt(sweep) + '° (penuh: 216°)</text>' +
+          '<text x="280" y="350" text-anchor="middle" font-weight="700" font-size="14" fill="' + ink + '">Panjang busur juring = keliling alas = 2πr</text>';
+      }
+      function updNetKerucut() {
+        const f = +$("#inNetKerucut").value / 100;
+        $("#oNetKerucut").textContent = $("#inNetKerucut").value + "%";
+        drawNetKerucut(f);
+        $("#msgNetKerucut").textContent = f >= 1 ? "Terbuka penuh! Juring + lingkaran alas = jaring-jaring kerucut." : f <= 0 ? "Ini kerucut yang masih terlipat rapat. Geser untuk membukanya!" : "Sedang membuka… perhatikan selimutnya merentang jadi juring.";
+      }
+      $("#inNetKerucut").addEventListener("input", updNetKerucut);
+      let netKAnim = null;
+      $("#btnNetKerucutAnim").addEventListener("click", () => {
+        if (netKAnim) { cancelAnimationFrame(netKAnim); netKAnim = null; $("#btnNetKerucutAnim").textContent = "Putar Animasi Buka–Tutup"; return; }
+        $("#btnNetKerucutAnim").textContent = "Berhenti";
+        const t0 = performance.now();
+        const step = (now) => {
+          const p = ((now - t0) / 2600) % 2;
+          const f = p < 1 ? p : 2 - p;
+          $("#inNetKerucut").value = Math.round(f * 100);
+          updNetKerucut();
+          netKAnim = requestAnimationFrame(step);
+        };
+        netKAnim = requestAnimationFrame(step);
+      });
+
+      /* ================= Animasi Volume: Kerucut → Tabung ================= */
+      let tuangCount = 0, tuangAnim = null;
+      function drawVolKerucut(level) {
+        const svg = $("#volKerucut");
+        const ink = darkMode() ? "#eef1ff" : "#26314e";
+        const x = 330, w = 130, top = 60, bot = 250, h = bot - top;
+        const fillH = h * level;
+        svg.innerHTML =
+          /* kerucut sumber */
+          '<path d="M 90 70 L 175 205 A 42.5 14 0 0 1 5 205 Z" fill="#f06423" stroke="#a8430f" stroke-width="2.5"/>' +
+          '<ellipse cx="90" cy="205" rx="42.5" ry="14" fill="#ffd2ae" stroke="#a8430f" stroke-width="2"/>' +
+          '<text x="90" y="248" text-anchor="middle" font-weight="800" font-size="15" fill="' + ink + '">Kerucut</text>' +
+          /* tabung tujuan */
+          '<rect x="' + x + '" y="' + (bot - fillH) + '" width="' + w + '" height="' + fillH + '" fill="#4fc4c2"/>' +
+          '<path d="M ' + x + ' ' + top + ' L ' + x + ' ' + bot + ' A ' + (w / 2) + ' 20 0 0 0 ' + (x + w) + ' ' + bot + ' L ' + (x + w) + ' ' + top + '" fill="none" stroke="#0b6e6d" stroke-width="3"/>' +
+          '<ellipse cx="' + (x + w / 2) + '" cy="' + top + '" rx="' + (w / 2) + '" ry="20" fill="#8fe3e0" fill-opacity=".65" stroke="#0b6e6d" stroke-width="3"/>' +
+          '<text x="' + (x + w / 2) + '" y="' + (bot + 38) + '" text-anchor="middle" font-weight="800" font-size="15" fill="' + ink + '">Tabung</text>' +
+          [1, 2].map((i) => '<line x1="' + x + '" y1="' + (bot - h * i / 3) + '" x2="' + (x + w) + '" y2="' + (bot - h * i / 3) + '" stroke="' + ink + '" stroke-width="1.4" stroke-dasharray="5 4" opacity=".55"/>').join("") +
+          '<text x="' + (x + w + 14) + '" y="' + (bot - h / 3 + 5) + '" font-weight="700" font-size="14" fill="' + ink + '">⅓</text>' +
+          '<text x="' + (x + w + 14) + '" y="' + (bot - 2 * h / 3 + 5) + '" font-weight="700" font-size="14" fill="' + ink + '">⅔</text>';
+      }
+      function animateTuang(target) {
+        if (tuangAnim) cancelAnimationFrame(tuangAnim);
+        const from = tuangCount / 3, to = target / 3;
+        const t0 = performance.now(), dur = 850;
+        const step = (now) => {
+          const p = Math.min(1, (now - t0) / dur);
+          drawVolKerucut(from + (to - from) * p);
+          if (p < 1) tuangAnim = requestAnimationFrame(step);
+        };
+        tuangAnim = requestAnimationFrame(step);
+      }
+      $("#btnTuang").addEventListener("click", () => {
+        if (tuangCount >= 3) return;
+        tuangCount += 1;
+        animateTuang(tuangCount);
+        $("#msgTuang").textContent =
+          tuangCount === 1 ? "Tuangan ke-1: tabung terisi ⅓. Masih kurang!" :
+          tuangCount === 2 ? "Tuangan ke-2: tabung terisi ⅔. Sekali lagi!" :
+          "Tuangan ke-3: PENUH! Jadi 3 kerucut = 1 tabung, artinya V kerucut = ⅓ × π × r² × t.";
+        if (tuangCount >= 3) $("#btnTuang").disabled = true;
+      });
+      $("#btnTuangReset").addEventListener("click", () => {
+        tuangCount = 0;
+        animateTuang(0);
+        $("#btnTuang").disabled = false;
+        $("#msgTuang").textContent = "Tabung masih kosong. Klik \"Tuang 1 Kerucut\" untuk mulai!";
+      });
+
+      /* ================= Animasi Volume: Bola vs Tabung ================= */
+      let bolaShown = false, bolaAnim = null;
+      function drawVolBola(level) {
+        const svg = $("#volBola");
+        const ink = darkMode() ? "#eef1ff" : "#26314e";
+        const cx = 150, cy = 150, R = 78;
+        const x = 350, w = 150, top = 72, bot = 228, h = bot - top;
+        const fillH = h * (2 / 3) * level;
+        svg.innerHTML =
+          '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="#e83e6b"/>' +
+          '<ellipse cx="' + (cx - 26) + '" cy="' + (cy - 30) + '" rx="24" ry="13" fill="#ff9db8" transform="rotate(-24 ' + (cx - 26) + ' ' + (cy - 30) + ')"/>' +
+          '<rect x="' + cx + '" y="' + (cy - R) + '" width="' + (2 * R) + '" height="' + (2 * R) + '" fill="none" stroke="' + ink + '" stroke-width="1.6" stroke-dasharray="6 5" opacity=".6"/>' +
+          '<text x="' + cx + '" y="' + (cy + R + 34) + '" text-anchor="middle" font-weight="800" font-size="15" fill="' + ink + '">Bola (r)</text>' +
+          '<text x="' + (cx + R) + '" y="' + (cy - R - 12) + '" text-anchor="middle" font-weight="700" font-size="14" fill="' + ink + '">tinggi tabung = 2r</text>' +
+          '<rect x="' + x + '" y="' + (bot - fillH) + '" width="' + w + '" height="' + fillH + '" fill="#f27a9d"/>' +
+          '<path d="M ' + x + ' ' + top + ' L ' + x + ' ' + bot + ' A ' + (w / 2) + ' 19 0 0 0 ' + (x + w) + ' ' + bot + ' L ' + (x + w) + ' ' + top + '" fill="none" stroke="#b02a4e" stroke-width="3"/>' +
+          '<ellipse cx="' + (x + w / 2) + '" cy="' + top + '" rx="' + (w / 2) + '" ry="19" fill="#ffc2d1" fill-opacity=".6" stroke="#b02a4e" stroke-width="3"/>' +
+          '<line x1="' + x + '" y1="' + (bot - h * 2 / 3) + '" x2="' + (x + w) + '" y2="' + (bot - h * 2 / 3) + '" stroke="' + ink + '" stroke-width="1.6" stroke-dasharray="5 4"/>' +
+          '<text x="' + (x + w + 12) + '" y="' + (bot - h * 2 / 3 + 5) + '" font-weight="800" font-size="15" fill="' + ink + '">⅔</text>' +
+          '<text x="' + (x + w / 2) + '" y="' + (bot + 38) + '" text-anchor="middle" font-weight="800" font-size="15" fill="' + ink + '">Tabung pembungkus</text>';
+      }
+      function animateBola(target) {
+        if (bolaAnim) cancelAnimationFrame(bolaAnim);
+        const from = bolaShown ? 1 : 0, to = target;
+        const t0 = performance.now(), dur = 1100;
+        const step = (now) => {
+          const p = Math.min(1, (now - t0) / dur);
+          drawVolBola(from + (to - from) * p);
+          if (p < 1) bolaAnim = requestAnimationFrame(step);
+          else bolaShown = target === 1;
+        };
+        bolaAnim = requestAnimationFrame(step);
+      }
+      $("#btnVolBola").addEventListener("click", () => {
+        animateBola(1);
+        $("#msgVolBola").textContent = "Lihat! Isi bola hanya mengisi ⅔ tabung. V bola = ⅔ × π × r² × 2r = ⁴⁄₃ × π × r³.";
+      });
+      $("#btnVolBolaReset").addEventListener("click", () => {
+        animateBola(0);
+        $("#msgVolBola").textContent = "Klik tombol untuk melihat bola \"dituang\" ke dalam tabung.";
+      });
+
+      /* ================= Kalkulator ================= */
+      let calcShape = "tabung", calcPi = PI227, calcPiLabel = "22/7";
+      $$(".calc-tab").forEach((b) => b.addEventListener("click", () => {
+        calcShape = b.dataset.calc;
+        $$(".calc-tab").forEach((x) => x.setAttribute("aria-selected", x === b ? "true" : "false"));
+        $("#calcTField").hidden = calcShape === "bola";
+        $("#calcSField").hidden = calcShape !== "kerucut";
+        updCalcS();
+      }));
+      function setPi(v, label) {
+        calcPi = v; calcPiLabel = label;
+        $("#pi227").classList.toggle("on", label === "22/7");
+        $("#pi314").classList.toggle("on", label === "3,14");
+      }
+      $("#pi227").addEventListener("click", () => setPi(PI227, "22/7"));
+      $("#pi314").addEventListener("click", () => setPi(PI314, "3,14"));
+      function updCalcS() {
+        if (calcShape !== "kerucut") return;
+        const r = parseFloat($("#calcR").value), t = parseFloat($("#calcT").value);
+        $("#calcS").value = (r > 0 && t > 0) ? fmt(Math.sqrt(r * r + t * t)) + " cm" : "—";
+      }
+      $("#calcR").addEventListener("input", updCalcS);
+      $("#calcT").addEventListener("input", updCalcS);
+      $("#btnHitung").addEventListener("click", () => {
+        const r = parseFloat($("#calcR").value);
+        const t = parseFloat($("#calcT").value);
+        const needT = calcShape !== "bola";
+        if (!(r > 0) || (needT && !(t > 0))) { $("#calcErr").hidden = false; return; }
+        $("#calcErr").hidden = true;
+        trackVisit("kalkulator");
+        const pi = calcPi, piL = calcPiLabel;
+        let html = "";
+        if (calcShape === "tabung") {
+          const V = pi * r * r * t, Lp = 2 * pi * r * (r + t), sel = 2 * pi * r * t;
+          html = "<h3 class='disp' style='font-size:1.15rem;'>Tabung — r = " + fmt(r) + " cm, t = " + fmt(t) + " cm, π = " + piL + "</h3>" +
+            "<p style='margin-bottom:0;'><b>Volume</b></p><ol>" +
+            "<li>V = π × r² × t</li>" +
+            "<li>V = " + piL + " × " + fmt(r) + "² × " + fmt(t) + " = " + piL + " × " + fmt(r * r) + " × " + fmt(t) + "</li>" +
+            "<li>V = <b>" + fmt(V) + " cm³</b></li></ol>" +
+            "<p style='margin-bottom:0;'><b>Luas Permukaan</b></p><ol>" +
+            "<li>Lp = 2 × π × r × (r + t)</li>" +
+            "<li>Lp = 2 × " + piL + " × " + fmt(r) + " × (" + fmt(r) + " + " + fmt(t) + ") = 2 × " + piL + " × " + fmt(r) + " × " + fmt(r + t) + "</li>" +
+            "<li>Lp = <b>" + fmt(Lp) + " cm²</b> (luas selimutnya saja = " + fmt(sel) + " cm²)</li></ol>" +
+            "<div class='ans'>V = " + fmt(V) + " cm³ · Lp = " + fmt(Lp) + " cm²</div>";
+        } else if (calcShape === "kerucut") {
+          const s = Math.sqrt(r * r + t * t);
+          const V = pi * r * r * t / 3, Lp = pi * r * (r + s), sel = pi * r * s;
+          html = "<h3 class='disp' style='font-size:1.15rem;'>Kerucut — r = " + fmt(r) + " cm, t = " + fmt(t) + " cm, π = " + piL + "</h3>" +
+            "<p style='margin-bottom:0;'><b>Langkah 0 — cari garis pelukis (Pythagoras)</b></p><ol>" +
+            "<li>s = √(r² + t²) = √(" + fmt(r) + "² + " + fmt(t) + "²) = √(" + fmt(r * r) + " + " + fmt(t * t) + ") = √" + fmt(r * r + t * t) + " = <b>" + fmt(s) + " cm</b></li></ol>" +
+            "<p style='margin-bottom:0;'><b>Volume</b></p><ol>" +
+            "<li>V = ⅓ × π × r² × t</li>" +
+            "<li>V = ⅓ × " + piL + " × " + fmt(r * r) + " × " + fmt(t) + "</li>" +
+            "<li>V = <b>" + fmt(V) + " cm³</b></li></ol>" +
+            "<p style='margin-bottom:0;'><b>Luas Permukaan</b></p><ol>" +
+            "<li>Lp = π × r × (r + s)</li>" +
+            "<li>Lp = " + piL + " × " + fmt(r) + " × (" + fmt(r) + " + " + fmt(s) + ") = " + piL + " × " + fmt(r) + " × " + fmt(r + s) + "</li>" +
+            "<li>Lp = <b>" + fmt(Lp) + " cm²</b> (luas selimutnya saja = " + fmt(sel) + " cm²)</li></ol>" +
+            "<div class='ans'>s = " + fmt(s) + " cm · V = " + fmt(V) + " cm³ · Lp = " + fmt(Lp) + " cm²</div>";
+        } else {
+          const V = 4 / 3 * pi * r * r * r, Lp = 4 * pi * r * r;
+          html = "<h3 class='disp' style='font-size:1.15rem;'>Bola — r = " + fmt(r) + " cm, π = " + piL + "</h3>" +
+            "<p style='margin-bottom:0;'><b>Volume</b></p><ol>" +
+            "<li>V = ⁴⁄₃ × π × r³</li>" +
+            "<li>V = ⁴⁄₃ × " + piL + " × " + fmt(r) + "³ = ⁴⁄₃ × " + piL + " × " + fmt(r * r * r) + "</li>" +
+            "<li>V = <b>" + fmt(V) + " cm³</b></li></ol>" +
+            "<p style='margin-bottom:0;'><b>Luas Permukaan</b></p><ol>" +
+            "<li>Lp = 4 × π × r²</li>" +
+            "<li>Lp = 4 × " + piL + " × " + fmt(r * r) + "</li>" +
+            "<li>Lp = <b>" + fmt(Lp) + " cm²</b></li></ol>" +
+            "<div class='ans'>V = " + fmt(V) + " cm³ · Lp = " + fmt(Lp) + " cm²</div>";
+        }
+        $("#calcOut").innerHTML = html;
+        $("#calcOut").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+
+      /* ================= Latihan Cepat ================= */
+      const LATIHAN = [
+        { q: "Sebuah tabung berjari-jari 7 cm dan tinggi 5 cm. Berapa volumenya? (π = 22/7, dalam cm³)", a: 770, bahas: "V = 22/7 × 7² × 5 = 22 × 7 × 5 = 770 cm³." },
+        { q: "Kerucut dengan r = 3 cm dan t = 4 cm. Berapa volumenya? (π = 3,14, dalam cm³)", a: 37.68, bahas: "V = ⅓ × 3,14 × 3² × 4 = ⅓ × 113,04 = 37,68 cm³." },
+        { q: "Bola berjari-jari 3 cm. Berapa luas permukaannya? (π = 3,14, dalam cm²)", a: 113.04, bahas: "Lp = 4 × 3,14 × 3² = 4 × 28,26 = 113,04 cm²." },
+        { q: "Tabung dengan r = 10 cm dan t = 10 cm. Berapa luas selimutnya? (π = 3,14, dalam cm²)", a: 628, bahas: "Luas selimut = 2 × 3,14 × 10 × 10 = 628 cm²." },
+        { q: "Kerucut dengan r = 6 cm dan garis pelukis s = 10 cm. Berapa luas selimutnya? (π = 3,14, dalam cm²)", a: 188.4, bahas: "Luas selimut = π × r × s = 3,14 × 6 × 10 = 188,4 cm²." },
+        { q: "Sebuah bola berjari-jari 7 cm. Berapa volumenya? (π = 22/7, dalam cm³, dua angka desimal)", a: 1437.33, bahas: "V = ⁴⁄₃ × 22/7 × 7³ = ⁴⁄₃ × 22 × 49 = 4.312/3 ≈ 1.437,33 cm³." },
+      ];
+      let latihanIdx = 0;
+      function showLatihan() {
+        $("#latihanSoal").textContent = LATIHAN[latihanIdx].q;
+        $("#latihanInput").value = "";
+        $("#latihanMsg").textContent = "";
+      }
+      $("#btnLatihanBaru").addEventListener("click", () => {
+        latihanIdx = (latihanIdx + 1 + Math.floor(Math.random() * (LATIHAN.length - 1))) % LATIHAN.length;
+        showLatihan();
+      });
+      $("#btnLatihanCek").addEventListener("click", () => {
+        const v = parseFloat(String($("#latihanInput").value).replace(",", "."));
+        const L = LATIHAN[latihanIdx];
+        if (isNaN(v)) { $("#latihanMsg").textContent = "Isi dulu jawabanmu ya."; return; }
+        $("#latihanMsg").innerHTML = Math.abs(v - L.a) < 0.05
+          ? "✅ <b>Betul!</b> " + esc(L.bahas)
+          : "❌ <b>Belum tepat.</b> Jawaban yang benar: <b>" + fmt(L.a) + "</b>. " + esc(L.bahas);
+      });
+
+      /* ================= Kuis Gamifikasi ================= */
+      const QUIZ = [
+        { q: "Sebuah tabung memiliki jari-jari 7 cm dan tinggi 10 cm. Volume tabung tersebut adalah … (π = 22/7)", opts: ["1.540 cm³", "154 cm³", "2.200 cm³", "770 cm³"], a: 0, ex: "V = π r² t = 22/7 × 7² × 10 = 22/7 × 490 = 1.540 cm³." },
+        { q: "Luas permukaan tabung dengan r = 7 cm dan t = 10 cm adalah … (π = 22/7)", opts: ["660 cm²", "748 cm²", "594 cm²", "1.078 cm²"], a: 1, ex: "Lp = 2πr(r + t) = 2 × 22/7 × 7 × (7 + 10) = 44 × 17 = 748 cm²." },
+        { q: "Volume kerucut dengan jari-jari 6 cm dan tinggi 8 cm adalah … (π = 3,14)", opts: ["904,32 cm³", "150,72 cm³", "301,44 cm³", "452,16 cm³"], a: 2, ex: "V = ⅓ π r² t = ⅓ × 3,14 × 36 × 8 = ⅓ × 904,32 = 301,44 cm³. Perhatikan faktor ⅓-nya!" },
+        { q: "Luas selimut kerucut dengan r = 3 cm dan garis pelukis s = 10 cm adalah … (π = 3,14)", opts: ["28,26 cm²", "188,4 cm²", "282,6 cm²", "94,2 cm²"], a: 3, ex: "Luas selimut = π r s = 3,14 × 3 × 10 = 94,2 cm²." },
+        { q: "Volume bola berjari-jari 7 cm adalah … (π = 22/7)", opts: ["1.437,33 cm³", "616 cm³", "718,67 cm³", "205,33 cm³"], a: 0, ex: "V = ⁴⁄₃ π r³ = ⁴⁄₃ × 22/7 × 343 = 4.312/3 ≈ 1.437,33 cm³. (616 cm³ adalah luas permukaannya — hati-hati tertukar!)" },
+        { q: "Sebuah bola berdiameter 20 cm. Luas permukaannya adalah … (π = 3,14)", opts: ["314 cm²", "628 cm²", "1.256 cm²", "4.186,67 cm²"], a: 2, ex: "r = 20 ÷ 2 = 10 cm. Lp = 4 π r² = 4 × 3,14 × 100 = 1.256 cm²." },
+        { q: "Sebuah kaleng berbentuk tabung tanpa tutup memiliki r = 7 cm dan t = 12 cm. Luas permukaannya adalah … (π = 22/7)", opts: ["836 cm²", "528 cm²", "682 cm²", "594 cm²"], a: 2, ex: "Tanpa tutup: Lp = luas alas + luas selimut = πr² + 2πrt = 154 + 528 = 682 cm². (836 cm² jika ada tutupnya.)" },
+        { q: "Kerucut dengan r = 7 cm dan t = 24 cm memiliki luas permukaan … (π = 22/7)", opts: ["550 cm²", "704 cm²", "154 cm²", "858 cm²"], a: 1, ex: "s = √(7² + 24²) = √625 = 25 cm. Lp = πr(r + s) = 22/7 × 7 × 32 = 704 cm²." },
+        { q: "Tabung dan kerucut memiliki alas dan tinggi yang sama. Jika volume tabung 960 cm³, volume kerucut adalah …", opts: ["960 cm³", "480 cm³", "2.880 cm³", "320 cm³"], a: 3, ex: "V kerucut = ⅓ × V tabung = ⅓ × 960 = 320 cm³ — seperti animasi tuang di materi!" },
+        { q: "Sebuah bola tepat mengisi tabung yang membungkusnya (tinggi tabung = diameter bola). Jika volume tabung 1.200 cm³, volume bola adalah …", opts: ["600 cm³", "800 cm³", "900 cm³", "400 cm³"], a: 1, ex: "V bola = ⅔ × V tabung pembungkusnya = ⅔ × 1.200 = 800 cm³ — penemuan Archimedes!" },
+      ];
+      const LEVELS = [
+        { min: 0, name: "Level 1 · Pemula", badge: "🌱", badgeName: "Pemula Lengkung" },
+        { min: 250, name: "Level 2 · Penjelajah", badge: "🧭", badgeName: "Penjelajah Lengkung" },
+        { min: 550, name: "Level 3 · Ahli Lengkung", badge: "⭐", badgeName: "Ahli Lengkung" },
+        { min: 850, name: "Level 4 · Master Bangun Lengkung", badge: "👑", badgeName: "Master Bangun Lengkung" },
+      ];
+      const CHEERS_GOOD = ["Hebat! Kamu memang jagoan bangun lengkung!", "Keren! Pertahankan streak-nya!", "Luar biasa! Otakmu makin tajam!", "Betul sekali! Lanjutkan, kamu pasti bisa!", "Mantap! Seperti Archimedes cilik!"];
+      const CHEERS_BAD = ["Tidak apa-apa, kesalahan adalah guru terbaik!", "Hampir! Baca pembahasannya, lalu lanjutkan!", "Tetap semangat! Streak baru menantimu!", "Jangan menyerah — yang penting kamu sudah mencoba!"];
+      let quizIdx = 0, quizCorrect = 0, quizXp = 0, quizStreak = 0, quizBestStreak = 0, quizAnswered = false;
+      function levelFor(xp) {
+        let cur = LEVELS[0];
+        LEVELS.forEach((L) => { if (xp >= L.min) cur = L; });
+        return cur;
+      }
+      function confettiBurst(n) {
+        const colors = ["#0e9594", "#f06423", "#e83e6b", "#ffc531", "#4fc4c2"];
+        for (let i = 0; i < (n || 26); i++) {
+          const bit = document.createElement("div");
+          bit.className = "confetti-bit";
+          const size = 6 + Math.random() * 8;
+          bit.style.cssText = "left:" + (Math.random() * 100) + "vw;width:" + size + "px;height:" + (size * 0.5) + "px;background:" + colors[i % colors.length] + ";animation-duration:" + (1.4 + Math.random() * 1.4) + "s;animation-delay:" + (Math.random() * 0.25) + "s;transform:rotate(" + (Math.random() * 360) + "deg)";
+          document.body.appendChild(bit);
+          setTimeout(() => bit.remove(), 3400);
+        }
+      }
+      function renderQuiz() {
+        const item = QUIZ[quizIdx];
+        quizAnswered = false;
+        $("#quizQTitle").textContent = "Soal " + (quizIdx + 1) + " dari " + QUIZ.length;
+        $("#quizProgLabel").textContent = "Soal " + (quizIdx + 1) + " dari " + QUIZ.length;
+        $("#quizQText").textContent = item.q;
+        $("#quizBar").style.width = (quizIdx / QUIZ.length * 100) + "%";
+        $("#quizXp").textContent = quizXp;
+        $("#quizLevel").textContent = levelFor(quizXp).name;
+        $("#quizStreakN").textContent = quizStreak;
+        $("#quizStreak").classList.toggle("hot", quizStreak >= 3);
+        $("#quizExplain").hidden = true;
+        const box = $("#quizOpts");
+        box.innerHTML = "";
+        item.opts.forEach((opt, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "opt";
+          b.innerHTML = '<span class="key">' + "ABCD"[i] + "</span><span>" + esc(opt) + "</span>";
+          b.addEventListener("click", () => answerQuiz(i, b));
+          box.appendChild(b);
+        });
+      }
+      function answerQuiz(i, btn) {
+        if (quizAnswered) return;
+        quizAnswered = true;
+        const item = QUIZ[quizIdx];
+        const right = i === item.a;
+        $$("#quizOpts .opt").forEach((o, j) => {
+          o.disabled = true;
+          if (j === item.a) o.classList.add("right");
+        });
+        if (right) {
+          quizCorrect += 1;
+          quizStreak += 1;
+          quizBestStreak = Math.max(quizBestStreak, quizStreak);
+          const gain = 100 + 10 * (quizStreak - 1);
+          quizXp += gain;
+          confettiBurst(quizStreak >= 3 ? 40 : 22);
+          $("#quizExplainTitle").textContent = "✅ Benar! +" + gain + " XP" + (quizStreak >= 2 ? " (streak " + quizStreak + "x!)" : "");
+          $("#quizCheer").textContent = CHEERS_GOOD[Math.floor(Math.random() * CHEERS_GOOD.length)];
+        } else {
+          btn.classList.add("wrong");
+          quizStreak = 0;
+          $("#quizExplainTitle").textContent = "❌ Belum tepat — jawaban benarnya: " + "ABCD"[item.a];
+          $("#quizCheer").textContent = CHEERS_BAD[Math.floor(Math.random() * CHEERS_BAD.length)];
+        }
+        const ex = $("#quizExplain");
+        ex.className = "explain " + (right ? "good" : "bad");
+        $("#quizExplainText").textContent = item.ex;
+        ex.hidden = false;
+        $("#quizXp").textContent = quizXp;
+        $("#quizLevel").textContent = levelFor(quizXp).name;
+        $("#quizStreakN").textContent = quizStreak;
+        $("#quizStreak").classList.toggle("hot", quizStreak >= 3);
+        $("#btnSoalLanjut").textContent = quizIdx === QUIZ.length - 1 ? "Lihat Hasil Akhir" : "Soal Berikutnya";
+      }
+      $("#btnSoalLanjut").addEventListener("click", () => {
+        if (quizIdx < QUIZ.length - 1) { quizIdx += 1; renderQuiz(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+        else finishQuiz();
+      });
+      function finishQuiz() {
+        const score = quizCorrect * 10;
+        const lvl = levelFor(quizXp);
+        $("#quizPlay").hidden = true;
+        $("#quizDone").hidden = false;
+        $("#doneBadge").textContent = lvl.badge;
+        $("#doneTitle").textContent = score >= 80 ? "Fantastis, " + (currentStudent ? currentStudent.nama.split(" ")[0] : "Teman") + "!" : score >= 60 ? "Kerja Bagus!" : "Kuis Selesai — Tetap Semangat!";
+        $("#doneScore").textContent = score;
+        $("#doneDetail").textContent = "Kamu menjawab benar " + quizCorrect + " dari " + QUIZ.length + " soal dan mengumpulkan " + quizXp + " XP. Streak terpanjangmu: " + quizBestStreak + " jawaban benar beruntun.";
+        $("#doneLevel").textContent = "Lencana: " + lvl.badge + " " + lvl.badgeName;
+        $("#doneStreak").innerHTML = '<span class="flame">🔥</span> Streak terbaik: <b>' + quizBestStreak + "</b>";
+        $("#doneMsg").textContent = score >= 80 ? "Kamu layak jadi Master Bangun Lengkung! Pertahankan prestasimu!" : score >= 60 ? "Sedikit lagi menuju puncak! Coba lagi untuk meraih lencana Master." : "Tidak apa-apa! Pelajari lagi materinya, perhatikan animasi tuangnya, lalu coba lagi. Kamu pasti bisa!";
+        if (score >= 60) confettiBurst(60);
+        if (currentStudent) {
+          const attemptNo = currentStudent.attempts.length + 1;
+          currentStudent.attempts.push({ time: new Date(), score: score, attemptNo: attemptNo });
+          currentStudent.lastActivity = new Date();
+          sheetSend({ type: "kuis", time: nowISO(), nama: currentStudent.nama, kelas: currentStudent.kelas, attemptNo: attemptNo, score: score });
+          sendSummary(currentStudent);
+          updateQuizBestInfo();
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      function updateQuizBestInfo() {
+        if (!currentStudent || !currentStudent.attempts.length) { $("#quizBestInfo").textContent = ""; return; }
+        const st = studentStats(currentStudent);
+        $("#quizBestInfo").textContent = "Skor terbaikmu sejauh ini: " + st.best + " · sudah " + currentStudent.attempts.length + " kali mencoba.";
+      }
+      function startQuiz() {
+        quizIdx = 0; quizCorrect = 0; quizXp = 0; quizStreak = 0; quizBestStreak = 0;
+        $("#quizStart").hidden = true;
+        $("#quizDone").hidden = true;
+        $("#quizPlay").hidden = false;
+        trackVisit("kuis");
+        renderQuiz();
+        window.scrollTo({ top: 0 });
+      }
+      $("#btnMulaiKuis").addEventListener("click", startQuiz);
+      $("#btnKuisUlang").addEventListener("click", startQuiz);
+
+      /* ================= Data Guru ================= */
+      const GURU_PIN = "d4pm4t";
+      function renderGuruGate() {
+        $("#guruGate").hidden = guruUnlocked;
+        $("#guruPanel").hidden = !guruUnlocked;
+        if (guruUnlocked) renderGuru();
+        else { $("#pinInput").value = ""; $("#pinErr").hidden = true; }
+      }
+      $("#pinForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        if ($("#pinInput").value === GURU_PIN) {
+          guruUnlocked = true;
+          $("#pinErr").hidden = true;
+          renderGuruGate();
+        } else {
+          $("#pinErr").hidden = false;
+        }
+      });
+      function renderGuru() {
+        $("#statSiswa").textContent = studentRecords.length;
+        $("#statKuis").textContent = studentRecords.reduce((s, r) => s + r.attempts.length, 0);
+        const bests = studentRecords.filter((r) => r.attempts.length).map((r) => studentStats(r).best);
+        $("#statRata").textContent = bests.length ? Math.round(bests.reduce((a, b) => a + b, 0) / bests.length) : "—";
+        $("#statMenu").textContent = studentRecords.reduce((s, r) => s + Object.values(r.visits).reduce((a, b) => a + b, 0), 0);
+        const list = $("#guruList");
+        if (!studentRecords.length) {
+          list.innerHTML = '<p class="muted">Belum ada data siswa pada sesi ini. Tekan "Muat Data dari Sheet" untuk mengambil data dari database pusat.</p>';
+          return;
+        }
+        list.innerHTML = studentRecords.map((r) => {
+          const st = studentStats(r);
+          const menus = Object.keys(r.visits).map((k) => (TAB_LABELS[k] || k) + " (" + r.visits[k] + "x)").join(", ") || "—";
+          const trend = r.attempts.length > 1
+            ? (st.last > r.attempts[0].score ? " · tren: naik" : (st.last < r.attempts[0].score ? " · tren: turun" : " · tren: tetap"))
+            : "";
+          const bars = r.attempts.map((a) =>
+            '<div class="score-bar" style="height:' + Math.max(8, a.score * 0.4) + 'px" title="Percobaan ' + a.attemptNo + ': ' + a.score + '"><span>' + a.score + "</span></div>"
+          ).join("");
+          return '<div class="stu">' +
+            '<div class="stu-head"><b>' + esc(r.nama) + '</b><span class="muted">Kelas ' + esc(r.kelas) + " · login " + r.logins + "x · terakhir aktif " + fmtTime(r.lastActivity) + "</span></div>" +
+            '<div class="muted">Menu dipelajari: ' + esc(menus) + "</div>" +
+            (r.attempts.length
+              ? '<div class="muted">Kuis: ' + r.attempts.length + " percobaan · terakhir <b>" + st.last + "</b> · terbaik <b>" + st.best + "</b> · rata-rata <b>" + st.avg + "</b>" + trend + '</div><div class="score-track">' + bars + "</div>"
+              : '<div class="muted">Belum pernah mengerjakan kuis.</div>') +
+            "</div>";
+        }).join("");
+      }
+
+      /* ---------- CSV ---------- */
+      function csvCell(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
+      $("#btnCsv").addEventListener("click", () => {
+        const rows = [["Nama", "Kelas", "Jumlah Login", "Menu Dipelajari", "Percobaan Kuis", "Skor Terakhir", "Skor Terbaik", "Rata-rata Skor", "Riwayat Skor", "Terakhir Aktif"]];
+        studentRecords.forEach((r) => {
+          const st = studentStats(r);
+          rows.push([
+            r.nama, r.kelas, r.logins,
+            Object.keys(r.visits).map((k) => TAB_LABELS[k] || k).join(", "),
+            r.attempts.length,
+            st.last == null ? "" : st.last, st.best == null ? "" : st.best, st.avg == null ? "" : st.avg,
+            r.attempts.map((a) => a.score).join(" - "),
+            new Date(r.lastActivity).toLocaleString("id-ID"),
+          ]);
+        });
+        const csv = rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
+        const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "laporan-bangun-ruang-sisi-lengkung.csv";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 400);
+      });
+
+      /* ---------- Integrasi Sheet: muat, ringkasan, uji kirim, pengaturan ---------- */
+      function sendSummary(r) {
+        const st = studentStats(r);
+        return sheetSend({
+          type: "ringkasan", nama: r.nama, kelas: r.kelas,
+          menus: Object.keys(r.visits).map((t) => TAB_LABELS[t] || t).join(", "),
+          attempts: r.attempts.length,
+          last: st.last == null ? "" : st.last, best: st.best == null ? "" : st.best, avg: st.avg == null ? "" : st.avg,
+        });
+      }
+      function mergeSheetData(data) {
+        let siswaBaru = 0, kuisBaru = 0;
+        (data.login || []).forEach((row) => {
+          if (!row.nama || !row.kelas) return;
+          const t = new Date(row.time);
+          let rec = findRecord(String(row.nama), String(row.kelas));
+          if (!rec) { rec = makeRecord(String(row.nama), String(row.kelas), isNaN(t) ? new Date() : t); studentRecords.push(rec); siswaBaru++; }
+          else if (!isNaN(t) && t < rec.firstLogin) rec.firstLogin = t;
+        });
+        (data.kuis || []).forEach((row) => {
+          if (!row.nama || !row.kelas) return;
+          const t = new Date(row.time);
+          let rec = findRecord(String(row.nama), String(row.kelas));
+          if (!rec) { rec = makeRecord(String(row.nama), String(row.kelas), isNaN(t) ? new Date() : t); studentRecords.push(rec); siswaBaru++; }
+          const no = row.attemptNo || rec.attempts.length + 1;
+          if (!rec.attempts.some((a) => a.attemptNo === no)) {
+            rec.attempts.push({ time: isNaN(t) ? new Date() : t, score: +row.score || 0, attemptNo: no });
+            rec.attempts.sort((a, b) => a.attemptNo - b.attemptNo);
+            kuisBaru++;
+          }
+        });
+        return { siswaBaru: siswaBaru, kuisBaru: kuisBaru };
+      }
+      $("#btnSheetLoad").addEventListener("click", () => {
+        setSheetStatus("Memuat data dari Google Sheet…");
+        sheetLoad().then((data) => {
+          const m = mergeSheetData(data || {});
+          renderGuru();
+          setSheetStatus("Data dari Sheet berhasil dimuat: " + m.siswaBaru + " siswa baru dan " + m.kuisBaru + " hasil kuis baru ditambahkan ke dasbor.", true);
+        }).catch(() => setSheetStatus("Gagal memuat data dari Sheet. Periksa koneksi internet dan URL Aplikasi Web-nya, lalu coba lagi."));
+      });
+      $("#btnSheetSummary").addEventListener("click", () => {
+        if (!studentRecords.length) { setSheetStatus("Belum ada data siswa pada sesi ini untuk dikirim."); return; }
+        setSheetStatus("Mengirim ringkasan sesi ke Sheet…");
+        Promise.all(studentRecords.map((r) => sendSummary(r)))
+          .then(() => setSheetStatus("Ringkasan sesi terkirim — silakan periksa tab \"Ringkasan\" pada Sheet untuk memastikan datanya masuk.", true));
+      });
+      $("#btnUjiKirim").addEventListener("click", () => {
+        setSheetStatus("Mengirim data uji ke Sheet…");
+        sheetSend({ type: "login", time: nowISO(), nama: "UJI KONEKSI", kelas: "UJI" }).then((ok) => {
+          if (!ok) { setSheetStatus("Pengiriman uji tidak terkonfirmasi. Periksa koneksi internet, lalu coba lagi."); return; }
+          setSheetStatus("Data uji terkirim. Membaca kembali isi Sheet untuk memastikan…");
+          setTimeout(() => {
+            sheetLoad().then((data) => {
+              const nLogin = (data.login || []).length, nKuis = (data.kuis || []).length;
+              setSheetStatus("Uji berhasil! Sheet bisa menerima dan mengirim data aplikasi bangun-ruang-sisi-lengkung. Saat ini terbaca " + nLogin + " baris login dan " + nKuis + " baris kuis. Baris uji berlabel \"UJI KONEKSI\" boleh dihapus dari Sheet.", true);
+            }).catch(() => setSheetStatus("Data uji terkirim, tetapi pembacaan kembali dari Sheet gagal. Cek tab Login di Sheet — baris \"UJI KONEKSI\" seharusnya sudah masuk."));
+          }, 1600);
+        });
+      });
+      $("#btnSheetConnect").addEventListener("click", () => {
+        const v = $("#sheetUrl").value.trim();
+        if (!v) { setSheetStatus("URL tidak boleh kosong."); return; }
+        sheetEndpoint = v;
+        setSheetStatus("URL Aplikasi Web diperbarui untuk sesi ini. Gunakan \"Uji Kirim Data Sekarang\" untuk memastikan koneksinya.", true);
+      });
+      $("#btnSheetReset").addEventListener("click", () => {
+        sheetEndpoint = DEFAULT_SHEET_URL;
+        $("#sheetUrl").value = DEFAULT_SHEET_URL;
+        setSheetStatus("URL dikembalikan ke URL bawaan Sheet pusat DapMath.", true);
+      });
+      $("#sheetUrl").value = DEFAULT_SHEET_URL;
+
+      /* ================= Inisialisasi tampilan ================= */
+      /* lacak kunjungan sub-materi saat bagian bangun terlihat */
+      if ("IntersectionObserver" in window) {
+        const seen = {};
+        const io = new IntersectionObserver((es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting && !$("#sec-materi").hidden) {
+              const key = "materi-" + e.target.id.replace("Section", "");
+              if (!seen[key]) { seen[key] = true; trackVisit(key); }
+            }
+          });
+        }, { threshold: 0.35 });
+        ["tabungSection", "kerucutSection", "bolaSection"].forEach((id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+      }
+      updTabung();
+      updKerucut();
+      updBola();
+      updNetTabung();
+      updNetKerucut();
+      drawVolKerucut(0);
+      drawVolBola(0);
+      showLatihan();
+      updCalcS();
+    </script>
+  </body>
+</html>
