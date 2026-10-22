@@ -1,1 +1,1352 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Aplikasi SPLDV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; }
+      :root {
+        --bg: #f3f6f4;
+        --surface: #ffffff;
+        --surface2: #e9f0ec;
+        --ink: #182620;
+        --muted: #5c6f65;
+        --line: #d5e0d9;
+        --primary: #0b7565;
+        --primary-dark: #07584c;
+        --primary-ink: #ffffff;
+        --teal-soft: #dff0eb;
+        --accent: #dd7425;
+        --accent-soft: #fcead9;
+        --good: #1c7c43;
+        --good-soft: #e0f2e4;
+        --bad: #bf3826;
+        --bad-soft: #fbe7e2;
+        --warn: #9a6a08;
+        --warn-soft: #f7ecd2;
+        --shadow: 0 2px 10px rgba(20, 50, 40, 0.08);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0c1411;
+          --surface: #15211b;
+          --surface2: #1c2b23;
+          --ink: #e7f1ea;
+          --muted: #9db3a6;
+          --line: #2a3e33;
+          --primary: #2bb198;
+          --primary-dark: #2bb198;
+          --primary-ink: #06231c;
+          --teal-soft: #11382f;
+          --accent: #ef9a4e;
+          --accent-soft: #3a2a17;
+          --good: #54c98b;
+          --good-soft: #173526;
+          --bad: #ff8f7d;
+          --bad-soft: #3d2019;
+          --warn: #e9c46a;
+          --warn-soft: #38300f;
+          --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+        }
+      }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.55;
+        font-size: 16.5px;
+      }
+      h1, h2, h3 { line-height: 1.25; margin: 0; }
+      p { margin: 0; }
+      button { font-family: inherit; cursor: pointer; }
+      input, select { font-family: inherit; }
 
+      /* ---------- Top bar ---------- */
+      .topbar {
+        position: sticky; top: 0; z-index: 40;
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+        padding: 10px 16px;
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      }
+      .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+      .brand-badge {
+        width: 40px; height: 40px; border-radius: 10px; flex: none;
+        background: var(--primary); color: var(--primary-ink);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 15px; letter-spacing: 0.3px;
+      }
+      .brand-text { min-width: 0; }
+      .brand-text strong { display: block; font-size: 16px; }
+      .brand-text span { display: block; font-size: 12.5px; color: var(--muted); }
+      .student-chip {
+        margin-left: auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      }
+      .student-name {
+        display: flex; align-items: center; gap: 8px;
+        background: var(--teal-soft); border-radius: 999px; padding: 6px 14px 6px 6px;
+        font-weight: 700; font-size: 14.5px; max-width: 62vw;
+      }
+      .student-name .avatar {
+        width: 30px; height: 30px; border-radius: 50%; flex: none;
+        background: var(--primary); color: var(--primary-ink);
+        display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800;
+      }
+      .student-name .kelas { color: var(--muted); font-weight: 600; }
+
+      /* ---------- Nav tabs ---------- */
+      .tabs {
+        position: sticky; top: 61px; z-index: 39;
+        background: var(--bg);
+        display: flex; gap: 8px; flex-wrap: wrap;
+        padding: 12px 16px 4px;
+        max-width: 1120px; margin: 0 auto; width: 100%;
+      }
+      .tab {
+        flex: 1 1 auto; min-height: 50px; padding: 10px 14px;
+        border: 1.5px solid var(--line); border-radius: 12px;
+        background: var(--surface); color: var(--ink);
+        font-size: 15.5px; font-weight: 700;
+        display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      }
+      .tab.active { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); }
+      .tab .lock { font-size: 13px; opacity: 0.85; }
+
+      main { max-width: 1120px; margin: 0 auto; padding: 14px 16px 40px; width: 100%; }
+      .view { display: none; }
+      .view.active { display: block; }
+
+      /* ---------- Generic ---------- */
+      .card {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow);
+        padding: 20px; margin-bottom: 18px;
+      }
+      .card h2 { font-size: 21px; margin-bottom: 8px; }
+      .card h3 { font-size: 17.5px; margin-bottom: 6px; }
+      .lead { color: var(--muted); }
+      .btn {
+        min-height: 50px; padding: 10px 20px; border-radius: 12px;
+        border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+        font-size: 15.5px; font-weight: 700;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      }
+      .btn.primary { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); }
+      .btn.accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .btn.small { min-height: 44px; padding: 8px 14px; font-size: 14.5px; }
+      .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+      .eq {
+        font-weight: 700; background: var(--surface2); border-radius: 10px;
+        padding: 10px 14px; display: inline-block; margin: 4px 4px 4px 0; font-size: 17px;
+      }
+      .eq .var { color: var(--primary); }
+      .tag {
+        display: inline-block; font-size: 12.5px; font-weight: 800; letter-spacing: 0.4px;
+        padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+        text-transform: uppercase; margin-bottom: 8px;
+      }
+      .note {
+        border-radius: 10px; padding: 12px 14px; font-size: 15px; margin-top: 12px;
+      }
+      .note.info { background: var(--teal-soft); }
+      .note.warn { background: var(--warn-soft); color: var(--ink); }
+      .note.good { background: var(--good-soft); }
+      .note.bad { background: var(--bad-soft); }
+      .muted { color: var(--muted); }
+      .small { font-size: 14px; }
+
+      /* ---------- Stepper ---------- */
+      .steps { list-style: none; margin: 14px 0 0; padding: 0; counter-reset: step; }
+      .steps .step {
+        display: none; position: relative;
+        padding: 12px 14px 12px 52px; margin-bottom: 10px;
+        background: var(--surface2); border-radius: 12px;
+      }
+      .steps .step.shown { display: block; }
+      .steps .step::before {
+        counter-increment: step; content: counter(step);
+        position: absolute; left: 12px; top: 12px;
+        width: 28px; height: 28px; border-radius: 50%;
+        background: var(--primary); color: var(--primary-ink);
+        font-weight: 800; font-size: 14.5px;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .step-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
+      .step-progress { color: var(--muted); font-size: 14px; font-weight: 600; }
+
+      /* ---------- Graph lab ---------- */
+      .lab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+      @media (max-width: 820px) { .lab-grid { grid-template-columns: 1fr; } }
+      .graph-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; }
+      .graph-wrap svg { width: 100%; height: auto; display: block; }
+      .eq-panel { border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+      .eq-panel.line1 { border-top: 5px solid var(--primary); }
+      .eq-panel.line2 { border-top: 5px solid var(--accent); }
+      .eq-panel .eq-title { font-weight: 800; font-size: 16px; margin-bottom: 4px; }
+      .eq-panel .eq-live { font-size: 19px; font-weight: 800; margin-bottom: 10px; }
+      .slider-row { display: grid; grid-template-columns: 34px 1fr 40px; align-items: center; gap: 10px; margin: 8px 0; }
+      .slider-row label { font-weight: 800; font-size: 17px; }
+      .slider-row output { font-weight: 800; text-align: right; font-size: 16px; }
+      input[type="range"] { width: 100%; height: 34px; accent-color: var(--primary); }
+      .eq-panel.line2 input[type="range"] { accent-color: var(--accent); }
+      .result-box {
+        border-radius: 12px; padding: 14px 16px; font-size: 16.5px; font-weight: 600;
+        background: var(--teal-soft); margin-top: 4px;
+      }
+      .result-box.none { background: var(--bad-soft); }
+      .result-box.inf { background: var(--warn-soft); }
+
+      /* ---------- Calculator ---------- */
+      .calc-eq { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0; font-size: 19px; font-weight: 700; }
+      .calc-eq input {
+        width: 74px; min-height: 52px; text-align: center;
+        font-size: 19px; font-weight: 700;
+        border: 1.5px solid var(--line); border-radius: 10px;
+        background: var(--bg); color: var(--ink); padding: 6px;
+      }
+      .calc-eq .coef-label { font-size: 12px; color: var(--muted); display: block; text-align: center; font-weight: 600; }
+      .calc-steps { margin-top: 16px; }
+      .calc-steps .step { display: block; }
+
+      /* ---------- Quiz ---------- */
+      .quiz-progress { height: 12px; background: var(--surface2); border-radius: 999px; overflow: hidden; margin: 10px 0 16px; }
+      .quiz-progress > div { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+      .quiz-q { font-size: 19px; font-weight: 700; margin-bottom: 14px; }
+      .quiz-opts { display: grid; gap: 10px; }
+      .quiz-opt {
+        min-height: 56px; text-align: left; padding: 12px 16px;
+        border: 1.5px solid var(--line); border-radius: 12px;
+        background: var(--surface); color: var(--ink);
+        font-size: 16.5px; font-weight: 600;
+        display: flex; gap: 12px; align-items: center; width: 100%;
+      }
+      .quiz-opt .letter {
+        width: 30px; height: 30px; border-radius: 8px; flex: none;
+        background: var(--surface2); font-weight: 800;
+        display: flex; align-items: center; justify-content: center; font-size: 15px;
+      }
+      .quiz-opt.correct { border-color: var(--good); background: var(--good-soft); }
+      .quiz-opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+      .quiz-opt:disabled { cursor: default; opacity: 1; }
+      .feedback { display: none; margin-top: 14px; border-radius: 12px; padding: 14px 16px; }
+      .feedback.show { display: block; }
+      .feedback.good { background: var(--good-soft); }
+      .feedback.bad { background: var(--bad-soft); }
+      .feedback strong { display: block; margin-bottom: 4px; font-size: 16.5px; }
+      .score-big { font-size: 52px; font-weight: 800; color: var(--primary); line-height: 1; }
+
+      /* ---------- Guru ---------- */
+      .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 14px 0; }
+      .stat-box { background: var(--surface2); border-radius: 12px; padding: 14px; text-align: center; }
+      .stat-box .num { font-size: 30px; font-weight: 800; color: var(--primary); line-height: 1.1; }
+      .stat-box .lbl { font-size: 13.5px; color: var(--muted); font-weight: 600; }
+      .student-card { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+      .student-card .sc-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+      .student-card .sc-name { font-weight: 800; font-size: 17px; }
+      .student-card .sc-meta { color: var(--muted); font-size: 14px; }
+      .sc-stats { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; font-size: 14.5px; }
+      .sc-stats b { color: var(--primary); }
+      .field { margin: 10px 0; }
+      .field label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 15px; }
+      .field input[type="text"], .field input[type="password"] {
+        width: 100%; min-height: 52px; padding: 10px 14px; font-size: 16.5px;
+        border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
+      }
+      .sheet-list { font-size: 14.5px; }
+      .sheet-list li { margin-bottom: 5px; }
+
+      /* ---------- Login & modal ---------- */
+      .overlay {
+        position: fixed; inset: 0; z-index: 100;
+        background: rgba(10, 25, 20, 0.55);
+        display: none; align-items: center; justify-content: center; padding: 16px;
+      }
+      .overlay.show { display: flex; }
+      .dialog {
+        background: var(--surface); border-radius: 18px; padding: 26px;
+        width: 100%; max-width: 440px; box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        max-height: 92vh; overflow-y: auto;
+      }
+      .dialog h2 { font-size: 23px; margin-bottom: 6px; }
+      .dialog .big-badge {
+        width: 58px; height: 58px; border-radius: 14px; margin-bottom: 14px;
+        background: var(--primary); color: var(--primary-ink);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 21px;
+      }
+      .form-error { display: none; background: var(--bad-soft); border-radius: 10px; padding: 10px 12px; font-size: 14.5px; margin-top: 10px; }
+      .form-error.show { display: block; }
+
+      .toast {
+        position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(80px);
+        background: var(--ink); color: var(--bg); padding: 12px 20px; border-radius: 999px;
+        font-weight: 700; font-size: 15px; z-index: 200; opacity: 0; transition: all 0.3s;
+        max-width: 92vw; text-align: center;
+      }
+      .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+      footer {
+        border-top: 1px solid var(--line); background: var(--surface);
+        text-align: center; padding: 20px 16px 30px; color: var(--muted); font-size: 14.5px;
+      }
+      footer strong { color: var(--ink); }
+
+      @media (max-width: 560px) {
+        .tabs { top: 57px; }
+        .tab { font-size: 14px; padding: 8px 8px; }
+        .card { padding: 16px; }
+        .calc-eq input { width: 62px; }
+        body { font-size: 16px; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ============ LOGIN ============ -->
+    <div class="overlay show" id="loginOverlay">
+      <div class="dialog">
+        <div class="big-badge">xy</div>
+        <h2>Selamat Datang di Aplikasi SPLDV</h2>
+        <p class="lead">Sistem Persamaan Linear Dua Variabel — Matematika Kelas 8. Isi nama dan kelasmu dulu sebelum mulai belajar, ya.</p>
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="loginNama">Nama lengkap</label>
+            <input type="text" id="loginNama" placeholder="Contoh: Siti Rahma" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="loginKelas">Kelas</label>
+            <input type="text" id="loginKelas" placeholder="Contoh: 8A" />
+          </div>
+          <div class="form-error" id="loginError">Nama dan kelas wajib diisi keduanya.</div>
+          <div class="btn-row">
+            <button type="submit" class="btn primary" style="flex:1">Mulai Belajar</button>
+          </div>
+        </form>
+        <p class="small muted" style="margin-top:14px">Namamu tercatat supaya Bapak/Ibu Guru bisa memantau perkembangan belajarmu.</p>
+      </div>
+    </div>
+
+    <!-- ============ PIN GURU ============ -->
+    <div class="overlay" id="pinOverlay">
+      <div class="dialog">
+        <h2>Menu Data Guru</h2>
+        <p class="lead">Menu ini khusus guru. Masukkan PIN untuk membukanya.</p>
+        <form id="pinForm" novalidate>
+          <div class="field">
+            <label for="pinInput">PIN Guru</label>
+            <input type="password" id="pinInput" placeholder="Masukkan PIN" autocomplete="off" />
+          </div>
+          <div class="form-error" id="pinError">PIN salah. Coba lagi.</div>
+          <div class="btn-row">
+            <button type="button" class="btn" id="pinCancel" style="flex:1">Batal</button>
+            <button type="submit" class="btn primary" style="flex:1">Buka Data Guru</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============ TOP BAR ============ -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge">xy</div>
+        <div class="brand-text">
+          <strong>SPLDV</strong>
+          <span>Matematika Kelas 8 · DapMath</span>
+        </div>
+      </div>
+      <div class="student-chip" id="studentChip" style="display:none">
+        <div class="student-name">
+          <span class="avatar" id="studentAvatar">?</span>
+          <span id="studentName">—</span>
+          <span class="kelas" id="studentKelas"></span>
+        </div>
+        <button class="btn small" id="btnGantiSiswa" type="button">Ganti Siswa</button>
+      </div>
+    </header>
+
+    <!-- ============ NAV ============ -->
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-view="materi" type="button">Materi</button>
+      <button class="tab" data-view="grafik" type="button">Lab Grafik</button>
+      <button class="tab" data-view="kalkulator" type="button">Kalkulator</button>
+      <button class="tab" data-view="kuis" type="button">Kuis</button>
+      <button class="tab" data-view="guru" type="button">Data Guru <span class="lock">&#128274;</span></button>
+    </nav>
+
+    <main>
+      <!-- ============ MATERI ============ -->
+      <section class="view active" id="view-materi">
+        <div class="card">
+          <span class="tag">Konsep Dasar</span>
+          <h2>Apa itu SPLDV?</h2>
+          <p><strong>Sistem Persamaan Linear Dua Variabel (SPLDV)</strong> adalah kumpulan dua persamaan linear yang memiliki dua variabel yang sama, biasanya <em>x</em> dan <em>y</em>. Bentuk umumnya:</p>
+          <p style="margin-top:10px">
+            <span class="eq">a<sub>1</sub><span class="var">x</span> + b<sub>1</sub><span class="var">y</span> = c<sub>1</sub></span>
+            <span class="eq">a<sub>2</sub><span class="var">x</span> + b<sub>2</sub><span class="var">y</span> = c<sub>2</sub></span>
+          </p>
+          <p style="margin-top:8px">Pasangan nilai (<em>x</em>, <em>y</em>) yang membuat <strong>kedua</strong> persamaan bernilai benar disebut <strong>himpunan penyelesaian (HP)</strong>. Setiap persamaan linear, kalau digambar, membentuk sebuah <strong>garis lurus</strong> — jadi menyelesaikan SPLDV sama artinya dengan mencari titik tempat kedua garis itu berpotongan.</p>
+          <div class="note info">Ada <strong>3 kemungkinan</strong> hasil SPLDV:
+            <br>1. Kedua garis berpotongan di satu titik &rarr; <strong>satu penyelesaian</strong>.
+            <br>2. Kedua garis sejajar &rarr; <strong>tidak ada penyelesaian</strong>.
+            <br>3. Kedua garis berimpit (garis yang sama) &rarr; <strong>tak hingga penyelesaian</strong>.
+            <br>Coba buktikan sendiri di menu <strong>Lab Grafik</strong>!
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="tag">Metode 1</span>
+          <h2>Metode Grafik</h2>
+          <p class="lead">Gambar kedua garis pada satu bidang koordinat. Koordinat titik potongnya adalah penyelesaian SPLDV.</p>
+          <p style="margin-top:10px">Contoh: tentukan HP dari</p>
+          <p><span class="eq"><span class="var">x</span> + <span class="var">y</span> = 5</span> <span class="eq"><span class="var">x</span> &minus; <span class="var">y</span> = 1</span></p>
+          <div class="graph-wrap" style="margin-top:14px; max-width:460px">
+            <svg id="svgContohGrafik" viewBox="0 0 440 440" role="img" aria-label="Grafik dua garis berpotongan di titik (3, 2)"></svg>
+          </div>
+          <div class="stepper" data-stepper>
+            <ol class="steps">
+              <li class="step">Untuk garis <strong>x + y = 5</strong>, cari dua titik mudah: jika x = 0 maka y = 5 &rarr; titik (0, 5). Jika y = 0 maka x = 5 &rarr; titik (5, 0).</li>
+              <li class="step">Untuk garis <strong>x &minus; y = 1</strong>: jika x = 0 maka y = &minus;1 &rarr; titik (0, &minus;1). Jika y = 0 maka x = 1 &rarr; titik (1, 0).</li>
+              <li class="step">Gambar kedua garis dengan menghubungkan titik-titik tersebut, seperti pada grafik di atas.</li>
+              <li class="step">Kedua garis berpotongan tepat di titik <strong>(3, 2)</strong>.</li>
+              <li class="step">Periksa: 3 + 2 = 5 &#10003; dan 3 &minus; 2 = 1 &#10003;. Keduanya benar, jadi <strong>HP = {(3, 2)}</strong>.</li>
+            </ol>
+            <div class="step-controls">
+              <button class="btn primary" type="button" data-step-next>Langkah Berikutnya</button>
+              <button class="btn" type="button" data-step-all>Buka Semua</button>
+              <button class="btn" type="button" data-step-reset style="display:none">Ulangi</button>
+              <span class="step-progress"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="tag">Metode 2</span>
+          <h2>Metode Eliminasi</h2>
+          <p class="lead">Hilangkan (eliminasi) salah satu variabel dengan menjumlahkan atau mengurangkan kedua persamaan, setelah koefisiennya disamakan.</p>
+          <p style="margin-top:10px">Contoh: tentukan HP dari</p>
+          <p><span class="eq">2<span class="var">x</span> + <span class="var">y</span> = 7</span> <span class="eq"><span class="var">x</span> + 2<span class="var">y</span> = 8</span></p>
+          <div class="stepper" data-stepper>
+            <ol class="steps">
+              <li class="step">Beri nama: persamaan (1) adalah 2x + y = 7, persamaan (2) adalah x + 2y = 8. Kita akan mengeliminasi variabel <strong>x</strong>.</li>
+              <li class="step">Samakan koefisien x: kalikan persamaan (2) dengan 2, menjadi <strong>2x + 4y = 16</strong>.</li>
+              <li class="step">Kurangkan persamaan (1) dari hasil itu: (2x + 4y) &minus; (2x + y) = 16 &minus; 7, sehingga <strong>3y = 9</strong> dan <strong>y = 3</strong>.</li>
+              <li class="step">Substitusikan y = 3 ke persamaan (1): 2x + 3 = 7 &rarr; 2x = 4 &rarr; <strong>x = 2</strong>.</li>
+              <li class="step">Periksa ke persamaan (2): 2 + 2(3) = 8 &#10003;. Jadi <strong>HP = {(2, 3)}</strong>.</li>
+            </ol>
+            <div class="step-controls">
+              <button class="btn primary" type="button" data-step-next>Langkah Berikutnya</button>
+              <button class="btn" type="button" data-step-all>Buka Semua</button>
+              <button class="btn" type="button" data-step-reset style="display:none">Ulangi</button>
+              <span class="step-progress"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="tag">Metode 3</span>
+          <h2>Metode Substitusi</h2>
+          <p class="lead">Nyatakan satu variabel dalam variabel lain, lalu masukkan (substitusikan) ke persamaan berikutnya sampai tersisa satu variabel.</p>
+          <p style="margin-top:10px">Contoh: tentukan HP dari</p>
+          <p><span class="eq"><span class="var">x</span> + <span class="var">y</span> = 8</span> <span class="eq"><span class="var">y</span> = 2<span class="var">x</span> &minus; 1</span></p>
+          <div class="stepper" data-stepper>
+            <ol class="steps">
+              <li class="step">Persamaan (2) sudah menyatakan y dalam x: <strong>y = 2x &minus; 1</strong>. Ini memudahkan substitusi.</li>
+              <li class="step">Substitusikan y = 2x &minus; 1 ke persamaan (1): x + (2x &minus; 1) = 8.</li>
+              <li class="step">Selesaikan: 3x &minus; 1 = 8 &rarr; 3x = 9 &rarr; <strong>x = 3</strong>.</li>
+              <li class="step">Substitusikan x = 3 ke persamaan (2): y = 2(3) &minus; 1 = <strong>5</strong>.</li>
+              <li class="step">Periksa: 3 + 5 = 8 &#10003;. Jadi <strong>HP = {(3, 5)}</strong>.</li>
+            </ol>
+            <div class="step-controls">
+              <button class="btn primary" type="button" data-step-next>Langkah Berikutnya</button>
+              <button class="btn" type="button" data-step-all>Buka Semua</button>
+              <button class="btn" type="button" data-step-reset style="display:none">Ulangi</button>
+              <span class="step-progress"></span>
+            </div>
+          </div>
+          <div class="note info">Dalam praktiknya, ketiga metode boleh <strong>digabung</strong>: eliminasi dulu untuk mencari satu variabel, lalu substitusi untuk variabel lainnya. Coba di menu <strong>Kalkulator</strong>!</div>
+        </div>
+      </section>
+
+      <!-- ============ LAB GRAFIK ============ -->
+      <section class="view" id="view-grafik">
+        <div class="card">
+          <span class="tag">Jelajahi Sendiri</span>
+          <h2>Lab Grafik: Dua Garis &amp; Titik Potong</h2>
+          <p class="lead">Geser penggeser koefisien kedua persamaan dan amati: titik potong kedua garis bergerak mengikuti perubahanmu. Titik potong itulah himpunan penyelesaian SPLDV-nya.</p>
+          <div class="btn-row" style="margin-bottom:16px">
+            <button class="btn small" type="button" data-preset="potong">Satu Titik Potong</button>
+            <button class="btn small" type="button" data-preset="sejajar">Garis Sejajar</button>
+            <button class="btn small" type="button" data-preset="berimpit">Garis Berimpit</button>
+          </div>
+          <div class="lab-grid">
+            <div class="graph-wrap">
+              <svg id="svgLab" viewBox="0 0 440 440" role="img" aria-label="Bidang koordinat dengan dua garis dan titik potongnya"></svg>
+            </div>
+            <div>
+              <div class="eq-panel line1">
+                <div class="eq-title" style="color:var(--primary)">Persamaan 1</div>
+                <div class="eq-live" id="eqLive1">x + y = 5</div>
+                <div class="slider-row"><label for="s-a1">a<sub>1</sub></label><input type="range" id="s-a1" min="-5" max="5" step="1" value="1" /><output id="o-a1">1</output></div>
+                <div class="slider-row"><label for="s-b1">b<sub>1</sub></label><input type="range" id="s-b1" min="-5" max="5" step="1" value="1" /><output id="o-b1">1</output></div>
+                <div class="slider-row"><label for="s-c1">c<sub>1</sub></label><input type="range" id="s-c1" min="-12" max="12" step="1" value="5" /><output id="o-c1">5</output></div>
+              </div>
+              <div class="eq-panel line2">
+                <div class="eq-title" style="color:var(--accent)">Persamaan 2</div>
+                <div class="eq-live" id="eqLive2">2x &minus; y = 4</div>
+                <div class="slider-row"><label for="s-a2">a<sub>2</sub></label><input type="range" id="s-a2" min="-5" max="5" step="1" value="2" /><output id="o-a2">2</output></div>
+                <div class="slider-row"><label for="s-b2">b<sub>2</sub></label><input type="range" id="s-b2" min="-5" max="5" step="1" value="-1" /><output id="o-b2">&minus;1</output></div>
+                <div class="slider-row"><label for="s-c2">c<sub>2</sub></label><input type="range" id="s-c2" min="-12" max="12" step="1" value="4" /><output id="o-c2">4</output></div>
+              </div>
+              <div class="result-box" id="labResult"></div>
+            </div>
+          </div>
+          <div class="note info">Tantangan: atur kedua persamaan menjadi dua garis <strong>sejajar</strong> (koefisien x dan y sebanding, tetapi konstanta tidak). Apa yang terjadi pada titik potongnya? Lalu coba buat kedua garis <strong>berimpit</strong> persis.</div>
+        </div>
+      </section>
+
+      <!-- ============ KALKULATOR ============ -->
+      <section class="view" id="view-kalkulator">
+        <div class="card">
+          <span class="tag">Penyelesai SPLDV</span>
+          <h2>Kalkulator SPLDV</h2>
+          <p class="lead">Masukkan koefisien kedua persamaanmu, lalu tekan <strong>Selesaikan</strong>. Aplikasi akan menunjukkan himpunan penyelesaiannya lengkap dengan langkah eliminasi dan substitusinya.</p>
+          <div style="margin-top:10px">
+            <div style="font-weight:800; color:var(--primary)">Persamaan 1: a<sub>1</sub>x + b<sub>1</sub>y = c<sub>1</sub></div>
+            <div class="calc-eq">
+              <span><input type="number" id="k-a1" value="2" step="any" aria-label="a1" /><span class="coef-label">a<sub>1</sub></span></span>
+              <span>x +</span>
+              <span><input type="number" id="k-b1" value="1" step="any" aria-label="b1" /><span class="coef-label">b<sub>1</sub></span></span>
+              <span>y =</span>
+              <span><input type="number" id="k-c1" value="7" step="any" aria-label="c1" /><span class="coef-label">c<sub>1</sub></span></span>
+            </div>
+            <div style="font-weight:800; color:var(--accent); margin-top:14px">Persamaan 2: a<sub>2</sub>x + b<sub>2</sub>y = c<sub>2</sub></div>
+            <div class="calc-eq">
+              <span><input type="number" id="k-a2" value="1" step="any" aria-label="a2" /><span class="coef-label">a<sub>2</sub></span></span>
+              <span>x +</span>
+              <span><input type="number" id="k-b2" value="2" step="any" aria-label="b2" /><span class="coef-label">b<sub>2</sub></span></span>
+              <span>y =</span>
+              <span><input type="number" id="k-c2" value="8" step="any" aria-label="c2" /><span class="coef-label">c<sub>2</sub></span></span>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn accent" type="button" id="btnHitung">Selesaikan</button>
+            <button class="btn" type="button" id="btnContohAcak">Contoh Acak</button>
+          </div>
+          <div id="calcOutput"></div>
+        </div>
+      </section>
+
+      <!-- ============ KUIS ============ -->
+      <section class="view" id="view-kuis">
+        <div class="card" id="quizStart">
+          <span class="tag">Uji Pemahaman</span>
+          <h2>Kuis SPLDV</h2>
+          <p class="lead">10 soal pilihan ganda tentang metode grafik, eliminasi, substitusi, dan soal cerita SPLDV. Setiap jawaban langsung dibahas, jadi kamu bisa belajar dari kesalahan. Skor akhirmu tercatat dan terkirim ke guru.</p>
+          <div class="btn-row">
+            <button class="btn primary" type="button" id="btnMulaiKuis">Mulai Kuis</button>
+          </div>
+        </div>
+
+        <div class="card" id="quizPlay" style="display:none">
+          <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-weight:700">
+            <span id="quizCounter">Soal 1 dari 10</span>
+            <span id="quizScoreLive">Skor sementara: 0</span>
+          </div>
+          <div class="quiz-progress"><div id="quizBar"></div></div>
+          <div class="quiz-q" id="quizQuestion"></div>
+          <div class="quiz-opts" id="quizOptions"></div>
+          <div class="feedback" id="quizFeedback">
+            <strong id="feedbackTitle"></strong>
+            <p id="feedbackText"></p>
+          </div>
+          <div class="btn-row">
+            <button class="btn primary" type="button" id="btnSoalBerikut" style="display:none">Soal Berikutnya</button>
+          </div>
+        </div>
+
+        <div class="card" id="quizResult" style="display:none; text-align:center">
+          <span class="tag">Hasil Kuis</span>
+          <h2>Kuis Selesai!</h2>
+          <p class="muted" id="resultName" style="margin-top:6px"></p>
+          <div class="score-big" id="resultScore" style="margin:16px 0 4px">0</div>
+          <p class="muted">dari 100</p>
+          <p id="resultMsg" style="margin-top:12px; font-weight:600"></p>
+          <p class="small muted" id="resultDetail" style="margin-top:6px"></p>
+          <div class="btn-row" style="justify-content:center">
+            <button class="btn primary" type="button" id="btnUlangiKuis">Kerjakan Lagi</button>
+            <button class="btn" type="button" id="btnKeMateri">Kembali ke Materi</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DATA GURU ============ -->
+      <section class="view" id="view-guru">
+        <div class="card">
+          <span class="tag">Khusus Guru</span>
+          <h2>Data Guru — SPLDV</h2>
+          <p class="lead">Rekap siswa yang login dari perangkat ini, menu yang mereka pelajari, dan perkembangan skor kuisnya. Data juga otomatis terkirim ke Google Sheet terpusat DapMath.</p>
+          <div class="stat-grid">
+            <div class="stat-box"><div class="num" id="statSiswa">0</div><div class="lbl">Siswa tercatat (perangkat ini)</div></div>
+            <div class="stat-box"><div class="num" id="statLogin">0</div><div class="lbl">Total login</div></div>
+            <div class="stat-box"><div class="num" id="statKuis">0</div><div class="lbl">Total percobaan kuis</div></div>
+            <div class="stat-box"><div class="num" id="statRata">–</div><div class="lbl">Rata-rata skor terbaik</div></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn primary" type="button" id="btnUnduhCsv">Unduh Laporan (CSV)</button>
+            <button class="btn" type="button" id="btnMuatSheet">Muat Data dari Sheet</button>
+            <button class="btn" type="button" id="btnUjiKirim">Uji Kirim Data Sekarang</button>
+          </div>
+          <p class="small muted" id="sheetStatus" style="margin-top:10px"></p>
+        </div>
+
+        <div class="card">
+          <h3>Daftar Siswa &amp; Perkembangan</h3>
+          <div id="studentList" style="margin-top:12px"></div>
+        </div>
+
+        <div class="card" id="sheetDataCard" style="display:none">
+          <h3>Data dari Google Sheet (semua perangkat)</h3>
+          <div class="lab-grid" style="margin-top:10px">
+            <div>
+              <p style="font-weight:800; margin-bottom:6px">Login terakhir</p>
+              <ul class="sheet-list" id="sheetLoginList"></ul>
+            </div>
+            <div>
+              <p style="font-weight:800; margin-bottom:6px">Hasil kuis terakhir</p>
+              <ul class="sheet-list" id="sheetKuisList"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Pengaturan Database Google Sheets</h3>
+          <p class="small muted" style="margin-top:6px">URL database terpusat DapMath sudah tertanam permanen di aplikasi ini, jadi semua perangkat otomatis terhubung. Kolom di bawah hanya dipakai bila URL Web App Apps Script suatu saat diganti.</p>
+          <div class="field">
+            <label for="sheetUrlInput">URL Web App Apps Script</label>
+            <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/…/exec" />
+          </div>
+          <div class="btn-row">
+            <button class="btn primary" type="button" id="btnSimpanUrl">Simpan URL</button>
+            <button class="btn" type="button" id="btnResetUrl">Kembalikan ke URL Bawaan</button>
+          </div>
+          <p class="small muted" style="margin-top:8px" id="sheetUrlAktif"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Bagian dari <strong>Portal DapMath</strong> — aplikasi belajar matematika interaktif untuk SMP.</p>
+      <p style="margin-top:4px">Dibangun oleh <strong>Dody Adyansyah</strong></p>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    (function () {
+      'use strict';
+
+      /* ================= KONFIGURASI ================= */
+      var SHEET_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec';
+      var APP_ID = 'spldv';
+      var PIN_GURU = 'd4pm4t';
+      var DB_KEY = 'dapmath_spldv_db_v1';
+      var CUR_KEY = 'dapmath_spldv_current_v1';
+      var URL_KEY = 'dapmath_spldv_sheet_url';
+      var MENU_LABEL = { materi: 'Materi', grafik: 'Lab Grafik', kalkulator: 'Kalkulator', kuis: 'Kuis' };
+
+      function $(id) { return document.getElementById(id); }
+      function toast(msg) {
+        var t = $('toast'); t.textContent = msg; t.classList.add('show');
+        setTimeout(function () { t.classList.remove('show'); }, 3200);
+      }
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      /* ================= PENYIMPANAN LOKAL ================= */
+      function loadDB() {
+        try {
+          var raw = localStorage.getItem(DB_KEY);
+          if (raw) { var d = JSON.parse(raw); if (d && d.students) return d; }
+        } catch (e) {}
+        return { students: {} };
+      }
+      function saveDB() { try { localStorage.setItem(DB_KEY, JSON.stringify(db)); } catch (e) {} }
+      var db = loadDB();
+      var currentKey = null;
+      try { currentKey = localStorage.getItem(CUR_KEY); } catch (e) {}
+      if (currentKey && !db.students[currentKey]) currentKey = null;
+
+      function studentKey(nama, kelas) { return (nama + '|' + kelas).toLowerCase(); }
+      function currentStudent() { return currentKey ? db.students[currentKey] : null; }
+
+      function recordLogin(nama, kelas) {
+        var key = studentKey(nama, kelas);
+        if (!db.students[key]) db.students[key] = { nama: nama, kelas: kelas, logins: [], menus: {}, quiz: [] };
+        db.students[key].logins.push(new Date().toISOString());
+        currentKey = key;
+        try { localStorage.setItem(CUR_KEY, key); } catch (e) {}
+        saveDB();
+        return db.students[key];
+      }
+      function recordMenu(view) {
+        var s = currentStudent(); if (!s || !MENU_LABEL[view]) return;
+        if (!s.menus[view]) { s.menus[view] = new Date().toISOString(); saveDB(); }
+      }
+      function recordQuiz(score) {
+        var s = currentStudent(); if (!s) return 0;
+        s.quiz.push({ time: new Date().toISOString(), score: score });
+        saveDB();
+        return s.quiz.length;
+      }
+      function quizStats(s) {
+        if (!s.quiz.length) return null;
+        var best = 0, sum = 0;
+        s.quiz.forEach(function (q) { if (q.score > best) best = q.score; sum += q.score; });
+        return { attempts: s.quiz.length, last: s.quiz[s.quiz.length - 1].score, best: best, avg: Math.round(sum / s.quiz.length) };
+      }
+      function menusStudied(s) {
+        var out = [];
+        Object.keys(MENU_LABEL).forEach(function (k) { if (s.menus[k]) out.push(MENU_LABEL[k]); });
+        return out;
+      }
+
+      /* ================= GOOGLE SHEET ================= */
+      function getSheetUrl() {
+        var u = '';
+        try { u = localStorage.getItem(URL_KEY) || ''; } catch (e) {}
+        return u || SHEET_URL_DEFAULT;
+      }
+      function postSheet(payload) {
+        var url = getSheetUrl(); if (!url) return Promise.resolve(false);
+        payload.app = APP_ID;
+        var body = JSON.stringify(payload);
+        try {
+          return fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: body, keepalive: true })
+            .then(function (r) { return r.ok; })
+            .catch(function () {
+              try { if (navigator.sendBeacon) return navigator.sendBeacon(url, new Blob([body], { type: 'text/plain' })); } catch (e) {}
+              return false;
+            });
+        } catch (e) { return Promise.resolve(false); }
+      }
+      function fetchSheet() {
+        var url = getSheetUrl();
+        var sep = url.indexOf('?') >= 0 ? '&' : '?';
+        return fetch(url + sep + 'app=' + APP_ID).then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        });
+      }
+      function sendRingkasan() {
+        var s = currentStudent(); if (!s) return;
+        var st = quizStats(s);
+        postSheet({
+          type: 'ringkasan', time: new Date().toISOString(), nama: s.nama, kelas: s.kelas,
+          menus: menusStudied(s).join(', '),
+          attempts: st ? st.attempts : 0, last: st ? st.last : '', best: st ? st.best : '', avg: st ? st.avg : ''
+        });
+      }
+
+      /* ================= LOGIN ================= */
+      function showApp() {
+        var s = currentStudent();
+        $('loginOverlay').classList.remove('show');
+        if (s) {
+          $('studentChip').style.display = 'flex';
+          $('studentAvatar').textContent = (s.nama || '?').trim().charAt(0).toUpperCase();
+          $('studentName').textContent = s.nama;
+          $('studentKelas').textContent = '· Kelas ' + s.kelas;
+        }
+      }
+      $('loginForm').addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var nama = $('loginNama').value.trim();
+        var kelas = $('loginKelas').value.trim();
+        if (!nama || !kelas) { $('loginError').classList.add('show'); return; }
+        $('loginError').classList.remove('show');
+        var s = recordLogin(nama, kelas);
+        recordMenu(currentView === 'guru' ? 'materi' : currentView);
+        postSheet({ type: 'login', time: new Date().toISOString(), nama: s.nama, kelas: s.kelas });
+        sendRingkasan();
+        showApp();
+        toast('Selamat belajar, ' + s.nama + '!');
+      });
+      $('btnGantiSiswa').addEventListener('click', function () {
+        currentKey = null;
+        try { localStorage.removeItem(CUR_KEY); } catch (e) {}
+        $('studentChip').style.display = 'none';
+        $('loginNama').value = ''; $('loginKelas').value = '';
+        guruUnlocked = false;
+        $('loginOverlay').classList.add('show');
+      });
+      if (currentStudent()) showApp();
+
+      /* ================= NAVIGASI + PIN ================= */
+      var guruUnlocked = false;
+      var currentView = 'materi';
+      var pendingView = null;
+
+      function activateView(view) {
+        currentView = view;
+        document.querySelectorAll('.view').forEach(function (v) { v.classList.remove('active'); });
+        $('view-' + view).classList.add('active');
+        document.querySelectorAll('.tab').forEach(function (t) {
+          t.classList.toggle('active', t.getAttribute('data-view') === view);
+        });
+        if (view !== 'guru') recordMenu(view);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      document.querySelectorAll('.tab').forEach(function (t) {
+        t.addEventListener('click', function () {
+          var view = t.getAttribute('data-view');
+          if (view === 'guru' && !guruUnlocked) {
+            pendingView = 'guru';
+            $('pinError').classList.remove('show');
+            $('pinInput').value = '';
+            $('pinOverlay').classList.add('show');
+            setTimeout(function () { $('pinInput').focus(); }, 60);
+            return;
+          }
+          if (view !== 'guru') guruUnlocked = false;
+          activateView(view);
+        });
+      });
+      $('pinForm').addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        if ($('pinInput').value === PIN_GURU) {
+          guruUnlocked = true;
+          $('pinOverlay').classList.remove('show');
+          renderGuru();
+          activateView('guru');
+          pendingView = null;
+        } else {
+          $('pinError').classList.add('show');
+        }
+      });
+      $('pinCancel').addEventListener('click', function () {
+        $('pinOverlay').classList.remove('show');
+        pendingView = null;
+      });
+
+      /* ================= STEPPER ================= */
+      document.querySelectorAll('[data-stepper]').forEach(function (box) {
+        var steps = box.querySelectorAll('.step');
+        var btnNext = box.querySelector('[data-step-next]');
+        var btnAll = box.querySelector('[data-step-all]');
+        var btnReset = box.querySelector('[data-step-reset]');
+        var prog = box.querySelector('.step-progress');
+        var shown = 0;
+        function refresh() {
+          steps.forEach(function (st, i) { st.classList.toggle('shown', i < shown); });
+          prog.textContent = shown === 0 ? 'Belum mulai — tekan "Langkah Berikutnya".' : ('Langkah ' + shown + ' dari ' + steps.length);
+          btnNext.style.display = shown >= steps.length ? 'none' : '';
+          btnNext.textContent = shown === 0 ? 'Mulai Langkah 1' : 'Langkah Berikutnya';
+          btnReset.style.display = shown > 0 ? '' : 'none';
+        }
+        btnNext.addEventListener('click', function () { if (shown < steps.length) { shown++; refresh(); } });
+        btnAll.addEventListener('click', function () { shown = steps.length; refresh(); });
+        btnReset.addEventListener('click', function () { shown = 0; refresh(); });
+        refresh();
+      });
+
+      /* ================= GRAFIK SVG ================= */
+      var PLOT = { min: -10, max: 10, x0: 30, y0: 30, size: 380 };
+      function px(x) { return PLOT.x0 + (x - PLOT.min) * PLOT.size / (PLOT.max - PLOT.min); }
+      function py(y) { return PLOT.y0 + (PLOT.max - y) * PLOT.size / (PLOT.max - PLOT.min); }
+
+      function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a || 1; }
+      function fracStr(n, d) {
+        if (d === 0) return '∞';
+        if (d < 0) { n = -n; d = -d; }
+        var g = gcd(n, d); n = n / g; d = d / g;
+        if (d === 1) return String(n);
+        return n + '/' + d;
+      }
+      function fmtVal(x) {
+        if (Math.abs(x - Math.round(x)) < 1e-9) return String(Math.round(x));
+        var r = Math.round(x * 100) / 100;
+        return String(r).replace('.', ',');
+      }
+
+      function solveSystem(a1, b1, c1, a2, b2, c2) {
+        var D = a1 * b2 - a2 * b1;
+        if (D !== 0) {
+          return { type: 'satu', x: (c1 * b2 - c2 * b1) / D, y: (a1 * c2 - a2 * c1) / D, D: D };
+        }
+        var propA = a1 * c2 === a2 * c1, propB = b1 * c2 === b2 * c1;
+        if (propA && propB && !(a1 === 0 && b1 === 0 && c1 !== 0) && !(a2 === 0 && b2 === 0 && c2 !== 0)) {
+          if ((a1 === 0 && b1 === 0 && c1 === 0) || (a2 === 0 && b2 === 0 && c2 === 0)) return { type: 'takhingga', D: 0 };
+          return { type: 'takhingga', D: 0 };
+        }
+        return { type: 'tidakada', D: 0 };
+      }
+
+      function drawGraph(svg, e1, e2) {
+        var s = '';
+        var i, v;
+        s += '<defs><clipPath id="clip-' + svg.id + '"><rect x="' + PLOT.x0 + '" y="' + PLOT.y0 + '" width="' + PLOT.size + '" height="' + PLOT.size + '"/></clipPath></defs>';
+        s += '<rect x="' + PLOT.x0 + '" y="' + PLOT.y0 + '" width="' + PLOT.size + '" height="' + PLOT.size + '" fill="none" stroke="var(--line)"/>';
+        for (i = PLOT.min; i <= PLOT.max; i++) {
+          if (i === 0) continue;
+          s += '<line x1="' + px(i) + '" y1="' + PLOT.y0 + '" x2="' + px(i) + '" y2="' + (PLOT.y0 + PLOT.size) + '" stroke="var(--line)" stroke-width="0.6"/>';
+          s += '<line x1="' + PLOT.x0 + '" y1="' + py(i) + '" x2="' + (PLOT.x0 + PLOT.size) + '" y2="' + py(i) + '" stroke="var(--line)" stroke-width="0.6"/>';
+        }
+        s += '<line x1="' + px(0) + '" y1="' + PLOT.y0 + '" x2="' + px(0) + '" y2="' + (PLOT.y0 + PLOT.size) + '" stroke="var(--muted)" stroke-width="1.6"/>';
+        s += '<line x1="' + PLOT.x0 + '" y1="' + py(0) + '" x2="' + (PLOT.x0 + PLOT.size) + '" y2="' + py(0) + '" stroke="var(--muted)" stroke-width="1.6"/>';
+        [-10, -5, 5, 10].forEach(function (t) {
+          s += '<text x="' + px(t) + '" y="' + (py(0) + 16) + '" font-size="11" fill="var(--muted)" text-anchor="middle">' + t + '</text>';
+          s += '<text x="' + (px(0) - 6) + '" y="' + (py(t) + 4) + '" font-size="11" fill="var(--muted)" text-anchor="end">' + t + '</text>';
+        });
+        s += '<text x="' + (px(10) - 2) + '" y="' + (py(0) - 7) + '" font-size="13" font-weight="700" fill="var(--muted)" text-anchor="end">x</text>';
+        s += '<text x="' + (px(0) + 8) + '" y="' + (py(10) + 13) + '" font-size="13" font-weight="700" fill="var(--muted)">y</text>';
+
+        function linePath(e, color) {
+          if (e.a === 0 && e.b === 0) return '';
+          var x0, y0;
+          if (Math.abs(e.a) >= Math.abs(e.b) && e.a !== 0) { x0 = e.c / e.a; y0 = 0; }
+          else { x0 = 0; y0 = e.c / e.b; }
+          var dx = -e.b, dy = e.a;
+          var len = Math.sqrt(dx * dx + dy * dy) || 1; dx = dx / len; dy = dy / len;
+          var t = 40;
+          return '<line x1="' + px(x0 - dx * t) + '" y1="' + py(y0 - dy * t) + '" x2="' + px(x0 + dx * t) + '" y2="' + py(y0 + dy * t) + '" stroke="' + color + '" stroke-width="3" stroke-linecap="round" clip-path="url(#clip-' + svg.id + ')"/>';
+        }
+        s += linePath(e1, 'var(--primary)');
+        s += linePath(e2, 'var(--accent)');
+
+        var sol = solveSystem(e1.a, e1.b, e1.c, e2.a, e2.b, e2.c);
+        if (sol.type === 'satu' && sol.x >= PLOT.min && sol.x <= PLOT.max && sol.y >= PLOT.min && sol.y <= PLOT.max) {
+          s += '<circle cx="' + px(sol.x) + '" cy="' + py(sol.y) + '" r="10" fill="var(--accent)" opacity="0.3"/>';
+          s += '<circle cx="' + px(sol.x) + '" cy="' + py(sol.y) + '" r="5.5" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.5"/>';
+          var label = '(' + fmtVal(sol.x) + ', ' + fmtVal(sol.y) + ')';
+          var lx = px(sol.x) + 12, anchor = 'start';
+          if (sol.x > 6) { lx = px(sol.x) - 12; anchor = 'end'; }
+          var ly = py(sol.y) - 12; if (sol.y > 8) ly = py(sol.y) + 22;
+          s += '<text x="' + lx + '" y="' + ly + '" font-size="15" font-weight="800" fill="var(--ink)" text-anchor="' + anchor + '" style="paint-order:stroke;stroke:var(--surface);stroke-width:5">' + esc(label) + '</text>';
+        }
+        svg.innerHTML = s;
+        return sol;
+      }
+
+      function fmtEq(a, b, c) {
+        var parts = [];
+        function term(coef, sym, first) {
+          if (coef === 0) return '';
+          var abs = Math.abs(coef);
+          var num = abs === 1 ? '' : fmtVal(abs);
+          var sign = coef < 0 ? '−' : (first ? '' : '+');
+          return (first ? (coef < 0 ? '−' : '') : ' ' + sign + ' ') + num + sym;
+        }
+        var t1 = term(a, 'x', true), t2 = term(b, 'y', t1 === '');
+        var left = (t1 + t2) || '0';
+        return left + ' = ' + fmtVal(c);
+      }
+
+      /* Contoh grafik di Materi */
+      drawGraph($('svgContohGrafik'), { a: 1, b: 1, c: 5 }, { a: 1, b: -1, c: 1 });
+
+      /* ================= LAB GRAFIK ================= */
+      var labIds = ['a1', 'b1', 'c1', 'a2', 'b2', 'c2'];
+      function labValues() {
+        var v = {};
+        labIds.forEach(function (k) { v[k] = parseFloat($('s-' + k).value); });
+        return v;
+      }
+      function updateLab() {
+        var v = labValues();
+        labIds.forEach(function (k) {
+          var val = v[k];
+          $('o-' + k).textContent = (val < 0 ? '−' : '') + Math.abs(val);
+          $('s-' + k).value = val;
+        });
+        $('eqLive1').textContent = fmtEq(v.a1, v.b1, v.c1);
+        $('eqLive2').textContent = fmtEq(v.a2, v.b2, v.c2);
+        var sol = drawGraph($('svgLab'), { a: v.a1, b: v.b1, c: v.c1 }, { a: v.a2, b: v.b2, c: v.c2 });
+        var box = $('labResult');
+        box.className = 'result-box';
+        if (sol.type === 'satu') {
+          box.innerHTML = 'Kedua garis berpotongan di titik <strong>(' + fmtVal(sol.x) + ', ' + fmtVal(sol.y) + ')</strong>.<br>Himpunan penyelesaian: <strong>HP = {(' + fmtVal(sol.x) + ', ' + fmtVal(sol.y) + ')}</strong>';
+        } else if (sol.type === 'tidakada') {
+          box.classList.add('none');
+          box.innerHTML = 'Kedua garis <strong>sejajar</strong> — tidak pernah berpotongan.<br>SPLDV ini <strong>tidak memiliki penyelesaian</strong>.';
+        } else {
+          box.classList.add('inf');
+          box.innerHTML = 'Kedua garis <strong>berimpit</strong> — sebenarnya garis yang sama.<br>SPLDV ini memiliki <strong>tak hingga penyelesaian</strong> (semua titik pada garis itu).';
+        }
+      }
+      labIds.forEach(function (k) { $('s-' + k).addEventListener('input', updateLab); });
+      var PRESETS = {
+        potong: { a1: 1, b1: 1, c1: 5, a2: 2, b2: -1, c2: 4 },
+        sejajar: { a1: 1, b1: 1, c1: 5, a2: 2, b2: 2, c2: 4 },
+        berimpit: { a1: 1, b1: 1, c1: 5, a2: 2, b2: 2, c2: 10 }
+      };
+      document.querySelectorAll('[data-preset]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var p = PRESETS[btn.getAttribute('data-preset')];
+          labIds.forEach(function (k) { $('s-' + k).value = p[k]; });
+          updateLab();
+        });
+      });
+      updateLab();
+
+      /* ================= KALKULATOR ================= */
+      function readCoef(id) {
+        var v = parseFloat($(id).value);
+        return isNaN(v) ? 0 : v;
+      }
+      function stepHTML(text) {
+        return '<li class="step shown" style="display:block">' + text + '</li>';
+      }
+      function fmtCoefEq(a, b, c) { return fmtEq(a, b, c); }
+
+      function solveCalculator() {
+        var a1 = readCoef('k-a1'), b1 = readCoef('k-b1'), c1 = readCoef('k-c1');
+        var a2 = readCoef('k-a2'), b2 = readCoef('k-b2'), c2 = readCoef('k-c2');
+        var out = $('calcOutput');
+        var steps = [];
+        steps.push('Persamaan (1): <strong>' + esc(fmtCoefEq(a1, b1, c1)) + '</strong> &nbsp;·&nbsp; Persamaan (2): <strong>' + esc(fmtCoefEq(a2, b2, c2)) + '</strong>');
+
+        var sol = solveSystem(a1, b1, c1, a2, b2, c2);
+
+        if (sol.type === 'tidakada') {
+          steps.push('Perhatikan perbandingan koefisiennya: kedua garis ternyata <strong>sejajar</strong>, sehingga tidak akan pernah berpotongan.');
+          steps.push('<strong>Kesimpulan:</strong> SPLDV ini <strong>tidak memiliki penyelesaian</strong>.');
+          out.innerHTML = '<ol class="steps calc-steps">' + steps.map(stepHTML).join('') + '</ol>' +
+            '<div class="note bad"><strong>Tidak ada himpunan penyelesaian</strong> — grafik kedua persamaan adalah dua garis sejajar.</div>';
+          return;
+        }
+        if (sol.type === 'takhingga') {
+          steps.push('Perbandingan koefisien dan konstantanya sama: kedua persamaan sebenarnya menyatakan <strong>garis yang sama</strong> (yang satu kelipatan yang lain).');
+          steps.push('<strong>Kesimpulan:</strong> SPLDV ini memiliki <strong>tak hingga penyelesaian</strong>, yaitu semua titik pada garis tersebut.');
+          out.innerHTML = '<ol class="steps calc-steps">' + steps.map(stepHTML).join('') + '</ol>' +
+            '<div class="note warn"><strong>Tak hingga penyelesaian</strong> — kedua garis berimpit.</div>';
+          return;
+        }
+
+        /* Pilih variabel yang dieliminasi: yang koefisiennya dua-duanya tak nol */
+        var elimY = (b1 !== 0 && b2 !== 0);
+        var elimX = (a1 !== 0 && a2 !== 0);
+        var mode = elimY ? 'y' : (elimX ? 'x' : null);
+        var x = sol.x, y = sol.y;
+
+        if (mode === 'y') {
+          var m1 = b2, m2 = b1;
+          var na1 = a1 * m1, nb1 = b1 * m1, nc1 = c1 * m1;
+          var na2 = a2 * m2, nb2 = b2 * m2, nc2 = c2 * m2;
+          steps.push('Kita eliminasi variabel <strong>y</strong>. Samakan koefisien y: kalikan persamaan (1) dengan ' + fmtVal(m1) + ' dan persamaan (2) dengan ' + fmtVal(m2) + '.');
+          steps.push('Persamaan (1) menjadi <strong>' + esc(fmtCoefEq(na1, nb1, nc1)) + '</strong> dan persamaan (2) menjadi <strong>' + esc(fmtCoefEq(na2, nb2, nc2)) + '</strong>.');
+          var dx = na1 - na2, dc = nc1 - nc2;
+          steps.push('Kurangkan kedua persamaan baru itu, suku y habis: <strong>' + fmtVal(dx) + 'x = ' + fmtVal(dc) + '</strong>, sehingga <strong>x = ' + fmtVal(x) + '</strong>.');
+          if (b1 !== 0) {
+            steps.push('Substitusikan x = ' + fmtVal(x) + ' ke persamaan (1): ' + esc(fmtCoefEq(a1, b1, c1)) + ' &rarr; y = <strong>' + fmtVal(y) + '</strong>.');
+          } else {
+            steps.push('Substitusikan x = ' + fmtVal(x) + ' ke persamaan (2): ' + esc(fmtCoefEq(a2, b2, c2)) + ' &rarr; y = <strong>' + fmtVal(y) + '</strong>.');
+          }
+        } else if (mode === 'x') {
+          var n1 = a2, n2 = a1;
+          var pa1 = a1 * n1, pb1 = b1 * n1, pc1 = c1 * n1;
+          var pa2 = a2 * n2, pb2 = b2 * n2, pc2 = c2 * n2;
+          steps.push('Kita eliminasi variabel <strong>x</strong>. Samakan koefisien x: kalikan persamaan (1) dengan ' + fmtVal(n1) + ' dan persamaan (2) dengan ' + fmtVal(n2) + '.');
+          steps.push('Persamaan (1) menjadi <strong>' + esc(fmtCoefEq(pa1, pb1, pc1)) + '</strong> dan persamaan (2) menjadi <strong>' + esc(fmtCoefEq(pa2, pb2, pc2)) + '</strong>.');
+          var dy = pb1 - pb2, dcc = pc1 - pc2;
+          steps.push('Kurangkan kedua persamaan baru itu, suku x habis: <strong>' + fmtVal(dy) + 'y = ' + fmtVal(dcc) + '</strong>, sehingga <strong>y = ' + fmtVal(y) + '</strong>.');
+          if (a1 !== 0) {
+            steps.push('Substitusikan y = ' + fmtVal(y) + ' ke persamaan (1): ' + esc(fmtCoefEq(a1, b1, c1)) + ' &rarr; x = <strong>' + fmtVal(x) + '</strong>.');
+          } else {
+            steps.push('Substitusikan y = ' + fmtVal(y) + ' ke persamaan (2): ' + esc(fmtCoefEq(a2, b2, c2)) + ' &rarr; x = <strong>' + fmtVal(x) + '</strong>.');
+          }
+        } else {
+          steps.push('Salah satu persamaan sudah hanya memuat satu variabel, jadi nilainya langsung didapat, lalu disubstitusikan ke persamaan lainnya: <strong>x = ' + fmtVal(x) + '</strong> dan <strong>y = ' + fmtVal(y) + '</strong>.');
+        }
+        /* Verifikasi */
+        var cek1 = a1 * x + b1 * y, cek2 = a2 * x + b2 * y;
+        steps.push('Periksa: persamaan (1): ' + fmtVal(a1) + '(' + fmtVal(x) + ') + ' + fmtVal(b1) + '(' + fmtVal(y) + ') = ' + fmtVal(cek1) + ' &#10003; · persamaan (2): ' + fmtVal(a2) + '(' + fmtVal(x) + ') + ' + fmtVal(b2) + '(' + fmtVal(y) + ') = ' + fmtVal(cek2) + ' &#10003;');
+
+        out.innerHTML = '<ol class="steps calc-steps">' + steps.map(stepHTML).join('') + '</ol>' +
+          '<div class="note good" style="font-size:17px">Himpunan penyelesaian: <strong>HP = {(' + fmtVal(x) + ', ' + fmtVal(y) + ')}</strong> — artinya x = ' + fmtVal(x) + ' dan y = ' + fmtVal(y) + '. Pada grafik, kedua garis berpotongan tepat di titik ini.</div>';
+      }
+      $('btnHitung').addEventListener('click', solveCalculator);
+      $('btnContohAcak').addEventListener('click', function () {
+        function r(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        var x = r(-4, 6), y = r(-4, 6);
+        var a1 = r(1, 4) * (Math.random() < 0.3 ? -1 : 1), b1 = r(1, 4) * (Math.random() < 0.3 ? -1 : 1);
+        var a2 = r(1, 4) * (Math.random() < 0.3 ? -1 : 1), b2 = r(1, 4) * (Math.random() < 0.3 ? -1 : 1);
+        if (a1 * b2 - a2 * b1 === 0) b2 = b2 + 1;
+        $('k-a1').value = a1; $('k-b1').value = b1; $('k-c1').value = a1 * x + b1 * y;
+        $('k-a2').value = a2; $('k-b2').value = b2; $('k-c2').value = a2 * x + b2 * y;
+        solveCalculator();
+      });
+
+      /* ================= KUIS ================= */
+      var QUESTIONS = [
+        {
+          q: 'Pasangan (x, y) yang merupakan himpunan penyelesaian dari x + y = 7 dan x − y = 3 adalah …',
+          opts: ['(5, 2)', '(2, 5)', '(4, 3)', '(3, 4)'], ans: 0,
+          bahas: 'Eliminasi y dengan menjumlahkan kedua persamaan: 2x = 10, jadi x = 5. Substitusi ke x + y = 7 diperoleh y = 2. HP = {(5, 2)}.'
+        },
+        {
+          q: 'Nilai x yang memenuhi sistem 2x + y = 8 dan x + y = 5 adalah …',
+          opts: ['1', '2', '3', '4'], ans: 2,
+          bahas: 'Kurangkan persamaan kedua dari persamaan pertama untuk mengeliminasi y: (2x + y) − (x + y) = 8 − 5, sehingga x = 3.'
+        },
+        {
+          q: 'Diketahui 3x + 2y = 12 dan x + 2y = 8. Nilai y adalah …',
+          opts: ['1', '2', '3', '4'], ans: 2,
+          bahas: 'Eliminasi y dengan mengurangkan kedua persamaan: 2x = 4, jadi x = 2. Substitusi ke x + 2y = 8: 2 + 2y = 8, sehingga y = 3.'
+        },
+        {
+          q: 'Jika x + 3y = 13 dan x = 4, maka nilai y adalah …',
+          opts: ['1', '2', '3', '4'], ans: 2,
+          bahas: 'Gunakan substitusi: masukkan x = 4 ke x + 3y = 13, menjadi 4 + 3y = 13, jadi 3y = 9 dan y = 3.'
+        },
+        {
+          q: 'Himpunan penyelesaian dari 2x − y = 4 dan x + y = 5 adalah …',
+          opts: ['(2, 3)', '(3, 2)', '(4, 1)', '(1, 4)'], ans: 1,
+          bahas: 'Jumlahkan kedua persamaan untuk mengeliminasi y: 3x = 9, jadi x = 3. Substitusi ke x + y = 5 diperoleh y = 2. HP = {(3, 2)}.'
+        },
+        {
+          q: 'Harga 2 buku dan 3 pensil adalah Rp13.000,00. Harga 1 buku dan 1 pensil adalah Rp5.000,00. Harga 1 buku adalah …',
+          opts: ['Rp1.000,00', 'Rp2.000,00', 'Rp3.000,00', 'Rp4.000,00'], ans: 1,
+          bahas: 'Misalkan buku = b dan pensil = p: 2b + 3p = 13.000 dan b + p = 5.000. Dari persamaan kedua b = 5.000 − p. Substitusi: 2(5.000 − p) + 3p = 13.000 → p = 3.000, maka b = 2.000. Harga 1 buku Rp2.000,00.'
+        },
+        {
+          q: 'Sistem persamaan 2x + y = 6 dan 4x + 2y = 10 memiliki …',
+          opts: ['satu penyelesaian', 'tak hingga penyelesaian', 'tidak memiliki penyelesaian', 'penyelesaian (0, 0)'], ans: 2,
+          bahas: 'Koefisien x dan y kedua persamaan sebanding (4x + 2y adalah 2 kali 2x + y), tetapi konstantanya tidak sebanding (2 × 6 = 12 ≠ 10). Kedua garis sejajar, jadi tidak ada penyelesaian.'
+        },
+        {
+          q: 'Himpunan penyelesaian dari x = 2y dan x + y = 9 adalah …',
+          opts: ['(3, 6)', '(6, 3)', '(4, 5)', '(9, 0)'], ans: 1,
+          bahas: 'Substitusikan x = 2y ke x + y = 9: 2y + y = 9 → 3y = 9 → y = 3. Maka x = 2(3) = 6. HP = {(6, 3)}.'
+        },
+        {
+          q: 'Jumlah umur seorang ayah dan anaknya adalah 45 tahun. Selisih umur mereka adalah 25 tahun. Umur anak adalah …',
+          opts: ['10 tahun', '12 tahun', '15 tahun', '35 tahun'], ans: 0,
+          bahas: 'Misalkan umur ayah = a dan anak = b: a + b = 45 dan a − b = 25. Kurangkan: 2b = 20, sehingga umur anak b = 10 tahun.'
+        },
+        {
+          q: 'Jika x dan y memenuhi x + 2y = 7 dan 2x + y = 8, maka nilai 3x + 2y adalah …',
+          opts: ['11', '12', '13', '14'], ans: 2,
+          bahas: 'Dari persamaan pertama x = 7 − 2y. Substitusi ke persamaan kedua: 2(7 − 2y) + y = 8 → 14 − 3y = 8 → y = 2 dan x = 3. Maka 3x + 2y = 9 + 4 = 13.'
+        }
+      ];
+      var quiz = { idx: 0, correct: 0, answered: false };
+
+      function startQuiz() {
+        quiz.idx = 0; quiz.correct = 0; quiz.answered = false;
+        $('quizStart').style.display = 'none';
+        $('quizResult').style.display = 'none';
+        $('quizPlay').style.display = 'block';
+        renderQuestion();
+      }
+      function renderQuestion() {
+        var item = QUESTIONS[quiz.idx];
+        quiz.answered = false;
+        $('quizCounter').textContent = 'Soal ' + (quiz.idx + 1) + ' dari ' + QUESTIONS.length;
+        $('quizScoreLive').textContent = 'Skor sementara: ' + (quiz.correct * 10);
+        $('quizBar').style.width = (quiz.idx / QUESTIONS.length * 100) + '%';
+        $('quizQuestion').textContent = item.q;
+        var box = $('quizOptions');
+        box.innerHTML = '';
+        item.opts.forEach(function (opt, i) {
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'quiz-opt';
+          b.innerHTML = '<span class="letter">' + 'ABCD'[i] + '</span><span>' + esc(opt) + '</span>';
+          b.addEventListener('click', function () { answerQuiz(i, b); });
+          box.appendChild(b);
+        });
+        $('quizFeedback').className = 'feedback';
+        $('btnSoalBerikut').style.display = 'none';
+        $('btnSoalBerikut').textContent = quiz.idx === QUESTIONS.length - 1 ? 'Lihat Hasil' : 'Soal Berikutnya';
+      }
+      function answerQuiz(i, btn) {
+        if (quiz.answered) return;
+        quiz.answered = true;
+        var item = QUESTIONS[quiz.idx];
+        var opts = $('quizOptions').querySelectorAll('.quiz-opt');
+        opts.forEach(function (o, j) {
+          o.disabled = true;
+          if (j === item.ans) o.classList.add('correct');
+        });
+        var fb = $('quizFeedback');
+        if (i === item.ans) {
+          quiz.correct++;
+          fb.classList.add('show', 'good');
+          $('feedbackTitle').textContent = 'Benar! +10 poin';
+        } else {
+          btn.classList.add('wrong');
+          fb.classList.add('show', 'bad');
+          $('feedbackTitle').textContent = 'Kurang tepat. Jawaban yang benar: ' + item.opts[item.ans];
+        }
+        $('feedbackText').textContent = item.bahas;
+        $('quizScoreLive').textContent = 'Skor sementara: ' + (quiz.correct * 10);
+        $('quizBar').style.width = ((quiz.idx + 1) / QUESTIONS.length * 100) + '%';
+        $('btnSoalBerikut').style.display = '';
+      }
+      function finishQuiz() {
+        var score = quiz.correct * 10;
+        $('quizPlay').style.display = 'none';
+        $('quizResult').style.display = 'block';
+        var s = currentStudent();
+        $('resultName').textContent = s ? (s.nama + ' · Kelas ' + s.kelas) : '';
+        $('resultScore').textContent = score;
+        $('resultDetail').textContent = 'Kamu menjawab benar ' + quiz.correct + ' dari ' + QUESTIONS.length + ' soal.';
+        $('resultMsg').textContent =
+          score >= 90 ? 'Luar biasa! Kamu sudah menguasai SPLDV dengan sangat baik.' :
+          score >= 70 ? 'Bagus! Pemahamanmu tentang SPLDV sudah kuat, sedikit lagi sempurna.' :
+          score >= 50 ? 'Cukup baik. Pelajari lagi langkah eliminasi dan substitusinya, lalu coba lagi!' :
+          'Tidak apa-apa, ini proses belajar. Baca kembali materi dan contoh langkahnya, lalu coba lagi ya!';
+        var attempt = recordQuiz(score);
+        if (s) {
+          postSheet({ type: 'kuis', time: new Date().toISOString(), nama: s.nama, kelas: s.kelas, attemptNo: attempt, score: score });
+          sendRingkasan();
+        }
+      }
+      $('btnMulaiKuis').addEventListener('click', startQuiz);
+      $('btnUlangiKuis').addEventListener('click', startQuiz);
+      $('btnSoalBerikut').addEventListener('click', function () {
+        if (quiz.idx < QUESTIONS.length - 1) { quiz.idx++; renderQuestion(); }
+        else finishQuiz();
+      });
+      $('btnKeMateri').addEventListener('click', function () { activateView('materi'); });
+
+      /* ================= DATA GURU ================= */
+      function fmtWaktu(iso) {
+        try {
+          var d = new Date(iso);
+          return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ' ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        } catch (e) { return iso || '–'; }
+      }
+      function renderGuru() {
+        var students = Object.keys(db.students).map(function (k) { return db.students[k]; });
+        students.sort(function (a, b) {
+          var la = a.logins.length ? a.logins[a.logins.length - 1] : '';
+          var lb = b.logins.length ? b.logins[b.logins.length - 1] : '';
+          return lb < la ? -1 : lb > la ? 1 : 0;
+        });
+        var totLogin = 0, totKuis = 0, bestSum = 0, bestCount = 0;
+        students.forEach(function (s) {
+          totLogin += s.logins.length; totKuis += s.quiz.length;
+          var st = quizStats(s); if (st) { bestSum += st.best; bestCount++; }
+        });
+        $('statSiswa').textContent = students.length;
+        $('statLogin').textContent = totLogin;
+        $('statKuis').textContent = totKuis;
+        $('statRata').textContent = bestCount ? Math.round(bestSum / bestCount) : '–';
+
+        var box = $('studentList');
+        if (!students.length) {
+          box.innerHTML = '<p class="muted">Belum ada siswa yang login dari perangkat ini. Data dari perangkat lain bisa dilihat lewat tombol <strong>Muat Data dari Sheet</strong>.</p>';
+        } else {
+          box.innerHTML = students.map(function (s) {
+            var st = quizStats(s);
+            var menus = menusStudied(s);
+            var progres = s.quiz.length ? s.quiz.map(function (q) { return q.score; }).join(' → ') : 'belum mengerjakan kuis';
+            var lastLogin = s.logins.length ? fmtWaktu(s.logins[s.logins.length - 1]) : '–';
+            return '<div class="student-card">' +
+              '<div class="sc-head"><span class="sc-name">' + esc(s.nama) + '</span><span class="sc-meta">Kelas ' + esc(s.kelas) + ' · login terakhir ' + esc(lastLogin) + ' · ' + s.logins.length + '× login</span></div>' +
+              '<div class="sc-stats"><span>Menu dipelajari: <b>' + (menus.length ? esc(menus.join(', ')) : 'belum ada') + '</b></span></div>' +
+              (st ?
+                '<div class="sc-stats"><span>Percobaan kuis: <b>' + st.attempts + '×</b></span><span>Terakhir: <b>' + st.last + '</b></span><span>Terbaik: <b>' + st.best + '</b></span><span>Rata-rata: <b>' + st.avg + '</b></span></div>' +
+                '<div class="sc-stats"><span>Perkembangan skor: <b>' + esc(progres) + '</b></span></div>'
+                : '<div class="sc-stats"><span>Kuis: <b>belum pernah mengerjakan</b></span></div>') +
+              '</div>';
+          }).join('');
+        }
+        $('sheetUrlInput').value = '';
+        try { $('sheetUrlInput').value = localStorage.getItem(URL_KEY) || ''; } catch (e) {}
+        $('sheetUrlAktif').textContent = 'URL aktif saat ini: ' + getSheetUrl();
+      }
+
+      $('btnUnduhCsv').addEventListener('click', function () {
+        var students = Object.keys(db.students).map(function (k) { return db.students[k]; });
+        if (!students.length) { toast('Belum ada data siswa di perangkat ini.'); return; }
+        function csvCell(v) { v = String(v == null ? '' : v); return '"' + v.replace(/"/g, '""') + '"'; }
+        var rows = [['Nama', 'Kelas', 'Jumlah Login', 'Login Terakhir', 'Menu Dipelajari', 'Percobaan Kuis', 'Skor Terakhir', 'Skor Terbaik', 'Rata-rata Skor', 'Perkembangan Skor']];
+        students.forEach(function (s) {
+          var st = quizStats(s);
+          rows.push([
+            s.nama, s.kelas, s.logins.length,
+            s.logins.length ? new Date(s.logins[s.logins.length - 1]).toLocaleString('id-ID') : '',
+            menusStudied(s).join(', '),
+            st ? st.attempts : 0, st ? st.last : '', st ? st.best : '', st ? st.avg : '',
+            s.quiz.map(function (q) { return q.score; }).join(' > ')
+          ]);
+        });
+        var csv = '\uFEFF' + rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'laporan-spldv.csv';
+        document.body.appendChild(a); a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 400);
+        toast('Laporan CSV diunduh.');
+      });
+
+      $('btnMuatSheet').addEventListener('click', function () {
+        $('sheetStatus').textContent = 'Memuat data dari Google Sheet…';
+        fetchSheet().then(function (data) {
+          var login = (data && data.login) || [];
+          var kuis = (data && data.kuis) || [];
+          $('sheetDataCard').style.display = 'block';
+          $('sheetLoginList').innerHTML = login.slice(-10).reverse().map(function (r) {
+            return '<li>' + esc(r.nama || '?') + ' · Kelas ' + esc(r.kelas || '?') + ' · ' + esc(fmtWaktu(r.time)) + '</li>';
+          }).join('') || '<li class="muted">Belum ada data login.</li>';
+          $('sheetKuisList').innerHTML = kuis.slice(-10).reverse().map(function (r) {
+            return '<li>' + esc(r.nama || '?') + ' · Kelas ' + esc(r.kelas || '?') + ' · skor <b>' + esc(r.score) + '</b> · ' + esc(fmtWaktu(r.time)) + '</li>';
+          }).join('') || '<li class="muted">Belum ada data kuis.</li>';
+          $('sheetStatus').textContent = 'Data Sheet dimuat: ' + login.length + ' baris login dan ' + kuis.length + ' baris kuis dari semua perangkat.';
+        }).catch(function (err) {
+          $('sheetStatus').textContent = 'Gagal memuat data dari Sheet (' + err.message + '). Periksa koneksi internet dan URL Web App.';
+        });
+      });
+
+      $('btnUjiKirim').addEventListener('click', function () {
+        $('sheetStatus').textContent = 'Mengirim data uji ke Google Sheet…';
+        postSheet({ type: 'login', time: new Date().toISOString(), nama: 'UJI KONEKSI', kelas: '-' }).then(function (ok) {
+          if (!ok) { $('sheetStatus').textContent = 'Pengiriman uji tidak terkonfirmasi. Periksa koneksi internet.'; return; }
+          return fetchSheet().then(function (data) {
+            var login = (data && data.login) || [];
+            var found = login.some(function (r) { return r.nama === 'UJI KONEKSI'; });
+            $('sheetStatus').textContent = found
+              ? 'Berhasil! Data uji terkirim dan terbaca kembali dari Sheet (' + login.length + ' baris login tercatat). Baris "UJI KONEKSI" boleh dihapus dari Sheet.'
+              : 'Data uji terkirim, tetapi belum terbaca kembali. Tunggu beberapa detik lalu tekan "Muat Data dari Sheet".';
+          }).catch(function () {
+            $('sheetStatus').textContent = 'Data uji terkirim, tetapi pembacaan kembali gagal. Coba "Muat Data dari Sheet" sebentar lagi.';
+          });
+        });
+      });
+
+      $('btnSimpanUrl').addEventListener('click', function () {
+        var u = $('sheetUrlInput').value.trim();
+        if (u && u.indexOf('http') !== 0) { toast('URL tidak valid.'); return; }
+        try {
+          if (u) localStorage.setItem(URL_KEY, u); else localStorage.removeItem(URL_KEY);
+        } catch (e) {}
+        $('sheetUrlAktif').textContent = 'URL aktif saat ini: ' + getSheetUrl();
+        toast('URL database disimpan untuk perangkat ini.');
+      });
+      $('btnResetUrl').addEventListener('click', function () {
+        try { localStorage.removeItem(URL_KEY); } catch (e) {}
+        $('sheetUrlInput').value = '';
+        $('sheetUrlAktif').textContent = 'URL aktif saat ini: ' + getSheetUrl();
+        toast('URL dikembalikan ke bawaan DapMath.');
+      });
+
+      if (currentStudent()) recordMenu('materi');
+    })();
+    </script>
+  </body>
+</html>
