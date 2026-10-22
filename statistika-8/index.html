@@ -1,1 +1,1488 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Aplikasi Statistika dan Peluang</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f2f4f6;
+        --surface: #fdfefe;
+        --surface-2: #e7edf2;
+        --ink: #1d2b36;
+        --muted: #5a6d7c;
+        --line: #ccd7e0;
+        --accent: #1763a6;
+        --accent-strong: #0f4c81;
+        --accent-soft: #dbeaf7;
+        --accent-ink: #ffffff;
+        --amber: #b96e00;
+        --amber-soft: #f7e8cd;
+        --good: #157347;
+        --good-soft: #d9efe1;
+        --bad: #b3372f;
+        --bad-soft: #f8e0dc;
+        --shadow: 0 2px 10px rgba(29, 43, 54, 0.08);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0e1418;
+          --surface: #182228;
+          --surface-2: #212e37;
+          --ink: #e8eef2;
+          --muted: #a2b2bf;
+          --line: #31434f;
+          --accent: #5aa5dd;
+          --accent-strong: #84bde9;
+          --accent-soft: #1c3347;
+          --accent-ink: #081a29;
+          --amber: #e2a63d;
+          --amber-soft: #3a2f16;
+          --good: #4cc084;
+          --good-soft: #1d3527;
+          --bad: #e07a6e;
+          --bad-soft: #3d2320;
+          --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+      h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 1.2; margin: 0 0 0.5em; }
+      h1 { font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 900; }
+      h2 { font-size: clamp(1.35rem, 3.4vw, 1.8rem); font-weight: 700; }
+      h3 { font-size: 1.15rem; font-weight: 700; }
+      p { margin: 0 0 0.9em; }
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px 40px; }
+      [hidden] { display: none !important; }
 
+      /* ---------- Bilah atas ---------- */
+      .topbar {
+        position: sticky; top: 0; z-index: 40;
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar-inner {
+        max-width: 1060px; margin: 0 auto; padding: 10px 16px;
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      }
+      .brand { font-family: "Fraunces", Georgia, serif; font-weight: 900; font-size: 1.15rem; margin-right: auto; }
+      .brand small { display: block; font-family: "Plus Jakarta Sans", sans-serif; font-weight: 600; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+      .student-chip { display: flex; align-items: center; gap: 10px; }
+      .avatar {
+        width: 42px; height: 42px; border-radius: 50%;
+        background: var(--accent); color: var(--accent-ink);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 1rem; flex: none;
+      }
+      .student-meta { line-height: 1.25; }
+      .student-meta .nm { font-weight: 800; }
+      .student-meta .kl { font-size: 0.82rem; color: var(--muted); }
+
+      /* ---------- Tombol ---------- */
+      .btn {
+        appearance: none; border: 1px solid var(--accent);
+        background: var(--accent); color: var(--accent-ink);
+        font: inherit; font-weight: 700; cursor: pointer;
+        min-height: 52px; padding: 12px 22px; border-radius: 12px;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        text-decoration: none; touch-action: manipulation;
+      }
+      .btn:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+      .btn.secondary { background: transparent; color: var(--accent); }
+      .btn.secondary:hover { background: var(--accent-soft); }
+      .btn.ghost { background: var(--surface-2); border-color: var(--line); color: var(--ink); }
+      .btn.ghost:hover { background: var(--line); }
+      .btn.small { min-height: 44px; padding: 8px 16px; font-size: 0.95rem; }
+      .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+      .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+      /* ---------- Navigasi menu ---------- */
+      .tabbar {
+        max-width: 1060px; margin: 0 auto; padding: 12px 16px 4px;
+        display: flex; flex-wrap: wrap; gap: 8px;
+      }
+      .tab-btn {
+        appearance: none; font: inherit; font-weight: 700; cursor: pointer;
+        min-height: 52px; padding: 10px 18px; border-radius: 999px;
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+        flex: 1 1 auto; touch-action: manipulation;
+      }
+      .tab-btn[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+      .subbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; }
+      .sub-btn {
+        appearance: none; font: inherit; font-weight: 600; cursor: pointer;
+        min-height: 48px; padding: 8px 16px; border-radius: 10px;
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+        touch-action: manipulation;
+      }
+      .sub-btn[aria-selected="true"] { background: var(--amber-soft); border-color: var(--amber); color: var(--ink); }
+
+      /* ---------- Kartu & panel ---------- */
+      .card {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow);
+        padding: 22px; margin: 0 0 20px;
+      }
+      .grid { display: grid; gap: 16px; }
+      @media (min-width: 720px) { .grid.cols-3 { grid-template-columns: repeat(3, 1fr); } .grid.cols-2 { grid-template-columns: repeat(2, 1fr); } }
+      .menu-card h3 { margin-bottom: 6px; }
+      .menu-card p { color: var(--muted); font-size: 0.97rem; }
+      .formula {
+        background: var(--accent-soft); border-radius: 10px;
+        padding: 14px 18px; margin: 14px 0; font-size: 1.08rem;
+      }
+      .formula .lbl { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent-strong); display: block; margin-bottom: 4px; }
+      .note { background: var(--amber-soft); border-radius: 10px; padding: 12px 16px; font-size: 0.96rem; }
+      .muted { color: var(--muted); }
+      .viz { width: 100%; height: auto; display: block; margin: 8px 0; }
+      .result-line { font-size: 1.12rem; font-weight: 700; background: var(--surface-2); border-radius: 10px; padding: 12px 16px; margin-top: 12px; }
+      .steps { background: var(--surface-2); border-radius: 10px; padding: 14px 18px; margin-top: 12px; font-size: 1.02rem; }
+      .steps div { padding: 3px 0; }
+
+      /* ---------- Tabel data ---------- */
+      .tbl-wrap { overflow-x: auto; margin: 10px 0; }
+      table.data { border-collapse: collapse; width: 100%; min-width: 320px; }
+      table.data th, table.data td { border: 1px solid var(--line); padding: 9px 12px; text-align: left; }
+      table.data th { background: var(--surface-2); font-weight: 800; }
+      table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+      table.data tr.total td { font-weight: 800; background: var(--accent-soft); }
+      .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 10px; font-size: 0.95rem; }
+      .legend .li { display: inline-flex; align-items: center; gap: 7px; }
+      .legend .sw { width: 16px; height: 16px; border-radius: 4px; flex: none; }
+
+      /* ---------- Editor data ---------- */
+      .edit-row { display: grid; grid-template-columns: 1fr 110px 48px; gap: 8px; align-items: end; margin-bottom: 10px; }
+      .edit-row label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+      .edit-row input {
+        width: 100%; font: inherit; min-height: 48px; padding: 10px 12px;
+        border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink);
+      }
+      .rm-btn {
+        appearance: none; border: 1px solid var(--line); background: var(--surface-2); color: var(--bad);
+        font: inherit; font-weight: 800; min-height: 48px; border-radius: 10px; cursor: pointer; touch-action: manipulation;
+      }
+
+      /* ---------- Formulir ---------- */
+      .field { margin-bottom: 16px; }
+      .field label { display: block; font-weight: 700; margin-bottom: 6px; }
+      .field input[type="text"], .field input[type="password"], .field input[type="url"], .field input[type="number"], .field select, textarea.code, textarea.dtxt {
+        width: 100%; font: inherit; min-height: 54px; padding: 12px 14px;
+        border: 1px solid var(--line); border-radius: 10px;
+        background: var(--surface); color: var(--ink);
+      }
+      textarea.code { min-height: 180px; font-family: ui-monospace, Consolas, monospace; font-size: 0.78rem; line-height: 1.45; }
+      textarea.dtxt { min-height: 84px; resize: vertical; }
+      .form-row { display: grid; gap: 14px; }
+      @media (min-width: 640px) { .form-row.c3 { grid-template-columns: repeat(3, 1fr); } .form-row.c2 { grid-template-columns: repeat(2, 1fr); } }
+      .error-box { background: var(--bad-soft); color: var(--bad); border-radius: 10px; padding: 12px 16px; font-weight: 600; }
+      .status-box { background: var(--surface-2); border-radius: 10px; padding: 12px 16px; font-size: 0.97rem; margin-top: 12px; }
+      .status-box.ok { background: var(--good-soft); }
+
+      /* ---------- Login ---------- */
+      .login-wrap { max-width: 520px; margin: 0 auto; padding: 36px 16px 48px; }
+      .login-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 30px 26px; }
+      .login-card .btn { width: 100%; }
+
+      /* ---------- Simulasi koin & dadu ---------- */
+      .sim-stage { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin: 14px 0; }
+      .coin {
+        width: 118px; height: 118px; border-radius: 50%; flex: none;
+        background: radial-gradient(circle at 35% 30%, #f6cd6b, #dd9a1d 70%);
+        border: 4px solid #b57a10; color: #5e3f04;
+        display: flex; align-items: center; justify-content: center;
+        font-family: "Fraunces", Georgia, serif; font-weight: 900; font-size: 1.05rem; text-align: center;
+        box-shadow: var(--shadow);
+      }
+      .coin.flip { animation: coinflip 0.55s ease; }
+      @keyframes coinflip { 0% { transform: rotateY(0); } 50% { transform: rotateY(540deg) scale(1.08); } 100% { transform: rotateY(1080deg); } }
+      .dice-face {
+        width: 104px; height: 104px; border-radius: 16px; flex: none;
+        background: var(--surface); border: 2px solid var(--line); box-shadow: var(--shadow);
+        display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+        padding: 14px; gap: 2px;
+      }
+      .dice-face .pip { border-radius: 50%; background: var(--ink); width: 17px; height: 17px; align-self: center; justify-self: center; visibility: hidden; }
+      .dice-face .pip.on { visibility: visible; }
+      .dice-face.roll { animation: diceroll 0.5s ease; }
+      @keyframes diceroll { 0% { transform: rotate(0) scale(1); } 40% { transform: rotate(-14deg) scale(1.12); } 100% { transform: rotate(0) scale(1); } }
+      .sim-nums { display: flex; gap: 12px; flex-wrap: wrap; }
+      .sim-num { background: var(--surface-2); border-radius: 12px; padding: 10px 18px; text-align: center; min-width: 104px; }
+      .sim-num b { display: block; font-size: 1.6rem; font-family: "Fraunces", Georgia, serif; }
+      .sim-num span { font-size: 0.8rem; color: var(--muted); font-weight: 700; }
+      .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+
+      /* ---------- Kuis ---------- */
+      .progress { height: 12px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin: 10px 0 18px; }
+      .progress > div { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
+      .opt {
+        display: block; width: 100%; text-align: left; font: inherit; cursor: pointer;
+        min-height: 56px; padding: 14px 18px; margin: 0 0 10px;
+        border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink);
+        touch-action: manipulation;
+      }
+      .opt:hover { border-color: var(--accent); }
+      .opt.correct { border-color: var(--good); background: var(--good-soft); font-weight: 700; }
+      .opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+      .opt:disabled { cursor: default; opacity: 0.9; }
+      .explain { border-radius: 10px; padding: 14px 18px; margin-top: 6px; }
+      .explain.good { background: var(--good-soft); }
+      .explain.bad { background: var(--bad-soft); }
+      .score-big { font-family: "Fraunces", Georgia, serif; font-size: 3.4rem; font-weight: 900; text-align: center; line-height: 1; margin: 10px 0; }
+
+      /* ---------- Data Guru ---------- */
+      .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+      .stat { background: var(--surface-2); border-radius: 12px; padding: 14px; text-align: center; }
+      .stat b { display: block; font-size: 1.7rem; font-family: "Fraunces", Georgia, serif; }
+      .stat span { font-size: 0.82rem; color: var(--muted); font-weight: 700; }
+      .student-card { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; background: var(--surface); }
+      .student-card .head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+      .student-card .head b { font-size: 1.08rem; }
+      .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+      .chip { background: var(--accent-soft); border-radius: 999px; padding: 3px 12px; font-size: 0.83rem; font-weight: 600; }
+      .score-track { display: flex; align-items: flex-end; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+      .score-track .bar { width: 30px; background: var(--accent); border-radius: 5px 5px 0 0; min-height: 6px; }
+      .score-track .barwrap { text-align: center; font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+
+      footer {
+        border-top: 1px solid var(--line); margin-top: 12px;
+        padding: 22px 16px 30px; text-align: center; color: var(--muted); font-size: 0.95rem;
+      }
+      footer b { color: var(--ink); }
+      @media (prefers-reduced-motion: reduce) {
+        .progress > div { transition: none; }
+        .coin.flip, .dice-face.roll { animation: none; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ==================== HALAMAN LOGIN ==================== -->
+    <div id="loginView">
+      <div class="login-wrap">
+        <div class="login-card">
+          <h1>Statistika dan Peluang</h1>
+          <p class="muted">Aplikasi belajar matematika kelas 8 — bagian dari portal <b>DapMath</b>. Isi nama dan kelasmu dulu sebelum mulai belajar, supaya gurumu bisa melihat siapa saja yang sudah belajar dan bagaimana perkembangan nilai kuismu.</p>
+          <form id="loginForm" novalidate>
+            <div class="field">
+              <label for="namaInput">Nama Lengkap</label>
+              <input type="text" id="namaInput" placeholder="Contoh: Siti Rahma" autocomplete="name" maxlength="60" />
+            </div>
+            <div class="field">
+              <label for="kelasInput">Kelas</label>
+              <input type="text" id="kelasInput" placeholder="Contoh: 8A" autocomplete="off" maxlength="10" />
+            </div>
+            <div class="error-box" id="loginErr" hidden>Nama dan kelas wajib diisi dulu ya, sebelum mulai belajar.</div>
+            <p style="margin-top:16px"><button type="submit" class="btn">Mulai Belajar</button></p>
+          </form>
+          <p class="muted" style="font-size:0.9rem; margin-bottom:0">Untuk guru: masuk dengan nama sendiri, lalu buka menu <strong>Data Guru</strong> dan masukkan PIN guru untuk melihat data siswa. Data login dan kuis otomatis terkirim ke Google Sheet dari perangkat mana pun.</p>
+        </div>
+      </div>
+      <footer>Dibangun oleh <b>Dody Adyansyah</b> · DapMath — Matematika Kelas 8</footer>
+    </div>
+
+    <!-- ==================== APLIKASI UTAMA ==================== -->
+    <div id="appView" hidden>
+      <div class="topbar">
+        <div class="topbar-inner">
+          <div class="brand">DapMath<small>STATISTIKA DAN PELUANG · KELAS 8</small></div>
+          <div class="student-chip">
+            <div class="avatar" id="avatarEl">?</div>
+            <div class="student-meta">
+              <div class="nm" id="studentNameEl">—</div>
+              <div class="kl" id="studentClassEl">—</div>
+            </div>
+            <button class="btn ghost small" id="btnGantiSiswa" type="button">Ganti Siswa</button>
+          </div>
+        </div>
+      </div>
+
+      <nav class="tabbar" role="tablist" aria-label="Menu utama">
+        <button class="tab-btn" role="tab" data-tab="beranda" aria-selected="true" type="button">Beranda</button>
+        <button class="tab-btn" role="tab" data-tab="materi" aria-selected="false" type="button">Materi</button>
+        <button class="tab-btn" role="tab" data-tab="kalkulator" aria-selected="false" type="button">Kalkulator</button>
+        <button class="tab-btn" role="tab" data-tab="kuis" aria-selected="false" type="button">Kuis</button>
+        <button class="tab-btn" role="tab" data-tab="guru" aria-selected="false" type="button">Data Guru</button>
+      </nav>
+
+      <main class="wrap">
+        <!-- ========== BERANDA ========== -->
+        <section id="sec-beranda">
+          <div class="card">
+            <h2>Halo, <span id="haloNama">Siswa</span>! Siap membaca data dan menebak peluang?</h2>
+            <p>Setiap hari kita dikelilingi data: nilai ulangan, hasil survei, sampai ramalan cuaca. <b>Statistika</b> membantumu mengumpulkan, menyajikan, dan membaca data itu dengan benar. <b>Peluang</b> membantumu memperkirakan seberapa besar kemungkinan suatu kejadian terjadi — misalnya peluang munculnya mata dadu 6 atau sisi Angka pada koin.</p>
+            <p>Di aplikasi ini kamu akan belajar:</p>
+            <div class="chips" style="margin-bottom:12px">
+              <span class="chip">Menyajikan data: tabel, diagram batang, garis, dan lingkaran</span>
+              <span class="chip">Mean (rata-rata), median, dan modus</span>
+              <span class="chip">Peluang teoretik dan peluang empirik</span>
+              <span class="chip">Simulasi lempar koin dan dadu</span>
+            </div>
+            <p class="muted" style="margin-bottom:0">Ubah-ubah datanya sendiri di menu <b>Materi</b>, hitung cepat di <b>Kalkulator</b>, lalu uji pemahamanmu di <b>Kuis</b>.</p>
+          </div>
+          <div class="grid cols-3">
+            <div class="card menu-card">
+              <h3>Materi Interaktif</h3>
+              <p>Penyajian data yang berubah mengikuti data yang kamu ketik, visualisasi mean–median–modus, dan simulasi koin &amp; dadu.</p>
+              <button class="btn" type="button" data-goto="materi">Buka Materi</button>
+            </div>
+            <div class="card menu-card">
+              <h3>Kalkulator</h3>
+              <p>Hitung mean, median, dan modus dari data apa pun yang kamu masukkan, plus kalkulator peluang sederhana.</p>
+              <button class="btn" type="button" data-goto="kalkulator">Buka Kalkulator</button>
+            </div>
+            <div class="card menu-card">
+              <h3>Kuis 10 Soal</h3>
+              <p>Sepuluh soal pilihan ganda dengan pembahasan langsung di setiap soal dan skor akhir. Nilaimu tercatat untuk gurumu.</p>
+              <button class="btn" type="button" data-goto="kuis">Mulai Kuis</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== MATERI ========== -->
+        <section id="sec-materi" hidden>
+          <h2>Materi Statistika dan Peluang</h2>
+          <p class="muted">Pilih topik di bawah, baca penjelasannya, lalu ubah datanya dan jalankan simulasinya sendiri.</p>
+          <div class="subbar" role="tablist" aria-label="Topik materi">
+            <button class="sub-btn" data-sub="penyajian" aria-selected="true" type="button">Penyajian Data</button>
+            <button class="sub-btn" data-sub="pemusatan" aria-selected="false" type="button">Mean, Median, Modus</button>
+            <button class="sub-btn" data-sub="peluang" aria-selected="false" type="button">Peluang &amp; Simulasi</button>
+          </div>
+
+          <!-- ===== Penyajian Data ===== -->
+          <article class="card" id="sub-penyajian">
+            <h3>1 · Menyajikan Data: Tabel dan Diagram</h3>
+            <p>Data yang sudah dikumpulkan akan lebih mudah dibaca jika disajikan dengan rapi. Di bawah ini ada data contoh: <b>hobi siswa kelas 8A</b>. Kamu boleh mengganti nama kategorinya dan mengubah banyak siswanya — tabel dan ketiga diagram akan berubah mengikuti datamu.</p>
+            <div id="dataEditor"></div>
+            <div class="btn-row">
+              <button class="btn secondary" id="btnAddCat" type="button">+ Tambah Kategori</button>
+              <button class="btn ghost" id="btnResetData" type="button">Kembalikan Data Contoh</button>
+            </div>
+            <div class="error-box" id="dataErr" hidden>Periksa datamu: setiap kategori perlu nama dan frekuensi berupa bilangan 0 atau lebih, dan total frekuensi harus lebih dari 0.</div>
+
+            <h3 style="margin-top:22px">a. Tabel Frekuensi</h3>
+            <div class="tbl-wrap">
+              <table class="data" id="freqTable" aria-label="Tabel frekuensi"></table>
+            </div>
+
+            <h3 style="margin-top:22px">b. Diagram Batang</h3>
+            <p class="muted">Tinggi batang menunjukkan frekuensi. Diagram batang cocok untuk membandingkan antar kategori.</p>
+            <svg class="viz" id="barChart" viewBox="0 0 640 300" role="img" aria-label="Diagram batang dari data"></svg>
+
+            <h3 style="margin-top:22px">c. Diagram Garis</h3>
+            <p class="muted">Titik-titik dihubungkan dengan garis. Diagram garis enak dipakai untuk melihat naik-turunnya data dari kategori ke kategori.</p>
+            <svg class="viz" id="lineChart" viewBox="0 0 640 300" role="img" aria-label="Diagram garis dari data"></svg>
+
+            <h3 style="margin-top:22px">d. Diagram Lingkaran</h3>
+            <p class="muted">Satu lingkaran penuh mewakili seluruh data (100%). Besar juring tiap kategori sebanding dengan persentasenya: sudut = persentase × 360°.</p>
+            <svg class="viz" id="pieChart" viewBox="0 0 640 320" role="img" aria-label="Diagram lingkaran dari data" style="max-width:430px; margin-left:auto; margin-right:auto"></svg>
+            <div class="legend" id="pieLegend"></div>
+            <div class="note" style="margin-top:16px"><b>Cara membaca:</b> kategori dengan juring paling besar adalah kategori yang paling banyak dipilih. Pada data contoh, periksa kategori mana yang juringnya paling besar di diagram lingkaran — itulah hobi yang paling digemari kelas 8A.</div>
+          </article>
+
+          <!-- ===== Pemusatan Data ===== -->
+          <article class="card" id="sub-pemusatan" hidden>
+            <h3>2 · Mean, Median, dan Modus</h3>
+            <p>Tiga ukuran ini merangkum sekumpulan data menjadi satu nilai yang mewakili:</p>
+            <div class="formula"><span class="lbl">Mean (rata-rata)</span>Mean = jumlah semua data ÷ banyak data</div>
+            <div class="formula"><span class="lbl">Median (nilai tengah)</span>Urutkan data dulu. Median adalah data yang posisinya tepat di tengah. Jika banyak data genap, median = rata-rata dua data di tengah.</div>
+            <div class="formula"><span class="lbl">Modus</span>Data yang paling sering muncul. Data bisa punya satu modus, lebih dari satu modus, atau tidak punya modus sama sekali.</div>
+            <p>Ketik datamu sendiri di bawah ini (pisahkan dengan koma), lalu lihat letak mean, median, dan modus pada diagram titiknya.</p>
+            <div class="field">
+              <label for="pmInput">Data (pisahkan dengan koma)</label>
+              <textarea class="dtxt" id="pmInput">6, 7, 7, 8, 5, 9, 7, 8, 10, 7</textarea>
+            </div>
+            <div class="error-box" id="pmErr" hidden>Masukkan minimal 2 bilangan yang dipisahkan koma, misalnya: 6, 7, 7, 8, 9.</div>
+            <svg class="viz" id="pmViz" viewBox="0 0 640 280" role="img" aria-label="Diagram titik dengan penanda mean, median, dan modus"></svg>
+            <div class="legend" id="pmLegend"></div>
+            <div class="grid cols-3" style="margin-top:14px">
+              <div class="stat"><b id="pmMean">—</b><span>MEAN (RATA-RATA)</span></div>
+              <div class="stat"><b id="pmMedian">—</b><span>MEDIAN (TENGAH)</span></div>
+              <div class="stat"><b id="pmModus">—</b><span>MODUS (TERSERING)</span></div>
+            </div>
+            <div class="steps" id="pmSteps"></div>
+            <div class="note" style="margin-top:14px"><b>Contoh data nilai di atas:</b> mean menunjukkan nilai rata-rata kelas, median menunjukkan nilai siswa yang berada tepat di tengah setelah diurutkan, dan modus menunjukkan nilai yang paling banyak diperoleh siswa.</div>
+          </article>
+
+          <!-- ===== Peluang ===== -->
+          <article class="card" id="sub-peluang" hidden>
+            <h3>3 · Peluang Teoretik dan Empirik</h3>
+            <p><b>Peluang teoretik</b> dihitung sebelum percobaan dilakukan, dari banyaknya kemungkinan yang ada. Syaratnya, setiap hasil harus punya kesempatan muncul yang sama besar.</p>
+            <div class="formula"><span class="lbl">Peluang teoretik suatu kejadian A</span>P(A) = n(A) ÷ n(S) &nbsp;—&nbsp; n(A) = banyak hasil yang diharapkan, n(S) = banyak semua hasil yang mungkin</div>
+            <div class="tbl-wrap">
+              <table class="data" aria-label="Contoh peluang teoretik">
+                <tr><th>Percobaan</th><th>Kejadian</th><th class="num">n(A)</th><th class="num">n(S)</th><th class="num">Peluang</th></tr>
+                <tr><td>Lempar 1 koin</td><td>Muncul Angka</td><td class="num">1</td><td class="num">2</td><td class="num">1/2 = 0,5</td></tr>
+                <tr><td>Lempar 1 dadu</td><td>Mata 6</td><td class="num">1</td><td class="num">6</td><td class="num">1/6 ≈ 0,17</td></tr>
+                <tr><td>Lempar 1 dadu</td><td>Mata genap (2, 4, 6)</td><td class="num">3</td><td class="num">6</td><td class="num">3/6 = 1/2</td></tr>
+                <tr><td>Lempar 1 dadu</td><td>Mata prima (2, 3, 5)</td><td class="num">3</td><td class="num">6</td><td class="num">3/6 = 1/2</td></tr>
+              </table>
+            </div>
+            <p><b>Peluang empirik</b> (frekuensi relatif) dihitung <i>setelah</i> percobaan dilakukan: banyak kejadian muncul dibagi banyak percobaan. Makin banyak percobaan, peluang empirik biasanya makin mendekati peluang teoretiknya. Buktikan sendiri dengan dua simulasi di bawah!</p>
+
+            <h3 style="margin-top:24px">Simulasi A · Lempar Koin</h3>
+            <div class="sim-stage">
+              <div class="coin" id="coinFace">SIAP?</div>
+              <div>
+                <div class="sim-nums">
+                  <div class="sim-num"><b id="coinTotal">0</b><span>LEMPARAN</span></div>
+                  <div class="sim-num"><b id="coinAngka">0</b><span>ANGKA</span></div>
+                  <div class="sim-num"><b id="coinGambar">0</b><span>GAMBAR</span></div>
+                </div>
+                <div class="result-line" id="coinInfo" style="margin-top:12px">Tekan tombol lempar untuk mulai. Peluang teoretik Angka = 1/2 = 0,5.</div>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn" type="button" data-coin="1">Lempar 1×</button>
+              <button class="btn secondary" type="button" data-coin="10">Lempar 10×</button>
+              <button class="btn secondary" type="button" data-coin="100">Lempar 100×</button>
+              <button class="btn ghost" type="button" id="btnCoinReset">Ulangi dari Awal</button>
+            </div>
+            <svg class="viz" id="coinChart" viewBox="0 0 640 240" role="img" aria-label="Perbandingan frekuensi relatif Angka hasil simulasi dengan peluang teoretik"></svg>
+
+            <h3 style="margin-top:26px">Simulasi B · Lempar Dadu</h3>
+            <div class="sim-stage">
+              <div class="dice-face" id="diceFace" aria-label="Hasil lemparan dadu terakhir"></div>
+              <div>
+                <div class="sim-nums">
+                  <div class="sim-num"><b id="diceTotal">0</b><span>LEMPARAN</span></div>
+                  <div class="sim-num"><b id="diceLast">—</b><span>MATA TERAKHIR</span></div>
+                </div>
+                <div class="result-line" id="diceInfo" style="margin-top:12px">Tekan tombol lempar untuk mulai. Peluang teoretik setiap mata dadu = 1/6 ≈ 0,167.</div>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn" type="button" data-dice="1">Lempar 1×</button>
+              <button class="btn secondary" type="button" data-dice="10">Lempar 10×</button>
+              <button class="btn secondary" type="button" data-dice="100">Lempar 100×</button>
+              <button class="btn ghost" type="button" id="btnDiceReset">Ulangi dari Awal</button>
+            </div>
+            <svg class="viz" id="diceChart" viewBox="0 0 640 280" role="img" aria-label="Diagram batang banyak kemunculan tiap mata dadu"></svg>
+            <div class="note"><b>Amati:</b> setelah hanya 10 lemparan, tinggi batang bisa sangat timpang. Setelah 100 lemparan atau lebih, batang-batangnya cenderung hampir sama tinggi — itulah tanda peluang empirik mendekati peluang teoretik 1/6 untuk setiap mata.</div>
+          </article>
+        </section>
+
+        <!-- ========== KALKULATOR ========== -->
+        <section id="sec-kalkulator" hidden>
+          <h2>Kalkulator Statistika</h2>
+          <p class="muted">Masukkan sekumpulan data, lalu klik Hitung. Mean, median, modus, dan ukuran lainnya akan dihitung lengkap dengan langkah-langkahnya.</p>
+          <div class="card">
+            <h3>Mean, Median, dan Modus dari Datamu</h3>
+            <div class="field">
+              <label for="calcInput">Data (pisahkan dengan koma)</label>
+              <textarea class="dtxt" id="calcInput">75, 80, 65, 90, 80, 70, 85, 80, 95, 60</textarea>
+            </div>
+            <div class="error-box" id="calcErr" hidden>Masukkan minimal 2 bilangan yang dipisahkan koma, misalnya: 70, 80, 80, 90.</div>
+            <p><button class="btn" id="btnCalc" type="button">Hitung</button></p>
+            <div id="calcOut" hidden>
+              <div class="grid cols-3">
+                <div class="stat"><b id="calcMean">—</b><span>MEAN</span></div>
+                <div class="stat"><b id="calcMedian">—</b><span>MEDIAN</span></div>
+                <div class="stat"><b id="calcModus">—</b><span>MODUS</span></div>
+              </div>
+              <div class="grid cols-3" style="margin-top:12px">
+                <div class="stat"><b id="calcCount">—</b><span>BANYAK DATA</span></div>
+                <div class="stat"><b id="calcSum">—</b><span>JUMLAH DATA</span></div>
+                <div class="stat"><b id="calcRange">—</b><span>JANGKAUAN (MAKS − MIN)</span></div>
+              </div>
+              <div class="steps" id="calcSteps"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Kalkulator Peluang Sederhana</h3>
+            <p>Isi banyak hasil yang diharapkan n(A) dan banyak semua hasil yang mungkin n(S), lalu klik Hitung Peluang.</p>
+            <div class="form-row c2">
+              <div class="field"><label for="probA">n(A) — hasil yang diharapkan</label><input type="number" id="probA" value="3" min="0" step="1" /></div>
+              <div class="field"><label for="probS">n(S) — semua hasil yang mungkin</label><input type="number" id="probS" value="6" min="1" step="1" /></div>
+            </div>
+            <div class="error-box" id="probErr" hidden>Periksa isianmu: n(S) minimal 1, dan n(A) harus antara 0 sampai n(S).</div>
+            <p><button class="btn" id="btnProb" type="button">Hitung Peluang</button></p>
+            <div id="probOut" hidden>
+              <div class="result-line" id="probResult"></div>
+              <div class="steps" id="probSteps"></div>
+            </div>
+            <div class="note" style="margin-top:14px"><b>Contoh cepat:</b> peluang mata dadu genap → n(A) = 3 (mata 2, 4, 6), n(S) = 6, jadi P = 3/6 = 1/2. Peluang mengambil kelereng merah dari kantong berisi 5 merah dan 3 biru → n(A) = 5, n(S) = 8, jadi P = 5/8.</div>
+          </div>
+
+          <h2>Latihan Cepat</h2>
+          <p class="muted">Coba kerjakan empat soal ini sendiri dulu, isi jawabanmu, lalu klik Periksa. Ada pembahasan di setiap soal.</p>
+          <div id="latihanList"></div>
+        </section>
+
+        <!-- ========== KUIS ========== -->
+        <section id="sec-kuis" hidden>
+          <h2>Kuis Statistika dan Peluang</h2>
+          <div class="card" id="quizStart">
+            <p>Kuis ini berisi <b>10 soal pilihan ganda</b> tentang penyajian data, mean, median, modus, serta peluang teoretik dan empirik. Setiap jawaban langsung dibahas, jadi kamu bisa belajar dari kesalahanmu. Skor akhir akan tercatat dan terkirim ke gurumu.</p>
+            <p style="margin-bottom:0"><button class="btn" id="btnStartQuiz" type="button">Mulai Kuis</button></p>
+          </div>
+          <div class="card" id="quizPlay" hidden>
+            <div style="display:flex; justify-content:space-between; font-weight:700">
+              <span id="quizProgressLabel">Soal 1 dari 10</span><span id="quizScoreLabel">Skor sementara: 0</span>
+            </div>
+            <div class="progress"><div id="quizBar"></div></div>
+            <h3 id="quizQuestion"></h3>
+            <div id="quizOptions"></div>
+            <div class="explain" id="quizExplain" hidden></div>
+            <p style="margin-top:16px; margin-bottom:0"><button class="btn" id="btnNextQ" type="button" hidden>Soal Berikutnya</button></p>
+          </div>
+          <div class="card" id="quizResult" hidden>
+            <h3 style="text-align:center">Kuis Selesai!</h3>
+            <div class="score-big" id="finalScore">0</div>
+            <p style="text-align:center" id="finalMsg"></p>
+            <p style="text-align:center" class="muted" id="finalDetail"></p>
+            <p style="text-align:center; margin-bottom:0">
+              <button class="btn" id="btnRetryQuiz" type="button">Ulangi Kuis</button>
+              <button class="btn secondary" id="btnBackMateri" type="button">Kembali ke Materi</button>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== DATA GURU ========== -->
+        <section id="sec-guru" hidden>
+          <h2>Data Guru</h2>
+
+          <div class="card" id="pinGate">
+            <h3>Menu Terkunci</h3>
+            <p>Menu ini berisi data seluruh siswa, jadi terkunci dengan PIN. Masukkan PIN guru untuk membukanya. (Pengiriman data login dan kuis dari perangkat siswa tetap berjalan otomatis tanpa PIN.)</p>
+            <form id="pinForm" novalidate>
+              <div class="field">
+                <label for="pinInput">PIN Guru</label>
+                <input type="password" id="pinInput" placeholder="Masukkan PIN guru" autocomplete="off" maxlength="32" />
+              </div>
+              <div class="error-box" id="pinErr" hidden>PIN salah. Silakan periksa lagi dan coba kembali.</div>
+              <p style="margin-top:14px; margin-bottom:0"><button class="btn" type="submit">Buka Data Guru</button></p>
+            </form>
+          </div>
+
+          <div id="guruContent" hidden>
+            <div class="stat-row">
+              <div class="stat"><b id="statSiswa">0</b><span>Siswa Tercatat</span></div>
+              <div class="stat"><b id="statLogin">0</b><span>Total Login</span></div>
+              <div class="stat"><b id="statKuis">0</b><span>Percobaan Kuis</span></div>
+            </div>
+            <div class="card">
+              <h3>Ringkasan Siswa</h3>
+              <p class="muted">Data pada sesi ini di perangkat ini, ditambah data dari Google Sheet bila dimuat. Skor menunjukkan perkembangan tiap siswa dari percobaan ke percobaan.</p>
+              <div class="btn-row">
+                <button class="btn" id="btnCsv" type="button">Unduh Laporan (CSV)</button>
+                <button class="btn secondary" id="btnSheetLoad" type="button">Muat Data dari Sheet</button>
+                <button class="btn secondary" id="btnSheetSummary" type="button">Kirim Ringkasan ke Sheet</button>
+              </div>
+              <div id="studentList"></div>
+              <p class="muted" id="emptyStudents">Belum ada data siswa pada sesi ini. Minta siswa login dan belajar dari perangkat ini, atau klik "Muat Data dari Sheet" untuk menarik data dari semua perangkat.</p>
+            </div>
+
+            <div class="card">
+              <h3>Database Google Sheets</h3>
+              <p>Aplikasi ini terhubung permanen ke Google Sheet pusat DapMath. Setiap login siswa, hasil kuis, dan ringkasan otomatis terkirim ke Sheet tersebut dari perangkat mana pun, ditandai aplikasi <b>statistika-8</b>.</p>
+              <div class="btn-row">
+                <button class="btn" id="btnUjiKirim" type="button">Uji Kirim Data Sekarang</button>
+              </div>
+              <div class="field">
+                <label for="sheetUrl">URL Aplikasi Web Google Sheets (bisa diganti bila perlu)</label>
+                <input type="url" id="sheetUrl" autocomplete="off" spellcheck="false" />
+              </div>
+              <p><button class="btn secondary" id="btnSheetConnect" type="button">Hubungkan ke URL Ini</button></p>
+              <div class="status-box" id="sheetStatus">Status: memakai URL Google Sheet yang tertanam di aplikasi.</div>
+              <p class="muted" style="margin-top:14px">Jika kolom URL dikosongkan lalu klik Hubungkan, aplikasi kembali memakai URL yang tertanam. Sheet-nya sendiri tetap hanya bisa dibuka lewat akun Google pemiliknya; menu Data Guru di aplikasi ini terkunci PIN.</p>
+              <details>
+                <summary style="font-weight:700; cursor:pointer; padding:8px 0">Kode Apps Script (untuk Sheet pusat DapMath)</summary>
+                <p class="muted">Tempel kode ini di spreadsheet pusat lewat menu Ekstensi → Apps Script, lalu Deploy sebagai Aplikasi Web dengan akses "Siapa saja". Kode ini membaca kolom Aplikasi sehingga satu Sheet bisa dipakai semua aplikasi DapMath.</p>
+                <textarea class="code" id="appsScriptCode" readonly></textarea>
+                <p style="margin-top:10px; margin-bottom:0"><button class="btn secondary small" id="btnCopyScript" type="button">Salin Kode Apps Script</button></p>
+              </details>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>Dibangun oleh <b>Dody Adyansyah</b> · DapMath — Matematika Kelas 8</footer>
+    </div>
+
+    <script>
+      "use strict";
+      const $ = (s, r) => (r || document).querySelector(s);
+      const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+      const fmt = (x) => {
+        if (typeof x !== "number" || !isFinite(x)) return String(x);
+        const r = Math.round(x * 100) / 100;
+        return r.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+      };
+      const fmt3 = (x) => x.toLocaleString("id-ID", { maximumFractionDigits: 3 });
+      const fmtInt = (x) => Math.round(x).toLocaleString("id-ID");
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const nowISO = () => new Date().toISOString();
+      const fmtTime = (d) => {
+        try { return new Date(d).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); }
+        catch (e) { return "—"; }
+      };
+      const PALETTE = ["#1763a6", "#e08a00", "#0d7a5f", "#c2497a", "#6b4fc4", "#2f8fa3", "#8a6d3b", "#b3402f"];
+      const parseNums = (txt) => String(txt).split(/[,\s;]+/).map((t) => parseFloat(t.replace(",", "."))).filter((v) => isFinite(v));
+      const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a || 1; };
+
+      /* ================= Statistik dasar ================= */
+      function computeStats(values) {
+        const sorted = values.slice().sort((a, b) => a - b);
+        const n = values.length;
+        const sum = values.reduce((s, v) => s + v, 0);
+        const mean = sum / n;
+        const median = n % 2 === 1 ? sorted[(n - 1) / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+        const counts = {};
+        values.forEach((v) => { counts[v] = (counts[v] || 0) + 1; });
+        const maxCount = Math.max.apply(null, Object.values(counts));
+        const modes = maxCount > 1 ? Object.keys(counts).filter((k) => counts[k] === maxCount).map(Number).sort((a, b) => a - b) : [];
+        return { sorted: sorted, n: n, sum: sum, mean: mean, median: median, counts: counts, maxCount: maxCount, modes: modes, min: sorted[0], max: sorted[n - 1] };
+      }
+
+      /* ================= Integrasi Google Sheets ================= */
+      const APP_ID = "statistika-8";
+      const DEFAULT_SHEET_URL = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
+      let sheetEndpoint = DEFAULT_SHEET_URL;
+      function setSheetStatus(msg, ok) {
+        const el = $("#sheetStatus");
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.toggle("ok", !!ok);
+      }
+      function sheetSend(payload) {
+        if (!sheetEndpoint) return Promise.resolve(false);
+        payload.app = APP_ID;
+        const body = JSON.stringify(payload);
+        const viaBeacon = () => {
+          try {
+            if (navigator.sendBeacon) {
+              return navigator.sendBeacon(sheetEndpoint, new Blob([body], { type: "text/plain;charset=utf-8" }));
+            }
+          } catch (err) { /* abaikan */ }
+          return false;
+        };
+        return fetch(sheetEndpoint, {
+          method: "POST", mode: "no-cors", keepalive: true,
+          headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body,
+        }).then(() => true).catch(() => viaBeacon());
+      }
+      function sheetLoad() {
+        const sep = sheetEndpoint.indexOf("?") >= 0 ? "&" : "?";
+        return fetch(sheetEndpoint + sep + "app=" + encodeURIComponent(APP_ID)).then((r) => r.json());
+      }
+
+      /* ================= Data sesi (memori perangkat ini) ================= */
+      const TAB_LABELS = {
+        beranda: "Beranda", materi: "Materi", kalkulator: "Kalkulator", kuis: "Kuis",
+        "materi-penyajian": "Materi: Penyajian Data",
+        "materi-pemusatan": "Materi: Mean, Median, Modus",
+        "materi-peluang": "Materi: Peluang & Simulasi",
+      };
+      let studentRecords = [];
+      let currentStudent = null;
+      const keyOf = (nama, kelas) => (nama + "|" + kelas).toLowerCase();
+      function findRecord(nama, kelas) {
+        return studentRecords.find((r) => keyOf(r.nama, r.kelas) === keyOf(nama, kelas));
+      }
+      function makeRecord(nama, kelas, t) {
+        return { nama: nama, kelas: kelas, firstLogin: t || new Date(), logins: 0, visits: {}, lastActivity: t || new Date(), attempts: [] };
+      }
+      function trackVisit(key) {
+        if (!currentStudent) return;
+        currentStudent.visits[key] = (currentStudent.visits[key] || 0) + 1;
+        currentStudent.lastActivity = new Date();
+      }
+
+      /* ================= Login ================= */
+      $("#loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nama = $("#namaInput").value.trim();
+        const kelas = $("#kelasInput").value.trim();
+        if (!nama || !kelas) { $("#loginErr").hidden = false; return; }
+        $("#loginErr").hidden = true;
+        let rec = findRecord(nama, kelas);
+        if (!rec) { rec = makeRecord(nama, kelas, new Date()); studentRecords.push(rec); }
+        rec.logins += 1;
+        rec.lastActivity = new Date();
+        currentStudent = rec;
+        $("#studentNameEl").textContent = rec.nama;
+        $("#studentClassEl").textContent = "Kelas " + rec.kelas;
+        $("#haloNama").textContent = rec.nama.split(" ")[0];
+        $("#avatarEl").textContent = rec.nama.split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+        $("#loginView").hidden = true;
+        $("#appView").hidden = false;
+        sheetSend({ type: "login", time: nowISO(), nama: rec.nama, kelas: rec.kelas });
+        showTab("beranda");
+        window.scrollTo({ top: 0 });
+      });
+      $("#btnGantiSiswa").addEventListener("click", () => {
+        currentStudent = null;
+        guruUnlocked = false;
+        $("#appView").hidden = true;
+        $("#loginView").hidden = false;
+        $("#namaInput").value = "";
+        $("#kelasInput").value = "";
+        $("#namaInput").focus();
+      });
+
+      /* ================= Navigasi ================= */
+      let guruUnlocked = false;
+      function showTab(tab) {
+        $$(".tab-btn").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === tab ? "true" : "false"));
+        ["beranda", "materi", "kalkulator", "kuis", "guru"].forEach((t) => { $("#sec-" + t).hidden = t !== tab; });
+        if (tab !== "guru") guruUnlocked = false;
+        if (tab === "guru") renderGuruGate();
+        if (tab === "beranda" || tab === "kalkulator" || tab === "kuis") trackVisit(tab);
+        if (tab === "materi") trackVisit(currentSubKey());
+        window.scrollTo({ top: 0 });
+      }
+      $$(".tab-btn").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+      $$("[data-goto]").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.goto)));
+
+      const SUBS = ["penyajian", "pemusatan", "peluang"];
+      function currentSubKey() {
+        const active = $(".sub-btn[aria-selected='true']", $("#sec-materi"));
+        return "materi-" + (active ? active.dataset.sub : "penyajian");
+      }
+      $$(".sub-btn[data-sub]").forEach((b) => b.addEventListener("click", () => {
+        $$(".sub-btn[data-sub]").forEach((x) => x.setAttribute("aria-selected", x === b ? "true" : "false"));
+        SUBS.forEach((s) => { $("#sub-" + s).hidden = s !== b.dataset.sub; });
+        trackVisit("materi-" + b.dataset.sub);
+      }));
+
+      /* ================= Materi 1: Penyajian Data ================= */
+      const DEFAULT_DATA = [
+        { nama: "Membaca", f: 6 },
+        { nama: "Olahraga", f: 12 },
+        { nama: "Bermain Musik", f: 8 },
+        { nama: "Menggambar", f: 5 },
+        { nama: "Bermain Game", f: 9 },
+      ];
+      let catData = DEFAULT_DATA.map((d) => ({ nama: d.nama, f: d.f }));
+
+      function buildEditor() {
+        const wrap = $("#dataEditor");
+        wrap.innerHTML = "";
+        catData.forEach((d, i) => {
+          const row = document.createElement("div");
+          row.className = "edit-row";
+          row.innerHTML =
+            '<div><label for="catName' + i + '">Kategori ' + (i + 1) + '</label><input type="text" id="catName' + i + '" maxlength="24" value="' + esc(d.nama) + '" /></div>' +
+            '<div><label for="catFreq' + i + '">Frekuensi</label><input type="number" id="catFreq' + i + '" min="0" max="999" step="1" value="' + d.f + '" /></div>' +
+            '<button class="rm-btn" type="button" data-rm="' + i + '" aria-label="Hapus kategori ' + (i + 1) + '" title="Hapus kategori">×</button>';
+          wrap.appendChild(row);
+        });
+        catData.forEach((d, i) => {
+          $("#catName" + i).addEventListener("input", (e) => { catData[i].nama = e.target.value; renderData(); });
+          $("#catFreq" + i).addEventListener("input", (e) => { catData[i].f = parseFloat(e.target.value); renderData(); });
+        });
+        $$("[data-rm]", wrap).forEach((b) => b.addEventListener("click", () => {
+          if (catData.length <= 2) return;
+          catData.splice(+b.dataset.rm, 1);
+          buildEditor();
+          renderData();
+        }));
+        $("#btnAddCat").disabled = catData.length >= PALETTE.length;
+      }
+      $("#btnAddCat").addEventListener("click", () => {
+        if (catData.length >= PALETTE.length) return;
+        catData.push({ nama: "Kategori " + (catData.length + 1), f: 4 });
+        buildEditor();
+        renderData();
+      });
+      $("#btnResetData").addEventListener("click", () => {
+        catData = DEFAULT_DATA.map((d) => ({ nama: d.nama, f: d.f }));
+        buildEditor();
+        renderData();
+      });
+
+      function validData() {
+        const rows = catData.filter((d) => String(d.nama).trim() !== "" && isFinite(d.f) && d.f >= 0);
+        const total = rows.reduce((s, d) => s + d.f, 0);
+        return { rows: rows, total: total, ok: rows.length >= 2 && total > 0 };
+      }
+      function yScale(maxF) {
+        const steps = [1, 2, 5, 10, 20, 25, 50, 100];
+        let step = steps[steps.length - 1];
+        for (let i = 0; i < steps.length; i++) { if (maxF / steps[i] <= 6) { step = steps[i]; break; } }
+        return { step: step, top: Math.max(step * Math.ceil(maxF / step), step) };
+      }
+      function gridSVG(maxF, plot) {
+        const sc = yScale(maxF);
+        let s = "";
+        for (let v = 0; v <= sc.top; v += sc.step) {
+          const y = plot.base - (v / sc.top) * (plot.base - plot.top);
+          s += '<line x1="' + plot.left + '" y1="' + y + '" x2="' + plot.right + '" y2="' + y + '" stroke="currentColor" opacity="' + (v === 0 ? 0.45 : 0.14) + '" stroke-width="1"/>';
+          s += '<text x="' + (plot.left - 8) + '" y="' + (y + 4) + '" text-anchor="end" font-size="12" fill="currentColor" opacity="0.65">' + v + "</text>";
+        }
+        return { svg: s, top: sc.top };
+      }
+      const PLOT = { left: 48, right: 628, top: 30, base: 252 };
+      function catLabel(name, x, y) {
+        const nm = name.length > 11 ? name.slice(0, 10) + "…" : name;
+        return '<text x="' + x + '" y="' + y + '" text-anchor="middle" font-size="12.5" fill="currentColor" opacity="0.75">' + esc(nm) + "</text>";
+      }
+      function renderBarChart(rows) {
+        const maxF = Math.max.apply(null, rows.map((d) => d.f).concat([1]));
+        const g = gridSVG(maxF, PLOT);
+        const n = rows.length, slot = (PLOT.right - PLOT.left) / n;
+        const bw = Math.min(64, slot * 0.58);
+        let s = g.svg;
+        rows.forEach((d, i) => {
+          const cx = PLOT.left + slot * i + slot / 2;
+          const h = (d.f / g.top) * (PLOT.base - PLOT.top);
+          s += '<rect x="' + (cx - bw / 2) + '" y="' + (PLOT.base - h) + '" width="' + bw + '" height="' + Math.max(h, d.f > 0 ? 2 : 0) + '" rx="5" fill="' + PALETTE[i % PALETTE.length] + '"/>';
+          if (d.f > 0) s += '<text x="' + cx + '" y="' + (PLOT.base - h - 7) + '" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">' + fmt(d.f) + "</text>";
+          s += catLabel(d.nama, cx, PLOT.base + 22);
+        });
+        $("#barChart").innerHTML = s;
+      }
+      function renderLineChart(rows) {
+        const maxF = Math.max.apply(null, rows.map((d) => d.f).concat([1]));
+        const g = gridSVG(maxF, PLOT);
+        const n = rows.length, slot = (PLOT.right - PLOT.left) / n;
+        let s = g.svg, pts = "";
+        const coords = rows.map((d, i) => {
+          const x = PLOT.left + slot * i + slot / 2;
+          const y = PLOT.base - (d.f / g.top) * (PLOT.base - PLOT.top);
+          return { x: x, y: y, d: d };
+        });
+        pts = coords.map((c) => c.x + "," + c.y).join(" ");
+        s += '<polyline points="' + pts + '" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';
+        coords.forEach((c) => {
+          s += '<circle cx="' + c.x + '" cy="' + c.y + '" r="6" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';
+          s += '<text x="' + c.x + '" y="' + (c.y - 13) + '" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">' + fmt(c.d.f) + "</text>";
+          s += catLabel(c.d.nama, c.x, PLOT.base + 22);
+        });
+        $("#lineChart").innerHTML = s;
+      }
+      function renderPieChart(rows, total) {
+        const cx = 320, cy = 160, r = 128;
+        let s = "", start = -Math.PI / 2;
+        rows.forEach((d, i) => {
+          if (d.f <= 0) return;
+          const frac = d.f / total;
+          const ang = frac * Math.PI * 2;
+          const end = start + ang;
+          if (frac >= 0.999) {
+            s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + PALETTE[i % PALETTE.length] + '"/>';
+          } else {
+            const x1 = cx + r * Math.cos(start), y1 = cy + r * Math.sin(start);
+            const x2 = cx + r * Math.cos(end), y2 = cy + r * Math.sin(end);
+            const large = ang > Math.PI ? 1 : 0;
+            s += '<path d="M ' + cx + " " + cy + " L " + x1.toFixed(1) + " " + y1.toFixed(1) + " A " + r + " " + r + " 0 " + large + " 1 " + x2.toFixed(1) + " " + y2.toFixed(1) + ' Z" fill="' + PALETTE[i % PALETTE.length] + '" stroke="var(--surface)" stroke-width="2"/>';
+          }
+          if (frac >= 0.07) {
+            const mid = start + ang / 2;
+            const lx = cx + r * 0.62 * Math.cos(mid), ly = cy + r * 0.62 * Math.sin(mid);
+            s += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 5).toFixed(1) + '" text-anchor="middle" font-size="15" font-weight="800" fill="#ffffff">' + fmt(frac * 100) + "%</text>";
+          }
+          start = end;
+        });
+        $("#pieChart").innerHTML = s;
+        $("#pieLegend").innerHTML = rows.map((d, i) =>
+          '<span class="li"><span class="sw" style="background:' + PALETTE[i % PALETTE.length] + '"></span>' + esc(d.nama) + " — " + fmt(d.f) + " siswa (" + fmt(d.f / total * 100) + "%, sudut " + fmt(d.f / total * 360) + "°)</span>"
+        ).join("");
+      }
+      function renderData() {
+        const v = validData();
+        $("#dataErr").hidden = v.ok;
+        if (!v.ok) {
+          $("#freqTable").innerHTML = "";
+          $("#barChart").innerHTML = '<text x="320" y="150" text-anchor="middle" font-size="15" fill="currentColor" opacity="0.6">Perbaiki data dulu untuk melihat diagram.</text>';
+          $("#lineChart").innerHTML = $("#barChart").innerHTML;
+          $("#pieChart").innerHTML = '<text x="320" y="160" text-anchor="middle" font-size="15" fill="currentColor" opacity="0.6">Perbaiki data dulu untuk melihat diagram.</text>';
+          $("#pieLegend").innerHTML = "";
+          return;
+        }
+        let html = "<tr><th>Kategori</th><th class=\"num\">Frekuensi</th><th class=\"num\">Persentase</th></tr>";
+        v.rows.forEach((d) => {
+          html += "<tr><td>" + esc(d.nama) + '</td><td class="num">' + fmt(d.f) + '</td><td class="num">' + fmt(d.f / v.total * 100) + "%</td></tr>";
+        });
+        html += '<tr class="total"><td>Total</td><td class="num">' + fmt(v.total) + '</td><td class="num">100%</td></tr>';
+        $("#freqTable").innerHTML = html;
+        renderBarChart(v.rows);
+        renderLineChart(v.rows);
+        renderPieChart(v.rows, v.total);
+      }
+      buildEditor();
+      renderData();
+
+      /* ================= Materi 2: Mean, Median, Modus ================= */
+      function renderPemusatan() {
+        const values = parseNums($("#pmInput").value);
+        if (values.length < 2) {
+          $("#pmErr").hidden = false;
+          $("#pmViz").innerHTML = "";
+          $("#pmLegend").innerHTML = "";
+          $("#pmMean").textContent = "—"; $("#pmMedian").textContent = "—"; $("#pmModus").textContent = "—";
+          $("#pmSteps").innerHTML = "";
+          return;
+        }
+        $("#pmErr").hidden = true;
+        const st = computeStats(values);
+        /* Diagram titik */
+        let lo = st.min, hi = st.max;
+        if (hi - lo < 4) { lo -= 1; hi += 1; }
+        const pad = (hi - lo) * 0.06;
+        lo -= pad; hi += pad;
+        const X0 = 46, X1 = 612, BASE = 216;
+        const X = (v) => X0 + (v - lo) / (hi - lo) * (X1 - X0);
+        let s = "";
+        s += '<line x1="' + X0 + '" y1="' + BASE + '" x2="' + X1 + '" y2="' + BASE + '" stroke="currentColor" opacity="0.45" stroke-width="1.5"/>';
+        const range = st.max - st.min;
+        const tickVals = [];
+        if (range <= 20) { for (let v = Math.ceil(st.min); v <= st.max; v++) tickVals.push(v); }
+        else { for (let i = 0; i <= 5; i++) tickVals.push(st.min + range * i / 5); }
+        tickVals.forEach((v) => {
+          s += '<line x1="' + X(v) + '" y1="' + BASE + '" x2="' + X(v) + '" y2="' + (BASE + 6) + '" stroke="currentColor" opacity="0.45" stroke-width="1.5"/>';
+          s += '<text x="' + X(v) + '" y="' + (BASE + 24) + '" text-anchor="middle" font-size="12" fill="currentColor" opacity="0.65">' + fmt(v) + "</text>";
+        });
+        /* Garis median dan mean */
+        s += '<line x1="' + X(st.median) + '" y1="52" x2="' + X(st.median) + '" y2="' + BASE + '" stroke="var(--good)" stroke-width="2.5" stroke-dasharray="7 5"/>';
+        s += '<text x="' + X(st.median) + '" y="40" text-anchor="middle" font-size="13.5" font-weight="800" fill="var(--good)">Median ' + fmt(st.median) + "</text>";
+        s += '<line x1="' + X(st.mean) + '" y1="52" x2="' + X(st.mean) + '" y2="' + BASE + '" stroke="var(--amber)" stroke-width="2.5" stroke-dasharray="2 4"/>';
+        s += '<text x="' + X(st.mean) + '" y="66" text-anchor="middle" font-size="13.5" font-weight="800" fill="var(--amber)">Mean ' + fmt(st.mean) + "</text>";
+        /* Titik-titik data (ditumpuk) */
+        const seen = {};
+        st.sorted.forEach((v) => {
+          const k = String(v);
+          seen[k] = (seen[k] || 0) + 1;
+          const cy = BASE - 16 - (seen[k] - 1) * 27;
+          const isMode = st.modes.indexOf(v) >= 0;
+          s += '<circle cx="' + X(v) + '" cy="' + cy + '" r="11.5" fill="' + (isMode ? "var(--accent)" : "var(--surface-2)") + '" stroke="' + (isMode ? "var(--accent-strong)" : "currentColor") + '" stroke-width="' + (isMode ? 2.5 : 1.2) + '"/>';
+          s += '<text x="' + X(v) + '" y="' + (cy + 4.5) + '" text-anchor="middle" font-size="11.5" font-weight="700" fill="' + (isMode ? "var(--accent-ink)" : "currentColor") + '">' + fmt(v) + "</text>";
+        });
+        $("#pmViz").innerHTML = s;
+        $("#pmLegend").innerHTML =
+          '<span class="li"><span class="sw" style="background:var(--accent)"></span>Titik biru tebal = modus (paling sering muncul)</span>' +
+          '<span class="li"><span class="sw" style="background:var(--amber)"></span>Garis putus-putus oranye = mean</span>' +
+          '<span class="li"><span class="sw" style="background:var(--good)"></span>Garis putus-putus hijau = median</span>';
+        $("#pmMean").textContent = fmt(st.mean);
+        $("#pmMedian").textContent = fmt(st.median);
+        $("#pmModus").textContent = st.modes.length ? st.modes.map(fmt).join(" dan ") : "Tidak ada";
+        let medianStep;
+        if (st.n % 2 === 1) {
+          medianStep = "Banyak data ganjil (" + st.n + "), jadi median adalah data ke-" + ((st.n + 1) / 2) + " dari data terurut = <b>" + fmt(st.median) + "</b>.";
+        } else {
+          medianStep = "Banyak data genap (" + st.n + "), jadi median = rata-rata data ke-" + (st.n / 2) + " dan ke-" + (st.n / 2 + 1) + " = (" + fmt(st.sorted[st.n / 2 - 1]) + " + " + fmt(st.sorted[st.n / 2]) + ") ÷ 2 = <b>" + fmt(st.median) + "</b>.";
+        }
+        const modusStep = st.modes.length
+          ? "Nilai " + st.modes.map((m) => "<b>" + fmt(m) + "</b>").join(" dan ") + " muncul " + st.maxCount + " kali — paling sering dibanding nilai lain."
+          : "Setiap nilai hanya muncul satu kali, jadi data ini <b>tidak mempunyai modus</b>.";
+        $("#pmSteps").innerHTML =
+          "<div><b>Langkah 1 — Urutkan data:</b> " + st.sorted.map(fmt).join(", ") + "</div>" +
+          "<div><b>Langkah 2 — Mean:</b> jumlah semua data = " + fmt(st.sum) + ", banyak data = " + st.n + ", jadi mean = " + fmt(st.sum) + " ÷ " + st.n + " = <b>" + fmt(st.mean) + "</b>.</div>" +
+          "<div><b>Langkah 3 — Median:</b> " + medianStep + "</div>" +
+          "<div><b>Langkah 4 — Modus:</b> " + modusStep + "</div>";
+      }
+      $("#pmInput").addEventListener("input", renderPemusatan);
+      renderPemusatan();
+
+      /* ================= Materi 3: Simulasi Peluang ================= */
+      /* --- Koin --- */
+      const coin = { a: 0, g: 0 };
+      function renderCoinChart() {
+        const total = coin.a + coin.g;
+        const relA = total ? coin.a / total : 0;
+        const relG = total ? coin.g / total : 0;
+        const plot = { left: 48, right: 628, top: 26, base: 196 };
+        let s = "";
+        [0, 0.25, 0.5, 0.75, 1].forEach((v) => {
+          const y = plot.base - v * (plot.base - plot.top);
+          s += '<line x1="' + plot.left + '" y1="' + y + '" x2="' + plot.right + '" y2="' + y + '" stroke="currentColor" opacity="' + (v === 0 ? 0.45 : 0.14) + '" stroke-width="1"/>';
+          s += '<text x="' + (plot.left - 8) + '" y="' + (y + 4) + '" text-anchor="end" font-size="12" fill="currentColor" opacity="0.65">' + fmt(v) + "</text>";
+        });
+        const yTheo = plot.base - 0.5 * (plot.base - plot.top);
+        s += '<line x1="' + plot.left + '" y1="' + yTheo + '" x2="' + plot.right + '" y2="' + yTheo + '" stroke="var(--amber)" stroke-width="2.5" stroke-dasharray="8 5"/>';
+        s += '<text x="' + (plot.right - 4) + '" y="' + (yTheo - 8) + '" text-anchor="end" font-size="12.5" font-weight="800" fill="var(--amber)">Peluang teoretik = 0,5</text>';
+        [["Angka", relA, "#1763a6"], ["Gambar", relG, "#e08a00"]].forEach((b, i) => {
+          const cx = 220 + i * 220, bw = 110;
+          const h = b[1] * (plot.base - plot.top);
+          s += '<rect x="' + (cx - bw / 2) + '" y="' + (plot.base - h) + '" width="' + bw + '" height="' + Math.max(h, total ? 2 : 0) + '" rx="6" fill="' + b[2] + '"/>';
+          if (total) s += '<text x="' + cx + '" y="' + (plot.base - h - 8) + '" text-anchor="middle" font-size="14.5" font-weight="800" fill="currentColor">' + fmt3(b[1]) + "</text>";
+          s += '<text x="' + cx + '" y="' + (plot.base + 22) + '" text-anchor="middle" font-size="13" fill="currentColor" opacity="0.75">' + b[0] + "</text>";
+        });
+        $("#coinChart").innerHTML = s;
+      }
+      function updateCoin(last) {
+        const total = coin.a + coin.g;
+        $("#coinTotal").textContent = fmtInt(total);
+        $("#coinAngka").textContent = fmtInt(coin.a);
+        $("#coinGambar").textContent = fmtInt(coin.g);
+        $("#coinFace").textContent = last || "SIAP?";
+        if (total) {
+          $("#coinInfo").innerHTML = "Terakhir muncul <b>" + last + "</b>. Frekuensi relatif Angka = " + coin.a + " ÷ " + total + " = <b>" + fmt3(coin.a / total) + "</b> (teoretiknya 0,5). Makin banyak lemparan, biasanya makin dekat ke 0,5.";
+        }
+        renderCoinChart();
+      }
+      function flipCoin(n) {
+        let last = null;
+        for (let i = 0; i < n; i++) {
+          if (Math.random() < 0.5) { coin.a++; last = "ANGKA"; } else { coin.g++; last = "GAMBAR"; }
+        }
+        const face = $("#coinFace");
+        face.classList.remove("flip");
+        void face.offsetWidth;
+        face.classList.add("flip");
+        updateCoin(last);
+      }
+      $$("[data-coin]").forEach((b) => b.addEventListener("click", () => flipCoin(+b.dataset.coin)));
+      $("#btnCoinReset").addEventListener("click", () => {
+        coin.a = 0; coin.g = 0;
+        $("#coinTotal").textContent = "0"; $("#coinAngka").textContent = "0"; $("#coinGambar").textContent = "0";
+        $("#coinFace").textContent = "SIAP?";
+        $("#coinInfo").textContent = "Tekan tombol lempar untuk mulai. Peluang teoretik Angka = 1/2 = 0,5.";
+        renderCoinChart();
+      });
+      renderCoinChart();
+
+      /* --- Dadu --- */
+      const PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+      const dice = { counts: [0, 0, 0, 0, 0, 0], total: 0, last: 0 };
+      (function buildDiceFace() {
+        let h = "";
+        for (let i = 0; i < 9; i++) h += '<div class="pip" data-pip="' + i + '"></div>';
+        $("#diceFace").innerHTML = h;
+      })();
+      function showDiceFace(v) {
+        $$("#diceFace .pip").forEach((p) => p.classList.toggle("on", PIPS[v].indexOf(+p.dataset.pip) >= 0));
+      }
+      showDiceFace(6);
+      function renderDiceChart() {
+        const maxF = Math.max.apply(null, dice.counts.concat([1]));
+        const plot = { left: 48, right: 628, top: 30, base: 232 };
+        const g = gridSVG(maxF, plot);
+        const slot = (plot.right - plot.left) / 6, bw = Math.min(58, slot * 0.56);
+        let s = g.svg;
+        if (dice.total > 0) {
+          const expY = plot.base - (dice.total / 6 / g.top) * (plot.base - plot.top);
+          if (expY > plot.top) {
+            s += '<line x1="' + plot.left + '" y1="' + expY + '" x2="' + plot.right + '" y2="' + expY + '" stroke="var(--amber)" stroke-width="2.5" stroke-dasharray="8 5"/>';
+            s += '<text x="' + (plot.right - 4) + '" y="' + (expY - 8) + '" text-anchor="end" font-size="12.5" font-weight="800" fill="var(--amber)">Harapan jika merata: ' + fmt(dice.total / 6) + " kali per mata</text>";
+          }
+        }
+        dice.counts.forEach((c, i) => {
+          const cx = plot.left + slot * i + slot / 2;
+          const h = (c / g.top) * (plot.base - plot.top);
+          s += '<rect x="' + (cx - bw / 2) + '" y="' + (plot.base - h) + '" width="' + bw + '" height="' + Math.max(h, c > 0 ? 2 : 0) + '" rx="5" fill="var(--accent)"/>';
+          s += '<text x="' + cx + '" y="' + (plot.base - h - 7) + '" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">' + c + "</text>";
+          s += '<text x="' + cx + '" y="' + (plot.base + 22) + '" text-anchor="middle" font-size="12.5" fill="currentColor" opacity="0.75">Mata ' + (i + 1) + "</text>";
+        });
+        $("#diceChart").innerHTML = s;
+      }
+      function rollDice(n) {
+        for (let i = 0; i < n; i++) {
+          const v = 1 + Math.floor(Math.random() * 6);
+          dice.counts[v - 1]++;
+          dice.total++;
+          dice.last = v;
+        }
+        showDiceFace(dice.last);
+        const face = $("#diceFace");
+        face.classList.remove("roll");
+        void face.offsetWidth;
+        face.classList.add("roll");
+        $("#diceTotal").textContent = fmtInt(dice.total);
+        $("#diceLast").textContent = dice.last;
+        $("#diceInfo").innerHTML = "Terakhir muncul mata <b>" + dice.last + "</b>. Muncul " + dice.counts[dice.last - 1] + " kali dari " + dice.total + " lemparan, jadi frekuensi relatifnya = <b>" + fmt3(dice.counts[dice.last - 1] / dice.total) + "</b> (teoretiknya 1/6 ≈ 0,167).";
+        renderDiceChart();
+      }
+      $$("[data-dice]").forEach((b) => b.addEventListener("click", () => rollDice(+b.dataset.dice)));
+      $("#btnDiceReset").addEventListener("click", () => {
+        dice.counts = [0, 0, 0, 0, 0, 0]; dice.total = 0; dice.last = 0;
+        $("#diceTotal").textContent = "0"; $("#diceLast").textContent = "—";
+        $("#diceInfo").textContent = "Tekan tombol lempar untuk mulai. Peluang teoretik setiap mata dadu = 1/6 ≈ 0,167.";
+        showDiceFace(6);
+        renderDiceChart();
+      });
+      renderDiceChart();
+
+      /* ================= Kalkulator ================= */
+      $("#btnCalc").addEventListener("click", () => {
+        const values = parseNums($("#calcInput").value);
+        if (values.length < 2) { $("#calcErr").hidden = false; $("#calcOut").hidden = true; return; }
+        $("#calcErr").hidden = true;
+        const st = computeStats(values);
+        $("#calcMean").textContent = fmt(st.mean);
+        $("#calcMedian").textContent = fmt(st.median);
+        $("#calcModus").textContent = st.modes.length ? st.modes.map(fmt).join(" & ") : "Tidak ada";
+        $("#calcCount").textContent = st.n;
+        $("#calcSum").textContent = fmt(st.sum);
+        $("#calcRange").textContent = fmt(st.max - st.min);
+        let medianStep;
+        if (st.n % 2 === 1) medianStep = "data ke-" + ((st.n + 1) / 2) + " = " + fmt(st.median);
+        else medianStep = "rata-rata data ke-" + (st.n / 2) + " dan ke-" + (st.n / 2 + 1) + " = (" + fmt(st.sorted[st.n / 2 - 1]) + " + " + fmt(st.sorted[st.n / 2]) + ") ÷ 2 = " + fmt(st.median);
+        const modusStep = st.modes.length
+          ? st.modes.map((m) => fmt(m) + " (muncul " + st.maxCount + " kali)").join(" dan ")
+          : "tidak ada, karena semua nilai muncul sama sering (satu kali atau frekuensi tertinggi dimiliki banyak nilai secara seri tanpa pemenang tunggal)";
+        $("#calcSteps").innerHTML =
+          "<div><b>Data terurut:</b> " + st.sorted.map(fmt).join(", ") + "</div>" +
+          "<div><b>Mean</b> = jumlah data ÷ banyak data = " + fmt(st.sum) + " ÷ " + st.n + " = <b>" + fmt(st.mean) + "</b></div>" +
+          "<div><b>Median</b> = " + medianStep + "</div>" +
+          "<div><b>Modus</b> = " + modusStep + "</div>" +
+          "<div><b>Jangkauan</b> = data terbesar − data terkecil = " + fmt(st.max) + " − " + fmt(st.min) + " = <b>" + fmt(st.max - st.min) + "</b></div>";
+        $("#calcOut").hidden = false;
+      });
+      $("#btnProb").addEventListener("click", () => {
+        const a = parseFloat($("#probA").value), s = parseFloat($("#probS").value);
+        const valid = isFinite(a) && isFinite(s) && Number.isInteger(a) && Number.isInteger(s) && s >= 1 && a >= 0 && a <= s;
+        if (!valid) { $("#probErr").hidden = false; $("#probOut").hidden = true; return; }
+        $("#probErr").hidden = true;
+        const g = gcd(a, s);
+        const num = a / g, den = s / g;
+        const dec = a / s;
+        const fracTxt = a === 0 ? "0" : (den === 1 ? String(num) : num + "/" + den);
+        $("#probResult").innerHTML = "P(A) = " + a + "/" + s + (g > 1 ? " = " + fracTxt : "") + " = " + fmt3(dec) + " ≈ " + fmt(dec * 100) + "%";
+        $("#probSteps").innerHTML =
+          "<div>P(A) = n(A) ÷ n(S) = " + a + " ÷ " + s + "</div>" +
+          (g > 1 ? "<div>Pecahan disederhanakan dengan membagi pembilang dan penyebut dengan FPB-nya (" + g + "): <b>" + fracTxt + "</b></div>" : "<div>Pecahan " + a + "/" + s + " sudah paling sederhana.</div>") +
+          "<div>Bentuk desimal: <b>" + fmt3(dec) + "</b> · Bentuk persen: <b>" + fmt(dec * 100) + "%</b></div>" +
+          "<div>" + (dec === 0 ? "Peluang 0 artinya kejadian itu mustahil terjadi." : dec === 1 ? "Peluang 1 artinya kejadian itu pasti terjadi." : "Peluang selalu berada di antara 0 (mustahil) dan 1 (pasti).") + "</div>";
+        $("#probOut").hidden = false;
+      });
+
+      /* ================= Latihan Cepat ================= */
+      const LATIHAN = [
+        { q: "Tentukan mean dari data: 5, 7, 8, 8, 10, 12, 12, 14.", ans: 9.5, exp: "Jumlah data = 5 + 7 + 8 + 8 + 10 + 12 + 12 + 14 = 76. Banyak data = 8. Mean = 76 ÷ 8 = 9,5." },
+        { q: "Tentukan median dari data: 12, 15, 11, 18, 14, 16.", ans: 14.5, exp: "Urutkan dulu: 11, 12, 14, 15, 16, 18. Banyak data genap (6), jadi median = rata-rata data ke-3 dan ke-4 = (14 + 15) ÷ 2 = 14,5." },
+        { q: "Tentukan modus dari data nilai: 9, 7, 8, 7, 10, 7, 9, 8.", ans: 7, exp: "Nilai 7 muncul 3 kali, nilai 8 dan 9 masing-masing muncul 2 kali, nilai 10 muncul 1 kali. Yang paling sering adalah 7, jadi modusnya 7." },
+        { q: "Sebuah koin dilempar 30 kali dan sisi Angka muncul 18 kali. Berapa frekuensi relatif (peluang empirik) munculnya Angka? Tulis dalam bentuk desimal.", ans: 0.6, exp: "Frekuensi relatif = banyak kejadian ÷ banyak percobaan = 18 ÷ 30 = 0,6. Hasil ini dekat dengan peluang teoretik koin, yaitu 0,5." },
+      ];
+      const latihanWrap = $("#latihanList");
+      LATIHAN.forEach((item, idx) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML =
+          "<h3>Soal " + (idx + 1) + "</h3><p>" + esc(item.q) + "</p>" +
+          '<div class="form-row c2"><div class="field" style="margin-bottom:0"><label for="latIn' + idx + '">Jawabanmu</label><input type="text" inputmode="decimal" id="latIn' + idx + '" placeholder="Ketik jawaban…" /></div>' +
+          '<div style="display:flex; align-items:flex-end"><button class="btn" type="button" data-lat="' + idx + '">Periksa Jawaban</button></div></div>' +
+          '<div class="explain" id="latFb' + idx + '" hidden></div>';
+        latihanWrap.appendChild(card);
+      });
+      $$("[data-lat]").forEach((btn) => btn.addEventListener("click", () => {
+        const idx = +btn.dataset.lat;
+        const val = parseFloat(String($("#latIn" + idx).value).replace(",", "."));
+        const fb = $("#latFb" + idx);
+        fb.hidden = false;
+        if (isFinite(val) && Math.abs(val - LATIHAN[idx].ans) < 0.01) {
+          fb.className = "explain good";
+          fb.innerHTML = "<b>Benar!</b> " + esc(LATIHAN[idx].exp);
+        } else {
+          fb.className = "explain bad";
+          fb.innerHTML = "<b>Belum tepat.</b> Coba hitung lagi. Pembahasan: " + esc(LATIHAN[idx].exp);
+        }
+      }));
+
+      /* ================= Kuis ================= */
+      const QUIZ = [
+        { q: "Mean dari data 6, 8, 7, 9, 10 adalah …", opts: ["7", "8", "9", "10"], ans: 1, exp: "Jumlah data = 6 + 8 + 7 + 9 + 10 = 40. Mean = 40 ÷ 5 = 8." },
+        { q: "Median dari data 5, 7, 8, 10, 12, 13, 15 adalah …", opts: ["8", "9", "10", "12"], ans: 2, exp: "Data sudah terurut dan banyaknya ganjil (7 data). Median adalah data ke-4, yaitu 10." },
+        { q: "Modus dari data 7, 8, 8, 9, 8, 10, 9 adalah …", opts: ["7", "8", "9", "10"], ans: 1, exp: "Nilai 8 muncul 3 kali — paling sering dibanding nilai lainnya. Jadi modusnya 8." },
+        { q: "Median dari data 4, 6, 8, 10, 12, 14 adalah …", opts: ["8", "9", "10", "11"], ans: 1, exp: "Banyak data genap (6). Median = rata-rata data ke-3 dan ke-4 = (8 + 10) ÷ 2 = 9." },
+        { q: "Pada diagram lingkaran hobi 40 siswa, 25% siswa gemar sepak bola. Banyak siswa yang gemar sepak bola adalah …", opts: ["5 siswa", "8 siswa", "10 siswa", "15 siswa"], ans: 2, exp: "25% dari 40 = 25/100 × 40 = 10 siswa." },
+        { q: "Nilai rata-rata dari data 70, 80, 80, 90 adalah …", opts: ["75", "78", "80", "85"], ans: 2, exp: "Jumlah data = 70 + 80 + 80 + 90 = 320. Rata-rata = 320 ÷ 4 = 80." },
+        { q: "Sebuah dadu dilempar satu kali. Peluang muncul mata dadu 6 adalah …", opts: ["1/2", "1/3", "1/6", "5/6"], ans: 2, exp: "n(A) = 1 (hanya mata 6), n(S) = 6 (mata 1 sampai 6). P = 1/6." },
+        { q: "Sebuah dadu dilempar satu kali. Peluang muncul mata dadu genap adalah …", opts: ["1/6", "1/3", "1/2", "2/3"], ans: 2, exp: "Mata genap ada 3: 2, 4, dan 6. P = 3/6 = 1/2." },
+        { q: "Sebuah kantong berisi 5 kelereng merah dan 3 kelereng biru. Peluang mengambil satu kelereng merah adalah …", opts: ["3/8", "5/8", "3/5", "5/3"], ans: 1, exp: "n(A) = 5 (kelereng merah), n(S) = 5 + 3 = 8 (semua kelereng). P = 5/8." },
+        { q: "Sebuah koin dilempar 20 kali dan sisi Gambar muncul 8 kali. Peluang empirik munculnya sisi Angka adalah …", opts: ["8/20", "2/5", "3/5", "12/8"], ans: 2, exp: "Angka muncul 20 − 8 = 12 kali. Peluang empirik = 12/20 = 3/5." },
+      ];
+      let quizIdx = 0, quizScore = 0, quizAnswered = false;
+      function startQuiz() {
+        quizIdx = 0; quizScore = 0;
+        $("#quizStart").hidden = true;
+        $("#quizResult").hidden = true;
+        $("#quizPlay").hidden = false;
+        renderQuestion();
+      }
+      function renderQuestion() {
+        quizAnswered = false;
+        const item = QUIZ[quizIdx];
+        $("#quizProgressLabel").textContent = "Soal " + (quizIdx + 1) + " dari " + QUIZ.length;
+        $("#quizScoreLabel").textContent = "Skor sementara: " + quizScore;
+        $("#quizBar").style.width = (quizIdx / QUIZ.length * 100) + "%";
+        $("#quizQuestion").textContent = item.q;
+        const wrap = $("#quizOptions");
+        wrap.innerHTML = "";
+        item.opts.forEach((opt, oi) => {
+          const b = document.createElement("button");
+          b.type = "button"; b.className = "opt";
+          b.textContent = String.fromCharCode(65 + oi) + ". " + opt;
+          b.addEventListener("click", () => answerQuestion(oi));
+          wrap.appendChild(b);
+        });
+        $("#quizExplain").hidden = true;
+        $("#btnNextQ").hidden = true;
+        $("#btnNextQ").textContent = quizIdx === QUIZ.length - 1 ? "Lihat Hasil Akhir" : "Soal Berikutnya";
+      }
+      function answerQuestion(oi) {
+        if (quizAnswered) return;
+        quizAnswered = true;
+        const item = QUIZ[quizIdx];
+        const buttons = $$("#quizOptions .opt");
+        buttons.forEach((b, bi) => {
+          b.disabled = true;
+          if (bi === item.ans) b.classList.add("correct");
+          else if (bi === oi) b.classList.add("wrong");
+        });
+        const benar = oi === item.ans;
+        if (benar) quizScore += 10;
+        $("#quizScoreLabel").textContent = "Skor sementara: " + quizScore;
+        const ex = $("#quizExplain");
+        ex.hidden = false;
+        ex.className = "explain " + (benar ? "good" : "bad");
+        ex.innerHTML = "<b>" + (benar ? "Benar! +10 poin." : "Belum tepat. Jawaban yang benar: " + String.fromCharCode(65 + item.ans) + ". " + esc(item.opts[item.ans])) + "</b><br>" + esc(item.exp);
+        $("#btnNextQ").hidden = false;
+      }
+      function finishQuiz() {
+        $("#quizPlay").hidden = true;
+        $("#quizResult").hidden = false;
+        $("#finalScore").textContent = quizScore;
+        const benar = quizScore / 10;
+        let msg = "Tetap semangat! Coba pelajari lagi materinya, lalu ulangi kuisnya.";
+        if (quizScore >= 90) msg = "Luar biasa! Kamu sudah menguasai statistika dan peluang.";
+        else if (quizScore >= 70) msg = "Bagus! Sedikit lagi menuju sempurna.";
+        else if (quizScore >= 50) msg = "Cukup baik. Baca lagi pembahasannya dan coba sekali lagi.";
+        $("#finalMsg").textContent = msg;
+        $("#finalDetail").textContent = "Kamu menjawab benar " + benar + " dari " + QUIZ.length + " soal.";
+        if (currentStudent) {
+          const attemptNo = currentStudent.attempts.length + 1;
+          currentStudent.attempts.push({ time: new Date(), score: quizScore, attemptNo: attemptNo });
+          currentStudent.lastActivity = new Date();
+          sheetSend({ type: "kuis", time: nowISO(), nama: currentStudent.nama, kelas: currentStudent.kelas, attemptNo: attemptNo, score: quizScore });
+        }
+      }
+      $("#btnStartQuiz").addEventListener("click", startQuiz);
+      $("#btnRetryQuiz").addEventListener("click", startQuiz);
+      $("#btnBackMateri").addEventListener("click", () => showTab("materi"));
+      $("#btnNextQ").addEventListener("click", () => {
+        if (quizIdx < QUIZ.length - 1) { quizIdx++; renderQuestion(); }
+        else finishQuiz();
+      });
+
+      /* ================= Data Guru ================= */
+      const GURU_PIN = "d4pm4t";
+      function renderGuruGate() {
+        const locked = !guruUnlocked;
+        $("#pinGate").hidden = !locked;
+        $("#guruContent").hidden = locked;
+        if (!locked) renderGuru();
+        else { $("#pinInput").value = ""; $("#pinErr").hidden = true; }
+      }
+      $("#pinForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        if ($("#pinInput").value === GURU_PIN) {
+          guruUnlocked = true;
+          $("#pinErr").hidden = true;
+          renderGuruGate();
+        } else {
+          $("#pinErr").hidden = false;
+        }
+      });
+      function studentStats(r) {
+        const scores = r.attempts.map((a) => a.score);
+        return {
+          last: scores.length ? scores[scores.length - 1] : null,
+          best: scores.length ? Math.max.apply(null, scores) : null,
+          avg: scores.length ? Math.round(scores.reduce((x, y) => x + y, 0) / scores.length) : null,
+        };
+      }
+      function renderGuru() {
+        $("#statSiswa").textContent = studentRecords.length;
+        $("#statLogin").textContent = studentRecords.reduce((s, r) => s + r.logins, 0);
+        $("#statKuis").textContent = studentRecords.reduce((s, r) => s + r.attempts.length, 0);
+        const list = $("#studentList");
+        list.innerHTML = "";
+        $("#emptyStudents").style.display = studentRecords.length ? "none" : "block";
+        const sorted = studentRecords.slice().sort((a, b) => a.nama.localeCompare(b.nama));
+        sorted.forEach((r) => {
+          const st = studentStats(r);
+          const menus = Object.keys(r.visits).map((t) => TAB_LABELS[t] || t);
+          const trend = r.attempts.length > 1
+            ? (st.last > r.attempts[0].score ? " · tren: naik" : (st.last < r.attempts[0].score ? " · tren: turun" : " · tren: tetap"))
+            : "";
+          const bars = r.attempts.map((a) =>
+            '<div class="barwrap"><div class="bar" style="height:' + Math.max(6, a.score * 0.5) + 'px"></div>' + a.score + "</div>"
+          ).join("");
+          const card = document.createElement("div");
+          card.className = "student-card";
+          card.innerHTML =
+            '<div class="head"><b>' + esc(r.nama) + '</b><span class="muted">Kelas ' + esc(r.kelas) + " · login " + r.logins + "× · pertama: " + fmtTime(r.firstLogin) + "</span></div>" +
+            '<div class="chips">' + (menus.length ? menus.map((m) => '<span class="chip">' + esc(m) + "</span>").join("") : '<span class="muted">Belum membuka menu belajar pada sesi ini.</span>') + "</div>" +
+            (r.attempts.length
+              ? '<div class="muted">Kuis: ' + r.attempts.length + " percobaan · terakhir <b>" + st.last + "</b> · terbaik <b>" + st.best + "</b> · rata-rata <b>" + st.avg + "</b>" + trend + '</div><div class="score-track">' + bars + "</div>"
+              : '<div class="muted">Belum pernah mengerjakan kuis.</div>');
+          list.appendChild(card);
+        });
+      }
+
+      /* ---------- CSV ---------- */
+      function csvCell(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
+      $("#btnCsv").addEventListener("click", () => {
+        if (!studentRecords.length) { setSheetStatus("Belum ada data siswa untuk diunduh."); return; }
+        const rows = [["Nama", "Kelas", "Login Pertama", "Jumlah Login", "Menu Dipelajari", "Percobaan Kuis", "Skor Terakhir", "Skor Terbaik", "Rata-rata Skor", "Riwayat Skor"]];
+        studentRecords.slice().sort((a, b) => a.nama.localeCompare(b.nama)).forEach((r) => {
+          const st = studentStats(r);
+          rows.push([
+            r.nama, r.kelas, new Date(r.firstLogin).toLocaleString("id-ID"), r.logins,
+            Object.keys(r.visits).map((t) => TAB_LABELS[t] || t).join("; "),
+            r.attempts.length,
+            st.last == null ? "" : st.last, st.best == null ? "" : st.best, st.avg == null ? "" : st.avg,
+            r.attempts.map((a) => a.score).join(" - "),
+          ]);
+        });
+        const csv = rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
+        const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "laporan-statistika-peluang.csv";
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      });
+
+      /* ---------- Integrasi Sheet: muat, ringkasan, uji kirim, pengaturan ---------- */
+      function mergeSheetData(data) {
+        let siswaBaru = 0, kuisBaru = 0;
+        (data.login || []).forEach((row) => {
+          if (!row.nama || !row.kelas) return;
+          const t = new Date(row.time);
+          let rec = findRecord(String(row.nama), String(row.kelas));
+          if (!rec) { rec = makeRecord(String(row.nama), String(row.kelas), isNaN(t) ? new Date() : t); studentRecords.push(rec); siswaBaru++; }
+          else if (!isNaN(t) && t < rec.firstLogin) rec.firstLogin = t;
+        });
+        (data.kuis || []).forEach((row) => {
+          if (!row.nama || !row.kelas) return;
+          const t = new Date(row.time);
+          let rec = findRecord(String(row.nama), String(row.kelas));
+          if (!rec) { rec = makeRecord(String(row.nama), String(row.kelas), isNaN(t) ? new Date() : t); studentRecords.push(rec); siswaBaru++; }
+          const no = row.attemptNo || rec.attempts.length + 1;
+          if (!rec.attempts.some((a) => a.attemptNo === no)) {
+            rec.attempts.push({ time: isNaN(t) ? new Date() : t, score: +row.score || 0, attemptNo: no });
+            rec.attempts.sort((a, b) => a.attemptNo - b.attemptNo);
+            kuisBaru++;
+          }
+        });
+        return { siswaBaru: siswaBaru, kuisBaru: kuisBaru };
+      }
+      $("#btnSheetLoad").addEventListener("click", () => {
+        setSheetStatus("Memuat data dari Google Sheet…");
+        sheetLoad().then((data) => {
+          const m = mergeSheetData(data || {});
+          renderGuru();
+          setSheetStatus("Data dari Sheet berhasil dimuat: " + m.siswaBaru + " siswa baru dan " + m.kuisBaru + " hasil kuis baru ditambahkan ke dasbor.", true);
+        }).catch(() => setSheetStatus("Gagal memuat data dari Sheet. Periksa koneksi internet dan URL Aplikasi Web-nya, lalu coba lagi."));
+      });
+      $("#btnSheetSummary").addEventListener("click", () => {
+        if (!studentRecords.length) { setSheetStatus("Belum ada data siswa pada sesi ini untuk dikirim."); return; }
+        setSheetStatus("Mengirim ringkasan sesi ke Sheet…");
+        const jobs = studentRecords.map((r) => {
+          const st = studentStats(r);
+          return sheetSend({
+            type: "ringkasan", nama: r.nama, kelas: r.kelas,
+            menus: Object.keys(r.visits).map((t) => TAB_LABELS[t] || t).join(", "),
+            attempts: r.attempts.length,
+            last: st.last == null ? "" : st.last, best: st.best == null ? "" : st.best, avg: st.avg == null ? "" : st.avg,
+          });
+        });
+        Promise.all(jobs).then(() => setSheetStatus("Ringkasan sesi terkirim — silakan periksa tab \"Ringkasan\" pada Sheet untuk memastikan datanya masuk.", true));
+      });
+      $("#btnUjiKirim").addEventListener("click", () => {
+        setSheetStatus("Mengirim data uji ke Sheet…");
+        sheetSend({ type: "login", time: nowISO(), nama: "UJI KONEKSI", kelas: "UJI" }).then((ok) => {
+          if (!ok) { setSheetStatus("Pengiriman uji tidak terkonfirmasi. Periksa koneksi internet, lalu coba lagi."); return; }
+          setSheetStatus("Data uji terkirim. Membaca kembali isi Sheet untuk memastikan…");
+          setTimeout(() => {
+            sheetLoad().then((data) => {
+              const nLogin = (data.login || []).length, nKuis = (data.kuis || []).length;
+              setSheetStatus("Uji berhasil! Sheet bisa menerima dan mengirim data aplikasi statistika-8. Saat ini terbaca " + nLogin + " baris login dan " + nKuis + " baris kuis. Baris uji berlabel \"UJI KONEKSI\" boleh dihapus dari Sheet.", true);
+            }).catch(() => setSheetStatus("Data uji terkirim, tetapi pembacaan kembali dari Sheet gagal. Cek tab Login di Sheet — baris \"UJI KONEKSI\" seharusnya sudah masuk."));
+          }, 1600);
+        });
+      });
+      $("#btnSheetConnect").addEventListener("click", () => {
+        const url = $("#sheetUrl").value.trim();
+        if (!url) {
+          sheetEndpoint = DEFAULT_SHEET_URL;
+          $("#sheetUrl").value = DEFAULT_SHEET_URL;
+          setSheetStatus("Kolom URL dikosongkan — aplikasi kembali memakai URL Google Sheet yang tertanam.", true);
+          return;
+        }
+        if (!/^https:\/\//i.test(url)) {
+          setSheetStatus("URL tidak valid (harus diawali https:// dan biasanya berakhiran /exec) — URL sebelumnya tetap dipakai.");
+          $("#sheetUrl").focus();
+          return;
+        }
+        sheetEndpoint = url;
+        setSheetStatus("Terhubung ke URL baru. Login dan hasil kuis mulai sekarang terkirim ke Sheet pada URL tersebut.", true);
+      });
+      $("#sheetUrl").value = DEFAULT_SHEET_URL;
+
+      /* ---------- Kode Apps Script untuk disalin ---------- */
+      const APPS_SCRIPT_CODE = [
+        "// Kode Apps Script untuk Google Sheet pusat DapMath.",
+        "// Tempel di spreadsheet lewat Ekstensi > Apps Script, lalu Deploy",
+        "// sebagai Aplikasi Web dengan akses \"Siapa saja\" (Anyone).",
+        "function ambilSheet(ss, nama, header) {",
+        "  var sh = ss.getSheetByName(nama);",
+        "  if (!sh) { sh = ss.insertSheet(nama); sh.appendRow(header); }",
+        "  return sh;",
+        "}",
+        "function doPost(e) {",
+        "  var data = JSON.parse(e.postData.contents);",
+        "  var ss = SpreadsheetApp.getActiveSpreadsheet();",
+        "  var app = data.app || \"\";",
+        "  if (data.type === \"login\") {",
+        "    ambilSheet(ss, \"Login\", [\"Waktu\", \"Nama\", \"Kelas\", \"Aplikasi\"])",
+        "      .appendRow([new Date(data.time), data.nama, data.kelas, app]);",
+        "  } else if (data.type === \"kuis\") {",
+        "    ambilSheet(ss, \"Kuis\", [\"Waktu Selesai\", \"Nama\", \"Kelas\", \"Percobaan ke\", \"Skor\", \"Aplikasi\"])",
+        "      .appendRow([new Date(data.time), data.nama, data.kelas, data.attemptNo, data.score, app]);",
+        "  } else if (data.type === \"ringkasan\") {",
+        "    ambilSheet(ss, \"Ringkasan\", [\"Waktu Kirim\", \"Nama\", \"Kelas\", \"Menu Dipelajari\", \"Percobaan Kuis\", \"Skor Terakhir\", \"Skor Terbaik\", \"Rata-rata Skor\", \"Aplikasi\"])",
+        "      .appendRow([new Date(), data.nama, data.kelas, data.menus, data.attempts, data.last, data.best, data.avg, app]);",
+        "  }",
+        "  return ContentService.createTextOutput(JSON.stringify({ ok: true }))",
+        "    .setMimeType(ContentService.MimeType.JSON);",
+        "}",
+        "function bacaBaris(ss, nama, app) {",
+        "  var sh = ss.getSheetByName(nama);",
+        "  if (!sh || sh.getLastRow() < 2) return [];",
+        "  var rows = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();",
+        "  if (!app) return rows;",
+        "  return rows.filter(function (r) { return r[r.length - 1] === app; });",
+        "}",
+        "function doGet(e) {",
+        "  var ss = SpreadsheetApp.getActiveSpreadsheet();",
+        "  var app = (e && e.parameter && e.parameter.app) || \"\";",
+        "  var login = bacaBaris(ss, \"Login\", app).map(function (r) {",
+        "    return { time: r[0], nama: r[1], kelas: r[2] };",
+        "  });",
+        "  var kuis = bacaBaris(ss, \"Kuis\", app).map(function (r) {",
+        "    return { time: r[0], nama: r[1], kelas: r[2], attemptNo: r[3], score: r[4] };",
+        "  });",
+        "  return ContentService.createTextOutput(JSON.stringify({ login: login, kuis: kuis }))",
+        "    .setMimeType(ContentService.MimeType.JSON);",
+        "}",
+      ].join("\n");
+      $("#appsScriptCode").value = APPS_SCRIPT_CODE;
+      $("#btnCopyScript").addEventListener("click", () => {
+        const box = $("#appsScriptCode"), btn = $("#btnCopyScript");
+        const done = () => { btn.textContent = "Kode Tersalin ✓"; setTimeout(() => { btn.textContent = "Salin Kode Apps Script"; }, 2200); };
+        box.select(); box.setSelectionRange(0, box.value.length);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(box.value).then(done).catch(() => { try { document.execCommand("copy"); } catch (err) { /* abaikan */ } done(); });
+        } else { try { document.execCommand("copy"); } catch (err) { /* abaikan */ } done(); }
+      });
+    </script>
+  </body>
+</html>
