@@ -1,1 +1,1154 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Aplikasi Pola Bilangan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4f1e8;
+        --surface: #fffdf7;
+        --surface-2: #ece7d8;
+        --ink: #21312c;
+        --muted: #5d6f68;
+        --line: #d9d2bf;
+        --accent: #0d7a5f;
+        --accent-strong: #095c47;
+        --accent-soft: #dcefe7;
+        --accent-ink: #ffffff;
+        --amber: #b96e00;
+        --amber-soft: #f7e8cd;
+        --good: #157347;
+        --good-soft: #d9efe1;
+        --bad: #b3372f;
+        --bad-soft: #f8e0dc;
+        --shadow: 0 2px 10px rgba(33, 49, 44, 0.08);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101614;
+          --surface: #1a221f;
+          --surface-2: #232d29;
+          --ink: #e9ede9;
+          --muted: #a3b3ac;
+          --line: #33423c;
+          --accent: #35c298;
+          --accent-strong: #5fd3ae;
+          --accent-soft: #1d322b;
+          --accent-ink: #07231a;
+          --amber: #e2a63d;
+          --amber-soft: #3a2f16;
+          --good: #4cc084;
+          --good-soft: #1d3527;
+          --bad: #e07a6e;
+          --bad-soft: #3d2320;
+          --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+      h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 1.2; margin: 0 0 0.5em; }
+      h1 { font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 900; }
+      h2 { font-size: clamp(1.35rem, 3.4vw, 1.8rem); font-weight: 700; }
+      h3 { font-size: 1.15rem; font-weight: 700; }
+      p { margin: 0 0 0.9em; }
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px 40px; }
+      [hidden] { display: none !important; }
 
+      /* ---------- Bilah atas ---------- */
+      .topbar {
+        position: sticky; top: 0; z-index: 40;
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar-inner {
+        max-width: 1060px; margin: 0 auto; padding: 10px 16px;
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      }
+      .brand { font-family: "Fraunces", Georgia, serif; font-weight: 900; font-size: 1.15rem; margin-right: auto; }
+      .brand small { display: block; font-family: "Plus Jakarta Sans", sans-serif; font-weight: 600; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+      .student-chip { display: flex; align-items: center; gap: 10px; }
+      .avatar {
+        width: 42px; height: 42px; border-radius: 50%;
+        background: var(--accent); color: var(--accent-ink);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 1rem; flex: none;
+      }
+      .student-meta { line-height: 1.25; }
+      .student-meta .nm { font-weight: 800; }
+      .student-meta .kl { font-size: 0.82rem; color: var(--muted); }
+
+      /* ---------- Tombol ---------- */
+      .btn {
+        appearance: none; border: 1px solid var(--accent);
+        background: var(--accent); color: var(--accent-ink);
+        font: inherit; font-weight: 700; cursor: pointer;
+        min-height: 52px; padding: 12px 22px; border-radius: 12px;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        text-decoration: none; touch-action: manipulation;
+      }
+      .btn:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+      .btn.secondary { background: transparent; color: var(--accent); }
+      .btn.secondary:hover { background: var(--accent-soft); }
+      .btn.ghost { background: var(--surface-2); border-color: var(--line); color: var(--ink); }
+      .btn.ghost:hover { background: var(--line); }
+      .btn.small { min-height: 44px; padding: 8px 16px; font-size: 0.95rem; }
+      .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+      .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+      /* ---------- Navigasi menu ---------- */
+      .tabbar {
+        max-width: 1060px; margin: 0 auto; padding: 12px 16px 4px;
+        display: flex; flex-wrap: wrap; gap: 8px;
+      }
+      .tab-btn {
+        appearance: none; font: inherit; font-weight: 700; cursor: pointer;
+        min-height: 52px; padding: 10px 18px; border-radius: 999px;
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+        flex: 1 1 auto; touch-action: manipulation;
+      }
+      .tab-btn[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+      .subbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; }
+      .sub-btn {
+        appearance: none; font: inherit; font-weight: 600; cursor: pointer;
+        min-height: 48px; padding: 8px 16px; border-radius: 10px;
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+        touch-action: manipulation;
+      }
+      .sub-btn[aria-selected="true"] { background: var(--amber-soft); border-color: var(--amber); color: var(--ink); }
+
+      /* ---------- Kartu & panel ---------- */
+      .card {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow);
+        padding: 22px; margin: 0 0 20px;
+      }
+      .grid { display: grid; gap: 16px; }
+      @media (min-width: 720px) { .grid.cols-3 { grid-template-columns: repeat(3, 1fr); } .grid.cols-2 { grid-template-columns: repeat(2, 1fr); } }
+      .menu-card h3 { margin-bottom: 6px; }
+      .menu-card p { color: var(--muted); font-size: 0.97rem; }
+      .formula {
+        background: var(--accent-soft); border-radius: 10px;
+        padding: 14px 18px; margin: 14px 0; font-size: 1.08rem;
+      }
+      .formula .lbl { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent-strong); display: block; margin-bottom: 4px; }
+      .note { background: var(--amber-soft); border-radius: 10px; padding: 12px 16px; font-size: 0.96rem; }
+      .muted { color: var(--muted); }
+      .seq { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+      .seq .term {
+        min-width: 52px; text-align: center; padding: 10px 8px;
+        background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+      }
+      .seq .term b { display: block; font-size: 1.15rem; }
+      .seq .term span { font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+      .seq .term.hl { background: var(--accent-soft); border-color: var(--accent); }
+      .viz { width: 100%; height: auto; display: block; margin: 8px 0; }
+      .ctl { margin: 14px 0; }
+      .ctl label { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 6px; }
+      .ctl label output { color: var(--accent-strong); }
+      input[type="range"] { width: 100%; height: 44px; accent-color: var(--accent); cursor: pointer; }
+      .result-line { font-size: 1.12rem; font-weight: 700; background: var(--surface-2); border-radius: 10px; padding: 12px 16px; margin-top: 12px; }
+      .steps { background: var(--surface-2); border-radius: 10px; padding: 14px 18px; margin-top: 12px; font-size: 1.02rem; }
+      .steps div { padding: 3px 0; }
+
+      /* ---------- Formulir ---------- */
+      .field { margin-bottom: 16px; }
+      .field label { display: block; font-weight: 700; margin-bottom: 6px; }
+      .field input[type="text"], .field input[type="password"], .field input[type="url"], .field input[type="number"], .field select, textarea.code {
+        width: 100%; font: inherit; min-height: 54px; padding: 12px 14px;
+        border: 1px solid var(--line); border-radius: 10px;
+        background: var(--surface); color: var(--ink);
+      }
+      textarea.code { min-height: 180px; font-family: ui-monospace, Consolas, monospace; font-size: 0.78rem; line-height: 1.45; }
+      .form-row { display: grid; gap: 14px; }
+      @media (min-width: 640px) { .form-row.c3 { grid-template-columns: repeat(3, 1fr); } .form-row.c2 { grid-template-columns: repeat(2, 1fr); } }
+      .error-box { background: var(--bad-soft); color: var(--bad); border-radius: 10px; padding: 12px 16px; font-weight: 600; }
+      .status-box { background: var(--surface-2); border-radius: 10px; padding: 12px 16px; font-size: 0.97rem; margin-top: 12px; }
+      .status-box.ok { background: var(--good-soft); }
+
+      /* ---------- Login ---------- */
+      .login-wrap { max-width: 520px; margin: 0 auto; padding: 36px 16px 48px; }
+      .login-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 30px 26px; }
+      .login-card .btn { width: 100%; }
+
+      /* ---------- Kuis ---------- */
+      .progress { height: 12px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin: 10px 0 18px; }
+      .progress > div { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
+      .opt {
+        display: block; width: 100%; text-align: left; font: inherit; cursor: pointer;
+        min-height: 56px; padding: 14px 18px; margin: 0 0 10px;
+        border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink);
+        touch-action: manipulation;
+      }
+      .opt:hover { border-color: var(--accent); }
+      .opt.correct { border-color: var(--good); background: var(--good-soft); font-weight: 700; }
+      .opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+      .opt:disabled { cursor: default; opacity: 0.9; }
+      .explain { border-radius: 10px; padding: 14px 18px; margin-top: 6px; }
+      .explain.good { background: var(--good-soft); }
+      .explain.bad { background: var(--bad-soft); }
+      .score-big { font-family: "Fraunces", Georgia, serif; font-size: 3.4rem; font-weight: 900; text-align: center; line-height: 1; margin: 10px 0; }
+
+      /* ---------- Data Guru ---------- */
+      .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+      .stat { background: var(--surface-2); border-radius: 12px; padding: 14px; text-align: center; }
+      .stat b { display: block; font-size: 1.7rem; font-family: "Fraunces", Georgia, serif; }
+      .stat span { font-size: 0.82rem; color: var(--muted); font-weight: 700; }
+      .student-card { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; background: var(--surface); }
+      .student-card .head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+      .student-card .head b { font-size: 1.08rem; }
+      .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+      .chip { background: var(--accent-soft); border-radius: 999px; padding: 3px 12px; font-size: 0.83rem; font-weight: 600; }
+      .score-track { display: flex; align-items: flex-end; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+      .score-track .bar { width: 30px; background: var(--accent); border-radius: 5px 5px 0 0; min-height: 6px; }
+      .score-track .barwrap { text-align: center; font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+      .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+
+      footer {
+        border-top: 1px solid var(--line); margin-top: 12px;
+        padding: 22px 16px 30px; text-align: center; color: var(--muted); font-size: 0.95rem;
+      }
+      footer b { color: var(--ink); }
+      @media (prefers-reduced-motion: reduce) { .progress > div { transition: none; } }
+    </style>
+  </head>
+  <body>
+
+    <!-- ==================== HALAMAN LOGIN ==================== -->
+    <div id="loginView">
+      <div class="login-wrap">
+        <div class="login-card">
+          <h1>Pola Bilangan</h1>
+          <p class="muted">Aplikasi belajar matematika kelas 8 — bagian dari portal <b>DapMath</b>. Isi nama dan kelasmu dulu sebelum mulai belajar, supaya gurumu bisa melihat siapa saja yang sudah belajar dan bagaimana perkembangan nilai kuismu.</p>
+          <form id="loginForm" novalidate>
+            <div class="field">
+              <label for="namaInput">Nama Lengkap</label>
+              <input type="text" id="namaInput" placeholder="Contoh: Siti Rahma" autocomplete="name" maxlength="60" />
+            </div>
+            <div class="field">
+              <label for="kelasInput">Kelas</label>
+              <input type="text" id="kelasInput" placeholder="Contoh: 8A" autocomplete="off" maxlength="10" />
+            </div>
+            <div class="error-box" id="loginErr" hidden>Nama dan kelas wajib diisi dulu ya, sebelum mulai belajar.</div>
+            <p style="margin-top:16px"><button type="submit" class="btn">Mulai Belajar</button></p>
+          </form>
+          <p class="muted" style="font-size:0.9rem; margin-bottom:0">Untuk guru: masuk dengan nama sendiri, lalu buka menu <strong>Data Guru</strong> dan masukkan PIN guru untuk melihat data siswa. Data login dan kuis otomatis terkirim ke Google Sheet dari perangkat mana pun.</p>
+        </div>
+      </div>
+      <footer>Dibangun oleh <b>Dody Adyansyah</b> · DapMath — Matematika Kelas 8</footer>
+    </div>
+
+    <!-- ==================== APLIKASI UTAMA ==================== -->
+    <div id="appView" hidden>
+      <div class="topbar">
+        <div class="topbar-inner">
+          <div class="brand">DapMath<small>POLA BILANGAN · KELAS 8</small></div>
+          <div class="student-chip">
+            <div class="avatar" id="avatarEl">?</div>
+            <div class="student-meta">
+              <div class="nm" id="studentNameEl">—</div>
+              <div class="kl" id="studentClassEl">—</div>
+            </div>
+            <button class="btn ghost small" id="btnGantiSiswa" type="button">Ganti Siswa</button>
+          </div>
+        </div>
+      </div>
+
+      <nav class="tabbar" role="tablist" aria-label="Menu utama">
+        <button class="tab-btn" role="tab" data-tab="beranda" aria-selected="true" type="button">Beranda</button>
+        <button class="tab-btn" role="tab" data-tab="materi" aria-selected="false" type="button">Materi</button>
+        <button class="tab-btn" role="tab" data-tab="kalkulator" aria-selected="false" type="button">Kalkulator &amp; Latihan</button>
+        <button class="tab-btn" role="tab" data-tab="kuis" aria-selected="false" type="button">Kuis</button>
+        <button class="tab-btn" role="tab" data-tab="guru" aria-selected="false" type="button">Data Guru</button>
+      </nav>
+
+      <main class="wrap">
+        <!-- ========== BERANDA ========== -->
+        <section id="sec-beranda">
+          <div class="card">
+            <h2>Halo, <span id="haloNama">Siswa</span>! Siap bermain dengan pola?</h2>
+            <p>Pola bilangan adalah susunan bilangan yang mengikuti aturan tertentu. Kalau kamu tahu aturannya, kamu bisa menebak bilangan berikutnya, suku ke-100, bahkan jumlahnya — tanpa menghitung satu per satu. Di aplikasi ini kamu akan mempelajari enam pola penting:</p>
+            <div class="seq" aria-label="Contoh pola bilangan">
+              <div class="term"><b>3, 7, 11, 15, …</b><span>ARITMETIKA (+4)</span></div>
+              <div class="term"><b>2, 6, 18, 54, …</b><span>GEOMETRI (×3)</span></div>
+              <div class="term"><b>1, 1, 2, 3, 5, 8, …</b><span>FIBONACCI</span></div>
+              <div class="term"><b>1, 3, 6, 10, …</b><span>SEGITIGA</span></div>
+              <div class="term"><b>1, 4, 9, 16, …</b><span>PERSEGI</span></div>
+              <div class="term"><b>2, 6, 12, 20, …</b><span>PERSEGI PANJANG</span></div>
+            </div>
+            <p class="muted" style="margin-bottom:0">Geser-geser pengatur di menu <b>Materi</b> untuk melihat polanya berubah, latih kemampuanmu di <b>Kalkulator &amp; Latihan</b>, lalu uji pemahamanmu di <b>Kuis</b>.</p>
+          </div>
+          <div class="grid cols-3">
+            <div class="card menu-card">
+              <h3>Materi Interaktif</h3>
+              <p>Enam pola bilangan lengkap dengan rumus suku ke-n dan visual yang bisa kamu ubah-ubah sendiri.</p>
+              <button class="btn" type="button" data-goto="materi">Buka Materi</button>
+            </div>
+            <div class="card menu-card">
+              <h3>Kalkulator &amp; Latihan</h3>
+              <p>Hitung suku ke-n dan jumlah n suku pertama lengkap dengan langkah-langkahnya, lalu coba latihan cepat.</p>
+              <button class="btn" type="button" data-goto="kalkulator">Buka Kalkulator</button>
+            </div>
+            <div class="card menu-card">
+              <h3>Kuis 10 Soal</h3>
+              <p>Sepuluh soal pilihan ganda dengan pembahasan langsung di setiap soal dan skor akhir. Nilaimu tercatat untuk gurumu.</p>
+              <button class="btn" type="button" data-goto="kuis">Mulai Kuis</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== MATERI ========== -->
+        <section id="sec-materi" hidden>
+          <h2>Materi Pola Bilangan</h2>
+          <p class="muted">Pilih jenis pola, baca penjelasannya, lalu ubah-ubah pengaturnya untuk melihat bagaimana barisannya berubah.</p>
+          <div class="subbar" role="tablist" aria-label="Jenis pola">
+            <button class="sub-btn" data-sub="aritmetika" aria-selected="true" type="button">Aritmetika</button>
+            <button class="sub-btn" data-sub="geometri" aria-selected="false" type="button">Geometri</button>
+            <button class="sub-btn" data-sub="fibonacci" aria-selected="false" type="button">Fibonacci</button>
+            <button class="sub-btn" data-sub="segitiga" aria-selected="false" type="button">Pola Segitiga</button>
+            <button class="sub-btn" data-sub="persegi" aria-selected="false" type="button">Pola Persegi</button>
+            <button class="sub-btn" data-sub="persegipanjang" aria-selected="false" type="button">Pola Persegi Panjang</button>
+          </div>
+
+          <!-- Aritmetika -->
+          <article class="card" id="sub-aritmetika">
+            <h3>1 · Pola Bilangan Aritmetika</h3>
+            <p>Barisan aritmetika terbentuk dari suku pertama (<i>a</i>) yang terus ditambah dengan selisih tetap yang disebut <b>beda</b> (<i>b</i>). Beda bisa positif (barisan naik) atau negatif (barisan turun). Contoh: 5, 9, 13, 17, … memiliki a = 5 dan b = 4.</p>
+            <div class="formula"><span class="lbl">Rumus suku ke-n</span>U<sub>n</sub> = a + (n − 1) × b</div>
+            <div class="formula"><span class="lbl">Jumlah n suku pertama</span>S<sub>n</sub> = n/2 × (2a + (n − 1) × b)</div>
+            <div class="ctl"><label for="arA">Suku pertama (a) <output id="arAOut">3</output></label><input type="range" id="arA" min="1" max="12" step="1" value="3" /></div>
+            <div class="ctl"><label for="arB">Beda (b) <output id="arBOut">4</output></label><input type="range" id="arB" min="-3" max="8" step="1" value="4" /></div>
+            <div class="ctl"><label for="arN">Banyak suku ditampilkan <output id="arNOut">8</output></label><input type="range" id="arN" min="4" max="12" step="1" value="8" /></div>
+            <div class="seq" id="arSeq"></div>
+            <svg class="viz" id="arViz" viewBox="0 0 640 240" role="img" aria-label="Diagram batang barisan aritmetika"></svg>
+            <div class="result-line" id="arInfo"></div>
+            <div class="note" style="margin-top:14px"><b>Contoh:</b> suku ke-20 dari 3, 7, 11, 15, … adalah U<sub>20</sub> = 3 + (20 − 1) × 4 = 3 + 76 = <b>79</b>. Jumlah 20 suku pertamanya S<sub>20</sub> = 20/2 × (2×3 + 19×4) = 10 × 82 = <b>820</b>.</div>
+          </article>
+
+          <!-- Geometri -->
+          <article class="card" id="sub-geometri" hidden>
+            <h3>2 · Pola Bilangan Geometri</h3>
+            <p>Barisan geometri terbentuk dari suku pertama (<i>a</i>) yang terus dikalikan dengan pengali tetap yang disebut <b>rasio</b> (<i>r</i>). Jika r &gt; 1 barisan membesar cepat; jika 0 &lt; r &lt; 1 barisan mengecil. Contoh: 2, 6, 18, 54, … memiliki a = 2 dan r = 3.</p>
+            <div class="formula"><span class="lbl">Rumus suku ke-n</span>U<sub>n</sub> = a × r<sup>n − 1</sup></div>
+            <div class="formula"><span class="lbl">Jumlah n suku pertama (r ≠ 1)</span>S<sub>n</sub> = a × (r<sup>n</sup> − 1) / (r − 1)</div>
+            <div class="ctl"><label for="geA">Suku pertama (a) <output id="geAOut">2</output></label><input type="range" id="geA" min="1" max="6" step="1" value="2" /></div>
+            <div class="ctl"><label for="geR">Rasio (r) <output id="geROut">3</output></label><input type="range" id="geR" min="1" max="4" step="1" value="3" /></div>
+            <div class="ctl"><label for="geN">Banyak suku ditampilkan <output id="geNOut">6</output></label><input type="range" id="geN" min="4" max="9" step="1" value="6" /></div>
+            <div class="seq" id="geSeq"></div>
+            <svg class="viz" id="geViz" viewBox="0 0 640 240" role="img" aria-label="Diagram batang barisan geometri"></svg>
+            <div class="result-line" id="geInfo"></div>
+            <div class="note" style="margin-top:14px"><b>Contoh:</b> suku ke-7 dari 2, 6, 18, 54, … adalah U<sub>7</sub> = 2 × 3<sup>6</sup> = 2 × 729 = <b>1.458</b>. Perhatikan betapa cepatnya barisan geometri membesar dibanding aritmetika!</div>
+          </article>
+
+          <!-- Fibonacci -->
+          <article class="card" id="sub-fibonacci" hidden>
+            <h3>3 · Pola Bilangan Fibonacci</h3>
+            <p>Barisan Fibonacci dimulai dari 1, 1, lalu setiap suku berikutnya adalah <b>jumlah dua suku sebelumnya</b>. Pola ini ditemukan Leonardo Fibonacci dan muncul di alam, misalnya pada susunan biji bunga matahari dan cangkang siput.</p>
+            <div class="formula"><span class="lbl">Aturan pembentukan</span>U<sub>n</sub> = U<sub>n − 1</sub> + U<sub>n − 2</sub>, dengan U<sub>1</sub> = 1 dan U<sub>2</sub> = 1</div>
+            <div class="ctl"><label for="fiN">Banyak suku ditampilkan <output id="fiNOut">10</output></label><input type="range" id="fiN" min="5" max="14" step="1" value="10" /></div>
+            <div class="seq" id="fiSeq"></div>
+            <svg class="viz" id="fiViz" viewBox="0 0 640 240" role="img" aria-label="Diagram batang barisan Fibonacci"></svg>
+            <div class="result-line" id="fiInfo"></div>
+            <div class="note" style="margin-top:14px"><b>Coba tebak:</b> setelah 1, 1, 2, 3, 5, 8, 13, suku berikutnya adalah 8 + 13 = <b>21</b>, lalu 13 + 21 = <b>34</b>. Geser pengatur di atas untuk memeriksanya.</div>
+          </article>
+
+          <!-- Segitiga -->
+          <article class="card" id="sub-segitiga" hidden>
+            <h3>4 · Pola Bilangan Segitiga</h3>
+            <p>Pola segitiga muncul dari titik-titik yang disusun membentuk segitiga. Suku ke-n adalah jumlah titik pada segitiga dengan n baris: 1, 1+2, 1+2+3, dan seterusnya.</p>
+            <div class="formula"><span class="lbl">Rumus suku ke-n</span>U<sub>n</sub> = n × (n + 1) / 2</div>
+            <div class="ctl"><label for="sgN">Banyak baris (n) <output id="sgNOut">5</output></label><input type="range" id="sgN" min="1" max="9" step="1" value="5" /></div>
+            <svg class="viz" id="sgViz" viewBox="0 0 640 300" role="img" aria-label="Susunan titik membentuk segitiga"></svg>
+            <div class="seq" id="sgSeq"></div>
+            <div class="result-line" id="sgInfo"></div>
+            <div class="note" style="margin-top:14px"><b>Contoh:</b> bilangan segitiga ke-10 adalah U<sub>10</sub> = 10 × 11 / 2 = <b>55</b>. Itu sebabnya 10 pin bowling disusun 1 + 2 + 3 + 4 = 10? Bukan — pin bowling memakai 4 baris. Coba hitung: segitiga ke-4 = 4 × 5 / 2 = 10. Pas!</div>
+          </article>
+
+          <!-- Persegi -->
+          <article class="card" id="sub-persegi" hidden>
+            <h3>5 · Pola Bilangan Persegi</h3>
+            <p>Pola persegi muncul dari titik-titik yang disusun membentuk persegi. Suku ke-n adalah banyak titik pada persegi dengan sisi n titik — hasilnya bilangan kuadrat.</p>
+            <div class="formula"><span class="lbl">Rumus suku ke-n</span>U<sub>n</sub> = n<sup>2</sup> = n × n</div>
+            <div class="ctl"><label for="psN">Panjang sisi (n) <output id="psNOut">5</output></label><input type="range" id="psN" min="1" max="9" step="1" value="5" /></div>
+            <svg class="viz" id="psViz" viewBox="0 0 640 300" role="img" aria-label="Susunan titik membentuk persegi"></svg>
+            <div class="seq" id="psSeq"></div>
+            <div class="result-line" id="psInfo"></div>
+            <div class="note" style="margin-top:14px"><b>Contoh:</b> bilangan persegi ke-12 adalah U<sub>12</sub> = 12<sup>2</sup> = <b>144</b>. Papan catur memakai pola ini juga: 8 × 8 = 64 kotak.</div>
+          </article>
+
+          <!-- Persegi Panjang -->
+          <article class="card" id="sub-persegipanjang" hidden>
+            <h3>6 · Pola Bilangan Persegi Panjang</h3>
+            <p>Pola persegi panjang muncul dari titik-titik yang disusun membentuk persegi panjang dengan lebar n dan panjang n + 1. Barisannya: 2, 6, 12, 20, 30, …</p>
+            <div class="formula"><span class="lbl">Rumus suku ke-n</span>U<sub>n</sub> = n × (n + 1)</div>
+            <div class="ctl"><label for="ppN">Lebar (n) <output id="ppNOut">4</output></label><input type="range" id="ppN" min="1" max="8" step="1" value="4" /></div>
+            <svg class="viz" id="ppViz" viewBox="0 0 640 300" role="img" aria-label="Susunan titik membentuk persegi panjang"></svg>
+            <div class="seq" id="ppSeq"></div>
+            <div class="result-line" id="ppInfo"></div>
+            <div class="note" style="margin-top:14px"><b>Perhatikan:</b> bilangan persegi panjang selalu <b>dua kali</b> bilangan segitiga pada urutan yang sama, karena dua segitiga yang sama dapat digabung menjadi satu persegi panjang. U<sub>n</sub> persegi panjang = 2 × n(n+1)/2 = n(n+1).</div>
+          </article>
+        </section>
+
+        <!-- ========== KALKULATOR & LATIHAN ========== -->
+        <section id="sec-kalkulator" hidden>
+          <h2>Kalkulator Pola Bilangan</h2>
+          <p class="muted">Pilih jenis barisan, isi nilai yang diketahui, lalu klik Hitung. Langkah penyelesaiannya akan ditampilkan supaya kamu bisa mengikuti cara berpikirnya.</p>
+          <div class="card">
+            <div class="subbar">
+              <button class="sub-btn" id="modeAr" aria-selected="true" type="button">Barisan Aritmetika</button>
+              <button class="sub-btn" id="modeGe" aria-selected="false" type="button">Barisan Geometri</button>
+            </div>
+            <div class="form-row c3">
+              <div class="field"><label for="calcA">Suku pertama (a)</label><input type="number" id="calcA" value="5" step="any" /></div>
+              <div class="field"><label for="calcB" id="calcBLabel">Beda (b)</label><input type="number" id="calcB" value="3" step="any" /></div>
+              <div class="field"><label for="calcN">Suku ke-n (n)</label><input type="number" id="calcN" value="10" min="1" max="1000" step="1" /></div>
+            </div>
+            <div class="error-box" id="calcErr" hidden>Periksa lagi isianmu: a dan b/r boleh bilangan apa saja, tetapi n harus bilangan bulat 1 sampai 1000.</div>
+            <p><button class="btn" id="btnCalc" type="button">Hitung U<sub>n</sub> dan S<sub>n</sub></button></p>
+            <div id="calcOut" hidden>
+              <div class="result-line" id="calcUn"></div>
+              <div class="steps" id="calcUnSteps"></div>
+              <div class="result-line" id="calcSn" style="margin-top:16px"></div>
+              <div class="steps" id="calcSnSteps"></div>
+            </div>
+          </div>
+
+          <h2>Latihan Cepat</h2>
+          <p class="muted">Coba kerjakan empat soal ini sendiri dulu, isi jawabanmu, lalu klik Periksa. Ada pembahasan di setiap soal.</p>
+          <div id="latihanList"></div>
+        </section>
+
+        <!-- ========== KUIS ========== -->
+        <section id="sec-kuis" hidden>
+          <h2>Kuis Pola Bilangan</h2>
+          <div class="card" id="quizStart">
+            <p>Kuis ini berisi <b>10 soal pilihan ganda</b> tentang pola bilangan aritmetika, geometri, Fibonacci, segitiga, persegi, dan persegi panjang. Setiap jawaban langsung dibahas, jadi kamu bisa belajar dari kesalahanmu. Skor akhir akan tercatat dan terkirim ke gurumu.</p>
+            <p style="margin-bottom:0"><button class="btn" id="btnStartQuiz" type="button">Mulai Kuis</button></p>
+          </div>
+          <div class="card" id="quizPlay" hidden>
+            <div style="display:flex; justify-content:space-between; font-weight:700">
+              <span id="quizProgressLabel">Soal 1 dari 10</span><span id="quizScoreLabel">Skor sementara: 0</span>
+            </div>
+            <div class="progress"><div id="quizBar"></div></div>
+            <h3 id="quizQuestion"></h3>
+            <div id="quizOptions"></div>
+            <div class="explain" id="quizExplain" hidden></div>
+            <p style="margin-top:16px; margin-bottom:0"><button class="btn" id="btnNextQ" type="button" hidden>Soal Berikutnya</button></p>
+          </div>
+          <div class="card" id="quizResult" hidden>
+            <h3 style="text-align:center">Kuis Selesai!</h3>
+            <div class="score-big" id="finalScore">0</div>
+            <p style="text-align:center" id="finalMsg"></p>
+            <p style="text-align:center" class="muted" id="finalDetail"></p>
+            <p style="text-align:center; margin-bottom:0">
+              <button class="btn" id="btnRetryQuiz" type="button">Ulangi Kuis</button>
+              <button class="btn secondary" id="btnBackMateri" type="button">Kembali ke Materi</button>
+            </p>
+          </div>
+        </section>
+
+        <!-- ========== DATA GURU ========== -->
+        <section id="sec-guru" hidden>
+          <h2>Data Guru</h2>
+
+          <div class="card" id="pinGate">
+            <h3>Menu Terkunci</h3>
+            <p>Menu ini berisi data seluruh siswa, jadi terkunci dengan PIN. Masukkan PIN guru untuk membukanya. (Pengiriman data login dan kuis dari perangkat siswa tetap berjalan otomatis tanpa PIN.)</p>
+            <form id="pinForm" novalidate>
+              <div class="field">
+                <label for="pinInput">PIN Guru</label>
+                <input type="password" id="pinInput" placeholder="Masukkan PIN guru" autocomplete="off" maxlength="32" />
+              </div>
+              <div class="error-box" id="pinErr" hidden>PIN salah. Silakan periksa lagi dan coba kembali.</div>
+              <p style="margin-top:14px; margin-bottom:0"><button class="btn" type="submit">Buka Data Guru</button></p>
+            </form>
+          </div>
+
+          <div id="guruContent" hidden>
+            <div class="stat-row">
+              <div class="stat"><b id="statSiswa">0</b><span>Siswa Tercatat</span></div>
+              <div class="stat"><b id="statLogin">0</b><span>Total Login</span></div>
+              <div class="stat"><b id="statKuis">0</b><span>Percobaan Kuis</span></div>
+            </div>
+            <div class="card">
+              <h3>Ringkasan Siswa</h3>
+              <p class="muted">Data pada sesi ini di perangkat ini, ditambah data dari Google Sheet bila dimuat. Skor menunjukkan perkembangan tiap siswa dari percobaan ke percobaan.</p>
+              <div class="btn-row">
+                <button class="btn" id="btnCsv" type="button">Unduh Laporan (CSV)</button>
+                <button class="btn secondary" id="btnSheetLoad" type="button">Muat Data dari Sheet</button>
+                <button class="btn secondary" id="btnSheetSummary" type="button">Kirim Ringkasan ke Sheet</button>
+              </div>
+              <div id="studentList"></div>
+              <p class="muted" id="emptyStudents">Belum ada data siswa pada sesi ini. Minta siswa login dan belajar dari perangkat ini, atau klik "Muat Data dari Sheet" untuk menarik data dari semua perangkat.</p>
+            </div>
+
+            <div class="card">
+              <h3>Database Google Sheets</h3>
+              <p>Aplikasi ini terhubung permanen ke Google Sheet pusat DapMath. Setiap login siswa, hasil kuis, dan ringkasan otomatis terkirim ke Sheet tersebut dari perangkat mana pun, ditandai aplikasi <b>pola-bilangan</b>.</p>
+              <div class="btn-row">
+                <button class="btn" id="btnUjiKirim" type="button">Uji Kirim Data Sekarang</button>
+              </div>
+              <div class="field">
+                <label for="sheetUrl">URL Aplikasi Web Google Sheets (bisa diganti bila perlu)</label>
+                <input type="url" id="sheetUrl" autocomplete="off" spellcheck="false" />
+              </div>
+              <p><button class="btn secondary" id="btnSheetConnect" type="button">Hubungkan ke URL Ini</button></p>
+              <div class="status-box" id="sheetStatus">Status: memakai URL Google Sheet yang tertanam di aplikasi.</div>
+              <p class="muted" style="margin-top:14px">Jika kolom URL dikosongkan lalu klik Hubungkan, aplikasi kembali memakai URL yang tertanam. Sheet-nya sendiri tetap hanya bisa dibuka lewat akun Google pemiliknya; menu Data Guru di aplikasi ini terkunci PIN.</p>
+              <details>
+                <summary style="font-weight:700; cursor:pointer; padding:8px 0">Kode Apps Script (untuk Sheet pusat DapMath)</summary>
+                <p class="muted">Tempel kode ini di spreadsheet pusat lewat menu Ekstensi → Apps Script, lalu Deploy sebagai Aplikasi Web dengan akses "Siapa saja". Kode ini membaca kolom Aplikasi sehingga satu Sheet bisa dipakai semua aplikasi DapMath.</p>
+                <textarea class="code" id="appsScriptCode" readonly></textarea>
+                <p style="margin-top:10px; margin-bottom:0"><button class="btn secondary small" id="btnCopyScript" type="button">Salin Kode Apps Script</button></p>
+              </details>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>Dibangun oleh <b>Dody Adyansyah</b> · DapMath — Matematika Kelas 8</footer>
+    </div>
+
+    <script>
+      "use strict";
+      const $ = (s, r) => (r || document).querySelector(s);
+      const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+      const fmt = (x) => {
+        if (typeof x !== "number" || !isFinite(x)) return String(x);
+        const r = Math.round(x * 100) / 100;
+        return r.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+      };
+      const fmtInt = (x) => Math.round(x).toLocaleString("id-ID");
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const nowISO = () => new Date().toISOString();
+      const fmtTime = (d) => {
+        try { return new Date(d).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); }
+        catch (e) { return "—"; }
+      };
+
+      /* ================= Integrasi Google Sheets ================= */
+      const APP_ID = "pola-bilangan";
+      const DEFAULT_SHEET_URL = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
+      let sheetEndpoint = DEFAULT_SHEET_URL;
+      function setSheetStatus(msg, ok) {
+        const el = $("#sheetStatus");
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.toggle("ok", !!ok);
+      }
+      function sheetSend(payload) {
+        if (!sheetEndpoint) return Promise.resolve(false);
+        payload.app = APP_ID;
+        const body = JSON.stringify(payload);
+        const viaBeacon = () => {
+          try {
+            if (navigator.sendBeacon) {
+              return navigator.sendBeacon(sheetEndpoint, new Blob([body], { type: "text/plain;charset=utf-8" }));
+            }
+          } catch (err) { /* abaikan */ }
+          return false;
+        };
+        return fetch(sheetEndpoint, {
+          method: "POST", mode: "no-cors", keepalive: true,
+          headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body,
+        }).then(() => true).catch(() => viaBeacon());
+      }
+      function sheetLoad() {
+        const sep = sheetEndpoint.indexOf("?") >= 0 ? "&" : "?";
+        return fetch(sheetEndpoint + sep + "app=" + encodeURIComponent(APP_ID)).then((r) => r.json());
+      }
+
+      /* ================= Data sesi (memori perangkat ini) ================= */
+      const TAB_LABELS = {
+        beranda: "Beranda", materi: "Materi", kalkulator: "Kalkulator & Latihan", kuis: "Kuis",
+        "materi-aritmetika": "Materi: Aritmetika", "materi-geometri": "Materi: Geometri",
+        "materi-fibonacci": "Materi: Fibonacci", "materi-segitiga": "Materi: Segitiga",
+        "materi-persegi": "Materi: Persegi", "materi-persegipanjang": "Materi: Persegi Panjang",
+      };
+      let studentRecords = [];
+      let currentStudent = null;
+      const keyOf = (nama, kelas) => (nama + "|" + kelas).toLowerCase();
+      function findRecord(nama, kelas) {
+        return studentRecords.find((r) => keyOf(r.nama, r.kelas) === keyOf(nama, kelas));
+      }
+      function makeRecord(nama, kelas, t) {
+        return { nama: nama, kelas: kelas, firstLogin: t || new Date(), logins: 0, visits: {}, lastActivity: t || new Date(), attempts: [] };
+      }
+      function trackVisit(key) {
+        if (!currentStudent) return;
+        currentStudent.visits[key] = (currentStudent.visits[key] || 0) + 1;
+        currentStudent.lastActivity = new Date();
+      }
+
+      /* ================= Login ================= */
+      $("#loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nama = $("#namaInput").value.trim();
+        const kelas = $("#kelasInput").value.trim();
+        if (!nama || !kelas) { $("#loginErr").hidden = false; return; }
+        $("#loginErr").hidden = true;
+        let rec = findRecord(nama, kelas);
+        if (!rec) { rec = makeRecord(nama, kelas, new Date()); studentRecords.push(rec); }
+        rec.logins += 1;
+        rec.lastActivity = new Date();
+        currentStudent = rec;
+        $("#studentNameEl").textContent = rec.nama;
+        $("#studentClassEl").textContent = "Kelas " + rec.kelas;
+        $("#haloNama").textContent = rec.nama.split(" ")[0];
+        $("#avatarEl").textContent = rec.nama.split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+        $("#loginView").hidden = true;
+        $("#appView").hidden = false;
+        sheetSend({ type: "login", time: nowISO(), nama: rec.nama, kelas: rec.kelas });
+        showTab("beranda");
+        window.scrollTo({ top: 0 });
+      });
+      $("#btnGantiSiswa").addEventListener("click", () => {
+        currentStudent = null;
+        guruUnlocked = false;
+        $("#appView").hidden = true;
+        $("#loginView").hidden = false;
+        $("#namaInput").value = "";
+        $("#kelasInput").value = "";
+        $("#namaInput").focus();
+      });
+
+      /* ================= Navigasi ================= */
+      let guruUnlocked = false;
+      function showTab(tab) {
+        $$(".tab-btn").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === tab ? "true" : "false"));
+        ["beranda", "materi", "kalkulator", "kuis", "guru"].forEach((t) => { $("#sec-" + t).hidden = t !== tab; });
+        if (tab !== "guru") guruUnlocked = false;
+        if (tab === "guru") renderGuruGate();
+        if (tab === "beranda" || tab === "kalkulator" || tab === "kuis") trackVisit(tab);
+        if (tab === "materi") trackVisit(currentSubKey());
+        window.scrollTo({ top: 0 });
+      }
+      $$(".tab-btn").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+      $$("[data-goto]").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.goto)));
+
+      const SUBS = ["aritmetika", "geometri", "fibonacci", "segitiga", "persegi", "persegipanjang"];
+      function currentSubKey() {
+        const active = $(".sub-btn[aria-selected='true']", $("#sec-materi"));
+        return "materi-" + (active ? active.dataset.sub : "aritmetika");
+      }
+      $$(".sub-btn[data-sub]").forEach((b) => b.addEventListener("click", () => {
+        $$(".sub-btn[data-sub]").forEach((x) => x.setAttribute("aria-selected", x === b ? "true" : "false"));
+        SUBS.forEach((s) => { $("#sub-" + s).hidden = s !== b.dataset.sub; });
+        trackVisit("materi-" + b.dataset.sub);
+      }));
+
+      /* ================= Visualisasi umum ================= */
+      function seqChips(values, hlLast) {
+        return values.map((v, i) =>
+          '<div class="term' + (hlLast && i === values.length - 1 ? " hl" : "") + '"><b>' + fmt(v) + "</b><span>U" + (i + 1) + "</span></div>"
+        ).join("");
+      }
+      function barsSVG(values) {
+        const W = 640, H = 240, base = 200, top = 26;
+        const maxAbs = Math.max.apply(null, values.map((v) => Math.abs(v)).concat([1]));
+        const n = values.length, bw = Math.min(54, (W - 40) / n - 10);
+        const gap = (W - 40 - bw * n) / Math.max(n - 1, 1);
+        const zeroY = values.some((v) => v < 0) ? 130 : base;
+        let s = "";
+        if (values.some((v) => v < 0)) s += '<line x1="16" y1="' + zeroY + '" x2="624" y2="' + zeroY + '" stroke="currentColor" opacity="0.35" stroke-width="1.5"/>';
+        else s += '<line x1="16" y1="' + base + '" x2="624" y2="' + base + '" stroke="currentColor" opacity="0.35" stroke-width="1.5"/>';
+        values.forEach((v, i) => {
+          const x = 20 + i * (bw + gap);
+          const h = Math.max(4, Math.abs(v) / maxAbs * (zeroY - top - 14));
+          const y = v >= 0 ? zeroY - h : zeroY;
+          s += '<rect x="' + x + '" y="' + y + '" width="' + bw + '" height="' + h + '" rx="5" fill="var(--accent)" opacity="' + (0.55 + 0.45 * (i + 1) / n) + '"/>';
+          s += '<text x="' + (x + bw / 2) + '" y="' + (v >= 0 ? y - 7 : y + h + 16) + '" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">' + fmt(v) + "</text>";
+          s += '<text x="' + (x + bw / 2) + '" y="' + (base + 24) + '" text-anchor="middle" font-size="12" fill="currentColor" opacity="0.6">U' + (i + 1) + "</text>";
+        });
+        return s;
+      }
+      function dotsSVG(cols, rows, cell) {
+        const c = cell || 56, r = 15;
+        const W = Math.max(640, cols * c + 40), H = rows * c + 50;
+        let s = "";
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            s += '<circle cx="' + (40 + x * c) + '" cy="' + (34 + y * c) + '" r="' + r + '" fill="var(--accent)" opacity="0.85"/>';
+          }
+        }
+        return { svg: s, w: W, h: H };
+      }
+
+      /* ================= Materi: Aritmetika ================= */
+      function renderArit() {
+        const a = +$("#arA").value, b = +$("#arB").value, n = +$("#arN").value;
+        $("#arAOut").textContent = a; $("#arBOut").textContent = b; $("#arNOut").textContent = n;
+        const vals = []; for (let i = 1; i <= n; i++) vals.push(a + (i - 1) * b);
+        $("#arSeq").innerHTML = seqChips(vals, false);
+        $("#arViz").innerHTML = barsSVG(vals);
+        const un = a + (n - 1) * b, sn = n / 2 * (2 * a + (n - 1) * b);
+        $("#arInfo").innerHTML = "Suku ke-" + n + " (U<sub>" + n + "</sub>) = " + fmt(un) + " &nbsp;·&nbsp; Jumlah " + n + " suku pertama (S<sub>" + n + "</sub>) = " + fmt(sn);
+      }
+      ["arA", "arB", "arN"].forEach((id) => $("#" + id).addEventListener("input", renderArit));
+      renderArit();
+
+      /* ================= Materi: Geometri ================= */
+      function renderGeo() {
+        const a = +$("#geA").value, r = +$("#geR").value, n = +$("#geN").value;
+        $("#geAOut").textContent = a; $("#geROut").textContent = r; $("#geNOut").textContent = n;
+        const vals = []; for (let i = 1; i <= n; i++) vals.push(a * Math.pow(r, i - 1));
+        $("#geSeq").innerHTML = seqChips(vals, false);
+        $("#geViz").innerHTML = barsSVG(vals);
+        const un = a * Math.pow(r, n - 1);
+        const sn = r === 1 ? a * n : a * (Math.pow(r, n) - 1) / (r - 1);
+        $("#geInfo").innerHTML = "Suku ke-" + n + " (U<sub>" + n + "</sub>) = " + fmtInt(un) + " &nbsp;·&nbsp; Jumlah " + n + " suku pertama (S<sub>" + n + "</sub>) = " + fmtInt(sn);
+      }
+      ["geA", "geR", "geN"].forEach((id) => $("#" + id).addEventListener("input", renderGeo));
+      renderGeo();
+
+      /* ================= Materi: Fibonacci ================= */
+      function renderFib() {
+        const n = +$("#fiN").value;
+        $("#fiNOut").textContent = n;
+        const vals = [1, 1];
+        while (vals.length < n) vals.push(vals[vals.length - 1] + vals[vals.length - 2]);
+        $("#fiSeq").innerHTML = seqChips(vals.slice(0, n), true);
+        $("#fiViz").innerHTML = barsSVG(vals.slice(0, n));
+        $("#fiInfo").innerHTML = "Suku ke-" + n + " (U<sub>" + n + "</sub>) = " + fmtInt(vals[n - 1]) + " &nbsp;·&nbsp; Suku berikutnya: " + fmtInt(vals[n - 1] + vals[n - 2]);
+      }
+      $("#fiN").addEventListener("input", renderFib);
+      renderFib();
+
+      /* ================= Materi: Segitiga ================= */
+      function triValues(n) { const v = []; for (let i = 1; i <= n; i++) v.push(i * (i + 1) / 2); return v; }
+      function renderSegitiga() {
+        const n = +$("#sgN").value;
+        $("#sgNOut").textContent = n;
+        let s = "";
+        const c = 52;
+        for (let row = 0; row < n; row++) {
+          for (let x = 0; x <= row; x++) {
+            s += '<circle cx="' + (320 + (x - row / 2) * c) + '" cy="' + (36 + row * c) + '" r="15" fill="var(--accent)" opacity="' + (0.5 + 0.5 * (row + 1) / n) + '"/>';
+          }
+        }
+        const svg = $("#sgViz");
+        svg.setAttribute("viewBox", "0 0 640 " + (n * c + 30));
+        svg.innerHTML = s;
+        $("#sgSeq").innerHTML = seqChips(triValues(Math.min(n, 9)), false);
+        $("#sgInfo").innerHTML = "Segitiga dengan " + n + " baris berisi U<sub>" + n + "</sub> = " + n + " × " + (n + 1) + " / 2 = <b>" + fmtInt(n * (n + 1) / 2) + " titik</b>";
+      }
+      $("#sgN").addEventListener("input", renderSegitiga);
+      renderSegitiga();
+
+      /* ================= Materi: Persegi ================= */
+      function renderPersegi() {
+        const n = +$("#psN").value;
+        $("#psNOut").textContent = n;
+        const d = dotsSVG(n, n, 52);
+        const svg = $("#psViz");
+        svg.setAttribute("viewBox", "0 0 " + Math.max(640, d.w) + " " + d.h);
+        svg.innerHTML = d.svg;
+        const vals = []; for (let i = 1; i <= Math.min(Math.max(n, 5), 9); i++) vals.push(i * i);
+        $("#psSeq").innerHTML = seqChips(vals, false);
+        $("#psInfo").innerHTML = "Persegi dengan sisi " + n + " berisi U<sub>" + n + "</sub> = " + n + "<sup>2</sup> = <b>" + fmtInt(n * n) + " titik</b>";
+      }
+      $("#psN").addEventListener("input", renderPersegi);
+      renderPersegi();
+
+      /* ================= Materi: Persegi Panjang ================= */
+      function renderPP() {
+        const n = +$("#ppN").value;
+        $("#ppNOut").textContent = n;
+        const d = dotsSVG(n + 1, n, 52);
+        const svg = $("#ppViz");
+        svg.setAttribute("viewBox", "0 0 " + Math.max(640, d.w) + " " + d.h);
+        svg.innerHTML = d.svg;
+        const vals = []; for (let i = 1; i <= 8; i++) vals.push(i * (i + 1));
+        $("#ppSeq").innerHTML = seqChips(vals, false);
+        $("#ppInfo").innerHTML = "Persegi panjang " + n + " × " + (n + 1) + " berisi U<sub>" + n + "</sub> = " + n + " × " + (n + 1) + " = <b>" + fmtInt(n * (n + 1)) + " titik</b>";
+      }
+      $("#ppN").addEventListener("input", renderPP);
+      renderPP();
+
+      /* ================= Kalkulator ================= */
+      let calcMode = "aritmetika";
+      function setCalcMode(m) {
+        calcMode = m;
+        $("#modeAr").setAttribute("aria-selected", m === "aritmetika" ? "true" : "false");
+        $("#modeGe").setAttribute("aria-selected", m === "geometri" ? "true" : "false");
+        $("#calcBLabel").textContent = m === "aritmetika" ? "Beda (b)" : "Rasio (r)";
+        if (m === "geometri" && +$("#calcB").value <= 0) $("#calcB").value = 2;
+        $("#calcOut").hidden = true;
+      }
+      $("#modeAr").addEventListener("click", () => setCalcMode("aritmetika"));
+      $("#modeGe").addEventListener("click", () => setCalcMode("geometri"));
+      $("#btnCalc").addEventListener("click", () => {
+        const a = parseFloat($("#calcA").value), b = parseFloat($("#calcB").value), n = parseFloat($("#calcN").value);
+        const valid = isFinite(a) && isFinite(b) && isFinite(n) && Number.isInteger(n) && n >= 1 && n <= 1000 && (calcMode === "aritmetika" || b > 0);
+        if (!valid) { $("#calcErr").hidden = false; $("#calcOut").hidden = true; return; }
+        $("#calcErr").hidden = true;
+        let un, sn, unSteps, snSteps;
+        if (calcMode === "aritmetika") {
+          un = a + (n - 1) * b;
+          sn = n / 2 * (2 * a + (n - 1) * b);
+          unSteps = "<div>U<sub>n</sub> = a + (n − 1) × b</div><div>U<sub>" + n + "</sub> = " + fmt(a) + " + (" + n + " − 1) × " + fmt(b) + "</div><div>U<sub>" + n + "</sub> = " + fmt(a) + " + " + fmt((n - 1) * b) + " = <b>" + fmt(un) + "</b></div>";
+          snSteps = "<div>S<sub>n</sub> = n/2 × (2a + (n − 1) × b)</div><div>S<sub>" + n + "</sub> = " + n + "/2 × (2 × " + fmt(a) + " + " + (n - 1) + " × " + fmt(b) + ")</div><div>S<sub>" + n + "</sub> = " + fmt(n / 2) + " × " + fmt(2 * a + (n - 1) * b) + " = <b>" + fmt(sn) + "</b></div>";
+        } else {
+          const r = b;
+          un = a * Math.pow(r, n - 1);
+          sn = r === 1 ? a * n : a * (Math.pow(r, n) - 1) / (r - 1);
+          unSteps = "<div>U<sub>n</sub> = a × r<sup>n − 1</sup></div><div>U<sub>" + n + "</sub> = " + fmt(a) + " × " + fmt(r) + "<sup>" + (n - 1) + "</sup></div><div>U<sub>" + n + "</sub> = " + fmt(a) + " × " + fmt(Math.pow(r, n - 1)) + " = <b>" + fmt(un) + "</b></div>";
+          snSteps = r === 1
+            ? "<div>Karena r = 1, semua suku sama: S<sub>" + n + "</sub> = n × a = " + n + " × " + fmt(a) + " = <b>" + fmt(sn) + "</b></div>"
+            : "<div>S<sub>n</sub> = a × (r<sup>n</sup> − 1) / (r − 1)</div><div>S<sub>" + n + "</sub> = " + fmt(a) + " × (" + fmt(r) + "<sup>" + n + "</sup> − 1) / (" + fmt(r) + " − 1)</div><div>S<sub>" + n + "</sub> = " + fmt(a) + " × " + fmt(Math.pow(r, n) - 1) + " / " + fmt(r - 1) + " = <b>" + fmt(sn) + "</b></div>";
+        }
+        $("#calcUn").innerHTML = "Suku ke-" + n + " (U<sub>" + n + "</sub>) = " + fmt(un);
+        $("#calcUnSteps").innerHTML = unSteps;
+        $("#calcSn").innerHTML = "Jumlah " + n + " suku pertama (S<sub>" + n + "</sub>) = " + fmt(sn);
+        $("#calcSnSteps").innerHTML = snSteps;
+        $("#calcOut").hidden = false;
+      });
+
+      /* ================= Latihan Cepat ================= */
+      const LATIHAN = [
+        { q: "Diketahui barisan aritmetika 7, 12, 17, 22, … Tentukan suku ke-15 (U15).", ans: 77, exp: "a = 7 dan b = 5. U15 = 7 + (15 − 1) × 5 = 7 + 70 = 77." },
+        { q: "Tentukan jumlah 12 suku pertama deret aritmetika 4 + 7 + 10 + 13 + … (S12).", ans: 246, exp: "a = 4 dan b = 3. S12 = 12/2 × (2×4 + 11×3) = 6 × (8 + 33) = 6 × 41 = 246." },
+        { q: "Diketahui barisan geometri 3, 6, 12, 24, … Tentukan suku ke-8 (U8).", ans: 384, exp: "a = 3 dan r = 2. U8 = 3 × 2^7 = 3 × 128 = 384." },
+        { q: "Tentukan jumlah 6 suku pertama deret geometri 5 + 10 + 20 + 40 + … (S6).", ans: 315, exp: "a = 5 dan r = 2. S6 = 5 × (2^6 − 1) / (2 − 1) = 5 × 63 = 315." },
+      ];
+      const latihanWrap = $("#latihanList");
+      LATIHAN.forEach((item, idx) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML =
+          "<h3>Soal " + (idx + 1) + "</h3><p>" + esc(item.q) + "</p>" +
+          '<div class="form-row c2"><div class="field" style="margin-bottom:0"><label for="latIn' + idx + '">Jawabanmu</label><input type="number" id="latIn' + idx + '" step="any" placeholder="Ketik jawaban…" /></div>' +
+          '<div style="display:flex; align-items:flex-end"><button class="btn" type="button" data-lat="' + idx + '">Periksa Jawaban</button></div></div>' +
+          '<div class="explain" id="latFb' + idx + '" hidden></div>';
+        latihanWrap.appendChild(card);
+      });
+      $$("[data-lat]").forEach((btn) => btn.addEventListener("click", () => {
+        const idx = +btn.dataset.lat;
+        const val = parseFloat($("#latIn" + idx).value);
+        const fb = $("#latFb" + idx);
+        fb.hidden = false;
+        if (isFinite(val) && Math.abs(val - LATIHAN[idx].ans) < 0.001) {
+          fb.className = "explain good";
+          fb.innerHTML = "<b>Benar!</b> " + esc(LATIHAN[idx].exp);
+        } else {
+          fb.className = "explain bad";
+          fb.innerHTML = "<b>Belum tepat.</b> Coba hitung lagi. Pembahasan: " + esc(LATIHAN[idx].exp);
+        }
+      }));
+
+      /* ================= Kuis ================= */
+      const QUIZ = [
+        { q: "Barisan aritmetika 3, 7, 11, 15, … Suku ke-10 barisan tersebut adalah …", opts: ["31", "35", "39", "43"], ans: 2, exp: "a = 3, b = 4. U10 = 3 + (10 − 1) × 4 = 3 + 36 = 39." },
+        { q: "Beda (selisih) dari barisan 20, 17, 14, 11, … adalah …", opts: ["3", "−3", "−2", "2"], ans: 1, exp: "Beda = suku sesudahnya dikurangi suku sebelumnya: 17 − 20 = −3. Barisan ini menurun, jadi bedanya negatif." },
+        { q: "Rumus suku ke-n dari pola 4, 9, 14, 19, … adalah …", opts: ["Un = 5n + 1", "Un = 5n − 1", "Un = 4n + 5", "Un = n + 5"], ans: 1, exp: "Beda b = 5 dan a = 4. Un = a + (n − 1)b = 4 + 5n − 5 = 5n − 1. Cek: U1 = 5 − 1 = 4. Benar." },
+        { q: "Jumlah 10 suku pertama deret aritmetika 5 + 8 + 11 + 14 + … adalah …", opts: ["155", "170", "185", "200"], ans: 2, exp: "a = 5, b = 3. S10 = 10/2 × (2×5 + 9×3) = 5 × (10 + 27) = 5 × 37 = 185." },
+        { q: "Suku ke-6 dari barisan geometri 2, 6, 18, 54, … adalah …", opts: ["162", "324", "486", "972"], ans: 2, exp: "a = 2, r = 3. U6 = 2 × 3^5 = 2 × 243 = 486." },
+        { q: "Rasio dari barisan geometri 81, 27, 9, 3, … adalah …", opts: ["3", "1/3", "−3", "9"], ans: 1, exp: "Rasio = 27 : 81 = 1/3. Setiap suku adalah sepertiga dari suku sebelumnya." },
+        { q: "Barisan Fibonacci: 1, 1, 2, 3, 5, 8, 13, 21, … Dua suku berikutnya adalah …", opts: ["29 dan 50", "34 dan 55", "34 dan 50", "29 dan 42"], ans: 1, exp: "Setiap suku adalah jumlah dua suku sebelumnya: 13 + 21 = 34, lalu 21 + 34 = 55." },
+        { q: "Pola bilangan segitiga: 1, 3, 6, 10, 15, … Bilangan segitiga ke-8 adalah …", opts: ["28", "32", "36", "45"], ans: 2, exp: "Un = n(n + 1)/2, jadi U8 = 8 × 9 / 2 = 36." },
+        { q: "Bilangan persegi yang ke-12 adalah …", opts: ["124", "132", "144", "169"], ans: 2, exp: "Pola persegi: Un = n². U12 = 12² = 144." },
+        { q: "Pola persegi panjang: 2, 6, 12, 20, 30, … Suku ke-6 adalah …", opts: ["36", "40", "42", "56"], ans: 2, exp: "Un = n(n + 1), jadi U6 = 6 × 7 = 42." },
+      ];
+      let quizIdx = 0, quizScore = 0, quizAnswered = false;
+      function startQuiz() {
+        quizIdx = 0; quizScore = 0;
+        $("#quizStart").hidden = true;
+        $("#quizResult").hidden = true;
+        $("#quizPlay").hidden = false;
+        renderQuestion();
+      }
+      function renderQuestion() {
+        quizAnswered = false;
+        const item = QUIZ[quizIdx];
+        $("#quizProgressLabel").textContent = "Soal " + (quizIdx + 1) + " dari " + QUIZ.length;
+        $("#quizScoreLabel").textContent = "Skor sementara: " + quizScore;
+        $("#quizBar").style.width = (quizIdx / QUIZ.length * 100) + "%";
+        $("#quizQuestion").textContent = item.q;
+        const wrap = $("#quizOptions");
+        wrap.innerHTML = "";
+        item.opts.forEach((opt, oi) => {
+          const b = document.createElement("button");
+          b.type = "button"; b.className = "opt";
+          b.textContent = String.fromCharCode(65 + oi) + ". " + opt;
+          b.addEventListener("click", () => answerQuestion(oi));
+          wrap.appendChild(b);
+        });
+        $("#quizExplain").hidden = true;
+        $("#btnNextQ").hidden = true;
+        $("#btnNextQ").textContent = quizIdx === QUIZ.length - 1 ? "Lihat Hasil Akhir" : "Soal Berikutnya";
+      }
+      function answerQuestion(oi) {
+        if (quizAnswered) return;
+        quizAnswered = true;
+        const item = QUIZ[quizIdx];
+        const buttons = $$("#quizOptions .opt");
+        buttons.forEach((b, bi) => {
+          b.disabled = true;
+          if (bi === item.ans) b.classList.add("correct");
+          else if (bi === oi) b.classList.add("wrong");
+        });
+        const benar = oi === item.ans;
+        if (benar) quizScore += 10;
+        $("#quizScoreLabel").textContent = "Skor sementara: " + quizScore;
+        const ex = $("#quizExplain");
+        ex.hidden = false;
+        ex.className = "explain " + (benar ? "good" : "bad");
+        ex.innerHTML = "<b>" + (benar ? "Benar! +10 poin." : "Belum tepat. Jawaban yang benar: " + String.fromCharCode(65 + item.ans) + ". " + esc(item.opts[item.ans])) + "</b><br>" + esc(item.exp);
+        $("#btnNextQ").hidden = false;
+      }
+      function finishQuiz() {
+        $("#quizPlay").hidden = true;
+        $("#quizResult").hidden = false;
+        $("#finalScore").textContent = quizScore;
+        const benar = quizScore / 10;
+        let msg = "Tetap semangat! Coba pelajari lagi materinya, lalu ulangi kuisnya.";
+        if (quizScore >= 90) msg = "Luar biasa! Kamu sudah menguasai pola bilangan.";
+        else if (quizScore >= 70) msg = "Bagus! Sedikit lagi menuju sempurna.";
+        else if (quizScore >= 50) msg = "Cukup baik. Baca lagi pembahasannya dan coba sekali lagi.";
+        $("#finalMsg").textContent = msg;
+        $("#finalDetail").textContent = "Kamu menjawab benar " + benar + " dari " + QUIZ.length + " soal.";
+        if (currentStudent) {
+          const attemptNo = currentStudent.attempts.length + 1;
+          currentStudent.attempts.push({ time: new Date(), score: quizScore, attemptNo: attemptNo });
+          currentStudent.lastActivity = new Date();
+          sheetSend({ type: "kuis", time: nowISO(), nama: currentStudent.nama, kelas: currentStudent.kelas, attemptNo: attemptNo, score: quizScore });
+        }
+      }
+      $("#btnStartQuiz").addEventListener("click", startQuiz);
+      $("#btnRetryQuiz").addEventListener("click", startQuiz);
+      $("#btnBackMateri").addEventListener("click", () => showTab("materi"));
+      $("#btnNextQ").addEventListener("click", () => {
+        if (quizIdx < QUIZ.length - 1) { quizIdx++; renderQuestion(); }
+        else finishQuiz();
+      });
+
+      /* ================= Data Guru ================= */
+      const GURU_PIN = "d4pm4t";
+      function renderGuruGate() {
+        const locked = !guruUnlocked;
+        $("#pinGate").hidden = !locked;
+        $("#guruContent").hidden = locked;
+        if (!locked) renderGuru();
+        else { $("#pinInput").value = ""; $("#pinErr").hidden = true; }
+      }
+      $("#pinForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        if ($("#pinInput").value === GURU_PIN) {
+          guruUnlocked = true;
+          $("#pinErr").hidden = true;
+          renderGuruGate();
+        } else {
+          $("#pinErr").hidden = false;
+        }
+      });
+      function studentStats(r) {
+        const scores = r.attempts.map((a) => a.score);
+        return {
+          last: scores.length ? scores[scores.length - 1] : null,
+          best: scores.length ? Math.max.apply(null, scores) : null,
+          avg: scores.length ? Math.round(scores.reduce((x, y) => x + y, 0) / scores.length) : null,
+        };
+      }
+      function renderGuru() {
+        $("#statSiswa").textContent = studentRecords.length;
+        $("#statLogin").textContent = studentRecords.reduce((s, r) => s + r.logins, 0);
+        $("#statKuis").textContent = studentRecords.reduce((s, r) => s + r.attempts.length, 0);
+        const list = $("#studentList");
+        list.innerHTML = "";
+        $("#emptyStudents").style.display = studentRecords.length ? "none" : "block";
+        const sorted = studentRecords.slice().sort((a, b) => a.nama.localeCompare(b.nama));
+        sorted.forEach((r) => {
+          const st = studentStats(r);
+          const menus = Object.keys(r.visits).map((t) => TAB_LABELS[t] || t);
+          const trend = r.attempts.length > 1
+            ? (st.last > r.attempts[0].score ? " · tren: naik" : (st.last < r.attempts[0].score ? " · tren: turun" : " · tren: tetap"))
+            : "";
+          const bars = r.attempts.map((a) =>
+            '<div class="barwrap"><div class="bar" style="height:' + Math.max(6, a.score * 0.5) + 'px"></div>' + a.score + "</div>"
+          ).join("");
+          const card = document.createElement("div");
+          card.className = "student-card";
+          card.innerHTML =
+            '<div class="head"><b>' + esc(r.nama) + '</b><span class="muted">Kelas ' + esc(r.kelas) + " · login " + r.logins + "× · pertama: " + fmtTime(r.firstLogin) + "</span></div>" +
+            '<div class="chips">' + (menus.length ? menus.map((m) => '<span class="chip">' + esc(m) + "</span>").join("") : '<span class="muted">Belum membuka menu belajar pada sesi ini.</span>') + "</div>" +
+            (r.attempts.length
+              ? '<div class="muted">Kuis: ' + r.attempts.length + " percobaan · terakhir <b>" + st.last + "</b> · terbaik <b>" + st.best + "</b> · rata-rata <b>" + st.avg + "</b>" + trend + '</div><div class="score-track">' + bars + "</div>"
+              : '<div class="muted">Belum pernah mengerjakan kuis.</div>');
+          list.appendChild(card);
+        });
+      }
+
+      /* ---------- CSV ---------- */
+      function csvCell(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
+      $("#btnCsv").addEventListener("click", () => {
+        if (!studentRecords.length) { setSheetStatus("Belum ada data siswa untuk diunduh."); return; }
+        const rows = [["Nama", "Kelas", "Login Pertama", "Jumlah Login", "Menu Dipelajari", "Percobaan Kuis", "Skor Terakhir", "Skor Terbaik", "Rata-rata Skor", "Riwayat Skor"]];
+        studentRecords.slice().sort((a, b) => a.nama.localeCompare(b.nama)).forEach((r) => {
+          const st = studentStats(r);
+          rows.push([
+            r.nama, r.kelas, new Date(r.firstLogin).toLocaleString("id-ID"), r.logins,
+            Object.keys(r.visits).map((t) => TAB_LABELS[t] || t).join("; "),
+            r.attempts.length,
+            st.last == null ? "" : st.last, st.best == null ? "" : st.best, st.avg == null ? "" : st.avg,
+            r.attempts.map((a) => a.score).join(" - "),
+          ]);
+        });
+        const csv = rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
+        const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "laporan-pola-bilangan.csv";
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      });
+
+      /* ---------- Integrasi Sheet: muat, ringkasan, uji kirim, pengaturan ---------- */
+      function mergeSheetData(data) {
+        let siswaBaru = 0, kuisBaru = 0;
+        (data.login || []).forEach((row) => {
+          if (!row.nama || !row.kelas) return;
+          const t = new Date(row.time);
+          let rec = findRecord(String(row.nama), String(row.kelas));
+          if (!rec) { rec = makeRecord(String(row.nama), String(row.kelas), isNaN(t) ? new Date() : t); studentRecords.push(rec); siswaBaru++; }
+          else if (!isNaN(t) && t < rec.firstLogin) rec.firstLogin = t;
+        });
+        (data.kuis || []).forEach((row) => {
+          if (!row.nama || !row.kelas) return;
+          const t = new Date(row.time);
+          let rec = findRecord(String(row.nama), String(row.kelas));
+          if (!rec) { rec = makeRecord(String(row.nama), String(row.kelas), isNaN(t) ? new Date() : t); studentRecords.push(rec); siswaBaru++; }
+          const no = row.attemptNo || rec.attempts.length + 1;
+          if (!rec.attempts.some((a) => a.attemptNo === no)) {
+            rec.attempts.push({ time: isNaN(t) ? new Date() : t, score: +row.score || 0, attemptNo: no });
+            rec.attempts.sort((a, b) => a.attemptNo - b.attemptNo);
+            kuisBaru++;
+          }
+        });
+        return { siswaBaru: siswaBaru, kuisBaru: kuisBaru };
+      }
+      $("#btnSheetLoad").addEventListener("click", () => {
+        setSheetStatus("Memuat data dari Google Sheet…");
+        sheetLoad().then((data) => {
+          const m = mergeSheetData(data || {});
+          renderGuru();
+          setSheetStatus("Data dari Sheet berhasil dimuat: " + m.siswaBaru + " siswa baru dan " + m.kuisBaru + " hasil kuis baru ditambahkan ke dasbor.", true);
+        }).catch(() => setSheetStatus("Gagal memuat data dari Sheet. Periksa koneksi internet dan URL Aplikasi Web-nya, lalu coba lagi."));
+      });
+      $("#btnSheetSummary").addEventListener("click", () => {
+        if (!studentRecords.length) { setSheetStatus("Belum ada data siswa pada sesi ini untuk dikirim."); return; }
+        setSheetStatus("Mengirim ringkasan sesi ke Sheet…");
+        const jobs = studentRecords.map((r) => {
+          const st = studentStats(r);
+          return sheetSend({
+            type: "ringkasan", nama: r.nama, kelas: r.kelas,
+            menus: Object.keys(r.visits).map((t) => TAB_LABELS[t] || t).join(", "),
+            attempts: r.attempts.length,
+            last: st.last == null ? "" : st.last, best: st.best == null ? "" : st.best, avg: st.avg == null ? "" : st.avg,
+          });
+        });
+        Promise.all(jobs).then(() => setSheetStatus("Ringkasan sesi terkirim — silakan periksa tab \"Ringkasan\" pada Sheet untuk memastikan datanya masuk.", true));
+      });
+      $("#btnUjiKirim").addEventListener("click", () => {
+        setSheetStatus("Mengirim data uji ke Sheet…");
+        sheetSend({ type: "login", time: nowISO(), nama: "UJI KONEKSI", kelas: "UJI" }).then((ok) => {
+          if (!ok) { setSheetStatus("Pengiriman uji tidak terkonfirmasi. Periksa koneksi internet, lalu coba lagi."); return; }
+          setSheetStatus("Data uji terkirim. Membaca kembali isi Sheet untuk memastikan…");
+          setTimeout(() => {
+            sheetLoad().then((data) => {
+              const nLogin = (data.login || []).length, nKuis = (data.kuis || []).length;
+              setSheetStatus("Uji berhasil! Sheet bisa menerima dan mengirim data aplikasi pola-bilangan. Saat ini terbaca " + nLogin + " baris login dan " + nKuis + " baris kuis. Baris uji berlabel \"UJI KONEKSI\" boleh dihapus dari Sheet.", true);
+            }).catch(() => setSheetStatus("Data uji terkirim, tetapi pembacaan kembali dari Sheet gagal. Cek tab Login di Sheet — baris \"UJI KONEKSI\" seharusnya sudah masuk."));
+          }, 1600);
+        });
+      });
+      $("#btnSheetConnect").addEventListener("click", () => {
+        const url = $("#sheetUrl").value.trim();
+        if (!url) {
+          sheetEndpoint = DEFAULT_SHEET_URL;
+          $("#sheetUrl").value = DEFAULT_SHEET_URL;
+          setSheetStatus("Kolom URL dikosongkan — aplikasi kembali memakai URL Google Sheet yang tertanam.", true);
+          return;
+        }
+        if (!/^https:\/\//i.test(url)) {
+          setSheetStatus("URL tidak valid (harus diawali https:// dan biasanya berakhiran /exec) — URL sebelumnya tetap dipakai.");
+          $("#sheetUrl").focus();
+          return;
+        }
+        sheetEndpoint = url;
+        setSheetStatus("Terhubung ke URL baru. Login dan hasil kuis mulai sekarang terkirim ke Sheet pada URL tersebut.", true);
+      });
+      $("#sheetUrl").value = DEFAULT_SHEET_URL;
+
+      /* ---------- Kode Apps Script untuk disalin ---------- */
+      const APPS_SCRIPT_CODE = [
+        "// Kode Apps Script untuk Google Sheet pusat DapMath.",
+        "// Tempel di spreadsheet lewat Ekstensi > Apps Script, lalu Deploy",
+        "// sebagai Aplikasi Web dengan akses \"Siapa saja\" (Anyone).",
+        "function ambilSheet(ss, nama, header) {",
+        "  var sh = ss.getSheetByName(nama);",
+        "  if (!sh) { sh = ss.insertSheet(nama); sh.appendRow(header); }",
+        "  return sh;",
+        "}",
+        "function doPost(e) {",
+        "  var data = JSON.parse(e.postData.contents);",
+        "  var ss = SpreadsheetApp.getActiveSpreadsheet();",
+        "  var app = data.app || \"\";",
+        "  if (data.type === \"login\") {",
+        "    ambilSheet(ss, \"Login\", [\"Waktu\", \"Nama\", \"Kelas\", \"Aplikasi\"])",
+        "      .appendRow([new Date(data.time), data.nama, data.kelas, app]);",
+        "  } else if (data.type === \"kuis\") {",
+        "    ambilSheet(ss, \"Kuis\", [\"Waktu Selesai\", \"Nama\", \"Kelas\", \"Percobaan ke\", \"Skor\", \"Aplikasi\"])",
+        "      .appendRow([new Date(data.time), data.nama, data.kelas, data.attemptNo, data.score, app]);",
+        "  } else if (data.type === \"ringkasan\") {",
+        "    ambilSheet(ss, \"Ringkasan\", [\"Waktu Kirim\", \"Nama\", \"Kelas\", \"Menu Dipelajari\", \"Percobaan Kuis\", \"Skor Terakhir\", \"Skor Terbaik\", \"Rata-rata Skor\", \"Aplikasi\"])",
+        "      .appendRow([new Date(), data.nama, data.kelas, data.menus, data.attempts, data.last, data.best, data.avg, app]);",
+        "  }",
+        "  return ContentService.createTextOutput(JSON.stringify({ ok: true }))",
+        "    .setMimeType(ContentService.MimeType.JSON);",
+        "}",
+        "function bacaBaris(ss, nama, app) {",
+        "  var sh = ss.getSheetByName(nama);",
+        "  if (!sh || sh.getLastRow() < 2) return [];",
+        "  var rows = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();",
+        "  if (!app) return rows;",
+        "  return rows.filter(function (r) { return r[r.length - 1] === app; });",
+        "}",
+        "function doGet(e) {",
+        "  var ss = SpreadsheetApp.getActiveSpreadsheet();",
+        "  var app = (e && e.parameter && e.parameter.app) || \"\";",
+        "  var login = bacaBaris(ss, \"Login\", app).map(function (r) {",
+        "    return { time: r[0], nama: r[1], kelas: r[2] };",
+        "  });",
+        "  var kuis = bacaBaris(ss, \"Kuis\", app).map(function (r) {",
+        "    return { time: r[0], nama: r[1], kelas: r[2], attemptNo: r[3], score: r[4] };",
+        "  });",
+        "  return ContentService.createTextOutput(JSON.stringify({ login: login, kuis: kuis }))",
+        "    .setMimeType(ContentService.MimeType.JSON);",
+        "}",
+      ].join("\n");
+      $("#appsScriptCode").value = APPS_SCRIPT_CODE;
+      $("#btnCopyScript").addEventListener("click", () => {
+        const box = $("#appsScriptCode"), btn = $("#btnCopyScript");
+        const done = () => { btn.textContent = "Kode Tersalin ✓"; setTimeout(() => { btn.textContent = "Salin Kode Apps Script"; }, 2200); };
+        box.select(); box.setSelectionRange(0, box.value.length);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(box.value).then(done).catch(() => { try { document.execCommand("copy"); } catch (err) { /* abaikan */ } done(); });
+        } else { try { document.execCommand("copy"); } catch (err) { /* abaikan */ } done(); }
+      });
+    </script>
+  </body>
+</html>
