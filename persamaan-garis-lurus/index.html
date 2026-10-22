@@ -1,1 +1,1222 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Persamaan Garis Lurus — DapMath Kelas 8</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#fbfcfe; --bg-grid:rgba(37,84,160,.07); --bg-grid-strong:rgba(37,84,160,.13);
+        --card:#ffffff; --card-2:#f2f6fb;
+        --ink:#152238; --muted:#54657c; --faint:#8494ab;
+        --line:#d9e2ee; --line-strong:#b9c9dd;
+        --accent:#e4572e; --accent-dark:#c7431f; --accent-soft:#fdeee8;
+        --teal:#0e7c7b; --teal-soft:#e5f3f2;
+        --blue:#1d6fb8; --blue-soft:#e8f1fa;
+        --good:#178a52; --good-soft:#e6f4ec;
+        --bad:#cf3a3a; --bad-soft:#fbecec;
+        --warn:#b97a0c; --warn-soft:#fdf3e0;
+        --shadow:0 10px 30px rgba(21,34,56,.08);
+        --radius:16px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d1521; --bg-grid:rgba(120,170,230,.08); --bg-grid-strong:rgba(120,170,230,.15);
+          --card:#152233; --card-2:#1a2a40;
+          --ink:#e9eff7; --muted:#a3b2c6; --faint:#7186a0;
+          --line:#26374e; --line-strong:#38506e;
+          --accent:#ff7a4d; --accent-dark:#ff8f66; --accent-soft:#3a231b;
+          --teal:#3ec6c3; --teal-soft:#143231;
+          --blue:#5ea8e8; --blue-soft:#16293f;
+          --good:#4cc984; --good-soft:#14301f;
+          --bad:#ff7a72; --bad-soft:#3a1d1d;
+          --warn:#f0b84e; --warn-soft:#3a2c12;
+          --shadow:0 10px 30px rgba(0,0,0,.35);
+        }
+      }
+      *{ box-sizing:border-box; }
+      html{ scroll-behavior:smooth; }
+      body{
+        margin:0; color:var(--ink);
+        font-family:"Plus Jakarta Sans", system-ui, sans-serif;
+        background:
+          linear-gradient(var(--bg-grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
+          var(--bg);
+        background-size:28px 28px;
+        min-height:100vh; display:flex; flex-direction:column;
+      }
+      .mono{ font-family:"IBM Plex Mono", ui-monospace, monospace; }
+      main{ flex:1; width:100%; }
+      .wrap{ max-width:1060px; margin:0 auto; padding:0 18px; }
+      h1,h2,h3{ margin:0; line-height:1.25; }
+      p{ line-height:1.65; }
+      button{ font-family:inherit; cursor:pointer; }
+      input, select{ font-family:inherit; }
 
+      /* ---------- Buttons ---------- */
+      .btn{
+        display:inline-flex; align-items:center; justify-content:center; gap:8px;
+        min-height:50px; padding:12px 22px; border-radius:12px; border:1.5px solid transparent;
+        font-size:16px; font-weight:700; transition:transform .12s ease, background .15s ease, border-color .15s ease;
+        touch-action:manipulation; text-decoration:none;
+      }
+      .btn:active{ transform:scale(.97); }
+      .btn-primary{ background:var(--accent); color:#fff; }
+      .btn-primary:hover{ background:var(--accent-dark); }
+      .btn-teal{ background:var(--teal); color:#fff; }
+      .btn-ghost{ background:var(--card); color:var(--ink); border-color:var(--line-strong); }
+      .btn-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+      .btn-sm{ min-height:44px; padding:8px 16px; font-size:14.5px; border-radius:10px; }
+      .btn-block{ width:100%; }
+      .btn:disabled{ opacity:.45; cursor:not-allowed; }
+
+      /* ---------- Login ---------- */
+      .login-shell{ min-height:78vh; display:flex; align-items:center; justify-content:center; padding:34px 18px; }
+      .login-card{
+        width:100%; max-width:520px; background:var(--card); border:1px solid var(--line);
+        border-radius:22px; box-shadow:var(--shadow); padding:34px 30px 30px; position:relative; overflow:hidden;
+      }
+      .login-card::before{
+        content:""; position:absolute; inset:0 0 auto 0; height:6px;
+        background:linear-gradient(90deg, var(--accent) 0 38%, var(--teal) 38% 72%, var(--blue) 72% 100%);
+      }
+      .login-badge{
+        display:inline-block; font-size:12.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+        color:var(--teal); background:var(--teal-soft); padding:6px 12px; border-radius:999px; margin-bottom:14px;
+      }
+      .login-card h1{ font-size:30px; font-weight:800; letter-spacing:-.01em; }
+      .login-card .sub{ color:var(--muted); margin:10px 0 24px; font-size:15.5px; }
+      .field{ margin-bottom:16px; }
+      .field label{ display:block; font-weight:700; font-size:14.5px; margin-bottom:7px; }
+      .field input, .field select{
+        width:100%; min-height:54px; padding:12px 14px; font-size:17px; color:var(--ink);
+        background:var(--card-2); border:1.5px solid var(--line-strong); border-radius:12px; outline:none;
+      }
+      .field input:focus, .field select:focus{ border-color:var(--accent); background:var(--card); }
+      .form-error{ display:none; background:var(--bad-soft); color:var(--bad); border:1px solid var(--bad);
+        padding:11px 14px; border-radius:10px; font-weight:600; font-size:14.5px; margin-bottom:16px; }
+      .login-note{ margin-top:18px; font-size:13.5px; color:var(--faint); text-align:center; }
+
+      /* ---------- Top bar & nav ---------- */
+      .topbar{
+        position:sticky; top:0; z-index:40; background:var(--card); border-bottom:1px solid var(--line);
+      }
+      .topbar-in{ max-width:1060px; margin:0 auto; padding:10px 18px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+      .brand{ font-weight:800; font-size:17px; letter-spacing:-.01em; }
+      .brand small{ display:block; font-weight:600; font-size:12px; color:var(--faint); letter-spacing:.06em; text-transform:uppercase; }
+      .student-chip{
+        margin-left:auto; display:flex; align-items:center; gap:10px; background:var(--accent-soft);
+        border:1px solid var(--accent); color:var(--ink); border-radius:999px; padding:6px 8px 6px 16px;
+      }
+      .student-chip .who{ font-weight:700; font-size:14.5px; }
+      .student-chip .who span{ color:var(--muted); font-weight:600; }
+      .nav{ background:var(--card); border-bottom:1px solid var(--line); }
+      .nav-in{ max-width:1060px; margin:0 auto; padding:10px 18px 12px; display:flex; flex-wrap:wrap; gap:8px; }
+      .nav-btn{
+        min-height:48px; padding:10px 18px; border-radius:999px; border:1.5px solid var(--line-strong);
+        background:var(--card); color:var(--ink); font-size:15px; font-weight:700;
+      }
+      .nav-btn.active{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+      @media (prefers-color-scheme: dark){ .nav-btn.active{ background:var(--accent); border-color:var(--accent); color:#fff; } }
+
+      /* ---------- Sections & cards ---------- */
+      .section{ display:none; padding:30px 0 46px; }
+      .section.active{ display:block; }
+      .sec-head{ margin-bottom:20px; }
+      .sec-head h2{ font-size:27px; font-weight:800; letter-spacing:-.01em; }
+      .sec-head p{ color:var(--muted); margin:8px 0 0; max-width:70ch; font-size:15.5px; }
+      .card{
+        background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+        box-shadow:var(--shadow); padding:22px; margin-bottom:20px;
+      }
+      .card h3{ font-size:18.5px; font-weight:800; margin-bottom:10px; }
+      .card p{ color:var(--muted); font-size:15px; margin:0 0 10px; }
+      .card p:last-child{ margin-bottom:0; }
+      .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
+      @media (max-width:820px){ .grid-2{ grid-template-columns:1fr; } }
+      .formula{
+        background:var(--card-2); border:1px dashed var(--line-strong); border-radius:12px;
+        padding:14px 16px; font-family:"IBM Plex Mono", monospace; font-size:17px; font-weight:600;
+        text-align:center; margin:12px 0;
+      }
+      .callout{ border-radius:12px; padding:14px 16px; font-size:14.5px; line-height:1.6; margin:12px 0; }
+      .callout.teal{ background:var(--teal-soft); border:1px solid var(--teal); }
+      .callout.warn{ background:var(--warn-soft); border:1px solid var(--warn); }
+      .callout b{ font-weight:800; }
+      ul.tight{ margin:8px 0; padding-left:20px; color:var(--muted); font-size:15px; line-height:1.7; }
+      ul.tight b{ color:var(--ink); }
+
+      /* ---------- Plot ---------- */
+      .plot-box{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px; box-shadow:var(--shadow); }
+      canvas.plot{ width:100%; height:auto; display:block; border-radius:10px; }
+      .eq-display{
+        text-align:center; font-family:"IBM Plex Mono", monospace; font-weight:700;
+        font-size:clamp(22px, 4.5vw, 30px); padding:16px 10px 6px; letter-spacing:.01em;
+      }
+      .eq-display .var-y{ color:var(--accent); }
+      .slider-row{ margin:16px 0 6px; }
+      .slider-row .lab{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+      .slider-row .lab b{ font-size:15.5px; }
+      .slider-row .lab .val{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:18px; color:var(--accent); }
+      .slider-row .lab .val.teal{ color:var(--teal); }
+      input[type=range]{ width:100%; height:44px; accent-color:var(--accent); cursor:pointer; }
+      input[type=range].teal{ accent-color:var(--teal); }
+      .fact-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-top:14px; }
+      .fact{ background:var(--card-2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+      .fact .k{ font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); }
+      .fact .v{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:17px; margin-top:4px; }
+      .seg-toggle{ display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 4px; }
+      .seg-btn{
+        min-height:48px; padding:10px 18px; border-radius:12px; border:1.5px solid var(--line-strong);
+        background:var(--card); font-weight:700; font-size:15px; color:var(--ink);
+      }
+      .seg-btn.active{ background:var(--teal); border-color:var(--teal); color:#fff; }
+      .legend{ display:flex; flex-wrap:wrap; gap:14px; font-size:13.5px; color:var(--muted); margin-top:10px; }
+      .legend i{ display:inline-block; width:22px; height:4px; border-radius:2px; vertical-align:middle; margin-right:6px; }
+
+      /* ---------- Calculator ---------- */
+      .num-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:12px; margin:12px 0; }
+      .num-field label{ display:block; font-weight:700; font-size:14px; margin-bottom:6px; }
+      .num-field input{
+        width:100%; min-height:52px; padding:10px 12px; font-size:17px; text-align:center;
+        font-family:"IBM Plex Mono", monospace; font-weight:600; color:var(--ink);
+        background:var(--card-2); border:1.5px solid var(--line-strong); border-radius:10px; outline:none;
+      }
+      .num-field input:focus{ border-color:var(--accent); }
+      .steps{ margin-top:16px; display:none; }
+      .steps.show{ display:block; }
+      .step{
+        display:flex; gap:12px; padding:12px 14px; background:var(--card-2); border:1px solid var(--line);
+        border-radius:12px; margin-bottom:10px; font-size:15px; line-height:1.6;
+      }
+      .step .n{
+        flex:0 0 auto; width:30px; height:30px; border-radius:50%; background:var(--accent); color:#fff;
+        display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; margin-top:2px;
+      }
+      .step .mono{ font-size:15.5px; }
+      .result-box{
+        background:var(--accent-soft); border:1.5px solid var(--accent); border-radius:12px;
+        padding:14px 16px; text-align:center; font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:20px;
+      }
+
+      /* ---------- Quiz ---------- */
+      .quiz-progress{ height:12px; background:var(--card-2); border:1px solid var(--line); border-radius:999px; overflow:hidden; margin-bottom:18px; }
+      .quiz-progress i{ display:block; height:100%; width:0%; background:var(--teal); transition:width .3s ease; }
+      .q-card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px; margin-bottom:18px; }
+      .q-num{ font-size:12.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--teal); margin-bottom:8px; }
+      .q-text{ font-size:17.5px; font-weight:600; line-height:1.55; margin-bottom:16px; }
+      .q-text .mono{ font-weight:700; }
+      .opts{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+      @media (max-width:560px){ .opts{ grid-template-columns:1fr; } }
+      .opt-btn{
+        min-height:54px; padding:12px 16px; text-align:left; border-radius:12px; font-size:16px; font-weight:600;
+        border:1.5px solid var(--line-strong); background:var(--card); color:var(--ink);
+        font-family:"IBM Plex Mono", monospace;
+      }
+      .opt-btn:hover:not(:disabled){ border-color:var(--accent); }
+      .opt-btn:disabled{ cursor:default; opacity:.85; }
+      .opt-btn.correct{ background:var(--good-soft); border-color:var(--good); color:var(--good); opacity:1; }
+      .opt-btn.wrong{ background:var(--bad-soft); border-color:var(--bad); color:var(--bad); opacity:1; }
+      .explain{ display:none; margin-top:14px; border-radius:12px; padding:13px 15px; font-size:14.5px; line-height:1.65; }
+      .explain.show{ display:block; }
+      .explain.ok{ background:var(--good-soft); border:1px solid var(--good); }
+      .explain.no{ background:var(--bad-soft); border:1px solid var(--bad); }
+      .explain .mono{ font-weight:700; }
+      .score-banner{
+        display:none; text-align:center; background:var(--card); border:1.5px solid var(--teal);
+        border-radius:var(--radius); padding:26px 20px; margin-bottom:20px; box-shadow:var(--shadow);
+      }
+      .score-banner.show{ display:block; }
+      .score-banner .big{ font-family:"IBM Plex Mono", monospace; font-size:52px; font-weight:700; color:var(--teal); line-height:1; }
+      .score-banner p{ color:var(--muted); margin:10px 0 16px; }
+
+      /* ---------- Data guru ---------- */
+      .pin-box{ max-width:420px; margin:10px auto 0; text-align:center; }
+      .pin-box input{
+        width:100%; min-height:56px; text-align:center; font-size:20px; letter-spacing:.2em;
+        font-family:"IBM Plex Mono", monospace; font-weight:700; color:var(--ink);
+        background:var(--card-2); border:1.5px solid var(--line-strong); border-radius:12px; outline:none; margin-bottom:12px;
+      }
+      .pin-box input:focus{ border-color:var(--accent); }
+      .stat-row{ display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:20px; }
+      .stat{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow:var(--shadow); }
+      .stat .v{ font-family:"IBM Plex Mono", monospace; font-size:30px; font-weight:700; }
+      .stat .k{ font-size:13px; color:var(--muted); font-weight:600; margin-top:2px; }
+      table.data{ width:100%; border-collapse:collapse; font-size:14.5px; }
+      table.data th{ text-align:left; padding:10px 12px; border-bottom:2px solid var(--line-strong); font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); }
+      table.data td{ padding:11px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+      table.data td.num{ font-family:"IBM Plex Mono", monospace; font-weight:600; }
+      @media (max-width:720px){
+        table.data thead{ display:none; }
+        table.data, table.data tbody, table.data tr, table.data td{ display:block; width:100%; }
+        table.data tr{ border:1px solid var(--line); border-radius:12px; margin-bottom:12px; padding:8px 4px; background:var(--card-2); }
+        table.data td{ border-bottom:none; padding:6px 12px; }
+        table.data td::before{ content:attr(data-label); display:block; font-size:11.5px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--faint); margin-bottom:2px; }
+      }
+      .status-msg{ display:none; border-radius:10px; padding:11px 14px; font-size:14.5px; font-weight:600; margin-top:12px; line-height:1.55; }
+      .status-msg.show{ display:block; }
+      .status-msg.ok{ background:var(--good-soft); border:1px solid var(--good); color:var(--good); }
+      .status-msg.err{ background:var(--bad-soft); border:1px solid var(--bad); color:var(--bad); }
+      .status-msg.info{ background:var(--blue-soft); border:1px solid var(--blue); color:var(--blue); }
+      .btn-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+      .empty-note{ color:var(--faint); font-size:15px; text-align:center; padding:22px 10px; }
+
+      footer{
+        border-top:1px solid var(--line); background:var(--card); margin-top:auto;
+        padding:20px 18px calc(20px + env(safe-area-inset-bottom)); text-align:center;
+      }
+      footer .f-name{ font-weight:800; font-size:15.5px; }
+      footer .f-sub{ color:var(--faint); font-size:13px; margin-top:3px; }
+      .hidden{ display:none !important; }
+    </style>
+  </head>
+  <body>
+
+    <!-- ================= LOGIN ================= -->
+    <main id="loginView">
+      <div class="login-shell">
+        <div class="login-card">
+          <span class="login-badge">DapMath · Kelas 8</span>
+          <h1>Persamaan Garis Lurus</h1>
+          <p class="sub">Halo! Sebelum mulai belajar, isi nama dan kelasmu dulu ya. Namamu akan tercatat agar guru bisa melihat perkembangan belajarmu.</p>
+          <div class="form-error" id="loginError">Nama dan kelas wajib diisi terlebih dahulu.</div>
+          <form id="loginForm" novalidate>
+            <div class="field">
+              <label for="inputNama">Nama Lengkap</label>
+              <input id="inputNama" type="text" placeholder="Contoh: Siti Rahma" autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="inputKelas">Kelas</label>
+              <select id="inputKelas">
+                <option value="">— Pilih kelas —</option>
+                <option>8A</option><option>8B</option><option>8C</option><option>8D</option>
+                <option>8E</option><option>8F</option><option>8G</option><option>8H</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Mulai Belajar</button>
+          </form>
+          <p class="login-note">Satu perangkat dipakai bergantian? Gunakan tombol <b>Ganti Siswa</b> di bilah atas.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= APP ================= -->
+    <div id="appView" class="hidden" style="display:flex; flex-direction:column; min-height:100vh;">
+      <div class="topbar">
+        <div class="topbar-in">
+          <div class="brand">Persamaan Garis Lurus<small>DapMath · Matematika Kelas 8</small></div>
+          <div class="student-chip">
+            <span class="who" id="chipNama">— <span id="chipKelas"></span></span>
+            <button class="btn btn-ghost btn-sm" id="btnGantiSiswa" type="button">Ganti Siswa</button>
+          </div>
+        </div>
+        <nav class="nav">
+          <div class="nav-in" id="mainNav">
+            <button class="nav-btn active" data-menu="grafik" type="button">Grafik y = mx + c</button>
+            <button class="nav-btn" data-menu="duatitik" type="button">Gradien Dua Titik</button>
+            <button class="nav-btn" data-menu="sejajar" type="button">Sejajar &amp; Tegak Lurus</button>
+            <button class="nav-btn" data-menu="kalkulator" type="button">Kalkulator</button>
+            <button class="nav-btn" data-menu="kuis" type="button">Kuis</button>
+            <button class="nav-btn" data-menu="guru" type="button">Data Guru 🔒</button>
+          </div>
+        </nav>
+      </div>
+
+      <main>
+        <div class="wrap">
+
+          <!-- ========== GRAFIK y = mx + c ========== -->
+          <section class="section active" id="sec-grafik">
+            <div class="sec-head">
+              <h2>Mengenal Garis y = mx + c</h2>
+              <p>Persamaan garis lurus berbentuk <span class="mono"><b>y = mx + c</b></span>. Angka <b>m</b> disebut <b>gradien</b> (kemiringan garis), dan <b>c</b> adalah titik potong garis dengan sumbu Y. Geser kedua penggeser di bawah dan perhatikan bagaimana garis berubah.</p>
+            </div>
+            <div class="grid-2">
+              <div class="plot-box">
+                <canvas class="plot" id="plotMain" width="640" height="560" aria-label="Grafik garis y sama dengan m x ditambah c"></canvas>
+                <div class="eq-display" id="eqMain">y = 2x + 1</div>
+              </div>
+              <div>
+                <div class="card">
+                  <h3>Atur Sendiri Garisnya</h3>
+                  <div class="slider-row">
+                    <div class="lab"><b>Gradien (m)</b><span class="val" id="valM">2</span></div>
+                    <input type="range" id="rngM" min="-5" max="5" step="0.5" value="2" aria-label="Gradien m" />
+                  </div>
+                  <div class="slider-row">
+                    <div class="lab"><b>Konstanta (c)</b><span class="val teal" id="valC">1</span></div>
+                    <input type="range" id="rngC" class="teal" min="-8" max="8" step="0.5" value="1" aria-label="Konstanta c" />
+                  </div>
+                  <div class="fact-grid">
+                    <div class="fact"><div class="k">Arah garis</div><div class="v" id="factArah">Naik ↗</div></div>
+                    <div class="fact"><div class="k">Potong sumbu Y</div><div class="v" id="factPotY">(0, 1)</div></div>
+                    <div class="fact"><div class="k">Potong sumbu X</div><div class="v" id="factPotX">(−1/2, 0)</div></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <h3>Apa Arti Gradien?</h3>
+                  <p>Gradien menunjukkan <b>seberapa curam</b> garis dan <b>ke mana arahnya</b>:</p>
+                  <ul class="tight">
+                    <li><b>m &gt; 0</b> — garis naik dari kiri ke kanan (semakin besar m, semakin curam).</li>
+                    <li><b>m &lt; 0</b> — garis turun dari kiri ke kanan.</li>
+                    <li><b>m = 0</b> — garis mendatar (sejajar sumbu X).</li>
+                  </ul>
+                  <p>Gradien juga berarti: setiap x bertambah 1, nilai y berubah sebesar m. Contoh: m = 2 artinya y naik 2 setiap langkah ke kanan.</p>
+                  <div class="callout teal"><b>Coba ini:</b> buat garis yang melalui titik (0, −3) dan turun perlahan. Kamu perlu c = −3 dan m negatif kecil, misalnya m = −1/2.</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== GRADIEN DUA TITIK ========== -->
+          <section class="section" id="sec-duatitik">
+            <div class="sec-head">
+              <h2>Gradien Melalui Dua Titik</h2>
+              <p>Jika garis melalui titik A(x₁, y₁) dan B(x₂, y₂), gradiennya adalah perbandingan perubahan y terhadap perubahan x. Ubah posisi kedua titik dan lihat segitiga bantu (garis putus-putus) yang menunjukkan Δy dan Δx.</p>
+            </div>
+            <div class="formula">m = (y₂ − y₁) / (x₂ − x₁) = Δy / Δx</div>
+            <div class="grid-2">
+              <div class="plot-box">
+                <canvas class="plot" id="plotDua" width="640" height="560" aria-label="Grafik gradien melalui dua titik"></canvas>
+                <div class="legend">
+                  <span><i style="background:var(--accent)"></i>Titik A</span>
+                  <span><i style="background:var(--blue)"></i>Titik B</span>
+                  <span><i style="background:var(--teal)"></i>Δx dan Δy</span>
+                </div>
+              </div>
+              <div>
+                <div class="card">
+                  <h3>Atur Titik A dan B</h3>
+                  <div class="slider-row">
+                    <div class="lab"><b>Titik A — x₁</b><span class="val" id="valX1">−3</span></div>
+                    <input type="range" id="rngX1" min="-8" max="8" step="1" value="-3" aria-label="x titik A" />
+                  </div>
+                  <div class="slider-row">
+                    <div class="lab"><b>Titik A — y₁</b><span class="val" id="valY1">−2</span></div>
+                    <input type="range" id="rngY1" min="-8" max="8" step="1" value="-2" aria-label="y titik A" />
+                  </div>
+                  <div class="slider-row">
+                    <div class="lab"><b>Titik B — x₂</b><span class="val teal" id="valX2">3</span></div>
+                    <input type="range" id="rngX2" class="teal" min="-8" max="8" step="1" value="3" aria-label="x titik B" />
+                  </div>
+                  <div class="slider-row">
+                    <div class="lab"><b>Titik B — y₂</b><span class="val teal" id="valY2">4</span></div>
+                    <input type="range" id="rngY2" class="teal" min="-8" max="8" step="1" value="4" aria-label="y titik B" />
+                  </div>
+                </div>
+                <div class="card">
+                  <h3>Perhitungan</h3>
+                  <div id="hitungDua"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== SEJAJAR & TEGAK LURUS ========== -->
+          <section class="section" id="sec-sejajar">
+            <div class="sec-head">
+              <h2>Garis Sejajar dan Tegak Lurus</h2>
+              <p>Dua garis berhubungan lewat gradiennya. Garis yang <b>sejajar</b> tidak pernah berpotongan karena kemiringannya sama. Garis yang <b>tegak lurus</b> berpotongan membentuk sudut 90°.</p>
+            </div>
+            <div class="grid-2">
+              <div class="plot-box">
+                <canvas class="plot" id="plotRelasi" width="640" height="560" aria-label="Grafik garis sejajar dan tegak lurus"></canvas>
+                <div class="legend">
+                  <span><i style="background:var(--accent)"></i><span id="legG1">g₁: y = 1x + 1</span></span>
+                  <span><i style="background:var(--blue)"></i><span id="legG2">g₂</span></span>
+                </div>
+              </div>
+              <div>
+                <div class="card">
+                  <h3>Pilih Hubungannya</h3>
+                  <div class="seg-toggle">
+                    <button class="seg-btn active" id="btnSejajar" type="button">Sejajar</button>
+                    <button class="seg-btn" id="btnTegak" type="button">Tegak Lurus</button>
+                  </div>
+                  <div class="slider-row">
+                    <div class="lab"><b>Gradien g₁ (m₁)</b><span class="val" id="valM1">1</span></div>
+                    <input type="range" id="rngM1" min="-4" max="4" step="0.5" value="1" aria-label="Gradien garis pertama" />
+                  </div>
+                  <div id="relasiInfo"></div>
+                </div>
+                <div class="card">
+                  <h3>Aturan yang Harus Diingat</h3>
+                  <div class="formula">Sejajar: m₁ = m₂</div>
+                  <div class="formula">Tegak lurus: m₁ × m₂ = −1 &nbsp;atau&nbsp; m₂ = −1/m₁</div>
+                  <p>Contoh: garis y = 3x + 2 tegak lurus dengan garis bergradien −1/3, karena 3 × (−1/3) = −1. Tanda gradiennya selalu berlawanan dan nilainya berkebalikan.</p>
+                  <div class="callout warn"><b>Perhatian:</b> jika m₁ = 0 (garis mendatar), garis tegak lurusnya adalah garis vertikal x = k yang gradiennya tidak terdefinisi.</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== KALKULATOR ========== -->
+          <section class="section" id="sec-kalkulator">
+            <div class="sec-head">
+              <h2>Kalkulator Persamaan Garis</h2>
+              <p>Tiga alat bantu hitung lengkap dengan langkah-langkahnya. Gunakan untuk memeriksa pekerjaanmu — bukan menggantikan proses berpikirmu ya.</p>
+            </div>
+
+            <div class="card">
+              <h3>1 · Gradien dari Dua Titik</h3>
+              <p>Masukkan koordinat titik A(x₁, y₁) dan B(x₂, y₂).</p>
+              <div class="num-grid">
+                <div class="num-field"><label for="kX1">x₁</label><input id="kX1" type="number" value="1" /></div>
+                <div class="num-field"><label for="kY1">y₁</label><input id="kY1" type="number" value="2" /></div>
+                <div class="num-field"><label for="kX2">x₂</label><input id="kX2" type="number" value="5" /></div>
+                <div class="num-field"><label for="kY2">y₂</label><input id="kY2" type="number" value="10" /></div>
+              </div>
+              <button class="btn btn-primary" id="btnHitungGrad" type="button">Hitung Gradien</button>
+              <div class="steps" id="stepsGrad"></div>
+            </div>
+
+            <div class="card">
+              <h3>2 · Persamaan Garis Melalui Dua Titik</h3>
+              <p>Garis yang melalui titik A(x₁, y₁) dan B(x₂, y₂) dicari dengan rumus <span class="mono">(y − y₁)/(y₂ − y₁) = (x − x₁)/(x₂ − x₁)</span>.</p>
+              <div class="num-grid">
+                <div class="num-field"><label for="pX1">x₁</label><input id="pX1" type="number" value="2" /></div>
+                <div class="num-field"><label for="pY1">y₁</label><input id="pY1" type="number" value="3" /></div>
+                <div class="num-field"><label for="pX2">x₂</label><input id="pX2" type="number" value="4" /></div>
+                <div class="num-field"><label for="pY2">y₂</label><input id="pY2" type="number" value="7" /></div>
+              </div>
+              <button class="btn btn-primary" id="btnHitungDua" type="button">Tentukan Persamaan</button>
+              <div class="steps" id="stepsDua"></div>
+            </div>
+
+            <div class="card">
+              <h3>3 · Persamaan Garis Melalui Satu Titik dengan Gradien Tertentu</h3>
+              <p>Gunakan rumus titik–gradien <span class="mono">y − y₁ = m(x − x₁)</span>. Gradien boleh berupa pecahan, misalnya tulis <span class="mono">1/2</span> atau <span class="mono">-3/4</span>.</p>
+              <div class="num-grid">
+                <div class="num-field"><label for="sX1">x₁</label><input id="sX1" type="number" value="1" /></div>
+                <div class="num-field"><label for="sY1">y₁</label><input id="sY1" type="number" value="4" /></div>
+                <div class="num-field"><label for="sM">Gradien m</label><input id="sM" type="text" value="2" /></div>
+              </div>
+              <button class="btn btn-primary" id="btnHitungSatu" type="button">Tentukan Persamaan</button>
+              <div class="steps" id="stepsSatu"></div>
+            </div>
+          </section>
+
+          <!-- ========== KUIS ========== -->
+          <section class="section" id="sec-kuis">
+            <div class="sec-head">
+              <h2>Kuis Persamaan Garis Lurus</h2>
+              <p>10 soal pilihan ganda. Klik jawabanmu — benar atau salah langsung diketahui beserta pembahasannya. Skor akhir tercatat dan terkirim ke guru.</p>
+            </div>
+            <div class="score-banner" id="scoreBanner">
+              <div class="big" id="scoreBig">0</div>
+              <p id="scoreText"></p>
+              <button class="btn btn-teal" id="btnUlangKuis" type="button">Ulangi Kuis</button>
+            </div>
+            <div class="quiz-progress"><i id="quizBar"></i></div>
+            <div id="quizList"></div>
+          </section>
+
+          <!-- ========== DATA GURU ========== -->
+          <section class="section" id="sec-guru">
+            <div class="sec-head">
+              <h2>Data Guru</h2>
+              <p>Menu khusus guru: daftar siswa yang login, menu yang dipelajari, dan perkembangan skor kuis. Data tersimpan di perangkat ini dan tersinkron ke Google Sheet pusat DapMath.</p>
+            </div>
+
+            <div class="card" id="pinCard">
+              <div class="pin-box">
+                <h3>🔒 Masukkan PIN Guru</h3>
+                <p style="color:var(--muted); font-size:14.5px;">PIN diminta setiap kali membuka menu ini.</p>
+                <div class="form-error" id="pinError">PIN salah. Coba lagi.</div>
+                <form id="pinForm" novalidate>
+                  <input id="inputPin" type="password" inputmode="text" autocomplete="off" placeholder="PIN" aria-label="PIN Guru" />
+                  <button type="submit" class="btn btn-primary btn-block">Buka Data Guru</button>
+                </form>
+              </div>
+            </div>
+
+            <div id="guruContent" class="hidden">
+              <div class="stat-row">
+                <div class="stat"><div class="v" id="statSiswa">0</div><div class="k">Siswa terdata</div></div>
+                <div class="stat"><div class="v" id="statLogin">0</div><div class="k">Total login</div></div>
+                <div class="stat"><div class="v" id="statKuis">0</div><div class="k">Kuis dikerjakan</div></div>
+                <div class="stat"><div class="v" id="statRata">–</div><div class="k">Rata-rata skor terbaik</div></div>
+              </div>
+
+              <div class="card">
+                <h3>Database Google Sheets</h3>
+                <p>Status koneksi: <b id="sheetStatus">—</b></p>
+                <div class="field">
+                  <label for="inputSheetUrl">URL Web App Apps Script</label>
+                  <input id="inputSheetUrl" type="url" />
+                </div>
+                <div class="btn-row">
+                  <button class="btn btn-ghost btn-sm" id="btnSimpanUrl" type="button">Simpan URL</button>
+                  <button class="btn btn-teal btn-sm" id="btnUjiKirim" type="button">Uji Kirim Data Sekarang</button>
+                  <button class="btn btn-ghost btn-sm" id="btnMuatSheet" type="button">Muat Data dari Sheet</button>
+                </div>
+                <div class="status-msg" id="sheetMsg"></div>
+              </div>
+
+              <div class="card">
+                <h3>Daftar Siswa &amp; Perkembangan</h3>
+                <div id="tabelSiswaWrap"></div>
+                <div class="btn-row">
+                  <button class="btn btn-primary btn-sm" id="btnUnduhCsv" type="button">Unduh Laporan (CSV)</button>
+                  <button class="btn btn-ghost btn-sm" id="btnKirimRingkasan" type="button">Kirim Ringkasan Semua Siswa ke Sheet</button>
+                </div>
+                <div class="status-msg" id="guruMsg"></div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+
+    <footer>
+      <div class="f-name">Dibangun oleh Dody Adyansyah</div>
+      <div class="f-sub">DapMath · Aplikasi pembelajaran matematika interaktif untuk siswa SMP</div>
+    </footer>
+
+    <script>
+    'use strict';
+    /* ================== KONSTANTA ================== */
+    var APP_ID = 'persamaan-garis-lurus';
+    var SHEET_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec';
+    var TEACHER_PIN = 'd4pm4t';
+    var LS_DATA = 'pgl_data_v1';
+    var LS_CURRENT = 'pgl_current_v1';
+    var MENU_NAMES = {
+      grafik: 'Grafik y=mx+c', duatitik: 'Gradien Dua Titik', sejajar: 'Sejajar & Tegak Lurus',
+      kalkulator: 'Kalkulator', kuis: 'Kuis', guru: 'Data Guru'
+    };
+
+    /* ================== PENYIMPANAN LOKAL ================== */
+    function loadData(){
+      try { var d = JSON.parse(localStorage.getItem(LS_DATA)); if (d && d.students) return d; } catch(e){}
+      return { students: {}, sheetUrl: '' };
+    }
+    function saveData(){ try { localStorage.setItem(LS_DATA, JSON.stringify(DB)); } catch(e){} }
+    var DB = loadData();
+    var current = null;       // {nama, kelas}
+    var guruUnlocked = false;
+    var remoteStudents = null; // hasil muat dari Sheet (array agregat)
+
+    function studentKey(nama, kelas){ return (nama + '|' + kelas).toLowerCase(); }
+    function getStudent(nama, kelas){
+      var k = studentKey(nama, kelas);
+      if (!DB.students[k]) DB.students[k] = { nama: nama, kelas: kelas, logins: [], menus: {}, quizzes: [] };
+      return DB.students[k];
+    }
+    function sheetUrl(){ return (DB.sheetUrl && DB.sheetUrl.trim()) || SHEET_URL_DEFAULT; }
+
+    /* ================== KIRIM / TERIMA SHEET ================== */
+    function kirimSheet(payload){
+      payload.app = APP_ID;
+      var body = JSON.stringify(payload);
+      var url = sheetUrl();
+      try {
+        if (navigator.sendBeacon) {
+          var blob = new Blob([body], { type: 'text/plain' });
+          if (navigator.sendBeacon(url, blob)) return Promise.resolve(true);
+        }
+      } catch(e){}
+      return fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: body, keepalive: true })
+        .then(function(){ return true; }).catch(function(){ return false; });
+    }
+    function bacaSheet(){
+      return fetch(sheetUrl() + '?app=' + encodeURIComponent(APP_ID), { method: 'GET' })
+        .then(function(r){ return r.json(); });
+    }
+
+    /* ================== FORMAT ANGKA & PECAHAN ================== */
+    function gcd(a, b){ a = Math.abs(a); b = Math.abs(b); while (b){ var t = b; b = a % b; a = t; } return a || 1; }
+    // Tampilkan bilangan sebagai pecahan sederhana bila bukan bulat (mis. 0.5 -> "1/2", -1.5 -> "−3/2")
+    function fmt(v){
+      if (v === null || v === undefined || isNaN(v)) return '–';
+      var neg = v < 0; var a = Math.abs(v);
+      var s;
+      if (Math.abs(a - Math.round(a)) < 1e-9) s = String(Math.round(a));
+      else {
+        var found = null;
+        for (var d = 2; d <= 16; d++){ var n = a * d; if (Math.abs(n - Math.round(n)) < 1e-9){ found = [Math.round(n), d]; break; } }
+        if (found){ var g = gcd(found[0], found[1]); s = (found[0]/g) + '/' + (found[1]/g); }
+        else s = String(Math.round(a * 100) / 100).replace('.', ',');
+      }
+      return (neg && s !== '0' ? '−' : '') + s;
+    }
+    // Pecahan eksak dari pasangan pembilang/penyebut bulat
+    function fmtFrac(num, den){
+      if (den === 0) return null;
+      if (num === 0) return '0';
+      var neg = (num < 0) !== (den < 0);
+      var n = Math.abs(num), d = Math.abs(den), g = gcd(n, d);
+      n /= g; d /= g;
+      var s = d === 1 ? String(n) : n + '/' + d;
+      return (neg ? '−' : '') + s;
+    }
+    // Baca input teks pecahan: "2", "-3/4", "1,5"
+    function parseNum(txt){
+      if (txt === null || txt === undefined) return NaN;
+      var t = String(txt).trim().replace(',', '.').replace(/−/g, '-');
+      if (t === '') return NaN;
+      if (t.indexOf('/') >= 0){
+        var parts = t.split('/'); if (parts.length !== 2) return NaN;
+        var n = parseFloat(parts[0]), d = parseFloat(parts[1]);
+        if (isNaN(n) || isNaN(d) || d === 0) return NaN;
+        return n / d;
+      }
+      return parseFloat(t);
+    }
+    // Susun persamaan "y = mx + c" dari m dan c numerik
+    function eqStr(m, c){
+      if (m === 0) return 'y = ' + fmt(c);
+      var mPart;
+      if (m === 1) mPart = 'x';
+      else if (m === -1) mPart = '−x';
+      else mPart = fmt(m) + 'x';
+      var s = 'y = ' + mPart;
+      if (c > 0) s += ' + ' + fmt(c);
+      else if (c < 0) s += ' − ' + fmt(-c);
+      return s;
+    }
+    function $(id){ return document.getElementById(id); }
+    function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    /* ================== LOGIN ================== */
+    function showApp(){
+      $('loginView').classList.add('hidden');
+      var av = $('appView'); av.classList.remove('hidden'); av.style.display = 'flex';
+      $('chipNama').firstChild.textContent = current.nama + ' ';
+      $('chipKelas').textContent = '· Kelas ' + current.kelas;
+      drawAllPlots();
+    }
+    function showLogin(){
+      $('appView').classList.add('hidden'); $('appView').style.display = 'none';
+      $('loginView').classList.remove('hidden');
+    }
+    $('loginForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      var nama = $('inputNama').value.trim();
+      var kelas = $('inputKelas').value;
+      if (!nama || !kelas){ $('loginError').style.display = 'block'; return; }
+      $('loginError').style.display = 'none';
+      current = { nama: nama, kelas: kelas };
+      try { localStorage.setItem(LS_CURRENT, JSON.stringify(current)); } catch(err){}
+      var st = getStudent(nama, kelas);
+      var now = new Date().toISOString();
+      st.logins.push(now);
+      saveData();
+      kirimSheet({ type: 'login', time: now, nama: nama, kelas: kelas });
+      showApp();
+      gotoMenu('grafik');
+    });
+    $('btnGantiSiswa').addEventListener('click', function(){
+      current = null;
+      try { localStorage.removeItem(LS_CURRENT); } catch(e){}
+      $('inputNama').value = ''; $('inputKelas').value = '';
+      guruUnlocked = false;
+      showLogin();
+    });
+    // Sesi tersimpan di perangkat ini
+    try {
+      var saved = JSON.parse(localStorage.getItem(LS_CURRENT));
+      if (saved && saved.nama && saved.kelas){ current = saved; showApp(); }
+    } catch(e){}
+
+    /* ================== NAVIGASI ================== */
+    function gotoMenu(menu){
+      var btns = document.querySelectorAll('#mainNav .nav-btn');
+      for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('active', btns[i].getAttribute('data-menu') === menu);
+      var secs = document.querySelectorAll('.section');
+      for (var j = 0; j < secs.length; j++) secs[j].classList.toggle('active', secs[j].id === 'sec-' + menu);
+      if (menu !== 'guru') guruUnlocked = false; // PIN diminta lagi setiap membuka Data Guru
+      if (current && menu !== 'guru'){
+        var st = getStudent(current.nama, current.kelas);
+        st.menus[MENU_NAMES[menu]] = (st.menus[MENU_NAMES[menu]] || 0) + 1;
+        saveData();
+      }
+      if (menu === 'guru') renderGuruGate();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(drawAllPlots, 60);
+    }
+    document.querySelectorAll('#mainNav .nav-btn').forEach(function(b){
+      b.addEventListener('click', function(){ gotoMenu(b.getAttribute('data-menu')); });
+    });
+
+    /* ================== MESIN GAMBAR GRAFIK ================== */
+    function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    function drawPlot(canvas, cfg){
+      if (!canvas || !canvas.offsetParent) return;
+      var dpr = window.devicePixelRatio || 1;
+      var W = canvas.clientWidth || 640, H = Math.round(W * 0.86);
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      canvas.style.height = H + 'px';
+      var ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var R = cfg.range || 10, pad = 30;
+      var scale = Math.min((W - 2 * pad) / (2 * R), (H - 2 * pad) / (2 * R));
+      var ox = W / 2, oy = H / 2;
+      function X(x){ return ox + x * scale; }
+      function Y(y){ return oy - y * scale; }
+      var cGrid = cssVar('--bg-grid-strong') || 'rgba(37,84,160,.13)';
+      var cAxis = cssVar('--faint') || '#8494ab';
+      var cText = cssVar('--muted') || '#54657c';
+      ctx.clearRect(0, 0, W, H);
+      // grid
+      ctx.lineWidth = 1;
+      for (var g = -R; g <= R; g++){
+        ctx.strokeStyle = cGrid;
+        ctx.beginPath(); ctx.moveTo(X(g), Y(-R)); ctx.lineTo(X(g), Y(R)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(X(-R), Y(g)); ctx.lineTo(X(R), Y(g)); ctx.stroke();
+      }
+      // sumbu
+      ctx.strokeStyle = cAxis; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.moveTo(X(-R), oy); ctx.lineTo(X(R), oy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ox, Y(-R)); ctx.lineTo(ox, Y(R)); ctx.stroke();
+      // angka sumbu
+      ctx.fillStyle = cText; ctx.font = '600 11px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (var n = -R + 2; n < R; n += 2){ if (n !== 0) ctx.fillText(String(n), X(n), oy + 5); }
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      for (var n2 = -R + 2; n2 < R; n2 += 2){ if (n2 !== 0) ctx.fillText(String(n2), ox + 6, Y(n2)); }
+      ctx.fillText('x', X(R) - 12, oy - 12); ctx.fillText('y', ox + 8, Y(R) + 10);
+      ctx.save();
+      ctx.beginPath(); ctx.rect(X(-R), Y(R), 2 * R * scale, 2 * R * scale); ctx.clip();
+      // ruas garis bantu (segitiga Δx Δy)
+      if (cfg.segments) cfg.segments.forEach(function(s){
+        ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+        ctx.beginPath(); ctx.moveTo(X(s.x1), Y(s.y1)); ctx.lineTo(X(s.x2), Y(s.y2)); ctx.stroke();
+        ctx.setLineDash([]);
+        if (s.label){ ctx.fillStyle = s.color; ctx.font = '700 13px "IBM Plex Mono", monospace'; ctx.textAlign = 'center'; ctx.fillText(s.label, X(s.lx), Y(s.ly)); }
+      });
+      // garis-garis
+      if (cfg.lines) cfg.lines.forEach(function(L){
+        ctx.strokeStyle = L.color; ctx.lineWidth = L.width || 3.2;
+        ctx.setLineDash(L.dash ? [8, 6] : []);
+        ctx.beginPath();
+        if (L.vertical !== undefined && L.vertical !== null){
+          ctx.moveTo(X(L.vertical), Y(-R)); ctx.lineTo(X(L.vertical), Y(R));
+        } else {
+          ctx.moveTo(X(-R), Y(L.m * -R + L.c)); ctx.lineTo(X(R), Y(L.m * R + L.c));
+        }
+        ctx.stroke(); ctx.setLineDash([]);
+      });
+      // titik-titik
+      if (cfg.points) cfg.points.forEach(function(p){
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(X(p.x), Y(p.y), 6, 0, Math.PI * 2); ctx.fill();
+        ctx.lineWidth = 2.4; ctx.strokeStyle = cssVar('--card') || '#fff'; ctx.stroke();
+        if (p.label){
+          ctx.fillStyle = p.color; ctx.font = '700 13.5px "IBM Plex Mono", monospace';
+          ctx.textAlign = p.x >= 0 ? 'left' : 'right';
+          ctx.fillText(p.label, X(p.x) + (p.x >= 0 ? 10 : -10), Y(p.y) - 12);
+        }
+      });
+      ctx.restore();
+    }
+    function colAccent(){ return cssVar('--accent') || '#e4572e'; }
+    function colBlue(){ return cssVar('--blue') || '#1d6fb8'; }
+    function colTeal(){ return cssVar('--teal') || '#0e7c7b'; }
+
+    /* ================== GRAFIK UTAMA ================== */
+    function drawMain(){
+      var m = parseFloat($('rngM').value), c = parseFloat($('rngC').value);
+      $('valM').textContent = fmt(m);
+      $('valC').textContent = fmt(c);
+      $('eqMain').textContent = eqStr(m, c);
+      $('factArah').textContent = m > 0 ? 'Naik ↗' : (m < 0 ? 'Turun ↘' : 'Mendatar →');
+      $('factPotY').textContent = '(0, ' + fmt(c) + ')';
+      $('factPotX').textContent = m === 0 ? (c === 0 ? 'Semua titik di sumbu X' : 'Tidak memotong') : '(' + fmt(-c / m) + ', 0)';
+      var pts = [{ x: 0, y: c, color: colTeal(), label: '(0, ' + fmt(c) + ')' }];
+      if (m !== 0 && Math.abs(-c / m) <= 10) pts.push({ x: -c / m, y: 0, color: colBlue(), label: '(' + fmt(-c / m) + ', 0)' });
+      drawPlot($('plotMain'), { range: 10, lines: [{ m: m, c: c, color: colAccent() }], points: pts });
+    }
+    $('rngM').addEventListener('input', drawMain);
+    $('rngC').addEventListener('input', drawMain);
+
+    /* ================== GRADIEN DUA TITIK ================== */
+    function drawDua(){
+      var x1 = +$('rngX1').value, y1 = +$('rngY1').value, x2 = +$('rngX2').value, y2 = +$('rngY2').value;
+      $('valX1').textContent = fmt(x1); $('valY1').textContent = fmt(y1);
+      $('valX2').textContent = fmt(x2); $('valY2').textContent = fmt(y2);
+      var dx = x2 - x1, dy = y2 - y1;
+      var segs = [
+        { x1: x1, y1: y1, x2: x2, y2: y1, color: colTeal(), label: 'Δx = ' + fmt(dx), lx: (x1 + x2) / 2, ly: y1 - 0.9 },
+        { x1: x2, y1: y1, x2: x2, y2: y2, color: colTeal(), label: 'Δy = ' + fmt(dy), lx: x2 + (x2 >= x1 ? 1.1 : -1.1), ly: (y1 + y2) / 2 }
+      ];
+      var lines = [];
+      if (dx !== 0){ var m = dy / dx; lines.push({ m: m, c: y1 - m * x1, color: colAccent() }); }
+      else lines.push({ vertical: x1, color: colAccent() });
+      drawPlot($('plotDua'), {
+        range: 10, lines: lines, segments: segs,
+        points: [
+          { x: x1, y: y1, color: colAccent(), label: 'A(' + fmt(x1) + ', ' + fmt(y1) + ')' },
+          { x: x2, y: y2, color: colBlue(), label: 'B(' + fmt(x2) + ', ' + fmt(y2) + ')' }
+        ]
+      });
+      var html;
+      if (dx === 0){
+        html = '<p>A(' + fmt(x1) + ', ' + fmt(y1) + ') dan B(' + fmt(x2) + ', ' + fmt(y2) + ') punya x yang sama, jadi garisnya <b>vertikal</b> (x = ' + fmt(x1) + ').</p>' +
+          '<div class="callout warn"><b>Gradien tidak terdefinisi</b> karena pembagian dengan Δx = 0 tidak diperbolehkan.</div>';
+      } else {
+        var mf = fmtFrac(dy, dx);
+        html = '<p class="mono" style="color:var(--ink); font-size:16px;">m = (y₂ − y₁) / (x₂ − x₁)</p>' +
+          '<p class="mono" style="color:var(--ink); font-size:16px;">m = (' + fmt(y2) + ' − ' + fmt(y1) + ') / (' + fmt(x2) + ' − ' + fmt(x1) + ') = ' + fmt(dy) + ' / ' + fmt(dx) + '</p>' +
+          '<div class="result-box">m = ' + mf + '</div>' +
+          '<p style="margin-top:10px;">Artinya: setiap bergerak 1 satuan ke kanan, garis berubah ' + mf + ' satuan secara vertikal.</p>';
+      }
+      $('hitungDua').innerHTML = html;
+    }
+    ['rngX1','rngY1','rngX2','rngY2'].forEach(function(id){ $(id).addEventListener('input', drawDua); });
+
+    /* ================== SEJAJAR & TEGAK LURUS ================== */
+    var relasiMode = 'sejajar';
+    function drawRelasi(){
+      var m1 = parseFloat($('rngM1').value);
+      $('valM1').textContent = fmt(m1);
+      $('btnSejajar').classList.toggle('active', relasiMode === 'sejajar');
+      $('btnTegak').classList.toggle('active', relasiMode === 'tegak');
+      var lines = [{ m: m1, c: 1, color: colAccent() }];
+      var info = '';
+      if (relasiMode === 'sejajar'){
+        lines.push({ m: m1, c: -3, color: colBlue() });
+        $('legG1').textContent = 'g₁: ' + eqStr(m1, 1);
+        $('legG2').textContent = 'g₂: ' + eqStr(m1, -3);
+        info = '<p><b>g₂ sejajar g₁</b> karena gradiennya sama:</p>' +
+          '<div class="formula">m₁ = m₂ = ' + fmt(m1) + '</div>' +
+          '<p>Kedua garis tidak akan pernah berpotongan sejauh apa pun diperpanjang, karena kemiringannya identik — yang berbeda hanya posisi (nilai c).</p>';
+      } else {
+        $('legG1').textContent = 'g₁: ' + eqStr(m1, 1);
+        if (m1 === 0){
+          lines.push({ vertical: 2, color: colBlue() });
+          $('legG2').textContent = 'g₂: x = 2 (vertikal)';
+          info = '<p>g₁ mendatar (m₁ = 0), maka garis tegak lurusnya adalah garis <b>vertikal</b> x = 2.</p>' +
+            '<div class="callout warn">Garis vertikal tidak punya gradien terdefinisi, jadi rumus m₂ = −1/m₁ tidak berlaku untuk kasus khusus ini.</div>';
+        } else {
+          var m2 = -1 / m1;
+          lines.push({ m: m2, c: 1, color: colBlue() });
+          $('legG2').textContent = 'g₂: ' + eqStr(m2, 1);
+          info = '<p><b>g₂ tegak lurus g₁</b> karena hasil kali gradiennya −1:</p>' +
+            '<div class="formula">m₂ = −1/m₁ = −1/(' + fmt(m1) + ') = ' + fmt(m2) + '</div>' +
+            '<p class="mono" style="color:var(--ink);">' + fmt(m1) + ' × ' + fmt(m2) + ' = −1 ✓</p>' +
+            '<p>Perhatikan: tanda gradien berlawanan dan nilainya berkebalikan (1/2 pasangannya −2, 3 pasangannya −1/3, dan seterusnya).</p>';
+        }
+      }
+      $('relasiInfo').innerHTML = info;
+      drawPlot($('plotRelasi'), { range: 10, lines: lines, points: [{ x: 0, y: 1, color: colTeal(), label: '(0, 1)' }] });
+    }
+    $('rngM1').addEventListener('input', drawRelasi);
+    $('btnSejajar').addEventListener('click', function(){ relasiMode = 'sejajar'; drawRelasi(); });
+    $('btnTegak').addEventListener('click', function(){ relasiMode = 'tegak'; drawRelasi(); });
+
+    function drawAllPlots(){ drawMain(); drawDua(); drawRelasi(); }
+    var rszT; window.addEventListener('resize', function(){ clearTimeout(rszT); rszT = setTimeout(drawAllPlots, 150); });
+    if (window.matchMedia) { try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ setTimeout(drawAllPlots, 80); }); } catch(e){} }
+
+    /* ================== KALKULATOR ================== */
+    function stepHTML(list){
+      return list.map(function(s, i){ return '<div class="step"><div class="n">' + (i + 1) + '</div><div>' + s + '</div></div>'; }).join('');
+    }
+    function numVal(id){ var v = parseFloat($(id).value); return isNaN(v) ? null : v; }
+
+    $('btnHitungGrad').addEventListener('click', function(){
+      var box = $('stepsGrad');
+      var x1 = numVal('kX1'), y1 = numVal('kY1'), x2 = numVal('kX2'), y2 = numVal('kY2');
+      if (x1 === null || y1 === null || x2 === null || y2 === null){ box.className = 'steps show'; box.innerHTML = '<div class="callout warn">Isi keempat koordinat terlebih dahulu.</div>'; return; }
+      var dy = y2 - y1, dx = x2 - x1, steps;
+      if (dx === 0){
+        steps = [
+          'Tuliskan rumus gradien: <span class="mono">m = (y₂ − y₁) / (x₂ − x₁)</span>.',
+          'Substitusikan: <span class="mono">m = (' + fmt(y2) + ' − ' + fmt(y1) + ') / (' + fmt(x2) + ' − ' + fmt(x1) + ') = ' + fmt(dy) + ' / 0</span>.',
+          'Karena penyebutnya 0, gradien <b>tidak terdefinisi</b>. Kedua titik membentuk garis vertikal <span class="mono">x = ' + fmt(x1) + '</span>.'
+        ];
+      } else {
+        steps = [
+          'Tuliskan rumus gradien: <span class="mono">m = (y₂ − y₁) / (x₂ − x₁)</span>.',
+          'Substitusikan nilai titik A(' + fmt(x1) + ', ' + fmt(y1) + ') dan B(' + fmt(x2) + ', ' + fmt(y2) + '): <span class="mono">m = (' + fmt(y2) + ' − ' + fmt(y1) + ') / (' + fmt(x2) + ' − ' + fmt(x1) + ')</span>.',
+          'Hitung pembilang dan penyebut: <span class="mono">m = ' + fmt(dy) + ' / ' + fmt(dx) + '</span>.',
+          '<div class="result-box">m = ' + fmtFrac(dy, dx) + '</div>'
+        ];
+      }
+      box.className = 'steps show'; box.innerHTML = stepHTML(steps);
+    });
+
+    $('btnHitungDua').addEventListener('click', function(){
+      var box = $('stepsDua');
+      var x1 = numVal('pX1'), y1 = numVal('pY1'), x2 = numVal('pX2'), y2 = numVal('pY2');
+      if (x1 === null || y1 === null || x2 === null || y2 === null){ box.className = 'steps show'; box.innerHTML = '<div class="callout warn">Isi keempat koordinat terlebih dahulu.</div>'; return; }
+      var dy = y2 - y1, dx = x2 - x1, steps;
+      if (dx === 0){
+        steps = [
+          'Perhatikan bahwa x₁ = x₂ = ' + fmt(x1) + ', sehingga kedua titik segaris vertikal.',
+          '<div class="result-box">x = ' + fmt(x1) + '</div><p>Garis vertikal tidak dapat ditulis dalam bentuk y = mx + c.</p>'
+        ];
+      } else {
+        var m = dy / dx, c = y1 - m * x1;
+        steps = [
+          'Cari gradiennya dulu: <span class="mono">m = (y₂ − y₁) / (x₂ − x₁) = (' + fmt(y2) + ' − ' + fmt(y1) + ') / (' + fmt(x2) + ' − ' + fmt(x1) + ') = ' + fmt(dy) + ' / ' + fmt(dx) + ' = ' + fmtFrac(dy, dx) + '</span>.',
+          'Pakai rumus dua titik: <span class="mono">(y − ' + fmt(y1) + ') / (' + fmt(y2) + ' − ' + fmt(y1) + ') = (x − ' + fmt(x1) + ') / (' + fmt(x2) + ' − ' + fmt(x1) + ')</span>, yaitu <span class="mono">(y − ' + fmt(y1) + ') / ' + fmt(dy) + ' = (x − ' + fmt(x1) + ') / ' + fmt(dx) + '</span>.',
+          'Sederhanakan menjadi bentuk y = mx + c dengan substitusi titik A ke <span class="mono">y = ' + fmtFrac(dy, dx) + 'x + c</span>: <span class="mono">' + fmt(y1) + ' = ' + fmtFrac(dy, dx) + ' × ' + fmt(x1) + ' + c</span>, sehingga <span class="mono">c = ' + fmt(c) + '</span>.',
+          '<div class="result-box">' + eqStr(m, c) + '</div>'
+        ];
+      }
+      box.className = 'steps show'; box.innerHTML = stepHTML(steps);
+    });
+
+    $('btnHitungSatu').addEventListener('click', function(){
+      var box = $('stepsSatu');
+      var x1 = numVal('sX1'), y1 = numVal('sY1'), m = parseNum($('sM').value);
+      if (x1 === null || y1 === null || isNaN(m)){ box.className = 'steps show'; box.innerHTML = '<div class="callout warn">Isi titik dan gradien dengan benar (gradien boleh pecahan, contoh: 1/2).</div>'; return; }
+      var c = y1 - m * x1;
+      var steps = [
+        'Tuliskan rumus titik–gradien: <span class="mono">y − y₁ = m(x − x₁)</span>.',
+        'Substitusikan titik (' + fmt(x1) + ', ' + fmt(y1) + ') dan m = ' + fmt(m) + ': <span class="mono">y − ' + fmt(y1) + ' = ' + fmt(m) + '(x − ' + fmt(x1) + ')</span>.',
+        'Uraikan dan pindahkan suku tetapnya: <span class="mono">y = ' + fmt(m) + 'x ' + (c >= 0 ? '+ ' + fmt(c) : '− ' + fmt(-c)) + '</span> karena c = y₁ − m·x₁ = ' + fmt(y1) + ' − (' + fmt(m) + ' × ' + fmt(x1) + ') = ' + fmt(c) + '.',
+        '<div class="result-box">' + eqStr(m, c) + '</div>'
+      ];
+      box.className = 'steps show'; box.innerHTML = stepHTML(steps);
+    });
+
+    /* ================== KUIS ================== */
+    var QUIZ = [
+      { q: 'Gradien garis dengan persamaan <span class="mono">y = 3x − 5</span> adalah …', opts: ['−5', '3', '−3', '5'], benar: 1,
+        bahas: 'Pada bentuk <span class="mono">y = mx + c</span>, gradien adalah koefisien x. Di sini koefisien x adalah <span class="mono">3</span>, sedangkan −5 adalah konstanta c.' },
+      { q: 'Gradien garis <span class="mono">2x + 4y = 8</span> adalah …', opts: ['−2', '2', '−1/2', '1/2'], benar: 2,
+        bahas: 'Ubah ke bentuk y = mx + c: <span class="mono">4y = −2x + 8</span>, lalu bagi 4: <span class="mono">y = −1/2x + 2</span>. Jadi gradiennya <span class="mono">−1/2</span>.' },
+      { q: 'Gradien garis yang melalui titik (2, 3) dan (6, 11) adalah …', opts: ['1/2', '2', '4', '−2'], benar: 1,
+        bahas: '<span class="mono">m = (11 − 3) / (6 − 2) = 8 / 4 = 2</span>.' },
+      { q: 'Persamaan garis bergradien 2 yang memotong sumbu Y di titik (0, 4) adalah …', opts: ['y = 4x + 2', 'y = 2x − 4', 'y = 2x + 4', 'y = −2x + 4'], benar: 2,
+        bahas: 'Memotong sumbu Y di (0, 4) berarti c = 4. Dengan m = 2 diperoleh <span class="mono">y = 2x + 4</span>.' },
+      { q: 'Garis yang sejajar dengan <span class="mono">y = 5x + 1</span> memiliki gradien …', opts: ['−5', '−1/5', '1', '5'], benar: 3,
+        bahas: 'Garis-garis sejajar memiliki gradien yang <b>sama</b>. Gradien y = 5x + 1 adalah 5, jadi garis sejajarnya juga bergradien <span class="mono">5</span>.' },
+      { q: 'Gradien garis yang tegak lurus dengan <span class="mono">y = (1/3)x + 2</span> adalah …', opts: ['−3', '3', '−1/3', '1/3'], benar: 0,
+        bahas: 'Syarat tegak lurus: <span class="mono">m₁ × m₂ = −1</span>. Maka <span class="mono">m₂ = −1 / (1/3) = −3</span>. Tandanya berlawanan dan nilainya berkebalikan.' },
+      { q: 'Persamaan garis yang melalui titik (1, 2) dan (3, 6) adalah …', opts: ['y = 2x', 'y = 2x + 1', 'y = x + 1', 'y = 3x − 1'], benar: 0,
+        bahas: 'Gradien: <span class="mono">m = (6 − 2) / (3 − 1) = 2</span>. Substitusi titik (1, 2): <span class="mono">2 = 2(1) + c → c = 0</span>. Jadi persamaannya <span class="mono">y = 2x</span>.' },
+      { q: 'Gradien garis yang melalui titik (0, 0) dan (4, −8) adalah …', opts: ['2', '−2', '−1/2', '4'], benar: 1,
+        bahas: '<span class="mono">m = (−8 − 0) / (4 − 0) = −8 / 4 = −2</span>. Gradien negatif, garisnya turun.' },
+      { q: 'Titik (2, k) terletak pada garis <span class="mono">y = 3x − 1</span>. Nilai k adalah …', opts: ['4', '5', '6', '7'], benar: 1,
+        bahas: 'Substitusikan x = 2 ke persamaan: <span class="mono">k = 3(2) − 1 = 6 − 1 = 5</span>.' },
+      { q: 'Persamaan garis bergradien −1 yang melalui titik (3, 2) adalah …', opts: ['y = −x + 1', 'y = x + 5', 'y = −x + 5', 'y = −x − 5'], benar: 2,
+        bahas: 'Rumus titik–gradien: <span class="mono">y − 2 = −1(x − 3)</span> → <span class="mono">y − 2 = −x + 3</span> → <span class="mono">y = −x + 5</span>.' }
+    ];
+    var quizState = { answered: {}, done: false };
+    function renderQuiz(){
+      quizState = { answered: {}, done: false };
+      $('scoreBanner').classList.remove('show');
+      $('quizBar').style.width = '0%';
+      var html = '';
+      QUIZ.forEach(function(item, qi){
+        html += '<div class="q-card" id="qcard-' + qi + '"><div class="q-num">Soal ' + (qi + 1) + ' dari 10</div>' +
+          '<div class="q-text">' + item.q + '</div><div class="opts">';
+        item.opts.forEach(function(op, oi){
+          html += '<button class="opt-btn" type="button" data-q="' + qi + '" data-o="' + oi + '">' + 'ABCD'[oi] + '. ' + esc(op) + '</button>';
+        });
+        html += '</div><div class="explain" id="exp-' + qi + '"></div></div>';
+      });
+      $('quizList').innerHTML = html;
+      document.querySelectorAll('.opt-btn').forEach(function(b){
+        b.addEventListener('click', function(){ jawab(+b.getAttribute('data-q'), +b.getAttribute('data-o'), b); });
+      });
+    }
+    function jawab(qi, oi, btn){
+      if (quizState.answered[qi] !== undefined || quizState.done) return;
+      quizState.answered[qi] = oi;
+      var item = QUIZ[qi];
+      var card = $('qcard-' + qi);
+      card.querySelectorAll('.opt-btn').forEach(function(b){
+        b.disabled = true;
+        var o = +b.getAttribute('data-o');
+        if (o === item.benar) b.classList.add('correct');
+        else if (o === oi) b.classList.add('wrong');
+      });
+      var benar = oi === item.benar;
+      var exp = $('exp-' + qi);
+      exp.className = 'explain show ' + (benar ? 'ok' : 'no');
+      exp.innerHTML = (benar ? '<b>✓ Benar!</b> ' : '<b>✗ Belum tepat.</b> Jawaban yang benar: <span class="mono">' + esc(item.opts[item.benar]) + '</span>. ') + item.bahas;
+      var n = Object.keys(quizState.answered).length;
+      $('quizBar').style.width = (n * 10) + '%';
+      if (n === QUIZ.length) selesaiKuis();
+    }
+    function selesaiKuis(){
+      quizState.done = true;
+      var benar = 0;
+      QUIZ.forEach(function(item, qi){ if (quizState.answered[qi] === item.benar) benar++; });
+      var skor = benar * 10;
+      $('scoreBig').textContent = skor;
+      $('scoreText').textContent = 'Kamu menjawab ' + benar + ' dari 10 soal dengan benar, ' + current.nama + '. ' +
+        (skor >= 80 ? 'Kerja yang hebat — konsep gradien dan persamaan garis sudah kamu kuasai!' :
+         skor >= 60 ? 'Bagus! Baca lagi pembahasan soal yang salah agar makin paham.' :
+         'Tidak apa-apa, belajar memang bertahap. Coba pelajari lagi materinya lalu ulangi kuisnya.');
+      $('scoreBanner').classList.add('show');
+      $('scoreBanner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // catat & kirim
+      var st = getStudent(current.nama, current.kelas);
+      var rec = { time: new Date().toISOString(), score: skor };
+      st.quizzes.push(rec); saveData();
+      var attemptNo = st.quizzes.length;
+      kirimSheet({ type: 'kuis', time: rec.time, nama: current.nama, kelas: current.kelas, attemptNo: attemptNo, score: skor });
+      kirimRingkasan(st);
+    }
+    function ringkasanDari(st){
+      var scores = st.quizzes.map(function(q){ return q.score; });
+      return {
+        menus: Object.keys(st.menus).join(', ') || '-',
+        attempts: scores.length,
+        last: scores.length ? scores[scores.length - 1] : '',
+        best: scores.length ? Math.max.apply(null, scores) : '',
+        avg: scores.length ? Math.round(scores.reduce(function(a, b){ return a + b; }, 0) / scores.length) : ''
+      };
+    }
+    function kirimRingkasan(st){
+      var r = ringkasanDari(st);
+      return kirimSheet({ type: 'ringkasan', time: new Date().toISOString(), nama: st.nama, kelas: st.kelas,
+        menus: r.menus, attempts: r.attempts, last: r.last, best: r.best, avg: r.avg });
+    }
+    $('btnUlangKuis').addEventListener('click', function(){ renderQuiz(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    renderQuiz();
+
+    /* ================== DATA GURU ================== */
+    function renderGuruGate(){
+      var ok = guruUnlocked;
+      $('pinCard').classList.toggle('hidden', ok);
+      $('guruContent').classList.toggle('hidden', !ok);
+      $('pinError').style.display = 'none';
+      if (ok) renderGuru();
+    }
+    $('pinForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      if ($('inputPin').value === TEACHER_PIN){
+        guruUnlocked = true; $('inputPin').value = ''; renderGuruGate();
+      } else {
+        $('pinError').style.display = 'block';
+      }
+    });
+    function gabungSiswa(){
+      var map = {};
+      Object.keys(DB.students).forEach(function(k){
+        var st = DB.students[k], r = ringkasanDari(st);
+        map[k] = { nama: st.nama, kelas: st.kelas, loginCount: st.logins.length,
+          lastLogin: st.logins.length ? st.logins[st.logins.length - 1] : '', menus: r.menus,
+          attempts: r.attempts, last: r.last, best: r.best, avg: r.avg,
+          riwayat: st.quizzes.map(function(q){ return q.score; }).join(' → ') };
+      });
+      if (remoteStudents) remoteStudents.forEach(function(rs){
+        var k = studentKey(rs.nama, rs.kelas);
+        if (!map[k]) map[k] = { nama: rs.nama, kelas: rs.kelas, loginCount: 0, lastLogin: '', menus: rs.menus || '-', attempts: rs.attempts || 0, last: rs.last, best: rs.best, avg: rs.avg, riwayat: '' };
+        else { // utamakan data Sheet untuk ringkasan kuis bila ada
+          if (rs.attempts) { map[k].attempts = rs.attempts; map[k].last = rs.last; map[k].best = rs.best; map[k].avg = rs.avg; }
+          if (rs.menus && rs.menus !== '-') map[k].menus = rs.menus;
+          if (rs.loginCount) map[k].loginCount = Math.max(map[k].loginCount, rs.loginCount);
+        }
+      });
+      return Object.keys(map).map(function(k){ return map[k]; }).sort(function(a, b){ return a.nama.localeCompare(b.nama); });
+    }
+    function fmtTanggal(iso){
+      if (!iso) return '–';
+      try { return new Date(iso).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+      catch(e){ return iso; }
+    }
+    function renderGuru(){
+      $('inputSheetUrl').value = sheetUrl();
+      $('sheetStatus').textContent = 'Terhubung ke Sheet pusat DapMath (URL tertanam' + (DB.sheetUrl ? ', diganti manual' : '') + ')';
+      var rows = gabungSiswa();
+      $('statSiswa').textContent = rows.length;
+      $('statLogin').textContent = rows.reduce(function(a, r){ return a + (r.loginCount || 0); }, 0);
+      $('statKuis').textContent = rows.reduce(function(a, r){ return a + (r.attempts || 0); }, 0);
+      var bests = rows.filter(function(r){ return r.best !== '' && r.best !== undefined && r.best !== null; }).map(function(r){ return +r.best; });
+      $('statRata').textContent = bests.length ? Math.round(bests.reduce(function(a, b){ return a + b; }, 0) / bests.length) : '–';
+      if (!rows.length){
+        $('tabelSiswaWrap').innerHTML = '<div class="empty-note">Belum ada data siswa di perangkat ini. Minta siswa login dan mengerjakan kuis, atau klik "Muat Data dari Sheet" untuk menarik data pusat.</div>';
+        return;
+      }
+      var html = '<div style="overflow-x:auto;"><table class="data"><thead><tr><th>Nama</th><th>Kelas</th><th>Login</th><th>Terakhir Login</th><th>Menu Dipelajari</th><th>Percobaan</th><th>Terakhir</th><th>Terbaik</th><th>Rata-rata</th><th>Riwayat Skor</th></tr></thead><tbody>';
+      rows.forEach(function(r){
+        html += '<tr>' +
+          '<td data-label="Nama"><b>' + esc(r.nama) + '</b></td>' +
+          '<td data-label="Kelas">' + esc(r.kelas) + '</td>' +
+          '<td data-label="Login" class="num">' + (r.loginCount || 0) + '×</td>' +
+          '<td data-label="Terakhir Login">' + fmtTanggal(r.lastLogin) + '</td>' +
+          '<td data-label="Menu Dipelajari">' + esc(r.menus || '-') + '</td>' +
+          '<td data-label="Percobaan" class="num">' + (r.attempts || 0) + '</td>' +
+          '<td data-label="Terakhir" class="num">' + (r.last === '' || r.last === undefined ? '–' : r.last) + '</td>' +
+          '<td data-label="Terbaik" class="num">' + (r.best === '' || r.best === undefined ? '–' : r.best) + '</td>' +
+          '<td data-label="Rata-rata" class="num">' + (r.avg === '' || r.avg === undefined ? '–' : r.avg) + '</td>' +
+          '<td data-label="Riwayat Skor" class="num">' + esc(r.riwayat || '–') + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+      $('tabelSiswaWrap').innerHTML = html;
+    }
+    function tampilPesan(el, teks, jenis){
+      el.textContent = teks; el.className = 'status-msg show ' + jenis;
+    }
+    $('btnSimpanUrl').addEventListener('click', function(){
+      DB.sheetUrl = $('inputSheetUrl').value.trim(); saveData();
+      tampilPesan($('sheetMsg'), 'URL Web App disimpan. Pengiriman berikutnya memakai URL ini.', 'ok');
+      renderGuru();
+    });
+    $('btnUjiKirim').addEventListener('click', function(){
+      tampilPesan($('sheetMsg'), 'Mengirim data uji ke Sheet…', 'info');
+      kirimSheet({ type: 'login', time: new Date().toISOString(), nama: 'UJI KONEKSI', kelas: '-' }).then(function(sent){
+        setTimeout(function(){
+          bacaSheet().then(function(data){
+            var nLogin = data && data.login ? data.login.length : 0;
+            tampilPesan($('sheetMsg'), 'Uji kirim berhasil. Sheet merespons dan saat ini berisi ' + nLogin + ' baris login untuk aplikasi ini. Cek tab "Login" di spreadsheet — ada baris "UJI KONEKSI" (boleh dihapus).', 'ok');
+          }).catch(function(){
+            tampilPesan($('sheetMsg'), sent ? 'Data uji terkirim, tetapi membaca balik Sheet gagal (periksa koneksi/URL).' : 'Pengiriman gagal. Periksa koneksi internet dan URL Web App.', sent ? 'info' : 'err');
+          });
+        }, 1200);
+      });
+    });
+    $('btnMuatSheet').addEventListener('click', function(){
+      tampilPesan($('sheetMsg'), 'Memuat data dari Sheet…', 'info');
+      bacaSheet().then(function(data){
+        var agg = {};
+        function key(n, k){ return (n + '|' + k).toLowerCase(); }
+        function getA(n, k){ var kk = key(n, k); if (!agg[kk]) agg[kk] = { nama: n, kelas: k, loginCount: 0, menus: '-', attempts: 0, last: '', best: '', avg: '' }; return agg[kk]; }
+        (data.login || []).forEach(function(r){ getA(r.nama, r.kelas).loginCount++; });
+        (data.ringkasan || []).forEach(function(r){ var a = getA(r.nama, r.kelas); a.menus = r.menus; a.attempts = r.attempts; a.last = r.last; a.best = r.best; a.avg = r.avg; });
+        (data.kuis || []).forEach(function(r){
+          var a = getA(r.nama, r.kelas);
+          if (!a.attempts){ a.attempts = Math.max(a.attempts, r.attemptNo || 0); if (a.best === '' || r.score > a.best) a.best = r.score; if (!a.last) a.last = r.score; }
+        });
+        remoteStudents = Object.keys(agg).map(function(k){ return agg[k]; });
+        renderGuru();
+        tampilPesan($('sheetMsg'), 'Data dari Sheet berhasil dimuat: ' + remoteStudents.length + ' siswa ditemukan untuk aplikasi Persamaan Garis Lurus.', 'ok');
+      }).catch(function(){
+        tampilPesan($('sheetMsg'), 'Gagal memuat data dari Sheet. Periksa koneksi internet dan pastikan Apps Script sudah di-deploy ulang dengan kode database terpusat.', 'err');
+      });
+    });
+    $('btnKirimRingkasan').addEventListener('click', function(){
+      var keys = Object.keys(DB.students);
+      if (!keys.length){ tampilPesan($('guruMsg'), 'Belum ada data siswa lokal di perangkat ini.', 'err'); return; }
+      tampilPesan($('guruMsg'), 'Mengirim ringkasan ' + keys.length + ' siswa ke Sheet…', 'info');
+      var kiriman = keys.map(function(k){ return kirimRingkasan(DB.students[k]); });
+      Promise.all(kiriman).then(function(){ tampilPesan($('guruMsg'), 'Ringkasan semua siswa terkirim ke Sheet (tab Ringkasan).', 'ok'); });
+    });
+    $('btnUnduhCsv').addEventListener('click', function(){
+      var rows = gabungSiswa();
+      if (!rows.length){ tampilPesan($('guruMsg'), 'Belum ada data untuk diunduh.', 'err'); return; }
+      function csvCell(v){ return '"' + String(v === undefined || v === null ? '' : v).replace(/"/g, '""') + '"'; }
+      var lines = [['Nama', 'Kelas', 'Jumlah Login', 'Terakhir Login', 'Menu Dipelajari', 'Percobaan Kuis', 'Skor Terakhir', 'Skor Terbaik', 'Rata-rata Skor', 'Riwayat Skor'].join(',')];
+      rows.forEach(function(r){
+        lines.push([r.nama, r.kelas, r.loginCount || 0, r.lastLogin || '', r.menus || '-', r.attempts || 0, r.last, r.best, r.avg, r.riwayat || ''].map(csvCell).join(','));
+      });
+      var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'laporan-persamaan-garis-lurus.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+      tampilPesan($('guruMsg'), 'Laporan CSV terunduh.', 'ok');
+    });
+
+    // gambar awal bila sesi tersimpan
+    if (current) setTimeout(drawAllPlots, 80);
+    </script>
+  </body>
+</html>
