@@ -1,0 +1,1619 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Statistika Kelas 7 — DapMath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#eef4ff;
+        --bg2:#fdf3ff;
+        --surface:#ffffff;
+        --surface2:#f3f7ff;
+        --ink:#16213d;
+        --ink2:#4a5578;
+        --line:#dbe4f5;
+        --coral:#ff5d5d;
+        --pink:#ff5d8f;
+        --amber:#ffb020;
+        --teal:#00b894;
+        --sky:#2d9cdb;
+        --violet:#7c5cff;
+        --lime:#7bc950;
+        --grad-hero:linear-gradient(120deg,#00b894 0%,#2d9cdb 38%,#7c5cff 72%,#ff5d8f 100%);
+        --grad-warm:linear-gradient(120deg,#ff8a3c,#ff5d5d 55%,#ff5d8f);
+        --grad-cool:linear-gradient(120deg,#00b894,#2d9cdb);
+        --shadow:0 10px 30px rgba(31,52,110,.14);
+        --shadow-lg:0 22px 50px rgba(31,52,110,.22);
+        --r-lg:22px; --r-md:16px; --r-sm:11px;
+        --chart-grid:#d7e1f2;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0a0f24;
+          --bg2:#141033;
+          --surface:#161e3d;
+          --surface2:#1d2750;
+          --ink:#eef2ff;
+          --ink2:#a9b4d8;
+          --line:#2c3866;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+          --shadow-lg:0 22px 50px rgba(0,0,0,.55);
+          --chart-grid:#2c3866;
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;font-family:"Nunito",system-ui,sans-serif;color:var(--ink);
+        background:
+          radial-gradient(900px 500px at 110% -10%, rgba(255,93,143,.16), transparent 60%),
+          radial-gradient(800px 520px at -10% 0%, rgba(0,184,148,.16), transparent 60%),
+          linear-gradient(160deg,var(--bg),var(--bg2));
+        min-height:100vh;
+      }
+      h1,h2,h3,.display{font-family:"Baloo 2","Nunito",sans-serif;line-height:1.12;margin:0}
+      button{font-family:inherit;cursor:pointer}
+      input,select,textarea{font-family:inherit}
+      :focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:6px}
+
+      /* ---------- tombol & komponen umum ---------- */
+      .btn{
+        display:inline-flex;align-items:center;gap:.5rem;justify-content:center;
+        min-height:52px;padding:.7rem 1.4rem;border:none;border-radius:999px;
+        font-weight:800;font-size:1.02rem;color:#fff;background:var(--grad-warm);
+        box-shadow:0 8px 20px rgba(255,93,93,.35);transition:transform .18s cubic-bezier(.34,1.8,.5,1),box-shadow .18s;
+        text-decoration:none;
+      }
+      .btn:hover{transform:translateY(-2px) scale(1.02)}
+      .btn:active{transform:translateY(1px) scale(.97)}
+      .btn.cool{background:var(--grad-cool);box-shadow:0 8px 20px rgba(45,156,219,.35)}
+      .btn.ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:none}
+      .btn.small{min-height:44px;padding:.45rem 1rem;font-size:.92rem}
+      .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+      .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:1.3rem}
+      .chip{display:inline-flex;align-items:center;gap:.4rem;padding:.32rem .8rem;border-radius:999px;font-weight:800;font-size:.85rem;background:var(--surface2);border:1.5px solid var(--line)}
+      .tag{font-weight:900;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--sky)}
+      .muted{color:var(--ink2)}
+      .big-num{font-family:"Baloo 2";font-weight:800;font-size:2rem}
+      svg.ic{width:1.15em;height:1.15em;flex:none}
+
+      /* ---------- layar login / hero ---------- */
+      #loginScreen{position:relative;overflow:hidden;min-height:100vh;display:flex;flex-direction:column}
+      .hero-bg{position:absolute;inset:0;background:var(--grad-hero);background-size:220% 220%;animation:heroShift 14s ease-in-out infinite alternate}
+      @keyframes heroShift{from{background-position:0% 40%}to{background-position:100% 60%}}
+      .hero-blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.35;background:#fff;animation:floaty 7s ease-in-out infinite}
+      .float-sym{position:absolute;font-family:"Baloo 2";font-weight:800;color:rgba(255,255,255,.5);user-select:none;animation:floaty 6s ease-in-out infinite;text-shadow:0 4px 18px rgba(0,0,0,.15)}
+      @keyframes floaty{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(4deg)}}
+      .hero-inner{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.2rem 1rem 1rem;text-align:center;color:#fff}
+      .hero-title{font-size:clamp(2.4rem,7.5vw,4.6rem);font-weight:800;text-shadow:0 6px 30px rgba(10,20,60,.35);animation:popIn .8s cubic-bezier(.3,1.6,.5,1) both}
+      .hero-sub{font-size:clamp(1.02rem,2.6vw,1.3rem);font-weight:700;max-width:620px;margin:.7rem auto 0;text-shadow:0 2px 12px rgba(10,20,60,.3);animation:popIn .8s .12s cubic-bezier(.3,1.6,.5,1) both}
+      @keyframes popIn{from{opacity:0;transform:translateY(26px) scale(.94)}to{opacity:1;transform:none}}
+      .mascot-wrap{display:flex;align-items:flex-end;gap:.6rem;margin-top:1.4rem;animation:popIn .8s .22s cubic-bezier(.3,1.6,.5,1) both}
+      .mascot{animation:bounceSoft 2.6s ease-in-out infinite;filter:drop-shadow(0 14px 16px rgba(10,20,60,.3))}
+      @keyframes bounceSoft{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+      .bubble{
+        background:#fff;color:#22304f;border-radius:18px;padding:.7rem 1rem;font-weight:800;max-width:290px;
+        text-align:left;position:relative;box-shadow:0 10px 24px rgba(10,20,60,.25);font-size:.98rem;
+      }
+      .bubble::after{content:"";position:absolute;left:-9px;bottom:22px;border:10px solid transparent;border-right-color:#fff;border-left:0}
+      .login-card{
+        position:relative;z-index:2;background:var(--surface);color:var(--ink);border-radius:26px;box-shadow:var(--shadow-lg);
+        width:min(480px,92vw);margin:0 auto;padding:1.6rem 1.6rem 1.4rem;animation:popIn .8s .3s cubic-bezier(.3,1.6,.5,1) both;
+      }
+      .login-card h2{font-size:1.5rem;margin-bottom:.3rem}
+      .field{margin-top:1rem;text-align:left}
+      .field label{display:block;font-weight:900;margin-bottom:.35rem;font-size:.95rem}
+      .field input,.field select{
+        width:100%;min-height:54px;padding:.7rem 1rem;font-size:1.05rem;font-weight:700;color:var(--ink);
+        background:var(--surface2);border:2px solid var(--line);border-radius:14px;
+      }
+      .field input:focus,.field select:focus{border-color:var(--sky);outline:none}
+      .login-err{display:none;margin-top:.8rem;background:#ffe9e9;color:#b42323;border:1.5px solid #ffc9c9;padding:.6rem .9rem;border-radius:12px;font-weight:800}
+      @media (prefers-color-scheme: dark){.login-err{background:#3d1626;color:#ffb3c2;border-color:#6e2340}}
+
+      /* ---------- bilah atas & navigasi ---------- */
+      #appShell{display:none}
+      .topbar{
+        position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;
+        padding:.6rem 1rem;background:color-mix(in srgb,var(--surface) 88%, transparent);
+        backdrop-filter:blur(10px);border-bottom:1.5px solid var(--line);
+      }
+      .avatar{
+        width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;font-family:"Baloo 2";
+        font-weight:800;font-size:1.25rem;background:var(--grad-hero);box-shadow:0 4px 12px rgba(80,80,200,.35);flex:none;
+      }
+      .who{line-height:1.15;min-width:0}
+      .who b{font-size:1.02rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}
+      .who span{font-size:.82rem;color:var(--ink2);font-weight:700}
+      .xpbox{margin-left:auto;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+      .xpbar{width:130px;height:12px;border-radius:99px;background:var(--surface2);border:1.5px solid var(--line);overflow:hidden}
+      .xpbar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--amber),var(--pink));border-radius:99px;transition:width .7s cubic-bezier(.3,1.4,.5,1)}
+      nav.mainnav{
+        position:sticky;top:69px;z-index:39;display:flex;gap:.5rem;overflow-x:auto;padding:.6rem 1rem;
+        background:color-mix(in srgb,var(--bg) 82%, transparent);backdrop-filter:blur(8px);scrollbar-width:none;
+      }
+      nav.mainnav::-webkit-scrollbar{display:none}
+      .navbtn{
+        flex:none;min-height:48px;padding:.55rem 1.15rem;border-radius:999px;border:2px solid var(--line);
+        background:var(--surface);color:var(--ink);font-weight:800;font-size:.98rem;display:inline-flex;gap:.45rem;align-items:center;
+        transition:transform .15s cubic-bezier(.34,1.8,.5,1),background .15s,color .15s;
+      }
+      .navbtn:hover{transform:translateY(-2px)}
+      .navbtn.on{background:var(--grad-hero);color:#fff;border-color:transparent;box-shadow:0 8px 18px rgba(90,90,220,.35)}
+      main{max-width:1180px;margin:0 auto;padding:1.2rem 1rem 2.5rem}
+      .view{display:none}
+      .view.on{display:block;animation:viewIn .45s cubic-bezier(.3,1.3,.5,1) both}
+      @keyframes viewIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+      /* ---------- beranda ---------- */
+      .home-hero{
+        position:relative;overflow:hidden;border-radius:26px;padding:1.8rem;color:#fff;background:var(--grad-hero);
+        background-size:220% 220%;animation:heroShift 14s ease-in-out infinite alternate;box-shadow:var(--shadow-lg);
+      }
+      .home-hero h2{font-size:clamp(1.7rem,4.6vw,2.6rem);text-shadow:0 4px 18px rgba(10,20,60,.3)}
+      .home-hero p{font-weight:700;max-width:560px;text-shadow:0 2px 10px rgba(10,20,60,.3)}
+      .home-hero .mascot{position:absolute;right:1.1rem;bottom:.4rem;width:118px}
+      @media (max-width:640px){.home-hero .mascot{display:none}}
+      .menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin-top:1.2rem}
+      .menu-card{
+        border-radius:var(--r-lg);padding:1.3rem;color:#fff;position:relative;overflow:hidden;min-height:158px;
+        display:flex;flex-direction:column;gap:.4rem;box-shadow:var(--shadow);border:none;text-align:left;width:100%;
+        transition:transform .2s cubic-bezier(.34,1.8,.5,1);
+      }
+      .menu-card:hover{transform:translateY(-5px) rotate(-.4deg)}
+      .menu-card:active{transform:scale(.97)}
+      .menu-card h3{font-size:1.35rem}
+      .menu-card p{margin:0;font-weight:700;opacity:.94;font-size:.95rem}
+      .menu-card .go{margin-top:auto;font-weight:900;background:rgba(255,255,255,.24);align-self:flex-start;padding:.3rem .9rem;border-radius:99px}
+      .menu-card .deco{position:absolute;right:-14px;top:-14px;opacity:.25;transform:rotate(12deg)}
+      .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-top:1.2rem}
+      .stat-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1rem 1.2rem;box-shadow:var(--shadow);text-align:center}
+      .stat-card .big-num{font-size:2.1rem}
+
+      /* ---------- lab data ---------- */
+      .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+      @media (max-width:860px){.grid2{grid-template-columns:1fr}}
+      .preset-row{display:flex;gap:.5rem;flex-wrap:wrap;margin:.6rem 0 1rem}
+      .preset{
+        min-height:46px;padding:.45rem 1rem;border-radius:999px;border:2px solid var(--line);background:var(--surface2);
+        font-weight:800;color:var(--ink);transition:transform .15s cubic-bezier(.34,1.8,.5,1);
+      }
+      .preset:hover{transform:translateY(-2px)}
+      .preset.on{background:var(--grad-cool);color:#fff;border-color:transparent}
+      .data-row{display:flex;align-items:center;gap:.55rem;padding:.45rem 0;border-bottom:1.5px dashed var(--line)}
+      .dot{width:16px;height:16px;border-radius:5px;flex:none}
+      .data-row input[type=text]{flex:1;min-width:70px;min-height:46px;padding:.4rem .7rem;border:2px solid var(--line);border-radius:11px;background:var(--surface2);color:var(--ink);font-weight:800;font-size:1rem}
+      .stepper{display:flex;align-items:center;gap:.3rem}
+      .stepper button{width:44px;height:44px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font-size:1.3rem;font-weight:900;line-height:1;transition:transform .12s}
+      .stepper button:active{transform:scale(.88)}
+      .stepper output{min-width:2.2ch;text-align:center;font-family:"Baloo 2";font-weight:800;font-size:1.25rem}
+      .del{width:44px;height:44px;border-radius:12px;border:2px solid #ffc9c9;background:#fff0f0;color:#d92d20;font-weight:900;font-size:1.05rem}
+      @media (prefers-color-scheme: dark){.del{background:#3a1626;border-color:#6e2340;color:#ff9db1}}
+      table.freq{width:100%;border-collapse:collapse;font-size:1rem}
+      table.freq th,table.freq td{padding:.55rem .7rem;border-bottom:1.5px solid var(--line);text-align:left}
+      table.freq th{font-family:"Baloo 2";background:var(--surface2)}
+      table.freq td.num,table.freq th.num{text-align:right;font-variant-numeric:tabular-nums}
+      table.freq tr.hl td{background:color-mix(in srgb,var(--amber) 22%, transparent);font-weight:900}
+      .tabs{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.9rem}
+      .tab{min-height:46px;padding:.45rem 1.05rem;border-radius:999px;border:2px solid var(--line);background:var(--surface);font-weight:800;color:var(--ink)}
+      .tab.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+      .chartbox{background:var(--surface2);border:1.5px solid var(--line);border-radius:var(--r-md);padding:.8rem}
+      .chartbox svg{width:100%;height:auto;display:block}
+      .bar-rect{transition:all .7s cubic-bezier(.34,1.4,.5,1)}
+      .line-pt{transition:all .7s cubic-bezier(.34,1.4,.5,1)}
+      .pie-seg{transition:stroke-dasharray .8s cubic-bezier(.34,1.4,.5,1),stroke-dashoffset .8s cubic-bezier(.34,1.4,.5,1);transform-origin:center;animation:pieIn .8s cubic-bezier(.3,1.5,.5,1) both}
+      @keyframes pieIn{from{transform:scale(.6) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+      .legend{display:flex;flex-wrap:wrap;gap:.45rem .9rem;margin-top:.7rem;font-weight:700;font-size:.92rem}
+      .legend span{display:inline-flex;align-items:center;gap:.4rem}
+      .steps{list-style:none;margin:0;padding:0;counter-reset:st}
+      .steps li{
+        position:relative;padding:.85rem 1rem .85rem 3.4rem;background:var(--surface2);border:1.5px solid var(--line);
+        border-radius:14px;margin-bottom:.6rem;font-weight:700;animation:viewIn .4s both;
+      }
+      .steps li::before{
+        counter-increment:st;content:counter(st);position:absolute;left:.8rem;top:50%;transform:translateY(-50%);
+        width:34px;height:34px;border-radius:50%;background:var(--grad-cool);color:#fff;display:grid;place-items:center;
+        font-family:"Baloo 2";font-weight:800;
+      }
+      .steps li b{color:var(--sky)}
+      .formula{
+        font-family:"Baloo 2";font-weight:700;font-size:1.15rem;background:var(--surface2);border:1.5px dashed var(--sky);
+        border-radius:14px;padding:.8rem 1rem;text-align:center;margin:.7rem 0;
+      }
+      .numchips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.8rem 0}
+      .nchip{
+        min-width:52px;min-height:52px;padding:.4rem .6rem;border-radius:14px;border:2px solid var(--line);background:var(--surface2);
+        font-family:"Baloo 2";font-weight:800;font-size:1.2rem;display:inline-flex;align-items:center;justify-content:center;gap:.3rem;color:var(--ink);
+        transition:transform .15s cubic-bezier(.34,1.8,.5,1);
+      }
+      .nchip:hover{transform:translateY(-3px)}
+      .nchip.med{background:var(--amber);border-color:#e8930c;color:#3d2b00;box-shadow:0 8px 16px rgba(255,176,32,.45);transform:scale(1.1)}
+      .nchip.mode{background:var(--teal);border-color:#00876c;color:#fff;box-shadow:0 8px 16px rgba(0,184,148,.45);transform:scale(1.1)}
+      .nchip small{font-size:.72rem;font-weight:900}
+      textarea.calc-in{
+        width:100%;min-height:84px;padding:.8rem 1rem;border:2px solid var(--line);border-radius:14px;background:var(--surface2);
+        color:var(--ink);font-size:1.1rem;font-weight:700;resize:vertical;
+      }
+      .result-trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;margin-top:1rem}
+      .result-box{border-radius:16px;padding:1rem;text-align:center;color:#fff}
+      .result-box .big-num{font-size:2.2rem}
+      .result-box small{font-weight:800;opacity:.92;letter-spacing:.04em}
+
+      /* ---------- kuis ---------- */
+      .quiz-head{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+      .streak{display:inline-flex;align-items:center;gap:.35rem;font-family:"Baloo 2";font-weight:800;font-size:1.15rem;color:#e06400}
+      .streak.hot{animation:flamePulse .5s ease-in-out infinite alternate}
+      @keyframes flamePulse{from{transform:scale(1)}to{transform:scale(1.14) rotate(-2deg)}}
+      .timerbar{height:14px;border-radius:99px;background:var(--surface2);border:1.5px solid var(--line);overflow:hidden;margin:.6rem 0 1rem}
+      .timerbar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--amber),var(--coral));transition:width 1s linear}
+      .qtext{font-size:clamp(1.15rem,2.6vw,1.4rem);font-weight:800;line-height:1.45}
+      .opts{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1.1rem}
+      @media (max-width:560px){.opts{grid-template-columns:1fr}}
+      .opt{
+        min-height:60px;padding:.8rem 1rem;border-radius:16px;border:2.5px solid var(--line);background:var(--surface);
+        font-size:1.05rem;font-weight:800;color:var(--ink);text-align:left;display:flex;gap:.7rem;align-items:center;
+        transition:transform .15s cubic-bezier(.34,1.8,.5,1),border-color .15s,background .15s;
+      }
+      .opt:hover:not(:disabled){transform:translateY(-3px);border-color:var(--sky)}
+      .opt .abc{font-family:"Baloo 2";width:34px;height:34px;flex:none;border-radius:10px;background:var(--surface2);display:grid;place-items:center}
+      .opt.right{background:#e5f9f0;border-color:var(--teal);color:#04503e}
+      .opt.right .abc{background:var(--teal);color:#fff}
+      .opt.wrong{background:#ffecec;border-color:var(--coral);color:#7c1710;animation:shake .4s}
+      @media (prefers-color-scheme: dark){.opt.right{background:#0d352a;color:#8ff0cd}.opt.wrong{background:#3d1626;color:#ffb3c2}}
+      @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+      .explain{display:none;margin-top:1rem;border-radius:14px;padding:1rem 1.1rem;background:color-mix(in srgb,var(--amber) 16%, var(--surface));border:1.5px solid var(--amber);font-weight:700}
+      .explain.show{display:block;animation:viewIn .35s both}
+      .xp-pop{position:fixed;z-index:90;font-family:"Baloo 2";font-weight:800;font-size:1.5rem;color:var(--amber);text-shadow:0 2px 0 #fff,0 6px 16px rgba(0,0,0,.25);pointer-events:none;animation:xpFloat 1.1s ease-out forwards}
+      @keyframes xpFloat{from{opacity:0;transform:translateY(8px) scale(.7)}25%{opacity:1}to{opacity:0;transform:translateY(-64px) scale(1.15)}}
+      .badge-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem}
+      .badge{
+        display:inline-flex;align-items:center;gap:.45rem;padding:.5rem .95rem;border-radius:999px;font-weight:900;font-size:.9rem;
+        background:var(--surface2);border:2px dashed var(--line);color:var(--ink2);opacity:.55;filter:grayscale(.8);
+      }
+      .badge.got{background:linear-gradient(120deg,#ffe9a8,#ffd34d);border:2px solid #e8930c;color:#5c3d00;opacity:1;filter:none;animation:popIn .5s cubic-bezier(.3,1.8,.5,1) both}
+      .scoreboard{list-style:none;margin:0;padding:0}
+      .scoreboard li{display:flex;align-items:center;gap:.7rem;padding:.6rem .2rem;border-bottom:1.5px dashed var(--line);font-weight:800}
+      .scoreboard .rank{font-family:"Baloo 2";width:34px;height:34px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;flex:none}
+      .scoreboard li:first-child .rank{background:linear-gradient(120deg,#ffe9a8,#ffb020);color:#5c3d00}
+      .switch{display:inline-flex;align-items:center;gap:.55rem;font-weight:800;cursor:pointer;min-height:48px}
+      .switch input{position:absolute;opacity:0}
+      .switch .tr{width:56px;height:30px;border-radius:99px;background:var(--line);position:relative;transition:background .2s;flex:none}
+      .switch .tr::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:left .2s cubic-bezier(.34,1.8,.5,1)}
+      .switch input:checked + .tr{background:var(--teal)}
+      .switch input:checked + .tr::after{left:29px}
+      .progress-dots{display:flex;gap:.35rem;flex-wrap:wrap}
+      .progress-dots i{width:15px;height:15px;border-radius:50%;background:var(--line)}
+      .progress-dots i.ok{background:var(--teal)}
+      .progress-dots i.bad{background:var(--coral)}
+      .progress-dots i.now{background:var(--amber);animation:flamePulse .5s infinite alternate}
+
+      /* ---------- data guru ---------- */
+      .guru-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.1rem}
+      .mini-table{width:100%;border-collapse:collapse;font-size:.95rem}
+      .mini-table th,.mini-table td{padding:.45rem .5rem;border-bottom:1.5px solid var(--line);text-align:left}
+      .mini-table th{font-family:"Baloo 2"}
+      .status-line{margin-top:.7rem;font-weight:800;padding:.6rem .9rem;border-radius:12px;display:none}
+      .status-line.ok{display:block;background:#e5f9f0;color:#04503e;border:1.5px solid var(--teal)}
+      .status-line.err{display:block;background:#ffecec;color:#7c1710;border:1.5px solid var(--coral)}
+      @media (prefers-color-scheme: dark){.status-line.ok{background:#0d352a;color:#8ff0cd}.status-line.err{background:#3d1626;color:#ffb3c2}}
+      .spark{display:flex;align-items:flex-end;gap:4px;height:64px;margin-top:.5rem}
+      .spark i{flex:1;border-radius:5px 5px 0 0;background:var(--grad-cool);min-height:6px}
+
+      /* ---------- modal PIN ---------- */
+      .modal{position:fixed;inset:0;z-index:100;display:none;place-items:center;background:rgba(8,12,32,.62);backdrop-filter:blur(4px);padding:1rem}
+      .modal.on{display:grid}
+      .modal-box{background:var(--surface);border-radius:24px;padding:1.7rem;width:min(400px,94vw);box-shadow:var(--shadow-lg);animation:popIn .35s cubic-bezier(.3,1.7,.5,1) both;text-align:center}
+      .pin-dots{display:flex;gap:.6rem;justify-content:center;margin:1.1rem 0}
+      .pin-dots i{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--ink2)}
+      .pin-dots i.fill{background:var(--sky);border-color:var(--sky)}
+      .pinpad{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
+      .pinpad button{min-height:58px;border-radius:14px;border:2px solid var(--line);background:var(--surface2);font-family:"Baloo 2";font-weight:800;font-size:1.3rem;color:var(--ink);transition:transform .1s}
+      .pinpad button:active{transform:scale(.9)}
+
+      footer.site{
+        text-align:center;padding:1.6rem 1rem 2.2rem;color:var(--ink2);font-weight:800;
+      }
+      footer.site .heart{color:var(--pink)}
+      #confettiCanvas{position:fixed;inset:0;z-index:95;pointer-events:none}
+      .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+      @media (prefers-reduced-motion: reduce){
+        *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+        html{scroll-behavior:auto}
+      }
+    </style>
+  </head>
+  <body>
+
+  <!-- ================= LAYAR LOGIN ================= -->
+  <section id="loginScreen" aria-label="Masuk dulu yuk">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-inner">
+      <div class="tag" style="color:#fff;background:rgba(255,255,255,.2);padding:.35rem 1rem;border-radius:99px;letter-spacing:.12em">DAPMATH • MATEMATIKA KELAS 7</div>
+      <h1 class="hero-title">Statistika:<br />Serunya Bermain Data!</h1>
+      <p class="hero-sub">Kumpulkan data, buat diagram warna-warni, lalu temukan mean, median, dan modus — semua sambil mengumpulkan XP dan lencana!</p>
+      <div class="mascot-wrap">
+        <svg class="mascot" width="118" height="128" viewBox="0 0 118 128" role="img" aria-label="Dipo, robot pemandu data">
+          <rect x="52" y="2" width="5" height="16" rx="2.5" fill="#fff"/>
+          <circle cx="54.5" cy="6" r="6" fill="#ffd34d"/>
+          <rect x="22" y="16" width="66" height="52" rx="16" fill="#fff"/>
+          <rect x="30" y="26" width="50" height="32" rx="10" fill="#16213d"/>
+          <circle cx="45" cy="42" r="5.5" fill="#4be1c3"><animate attributeName="r" values="5.5;5.5;1.5;5.5" dur="3.4s" repeatCount="indefinite"/></circle>
+          <circle cx="65" cy="42" r="5.5" fill="#4be1c3"><animate attributeName="r" values="5.5;5.5;1.5;5.5" dur="3.4s" repeatCount="indefinite"/></circle>
+          <path d="M45 51 Q55 58 65 51" stroke="#4be1c3" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <rect x="28" y="72" width="54" height="42" rx="13" fill="#fff"/>
+          <rect x="38" y="96" width="8" height="12" rx="2" fill="#ff5d5d"/>
+          <rect x="49" y="88" width="8" height="20" rx="2" fill="#ffb020"/>
+          <rect x="60" y="93" width="8" height="15" rx="2" fill="#00b894"/>
+          <rect x="71" y="83" width="8" height="25" rx="2" fill="#2d9cdb"/>
+          <path d="M14 82 Q4 96 12 106" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M96 82 Q108 70 104 56" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <rect x="36" y="114" width="12" height="10" rx="4" fill="#fff"/>
+          <rect x="62" y="114" width="12" height="10" rx="4" fill="#fff"/>
+        </svg>
+        <div class="bubble" id="loginBubble">Halo! Aku <b>Dipo</b>, robot penjaga data. Tulis nama dan kelasmu, lalu kita mulai petualangan statistikanya!</div>
+      </div>
+    </div>
+    <form class="login-card" id="loginForm" novalidate>
+      <h2>Masuk Dulu, Yuk!</h2>
+      <p class="muted" style="margin:.2rem 0 0;font-weight:700">Namamu akan tercatat supaya Pak Guru bisa melihat siapa saja yang sudah belajar hari ini.</p>
+      <div class="field">
+        <label for="inNama">Nama Lengkap</label>
+        <input id="inNama" type="text" autocomplete="name" placeholder="Contoh: Sinta Ayu Lestari" maxlength="40" />
+      </div>
+      <div class="field">
+        <label for="inKelas">Kelas</label>
+        <select id="inKelas">
+          <option value="">— Pilih kelasmu —</option>
+          <option>7A</option><option>7B</option><option>7C</option><option>7D</option>
+          <option>7E</option><option>7F</option><option>7G</option><option>7H</option><option>7I</option>
+        </select>
+      </div>
+      <div class="login-err" id="loginErr">Isi nama dan pilih kelas dulu ya, supaya bisa mulai belajar.</div>
+      <button class="btn" type="submit" style="width:100%;margin-top:1.2rem">
+        Mulai Petualangan
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </form>
+    <footer class="site" style="position:relative;z-index:2;color:rgba(255,255,255,.92)">Dibangun oleh Dody Adyansyah</footer>
+  </section>
+
+  <!-- ================= APLIKASI ================= -->
+  <div id="appShell">
+    <header class="topbar">
+      <div class="avatar" id="avatarInit">?</div>
+      <div class="who"><b id="whoName">Siswa</b><span id="whoClass">Kelas 7</span></div>
+      <div class="xpbox">
+        <span class="chip" id="levelChip" title="Level kamu">
+          <svg class="ic" viewBox="0 0 24 24" fill="#ffb020" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+          Level <b id="levelNum">1</b>
+        </span>
+        <div>
+          <div style="font-weight:900;font-size:.8rem;margin-bottom:2px"><span id="xpNum">0</span> XP</div>
+          <div class="xpbar"><i id="xpFill"></i></div>
+        </div>
+        <button class="btn ghost small" id="btnGanti" type="button">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 4v6h6M20 20v-6h-6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 9A8 8 0 0 0 5.6 5.6L4 7m-0 13a8 8 0 0 0 14.4-1.4L20 17" stroke-linecap="round"/></svg>
+          Ganti Siswa
+        </button>
+      </div>
+    </header>
+
+    <nav class="mainnav" aria-label="Menu utama">
+      <button class="navbtn on" data-nav="home" type="button">Beranda</button>
+      <button class="navbtn" data-nav="lab" type="button">Penyajian Data</button>
+      <button class="navbtn" data-nav="ukuran" type="button">Mean · Median · Modus</button>
+      <button class="navbtn" data-nav="kalkulator" type="button">Kalkulator</button>
+      <button class="navbtn" data-nav="kuis" type="button">Kuis Seru</button>
+      <button class="navbtn" data-nav="guru" type="button">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        Data Guru
+      </button>
+    </nav>
+
+    <main>
+      <!-- ===== BERANDA ===== -->
+      <section class="view on" id="view-home">
+        <div class="home-hero" id="homeHero">
+          <div class="tag" style="color:#fff;background:rgba(255,255,255,.22);padding:.3rem .9rem;border-radius:99px;display:inline-block">BAB STATISTIKA • KELAS 7</div>
+          <h2 id="homeGreet" style="margin-top:.6rem">Halo, Penjelajah Data!</h2>
+          <p id="homeBubble">Hari ini kita belajar menyajikan data jadi diagram yang keren, lalu mencari nilai tengah dan nilai yang paling sering muncul. Pilih petualanganmu di bawah!</p>
+          <svg class="mascot" width="118" height="128" viewBox="0 0 118 128" aria-hidden="true">
+            <rect x="52" y="2" width="5" height="16" rx="2.5" fill="#fff"/><circle cx="54.5" cy="6" r="6" fill="#ffd34d"/>
+            <rect x="22" y="16" width="66" height="52" rx="16" fill="#fff"/><rect x="30" y="26" width="50" height="32" rx="10" fill="#16213d"/>
+            <circle cx="45" cy="42" r="5.5" fill="#4be1c3"/><circle cx="65" cy="42" r="5.5" fill="#4be1c3"/>
+            <path d="M45 51 Q55 58 65 51" stroke="#4be1c3" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <rect x="28" y="72" width="54" height="42" rx="13" fill="#fff"/>
+            <rect x="38" y="96" width="8" height="12" rx="2" fill="#ff5d5d"/><rect x="49" y="88" width="8" height="20" rx="2" fill="#ffb020"/>
+            <rect x="60" y="93" width="8" height="15" rx="2" fill="#00b894"/><rect x="71" y="83" width="8" height="25" rx="2" fill="#2d9cdb"/>
+            <path d="M14 82 Q4 96 12 106" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <path d="M96 82 Q108 70 104 56" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <rect x="36" y="114" width="12" height="10" rx="4" fill="#fff"/><rect x="62" y="114" width="12" height="10" rx="4" fill="#fff"/>
+          </svg>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-card"><div class="muted" style="font-weight:800">XP Kamu</div><div class="big-num" id="statXp">0</div></div>
+          <div class="stat-card"><div class="muted" style="font-weight:800">Kuis Dikerjakan</div><div class="big-num" id="statQuiz">0 kali</div></div>
+          <div class="stat-card"><div class="muted" style="font-weight:800">Skor Terbaik</div><div class="big-num" id="statBest">—</div></div>
+          <div class="stat-card"><div class="muted" style="font-weight:800">Menu Dipelajari</div><div class="big-num" id="statMenus">0 / 4</div></div>
+        </div>
+
+        <div class="menu-grid">
+          <button class="menu-card" data-nav="lab" type="button" style="background:linear-gradient(135deg,#00b894,#2d9cdb)">
+            <svg class="deco" width="90" height="90" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M4 20V10h4v10zm6 0V4h4v16zm6 0v-8h4v8z"/></svg>
+            <h3>Lab Penyajian Data</h3><p>Ubah datanya, lihat tabel frekuensi &amp; diagram batang, garis, dan lingkaran berubah seketika!</p>
+            <span class="go">Mulai →</span>
+          </button>
+          <button class="menu-card" data-nav="ukuran" type="button" style="background:linear-gradient(135deg,#7c5cff,#ff5d8f)">
+            <svg class="deco" width="90" height="90" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9h-9zM14 3.5A9 9 0 0 1 20.5 10H14z"/></svg>
+            <h3>Mean, Median, Modus</h3><p>Pelajari tiga "nilai pusat" data dengan langkah visual yang mudah diikuti.</p>
+            <span class="go">Mulai →</span>
+          </button>
+          <button class="menu-card" data-nav="kalkulator" type="button" style="background:linear-gradient(135deg,#ff8a3c,#ff5d5d)">
+            <svg class="deco" width="90" height="90" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.5" fill="none" stroke="#fff" stroke-width="2"/><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 15.5h.01M12 15.5h.01M15.5 15.5h.01" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <h3>Kalkulator Data</h3><p>Masukkan data apa pun — PR, nilai ulangan, tinggi teman — hasilnya keluar lengkap dengan langkahnya.</p>
+            <span class="go">Mulai →</span>
+          </button>
+          <button class="menu-card" data-nav="kuis" type="button" style="background:linear-gradient(135deg,#f5a623,#ff5d8f)">
+            <svg class="deco" width="90" height="90" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0zM7 5H4a3 3 0 0 0 3 4m10-4h3a3 3 0 0 1-3 4M12 13v3m-4 5h8m-4-5a4 4 0 0 0-2 4h4a4 4 0 0 0-2-4" stroke="#fff" stroke-width="1.6" fill="none"/></svg>
+            <h3>Kuis Seru: Misi Data</h3><p>10 soal, streak api, XP, level, dan lencana. Kumpulkan skor tertinggi dan rayakan dengan confetti!</p>
+            <span class="go">Mulai →</span>
+          </button>
+        </div>
+
+        <div class="card" style="margin-top:1.2rem">
+          <span class="tag">Lencana Kamu</span>
+          <div class="badge-row" id="homeBadges"></div>
+          <p class="muted" style="font-weight:700;margin:.8rem 0 0">Lencana terbuka saat kamu belajar dan bermain kuis. Coba dapatkan semuanya!</p>
+        </div>
+      </section>
+
+      <!-- ===== LAB PENYAJIAN DATA ===== -->
+      <section class="view" id="view-lab">
+        <h2 style="font-size:1.9rem">Lab Penyajian Data</h2>
+        <p class="muted" style="font-weight:700;max-width:720px">Data yang sama bisa disajikan dalam banyak bentuk. Ubah angka-angkanya di panel kiri — tabel dan semua diagram di kanan akan <b>menggambar ulang dirinya sendiri</b>. Coba tekan tombol + dan −!</p>
+
+        <div class="preset-row" id="presetRow" role="group" aria-label="Pilih contoh data"></div>
+
+        <div class="grid2">
+          <div class="card">
+            <span class="tag">1 • Atur Datanya</span>
+            <h3 id="labTitle" style="margin:.3rem 0 .4rem">Data</h3>
+            <p class="muted" style="font-weight:700;margin:0 0 .4rem">Frekuensi = banyaknya siswa/pengamatan.</p>
+            <div id="dataRows"></div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
+              <button class="btn cool small" id="btnAddRow" type="button">+ Tambah Baris</button>
+              <button class="btn ghost small" id="btnAcak" type="button">Acak Data</button>
+            </div>
+            <div class="formula" style="margin-top:1.1rem">Total data (n) = <span id="labTotal">0</span></div>
+            <p class="muted" style="font-weight:700">Perhatikan: kalau totalnya berubah, tinggi batang, titik garis, dan besar irisan lingkaran ikut berubah. Itulah gunanya diagram — pola data jadi terlihat jelas!</p>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:1.1rem">
+            <div class="card">
+              <span class="tag">2 • Tabel Frekuensi</span>
+              <div style="overflow-x:auto;margin-top:.5rem">
+                <table class="freq" id="freqTable" aria-label="Tabel frekuensi"></table>
+              </div>
+            </div>
+            <div class="card">
+              <span class="tag">3 • Diagram</span>
+              <div class="tabs" role="tablist" style="margin-top:.6rem">
+                <button class="tab on" data-tab="batang" type="button">Diagram Batang</button>
+                <button class="tab" data-tab="garis" type="button">Diagram Garis</button>
+                <button class="tab" data-tab="lingkaran" type="button">Diagram Lingkaran</button>
+              </div>
+              <div class="chartbox" id="chartBox"></div>
+              <div class="legend" id="chartLegend"></div>
+              <p class="muted" id="chartNote" style="font-weight:700;margin:.7rem 0 0"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:1.1rem">
+          <span class="tag">Cara Membaca</span>
+          <div class="grid2" style="margin-top:.6rem">
+            <div><h3 style="font-size:1.1rem">Diagram Batang</h3><p class="muted" style="font-weight:700">Tinggi batang menunjukkan frekuensi. Batang tertinggi = data yang paling banyak muncul. Cocok untuk membandingkan kategori.</p></div>
+            <div><h3 style="font-size:1.1rem">Diagram Garis</h3><p class="muted" style="font-weight:700">Titik-titik dihubungkan garis. Naik-turunnya garis menunjukkan perubahan — cocok untuk data yang berubah dari waktu ke waktu.</p></div>
+            <div><h3 style="font-size:1.1rem">Diagram Lingkaran</h3><p class="muted" style="font-weight:700">Satu lingkaran penuh = 100%. Besar irisan = persentase tiap kategori: frekuensi ÷ total × 360°.</p></div>
+            <div><h3 style="font-size:1.1rem">Tabel Frekuensi</h3><p class="muted" style="font-weight:700">Cara paling rapi mencatat data: setiap nilai/kategori ditulis sekali, lalu dihitung banyak kemunculannya.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== MEAN MEDIAN MODUS ===== -->
+      <section class="view" id="view-ukuran">
+        <h2 style="font-size:1.9rem">Mean, Median &amp; Modus</h2>
+        <p class="muted" style="font-weight:700;max-width:720px">Tiga cara meringkas sekumpulan data menjadi satu nilai pusat. Klik chip angkanya untuk menghapus, tambahkan angka baru, lalu lihat langkah perhitungannya berubah langsung.</p>
+
+        <div class="card">
+          <span class="tag">Data Kita</span>
+          <div class="numchips" id="ukuranChips"></div>
+          <div style="display:flex;gap:.55rem;flex-wrap:wrap;align-items:center">
+            <input id="ukuranAdd" type="number" step="any" placeholder="Angka baru…" style="min-height:50px;width:150px;padding:.5rem .8rem;border:2px solid var(--line);border-radius:12px;background:var(--surface2);color:var(--ink);font-weight:800;font-size:1rem" />
+            <button class="btn cool small" id="btnUkuranAdd" type="button">+ Tambah Angka</button>
+            <button class="btn ghost small" id="btnUkuranReset" type="button">Contoh Awal</button>
+            <span class="chip">n = <b id="ukuranN">0</b> data</span>
+          </div>
+          <p class="muted" style="font-weight:700;margin:.7rem 0 0">Chip <b style="color:#b97a06">kuning</b> = posisi median, chip <b style="color:#00876c">hijau</b> = modus.</p>
+        </div>
+
+        <div class="result-trio">
+          <div class="result-box" style="background:linear-gradient(135deg,#2d9cdb,#7c5cff)"><small>MEAN (RATA-RATA)</small><div class="big-num" id="resMean">–</div></div>
+          <div class="result-box" style="background:linear-gradient(135deg,#ffb020,#ff8a3c)"><small>MEDIAN (NILAI TENGAH)</small><div class="big-num" id="resMedian">–</div></div>
+          <div class="result-box" style="background:linear-gradient(135deg,#00b894,#2d9cdb)"><small>MODUS (TERSERING)</small><div class="big-num" id="resMode">–</div></div>
+        </div>
+
+        <div class="grid2" style="margin-top:1.1rem">
+          <div class="card">
+            <span class="tag">Langkah Mean</span>
+            <div class="formula">Mean = Jumlah semua data ÷ Banyak data</div>
+            <ol class="steps" id="stepsMean"></ol>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1.1rem">
+            <div class="card">
+              <span class="tag">Langkah Median</span>
+              <div class="formula">Urutkan data → ambil yang di tengah</div>
+              <ol class="steps" id="stepsMedian"></ol>
+            </div>
+            <div class="card">
+              <span class="tag">Langkah Modus</span>
+              <div class="formula">Hitung kemunculan → yang terbanyak menang</div>
+              <ol class="steps" id="stepsMode"></ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:1.1rem">
+          <span class="tag">Ingat Bedanya!</span>
+          <div class="grid2" style="margin-top:.5rem">
+            <p style="font-weight:700;margin:.3rem 0"><b>Mean</b> — adil seperti membagi kue sama rata: semua data dijumlah lalu dibagi rata. Terpengaruh angka yang sangat besar/kecil.</p>
+            <p style="font-weight:700;margin:.3rem 0"><b>Median</b> — nilai yang berdiri persis di tengah setelah data diurutkan. Tidak terpengaruh angka ekstrem.</p>
+            <p style="font-weight:700;margin:.3rem 0"><b>Modus</b> — yang paling populer: muncul paling sering. Bisa lebih dari satu, atau tidak ada sama sekali.</p>
+            <p style="font-weight:700;margin:.3rem 0"><b>Contoh nyata:</b> toko sepatu memesan stok terbanyak untuk ukuran <i>modus</i> — ukuran yang paling laku!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== KALKULATOR ===== -->
+      <section class="view" id="view-kalkulator">
+        <h2 style="font-size:1.9rem">Kalkulator Mean, Median &amp; Modus</h2>
+        <p class="muted" style="font-weight:700;max-width:720px">Ketik atau tempel datamu di bawah, pisahkan dengan koma. Contoh: nilai ulanganmu minggu ini, tinggi badan teman sekelompok, atau jumlah halaman buku yang kamu baca.</p>
+        <div class="card">
+          <label for="calcInput" style="font-weight:900">Data kamu</label>
+          <textarea class="calc-in" id="calcInput" placeholder="Contoh: 7, 8, 6, 9, 8, 7, 10, 8">7, 8, 6, 9, 8, 7, 10, 8</textarea>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.9rem">
+            <button class="btn" id="btnCalc" type="button">Hitung Sekarang</button>
+            <button class="btn ghost" id="btnCalcContoh" type="button">Isi Contoh Lain</button>
+          </div>
+          <div class="login-err" id="calcErr">Masukkan minimal 2 angka yang valid ya (pisahkan dengan koma).</div>
+          <div id="calcOut" style="display:none">
+            <div class="result-trio">
+              <div class="result-box" style="background:linear-gradient(135deg,#2d9cdb,#7c5cff)"><small>MEAN</small><div class="big-num" id="cMean">–</div></div>
+              <div class="result-box" style="background:linear-gradient(135deg,#ffb020,#ff8a3c)"><small>MEDIAN</small><div class="big-num" id="cMedian">–</div></div>
+              <div class="result-box" style="background:linear-gradient(135deg,#00b894,#2d9cdb)"><small>MODUS</small><div class="big-num" id="cMode">–</div></div>
+            </div>
+            <h3 style="margin:1.2rem 0 .6rem">Langkah Perhitungan</h3>
+            <ol class="steps" id="calcSteps"></ol>
+            <h3 style="margin:1.1rem 0 .6rem">Tabel Frekuensi Datamu</h3>
+            <div style="overflow-x:auto"><table class="freq" id="calcTable"></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== KUIS ===== -->
+      <section class="view" id="view-kuis">
+        <h2 style="font-size:1.9rem">Kuis Seru: Misi Data</h2>
+
+        <div class="card" id="quizStart">
+          <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+            <svg width="74" height="80" viewBox="0 0 118 128" aria-hidden="true" style="animation:bounceSoft 2.6s ease-in-out infinite">
+              <rect x="52" y="2" width="5" height="16" rx="2.5" fill="#ffb020"/><circle cx="54.5" cy="6" r="6" fill="#ff5d8f"/>
+              <rect x="22" y="16" width="66" height="52" rx="16" fill="#ffd34d"/><rect x="30" y="26" width="50" height="32" rx="10" fill="#16213d"/>
+              <circle cx="45" cy="42" r="5.5" fill="#4be1c3"/><circle cx="65" cy="42" r="5.5" fill="#4be1c3"/>
+              <path d="M45 51 Q55 58 65 51" stroke="#4be1c3" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+              <rect x="28" y="72" width="54" height="42" rx="13" fill="#ffd34d"/>
+              <rect x="38" y="96" width="8" height="12" rx="2" fill="#ff5d5d"/><rect x="49" y="88" width="8" height="20" rx="2" fill="#fff"/>
+              <rect x="60" y="93" width="8" height="15" rx="2" fill="#00b894"/><rect x="71" y="83" width="8" height="25" rx="2" fill="#2d9cdb"/>
+            </svg>
+            <div style="flex:1;min-width:230px">
+              <h3 style="font-size:1.35rem">Siap membuktikan dirimu Master Data?</h3>
+              <p class="muted" style="font-weight:700;margin:.35rem 0 0">10 soal pilihan ganda tentang penyajian data, mean, median, dan modus. Jawaban benar = <b>+10 XP</b>, streak 3 = bonus <b>+5 XP</b>, streak 5 = bonus <b>+10 XP</b>! Setiap soal langsung dibahas.</p>
+            </div>
+          </div>
+          <label class="switch" style="margin-top:1rem">
+            <input type="checkbox" id="timerToggle" />
+            <span class="tr"></span>
+            Mode Timer — 30 detik per soal (lebih menegangkan, lebih seru!)
+          </label>
+          <div style="margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="btn" id="btnStartQuiz" type="button" style="min-width:210px">Mulai Misi!</button>
+          </div>
+          <span class="tag" style="display:block;margin-top:1.3rem">Lencana yang bisa diraih</span>
+          <div class="badge-row" id="quizBadges"></div>
+        </div>
+
+        <div class="card" id="quizPlay" style="display:none">
+          <div class="quiz-head">
+            <span class="chip">Soal <b id="qNow">1</b> / 10</span>
+            <span class="chip">Skor <b id="qScore">0</b></span>
+            <span class="chip">XP misi ini <b id="qXp">0</b></span>
+            <span class="streak" id="qStreak" title="Streak jawaban benar beruntun">
+              <svg width="20" height="24" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 0c1 5-4 7-4 12a4.5 4.5 0 0 0 9 0c0-2-1-3.5-2-5 3 1.5 5 4.5 5 8a8 8 0 1 1-16 0C4 7 10 5 12 0z" fill="#ff7b1c"/></svg>
+              <span id="qStreakNum">0</span>
+            </span>
+            <span class="chip" id="qTimerChip" style="display:none">Sisa waktu <b id="qTimer">30</b> dtk</span>
+            <span style="flex:1"></span>
+            <div class="progress-dots" id="qDots" aria-hidden="true"></div>
+          </div>
+          <div class="timerbar" id="timerBarWrap" style="display:none"><i id="timerFill" style="width:100%"></i></div>
+          <div class="bubble" id="qBubble" style="max-width:none;box-shadow:var(--shadow);margin-bottom:1rem">Semangat! Kamu pasti bisa.</div>
+          <p class="qtext" id="qText"></p>
+          <div class="opts" id="qOpts"></div>
+          <div class="explain" id="qExplain"></div>
+          <div style="margin-top:1.1rem;display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="btn cool" id="btnNextQ" type="button" style="display:none">Soal Berikutnya →</button>
+            <button class="btn ghost" id="btnQuitQuiz" type="button">Berhenti</button>
+          </div>
+        </div>
+
+        <div class="card" id="quizDone" style="display:none;text-align:center">
+          <div class="tag">Misi Selesai!</div>
+          <div style="font-family:'Baloo 2';font-weight:800;font-size:4.2rem;line-height:1" id="finalScore">0</div>
+          <p style="font-weight:900;font-size:1.15rem;margin:.3rem 0" id="finalMsg">Luar biasa!</p>
+          <p class="muted" style="font-weight:700" id="finalDetail"></p>
+          <div class="badge-row" id="doneBadges" style="justify-content:center"></div>
+          <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:1.2rem">
+            <button class="btn" id="btnRetryQuiz" type="button">Main Lagi</button>
+            <button class="btn ghost" data-nav="home" type="button">Ke Beranda</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:1.1rem">
+          <span class="tag">Papan Skor Terbaik</span>
+          <ol class="scoreboard" id="scoreBoard" style="margin-top:.6rem"></ol>
+          <p class="muted" id="scoreBoardEmpty" style="font-weight:700">Belum ada skor tercatat di perangkat ini. Jadilah yang pertama menaklukkan Misi Data!</p>
+        </div>
+      </section>
+
+      <!-- ===== DATA GURU ===== -->
+      <section class="view" id="view-guru">
+        <h2 style="font-size:1.9rem">Data Guru</h2>
+        <p class="muted" style="font-weight:700">Ringkasan aktivitas siswa pada aplikasi Statistika Kelas 7. Data sesi ini tersimpan di perangkat dan tersinkron ke database Google Sheets pusat.</p>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0">
+          <button class="btn" id="btnCsv" type="button">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Unduh Laporan (CSV)
+          </button>
+          <button class="btn cool" id="btnUjiKirim" type="button">Uji Kirim Data</button>
+          <button class="btn ghost" id="btnMuatSheet" type="button">Muat Data dari Sheet</button>
+        </div>
+        <div class="status-line" id="guruStatus"></div>
+
+        <div class="guru-grid" style="margin-top:1.1rem">
+          <div class="card">
+            <span class="tag">Siswa yang Login</span>
+            <div style="overflow-x:auto;margin-top:.5rem"><table class="mini-table" id="tblLogin"></table></div>
+            <p class="muted" id="loginEmpty" style="font-weight:700">Belum ada data login pada sesi ini.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Menu yang Dipelajari</span>
+            <div id="menuLearned" style="margin-top:.6rem;display:flex;flex-direction:column;gap:.45rem"></div>
+          </div>
+          <div class="card">
+            <span class="tag">Riwayat &amp; Perkembangan Skor Kuis</span>
+            <div style="overflow-x:auto;margin-top:.5rem"><table class="mini-table" id="tblKuis"></table></div>
+            <div class="spark" id="sparkKuis" aria-hidden="true"></div>
+            <p class="muted" id="kuisEmpty" style="font-weight:700">Belum ada hasil kuis pada sesi ini.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Pengaturan Database</span>
+            <p class="muted" style="font-weight:700">URL Web App Google Apps Script (database pusat DapMath). Sudah tertanam permanen — ganti hanya bila URL berubah.</p>
+            <input id="sheetUrlInput" type="url" style="width:100%;min-height:52px;padding:.6rem .8rem;border:2px solid var(--line);border-radius:12px;background:var(--surface2);color:var(--ink);font-weight:700;font-size:.9rem" />
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem">
+              <button class="btn cool small" id="btnSaveUrl" type="button">Simpan URL</button>
+              <button class="btn ghost small" id="btnResetUrl" type="button">Kembalikan URL Bawaan</button>
+            </div>
+            <p class="muted" style="font-weight:700;margin-top:.9rem">Setiap pengiriman menyertakan penanda aplikasi <b>statistika-7</b>, sehingga dasbor hanya menampilkan data aplikasi ini.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site">Dibangun oleh Dody Adyansyah</footer>
+  </div>
+
+  <!-- ================= MODAL PIN ================= -->
+  <div class="modal" id="pinModal" role="dialog" aria-modal="true" aria-label="Masukkan PIN guru">
+    <div class="modal-box">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2" style="margin:0 auto" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.6" fill="var(--sky)"/></svg>
+      <h3 style="font-size:1.4rem;margin-top:.5rem">Khusus Guru</h3>
+      <p class="muted" style="font-weight:700;margin:.3rem 0 0">Masukkan PIN untuk membuka menu Data Guru.</p>
+      <form id="pinForm" novalidate>
+        <input id="pinInput" type="password" autocomplete="off" placeholder="PIN guru" maxlength="16"
+          style="width:100%;min-height:56px;margin-top:1.1rem;padding:.6rem 1rem;text-align:center;font-size:1.25rem;font-weight:800;letter-spacing:.25em;color:var(--ink);background:var(--surface2);border:2px solid var(--line);border-radius:14px" />
+        <p id="pinErr" style="display:none;color:#d92d20;font-weight:900;margin:.7rem 0 0">PIN salah, coba lagi ya.</p>
+        <button class="btn cool" type="submit" style="width:100%;margin-top:1rem">Buka Data Guru</button>
+      </form>
+      <button class="btn ghost small" id="btnPinCancel" type="button" style="margin-top:.8rem">Batal</button>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <script>
+  "use strict";
+  /* ================== KONSTANTA & STATE ================== */
+  var SHEET_DEFAULT = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
+  var APP_ID = "statistika-7";
+  var GURU_PIN = "d4pm4t";
+  var COLORS = ["#ff5d5d","#ffb020","#00b894","#2d9cdb","#7c5cff","#ff5d8f","#7bc950","#ff8a3c","#00b8c4","#e0567a"];
+
+  var state = {
+    student: null,               // {nama, kelas}
+    xp: 0,
+    menusVisited: {},            // {lab:true,...}
+    quizHistory: [],             // {time, nama, kelas, attempt, score, correct}
+    loginLog: [],                // {time, nama, kelas}
+    badges: {},
+    guruUnlocked: false,
+    sheetUrl: SHEET_DEFAULT,
+    labTab: "batang",
+    ukuranData: [6,7,7,8,8,8,9,10],
+    labData: null,
+    labPreset: "nilai"
+  };
+
+  function $(id){ return document.getElementById(id); }
+  function fmt(n){
+    if (typeof n !== "number" || isNaN(n)) return "–";
+    var r = Math.round(n * 100) / 100;
+    return ("" + r).replace(".", ",");
+  }
+  function fmtTime(ts){
+    var d = new Date(ts);
+    return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short"}) + " " +
+           d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+  }
+  function esc(s){ return ("" + s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  /* ================== STATISTIKA ================== */
+  function sumArr(a){ return a.reduce(function(s,v){return s+v;},0); }
+  function meanOf(a){ return a.length ? sumArr(a)/a.length : NaN; }
+  function medianOf(a){
+    if(!a.length) return NaN;
+    var s = a.slice().sort(function(x,y){return x-y;});
+    var m = Math.floor(s.length/2);
+    return s.length % 2 ? s[m] : (s[m-1]+s[m])/2;
+  }
+  function freqMap(a){
+    var m = {};
+    a.forEach(function(v){ var k = ""+v; m[k] = (m[k]||0)+1; });
+    return m;
+  }
+  function modesOf(a){
+    var m = freqMap(a), best = 0, modes = [];
+    Object.keys(m).forEach(function(k){ if(m[k] > best) best = m[k]; });
+    if (best <= 1) return { modes: [], freq: best };
+    Object.keys(m).forEach(function(k){ if(m[k] === best) modes.push(parseFloat(k)); });
+    modes.sort(function(x,y){return x-y;});
+    return { modes: modes, freq: best };
+  }
+  function expandFreq(rows){
+    var out = [];
+    rows.forEach(function(r){
+      var v = parseFloat(("" + r.label).replace(",", "."));
+      if (!isNaN(v)) for (var i=0;i<r.freq;i++) out.push(v);
+    });
+    return out;
+  }
+
+  /* ================== GOOGLE SHEETS ================== */
+  function sheetPost(payload){
+    payload.app = APP_ID;
+    try {
+      var body = JSON.stringify(payload);
+      if (navigator.sendBeacon) {
+        var blob = new Blob([body], { type: "text/plain" });
+        if (navigator.sendBeacon(state.sheetUrl, blob)) return Promise.resolve(true);
+      }
+      return fetch(state.sheetUrl, {
+        method: "POST", mode: "no-cors", keepalive: true,
+        headers: { "Content-Type": "text/plain" }, body: body
+      }).then(function(){ return true; }).catch(function(){ return false; });
+    } catch(e){ return Promise.resolve(false); }
+  }
+  function sendLogin(){
+    if(!state.student) return;
+    sheetPost({ type:"login", time:new Date().toISOString(), nama:state.student.nama, kelas:state.student.kelas });
+  }
+  function sendQuiz(score, attempt){
+    if(!state.student) return;
+    sheetPost({ type:"kuis", time:new Date().toISOString(), nama:state.student.nama, kelas:state.student.kelas, attemptNo:attempt, score:score });
+  }
+  function sendRingkasan(){
+    if(!state.student) return;
+    var qs = state.quizHistory.filter(function(q){ return q.nama === state.student.nama; });
+    var scores = qs.map(function(q){ return q.score; });
+    sheetPost({
+      type:"ringkasan", time:new Date().toISOString(),
+      nama: state.student.nama, kelas: state.student.kelas,
+      menus: Object.keys(state.menusVisited).length,
+      attempts: qs.length,
+      last: scores.length ? scores[scores.length-1] : "",
+      best: scores.length ? Math.max.apply(null, scores) : "",
+      avg: scores.length ? Math.round(sumArr(scores)/scores.length) : ""
+    });
+  }
+
+  /* ================== XP, LEVEL, LENCANA ================== */
+  var BADGES = [
+    { id:"jelajah",  icon:"🧭", name:"Penjelajah Data",    desc:"Buka 3 menu belajar" },
+    { id:"diagram",  icon:"📊", name:"Ahli Diagram",       desc:"Ubah data di Lab Penyajian" },
+    { id:"streak3",  icon:"🔥", name:"Streak Api ×3",      desc:"3 jawaban benar beruntun" },
+    { id:"streak5",  icon:"⚡", name:"Streak Petir ×5",    desc:"5 jawaban benar beruntun" },
+    { id:"hebat",    icon:"🌟", name:"Bintang Data",       desc:"Skor kuis ≥ 80" },
+    { id:"master",   icon:"🏆", name:"Master Statistika",  desc:"Skor kuis sempurna 100" }
+  ];
+  function levelOf(xp){ return Math.floor(xp / 50) + 1; }
+  function addXP(n, anchorEl){
+    state.xp += n;
+    $("xpNum").textContent = state.xp;
+    $("levelNum").textContent = levelOf(state.xp);
+    $("xpFill").style.width = ((state.xp % 50) / 50 * 100) + "%";
+    $("statXp").textContent = state.xp;
+    if (anchorEl) {
+      var r = anchorEl.getBoundingClientRect();
+      var pop = document.createElement("div");
+      pop.className = "xp-pop"; pop.textContent = "+" + n + " XP";
+      pop.style.left = (r.left + r.width/2 - 30) + "px";
+      pop.style.top = (r.top - 8) + "px";
+      document.body.appendChild(pop);
+      setTimeout(function(){ pop.remove(); }, 1150);
+    }
+  }
+  function unlockBadge(id){
+    if (state.badges[id]) return;
+    state.badges[id] = true;
+    renderBadges();
+  }
+  function badgeHTML(){
+    return BADGES.map(function(b){
+      var got = state.badges[b.id] ? " got" : "";
+      return '<span class="badge' + got + '" title="' + esc(b.desc) + '"><span aria-hidden="true">' + b.icon + '</span>' + esc(b.name) + "</span>";
+    }).join("");
+  }
+  function renderBadges(){
+    $("homeBadges").innerHTML = badgeHTML();
+    $("quizBadges").innerHTML = badgeHTML();
+    $("doneBadges").innerHTML = badgeHTML();
+  }
+
+  /* ================== CONFETTI ================== */
+  var confettiParts = [], confettiRun = false;
+  function confetti(burst){
+    var cv = $("confettiCanvas"), ctx = cv.getContext("2d");
+    cv.width = window.innerWidth; cv.height = window.innerHeight;
+    var n = burst || 130;
+    for (var i=0;i<n;i++){
+      confettiParts.push({
+        x: Math.random()*cv.width, y: -20 - Math.random()*cv.height*0.35,
+        w: 6+Math.random()*7, h: 8+Math.random()*9,
+        vy: 2.2+Math.random()*3.4, vx: -1.4+Math.random()*2.8,
+        rot: Math.random()*Math.PI, vr: -0.12+Math.random()*0.24,
+        color: COLORS[i % COLORS.length], shape: Math.random() < 0.3 ? "circle" : "rect"
+      });
+    }
+    if (confettiRun) return;
+    confettiRun = true;
+    (function tick(){
+      ctx.clearRect(0,0,cv.width,cv.height);
+      confettiParts = confettiParts.filter(function(p){ return p.y < cv.height + 30; });
+      confettiParts.forEach(function(p){
+        p.x += p.vx + Math.sin(p.y/42)*0.9; p.y += p.vy; p.rot += p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle = p.color;
+        if (p.shape === "circle"){ ctx.beginPath(); ctx.arc(0,0,p.w/2,0,Math.PI*2); ctx.fill(); }
+        else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      });
+      if (confettiParts.length){ requestAnimationFrame(tick); }
+      else { confettiRun = false; ctx.clearRect(0,0,cv.width,cv.height); }
+    })();
+  }
+
+  /* ================== HERO PARALAKS ================== */
+  (function heroDecor(){
+    var bg = $("heroBg");
+    var syms = [
+      {t:"x̄", s:64, l:"6%",  tp:"12%", d:"0s"},   {t:"Σ", s:52, l:"86%", tp:"10%", d:".7s"},
+      {t:"%", s:44, l:"12%", tp:"64%", d:"1.2s"},  {t:"π", s:56, l:"90%", tp:"58%", d:".4s"},
+      {t:"÷", s:48, l:"72%", tp:"78%", d:"1.6s"},  {t:"√", s:44, l:"26%", tp:"82%", d:".9s"},
+      {t:"123", s:38, l:"20%", tp:"30%", d:"1.9s"}, {t:"+", s:40, l:"82%", tp:"80%", d:"2.2s"}
+    ];
+    syms.forEach(function(o){
+      var el = document.createElement("span");
+      el.className = "float-sym"; el.textContent = o.t;
+      el.style.fontSize = o.s + "px"; el.style.left = o.l; el.style.top = o.tp; el.style.animationDelay = o.d;
+      el.setAttribute("data-depth", (8 + Math.random()*16).toFixed(0));
+      bg.appendChild(el);
+    });
+    [[180,"8%","58%"],[110,"80%","70%"],[70,"55%","86%"]].forEach(function(b,i){
+      var el = document.createElement("div");
+      el.className = "hero-blob"; el.style.width = el.style.height = b[0] + "px";
+      el.style.left = b[1]; el.style.top = b[2]; el.style.animationDelay = (i*1.3) + "s";
+      el.setAttribute("data-depth", 12 + i*8);
+      bg.appendChild(el);
+    });
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduce) {
+      $("loginScreen").addEventListener("pointermove", function(e){
+        var cx = (e.clientX / window.innerWidth - 0.5), cy = (e.clientY / window.innerHeight - 0.5);
+        bg.querySelectorAll("[data-depth]").forEach(function(el){
+          var d = parseFloat(el.getAttribute("data-depth"));
+          el.style.translate = (-cx*d) + "px " + (-cy*d) + "px";
+        });
+      });
+    }
+  })();
+
+  /* ================== LOGIN & NAVIGASI ================== */
+  var MENU_NAMES = { home:"Beranda", lab:"Penyajian Data", ukuran:"Mean, Median, Modus", kalkulator:"Kalkulator", kuis:"Kuis", guru:"Data Guru" };
+  var LEARN_MENUS = ["lab","ukuran","kalkulator","kuis"];
+
+  function showView(name){
+    if (name === "guru" && !state.guruUnlocked) { openPin(); return; }
+    if (name !== "guru") state.guruUnlocked = false;
+    document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("on"); });
+    $("view-" + name).classList.add("on");
+    document.querySelectorAll(".navbtn").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-nav") === name); });
+    if (LEARN_MENUS.indexOf(name) >= 0 && !state.menusVisited[name]) {
+      state.menusVisited[name] = true;
+      if (Object.keys(state.menusVisited).length >= 3) unlockBadge("jelajah");
+      sendRingkasan();
+    }
+    $("statMenus").textContent = Object.keys(state.menusVisited).length + " / 4";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  document.querySelectorAll("[data-nav]").forEach(function(b){
+    b.addEventListener("click", function(){ showView(b.getAttribute("data-nav")); });
+  });
+
+  $("loginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var nama = $("inNama").value.trim(), kelas = $("inKelas").value;
+    if (!nama || !kelas) { $("loginErr").style.display = "block"; return; }
+    $("loginErr").style.display = "none";
+    state.student = { nama: nama, kelas: kelas };
+    state.loginLog.push({ time: Date.now(), nama: nama, kelas: kelas });
+    $("whoName").textContent = nama;
+    $("whoClass").textContent = "Kelas " + kelas + " • Statistika 7";
+    $("avatarInit").textContent = nama.charAt(0).toUpperCase();
+    $("homeGreet").textContent = "Halo, " + nama.split(" ")[0] + "! Siap Bermain Data?";
+    $("loginScreen").style.display = "none";
+    $("appShell").style.display = "block";
+    showView("home");
+    sendLogin();
+    setTimeout(function(){ confetti(70); }, 350);
+  });
+
+  $("btnGanti").addEventListener("click", function(){
+    sendRingkasan();
+    state.student = null; state.menusVisited = {}; state.guruUnlocked = false;
+    $("inNama").value = ""; $("inKelas").value = "";
+    $("appShell").style.display = "none";
+    $("loginScreen").style.display = "flex";
+    window.scrollTo({ top: 0 });
+  });
+
+  /* ================== MODAL PIN ================== */
+  function openPin(){ $("pinInput").value = ""; $("pinErr").style.display = "none"; $("pinModal").classList.add("on"); setTimeout(function(){ $("pinInput").focus(); }, 60); }
+  function closePin(){ $("pinModal").classList.remove("on"); }
+  $("pinForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    if ($("pinInput").value === GURU_PIN) {
+      state.guruUnlocked = true;
+      closePin();
+      showView("guru");
+      renderGuru();
+    } else {
+      $("pinErr").style.display = "block";
+      $("pinInput").value = "";
+      $("pinInput").focus();
+    }
+  });
+  $("btnPinCancel").addEventListener("click", closePin);
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && $("pinModal").classList.contains("on")) closePin();
+  });
+
+  /* ================== LAB PENYAJIAN DATA ================== */
+  var PRESETS = {
+    nilai: { title:"Nilai Ulangan Matematika Kelas 7", rows:[
+      {label:"5",freq:2},{label:"6",freq:4},{label:"7",freq:8},{label:"8",freq:6},{label:"9",freq:3},{label:"10",freq:1} ] },
+    hobi: { title:"Hobi Favorit Siswa Kelas 7", rows:[
+      {label:"Sepak bola",freq:9},{label:"Membaca",freq:5},{label:"Menggambar",freq:6},{label:"Musik",freq:7},{label:"Game",freq:8} ] },
+    buah: { title:"Buah Favorit di Kantin Sekolah", rows:[
+      {label:"Mangga",freq:7},{label:"Apel",freq:4},{label:"Jeruk",freq:6},{label:"Semangka",freq:9},{label:"Pisang",freq:5} ] }
+  };
+  (function buildPresets(){
+    var row = $("presetRow");
+    [["nilai","Nilai Ulangan"],["hobi","Hobi Favorit"],["buah","Buah Favorit"]].forEach(function(p){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "preset" + (p[0] === "nilai" ? " on" : "");
+      b.textContent = p[1]; b.setAttribute("data-preset", p[0]);
+      b.addEventListener("click", function(){
+        state.labPreset = p[0];
+        state.labData = PRESETS[p[0]].rows.map(function(r){ return { label:r.label, freq:r.freq }; });
+        row.querySelectorAll(".preset").forEach(function(x){ x.classList.toggle("on", x === b); });
+        renderLab();
+      });
+      row.appendChild(b);
+    });
+    state.labData = PRESETS.nilai.rows.map(function(r){ return { label:r.label, freq:r.freq }; });
+  })();
+
+  function renderLab(){
+    $("labTitle").textContent = PRESETS[state.labPreset].title;
+    var rowsEl = $("dataRows");
+    rowsEl.innerHTML = "";
+    state.labData.forEach(function(r, i){
+      var div = document.createElement("div");
+      div.className = "data-row";
+      div.innerHTML =
+        '<span class="dot" style="background:' + COLORS[i % COLORS.length] + '"></span>' +
+        '<input type="text" value="' + esc(r.label) + '" maxlength="16" aria-label="Nama kategori baris ' + (i+1) + '" />' +
+        '<span class="stepper"><button type="button" data-act="dec" aria-label="Kurangi frekuensi">−</button>' +
+        '<output>' + r.freq + '</output>' +
+        '<button type="button" data-act="inc" aria-label="Tambah frekuensi">+</button></span>' +
+        '<button type="button" class="del" aria-label="Hapus baris">✕</button>';
+      div.querySelector("input").addEventListener("input", function(e){
+        state.labData[i].label = e.target.value;
+        markCustom(); renderLabOutputs();
+      });
+      div.querySelector('[data-act="inc"]').addEventListener("click", function(){
+        state.labData[i].freq = Math.min(30, state.labData[i].freq + 1);
+        markCustom(); unlockBadge("diagram"); renderLab();
+      });
+      div.querySelector('[data-act="dec"]').addEventListener("click", function(){
+        state.labData[i].freq = Math.max(0, state.labData[i].freq - 1);
+        markCustom(); unlockBadge("diagram"); renderLab();
+      });
+      div.querySelector(".del").addEventListener("click", function(){
+        if (state.labData.length > 2) { state.labData.splice(i,1); markCustom(); renderLab(); }
+      });
+      rowsEl.appendChild(div);
+    });
+    renderLabOutputs();
+  }
+  function markCustom(){
+    document.querySelectorAll("#presetRow .preset").forEach(function(x){ x.classList.remove("on"); });
+  }
+  $("btnAddRow").addEventListener("click", function(){
+    if (state.labData.length >= 8) return;
+    state.labData.push({ label:"Baru " + (state.labData.length+1), freq:3 });
+    markCustom(); renderLab();
+  });
+  $("btnAcak").addEventListener("click", function(){
+    state.labData.forEach(function(r){ r.freq = 1 + Math.floor(Math.random()*11); });
+    markCustom(); unlockBadge("diagram"); renderLab();
+  });
+  document.querySelectorAll("[data-tab]").forEach(function(t){
+    t.addEventListener("click", function(){
+      state.labTab = t.getAttribute("data-tab");
+      document.querySelectorAll("[data-tab]").forEach(function(x){ x.classList.toggle("on", x === t); });
+      renderChart();
+    });
+  });
+
+  function labTotal(){ return state.labData.reduce(function(s,r){ return s + r.freq; }, 0); }
+
+  function renderLabOutputs(){
+    var total = labTotal();
+    $("labTotal").textContent = total;
+    var maxF = Math.max.apply(null, state.labData.map(function(r){ return r.freq; }).concat([0]));
+    var html = "<tr><th>Kategori / Nilai</th><th class='num'>Frekuensi</th><th class='num'>Persentase</th></tr>";
+    state.labData.forEach(function(r, i){
+      var pct = total ? (r.freq/total*100) : 0;
+      html += "<tr class='" + (r.freq === maxF && maxF > 0 ? "hl" : "") + "'><td><span class='dot' style='display:inline-block;vertical-align:-2px;margin-right:.45rem;background:" +
+        COLORS[i % COLORS.length] + "'></span>" + esc(r.label || "—") + "</td><td class='num'>" + r.freq +
+        "</td><td class='num'>" + fmt(pct) + "%</td></tr>";
+    });
+    html += "<tr><td><b>Total</b></td><td class='num'><b>" + total + "</b></td><td class='num'><b>100%</b></td></tr>";
+    $("freqTable").innerHTML = html;
+    renderChart();
+    $("chartLegend").innerHTML = state.labData.map(function(r,i){
+      var pct = total ? Math.round(r.freq/total*100) : 0;
+      return "<span><span class='dot' style='background:" + COLORS[i % COLORS.length] + "'></span>" + esc(r.label || "—") + " — " + r.freq + " (" + pct + "%)</span>";
+    }).join("");
+  }
+
+  function renderChart(){
+    var box = $("chartBox"), data = state.labData, total = labTotal();
+    var W = 560, H = 340, base = 288, top = 26, left = 44, right = 14;
+    var maxF = Math.max.apply(null, data.map(function(r){ return r.freq; }).concat([1]));
+    var grid = "", step = Math.max(1, Math.ceil(maxF/4));
+    for (var g=0; g<=maxF; g+=step){
+      var y = base - (g/maxF)*(base-top);
+      grid += "<line x1='" + left + "' y1='" + y + "' x2='" + (W-right) + "' y2='" + y + "' stroke='var(--chart-grid)' stroke-width='1.2'/>" +
+              "<text x='" + (left-8) + "' y='" + (y+4) + "' text-anchor='end' font-size='12' font-weight='700' fill='var(--ink2)'>" + g + "</text>";
+    }
+    var axis = "<line x1='" + left + "' y1='" + base + "' x2='" + (W-right) + "' y2='" + base + "' stroke='var(--ink2)' stroke-width='2'/>";
+    var slot = (W-left-right) / Math.max(1, data.length);
+    function xLabel(i, label){
+      var cx = left + slot*i + slot/2;
+      var txt = esc(label || "—");
+      if (txt.length > 9) txt = txt.slice(0,9) + "…";
+      return "<text x='" + cx + "' y='" + (base+22) + "' text-anchor='middle' font-size='12.5' font-weight='800' fill='var(--ink)'>" + txt + "</text>";
+    }
+    if (state.labTab === "batang") {
+      var bars = "";
+      data.forEach(function(r,i){
+        var bw = Math.min(64, slot*0.6), x = left + slot*i + (slot-bw)/2;
+        var h = (r.freq/maxF)*(base-top), y = base - h;
+        bars += "<rect class='bar-rect' x='" + x + "' y='" + y + "' width='" + bw + "' height='" + h + "' rx='7' fill='" + COLORS[i % COLORS.length] + "'/>" +
+                "<text x='" + (x+bw/2) + "' y='" + (y-8) + "' text-anchor='middle' font-size='15' font-weight='800' fill='var(--ink)' font-family='Baloo 2'>" + r.freq + "</text>" +
+                xLabel(i, r.label);
+      });
+      box.innerHTML = "<svg viewBox='0 0 " + W + " " + H + "' role='img' aria-label='Diagram batang'>" + grid + axis + bars + "</svg>";
+      $("chartNote").textContent = "Batang tertinggi menunjukkan kategori paling banyak. Bandingkan tingginya!";
+    } else if (state.labTab === "garis") {
+      var pts = data.map(function(r,i){
+        return (left + slot*i + slot/2) + "," + (base - (r.freq/maxF)*(base-top));
+      }).join(" ");
+      var dots = "";
+      data.forEach(function(r,i){
+        var cx = left + slot*i + slot/2, cy = base - (r.freq/maxF)*(base-top);
+        dots += "<circle class='line-pt' cx='" + cx + "' cy='" + cy + "' r='7' fill='" + COLORS[i % COLORS.length] + "' stroke='var(--surface)' stroke-width='2.5'/>" +
+                "<text x='" + cx + "' y='" + (cy-14) + "' text-anchor='middle' font-size='15' font-weight='800' fill='var(--ink)' font-family='Baloo 2'>" + r.freq + "</text>" + xLabel(i, r.label);
+      });
+      box.innerHTML = "<svg viewBox='0 0 " + W + " " + H + "' role='img' aria-label='Diagram garis'>" + grid + axis +
+        "<polyline points='" + pts + "' fill='none' stroke='#2d9cdb' stroke-width='3.5' stroke-linejoin='round' stroke-linecap='round'/>" + dots + "</svg>";
+      $("chartNote").textContent = "Ikuti garisnya: naik berarti frekuensi bertambah, turun berarti berkurang.";
+    } else {
+      var R = 105, C = 2*Math.PI*R, acc = 0, segs = "";
+      data.forEach(function(r,i){
+        var frac = total ? r.freq/total : 0, len = frac * C;
+        segs += "<circle class='pie-seg' cx='170' cy='160' r='" + R + "' fill='none' stroke='" + COLORS[i % COLORS.length] +
+          "' stroke-width='56' stroke-dasharray='" + Math.max(0, len-3) + " " + C + "' stroke-dashoffset='" + (-acc) +
+          "' transform='rotate(-90 170 160)' style='animation-delay:" + (i*0.08) + "s'><title>" + esc(r.label) + ": " + r.freq + "</title></circle>";
+        acc += len;
+      });
+      var topLabel = "—", topF = -1;
+      data.forEach(function(r){ if (r.freq > topF){ topF = r.freq; topLabel = r.label; } });
+      box.innerHTML = "<svg viewBox='0 0 340 320' role='img' aria-label='Diagram lingkaran'>" + segs +
+        "<text x='170' y='152' text-anchor='middle' font-size='15' font-weight='800' fill='var(--ink2)'>Terbanyak</text>" +
+        "<text x='170' y='180' text-anchor='middle' font-size='21' font-weight='800' fill='var(--ink)' font-family='Baloo 2'>" + esc(topLabel) + "</text></svg>";
+      $("chartNote").textContent = "Setiap irisan = frekuensi ÷ total × 360°. Irisan terbesar = kategori terbanyak (" + (total ? fmt(topF/total*360) : 0) + "°).";
+    }
+  }
+</script>
+
+  <script>
+  "use strict";
+  /* ================== LAB MEAN / MEDIAN / MODUS ================== */
+  function computeSteps(data){
+    var sorted = data.slice().sort(function(a,b){ return a-b; });
+    var n = data.length, total = sumArr(data), mean = meanOf(data), med = medianOf(data);
+    var md = modesOf(data);
+    var midIdx = [];
+    if (n % 2 === 1) midIdx = [Math.floor(n/2)];
+    else if (n >= 2) midIdx = [n/2 - 1, n/2];
+    return { sorted: sorted, n: n, total: total, mean: mean, median: med, modes: md.modes, modeFreq: md.freq, midIdx: midIdx };
+  }
+  function stepsHTML(data){
+    var c = computeSteps(data);
+    var meanSteps = [
+      "Jumlahkan semua data: " + data.join(" + ") + " = <b>" + fmt(c.total) + "</b>",
+      "Hitung banyak data: ada <b>" + c.n + "</b> angka.",
+      "Bagi jumlah dengan banyak data: " + fmt(c.total) + " ÷ " + c.n + " = <b>" + fmt(c.mean) + "</b>",
+      "Jadi, mean (rata-rata) data ini adalah <b>" + fmt(c.mean) + "</b>."
+    ];
+    var medSteps = ["Urutkan data dari terkecil: <b>" + c.sorted.join(", ") + "</b>"];
+    if (c.n % 2 === 1) {
+      medSteps.push("Banyak data ganjil (" + c.n + "), nilai tengahnya adalah data ke-" + (Math.floor(c.n/2)+1) + ".");
+    } else {
+      medSteps.push("Banyak data genap (" + c.n + "), nilai tengahnya adalah rata-rata data ke-" + (c.n/2) + " dan ke-" + (c.n/2 + 1) + ": (" + fmt(c.sorted[c.n/2-1]) + " + " + fmt(c.sorted[c.n/2]) + ") ÷ 2.");
+    }
+    medSteps.push("Jadi, median data ini adalah <b>" + fmt(c.median) + "</b>.");
+    var fm = freqMap(data);
+    var pairs = Object.keys(fm).sort(function(a,b){ return parseFloat(a)-parseFloat(b); })
+      .map(function(k){ return k + " muncul " + fm[k] + "×"; }).join(" • ");
+    var modeSteps = ["Hitung kemunculan tiap angka: " + pairs + "."];
+    if (c.modes.length) {
+      modeSteps.push("Kemunculan terbanyak adalah <b>" + c.modeFreq + " kali</b>, yaitu angka <b>" + c.modes.map(fmt).join(" dan ") + "</b>.");
+      modeSteps.push("Jadi, modus data ini adalah <b>" + c.modes.map(fmt).join(" dan ") + "</b>.");
+    } else {
+      modeSteps.push("Semua angka muncul sama sering (masing-masing 1 kali), jadi data ini <b>tidak mempunyai modus</b>.");
+    }
+    return { mean: meanSteps, median: medSteps, mode: modeSteps, c: c };
+  }
+  function renderUkuran(){
+    var data = state.ukuranData, c = computeSteps(data);
+    $("ukuranN").textContent = data.length;
+    var modeSet = {};
+    c.modes.forEach(function(m){ modeSet[""+m] = true; });
+    var chipsHTML = "";
+    c.sorted.forEach(function(v, i){
+      var cls = "nchip";
+      if (c.midIdx.indexOf(i) >= 0) cls += " med";
+      if (modeSet[""+v]) cls += " mode";
+      var tag = "";
+      if (c.midIdx.indexOf(i) >= 0) tag = "<small>MEDIAN</small>";
+      else if (modeSet[""+v]) tag = "<small>MODUS</small>";
+      chipsHTML += '<button type="button" class="' + cls + '" data-val="' + v + '" title="Klik untuk menghapus angka ini">' + fmt(v) + tag + "</button>";
+    });
+    $("ukuranChips").innerHTML = chipsHTML || '<span class="muted" style="font-weight:800">Datanya kosong — tambahkan angka dulu ya.</span>';
+    $("ukuranChips").querySelectorAll(".nchip").forEach(function(ch){
+      ch.addEventListener("click", function(){
+        var v = parseFloat(ch.getAttribute("data-val"));
+        var idx = state.ukuranData.indexOf(v);
+        if (idx >= 0 && state.ukuranData.length > 2) { state.ukuranData.splice(idx,1); renderUkuran(); }
+      });
+    });
+    var s = stepsHTML(data);
+    $("resMean").textContent = fmt(c.mean);
+    $("resMedian").textContent = fmt(c.median);
+    $("resMode").textContent = c.modes.length ? c.modes.map(fmt).join(" & ") : "Tidak ada";
+    $("stepsMean").innerHTML = s.mean.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+    $("stepsMedian").innerHTML = s.median.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+    $("stepsMode").innerHTML = s.mode.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+  }
+  $("btnUkuranAdd").addEventListener("click", function(){
+    var v = parseFloat(($("ukuranAdd").value || "").replace(",", "."));
+    if (isNaN(v)) return;
+    if (state.ukuranData.length >= 15) return;
+    state.ukuranData.push(v);
+    $("ukuranAdd").value = "";
+    renderUkuran();
+  });
+  $("ukuranAdd").addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); $("btnUkuranAdd").click(); } });
+  $("btnUkuranReset").addEventListener("click", function(){
+    state.ukuranData = [6,7,7,8,8,8,9,10];
+    renderUkuran();
+  });
+
+  /* ================== KALKULATOR ================== */
+  var CONTOH = [
+    "7, 8, 6, 9, 8, 7, 10, 8",
+    "150, 155, 160, 155, 148, 160, 155",
+    "4, 5, 5, 6, 7, 7, 7, 8, 9",
+    "25, 30, 25, 35, 40, 30, 25, 30"
+  ], contohIdx = 0;
+  $("btnCalcContoh").addEventListener("click", function(){
+    contohIdx = (contohIdx + 1) % CONTOH.length;
+    $("calcInput").value = CONTOH[contohIdx];
+    $("btnCalc").click();
+  });
+  $("btnCalc").addEventListener("click", function(){
+    var raw = $("calcInput").value.split(/[;,\s]+/).filter(function(x){ return x !== ""; });
+    var nums = raw.map(function(x){ return parseFloat(x.replace(",", ".")); }).filter(function(x){ return !isNaN(x); });
+    if (nums.length < 2) { $("calcErr").style.display = "block"; $("calcOut").style.display = "none"; return; }
+    $("calcErr").style.display = "none";
+    var c = computeSteps(nums), s = stepsHTML(nums);
+    $("cMean").textContent = fmt(c.mean);
+    $("cMedian").textContent = fmt(c.median);
+    $("cMode").textContent = c.modes.length ? c.modes.map(fmt).join(" & ") : "Tidak ada";
+    var all = s.mean.concat(s.median, s.mode);
+    $("calcSteps").innerHTML = all.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+    var fm = freqMap(nums);
+    var keys = Object.keys(fm).sort(function(a,b){ return parseFloat(a)-parseFloat(b); });
+    var html = "<tr><th>Nilai</th><th class='num'>Frekuensi</th></tr>";
+    keys.forEach(function(k){
+      html += "<tr class='" + (c.modes.indexOf(parseFloat(k)) >= 0 ? "hl" : "") + "'><td>" + fmt(parseFloat(k)) + "</td><td class='num'>" + fm[k] + "</td></tr>";
+    });
+    html += "<tr><td><b>Total</b></td><td class='num'><b>" + nums.length + " data</b></td></tr>";
+    $("calcTable").innerHTML = html;
+    $("calcOut").style.display = "block";
+    addXP(5, $("btnCalc"));
+  });
+
+  /* ================== KUIS ================== */
+  var QUESTIONS = [
+    { q:"Data nilai kuis: 6, 7, 8, 7, 9, 7, 8. Modus dari data tersebut adalah …",
+      opts:["6","7","8","9"], ans:1,
+      why:"Hitung kemunculannya: 6→1 kali, 7→3 kali, 8→2 kali, 9→1 kali. Yang paling sering muncul adalah 7, jadi modusnya 7." },
+    { q:"Mean (rata-rata) dari data 4, 6, 8, 10 adalah …",
+      opts:["6","7","8","9"], ans:1,
+      why:"Jumlah data = 4+6+8+10 = 28. Banyak data = 4. Mean = 28 ÷ 4 = 7." },
+    { q:"Median dari data 3, 5, 7, 9, 11 adalah …",
+      opts:["5","7","9","25"], ans:1,
+      why:"Data sudah urut dan banyaknya ganjil (5 data). Nilai yang persis di tengah adalah data ke-3, yaitu 7." },
+    { q:"Dalam diagram lingkaran ekstrakurikuler, kelompok Tari menempati 25% lingkaran. Jika seluruh siswa ada 40 anak, banyak siswa di kelompok Tari adalah …",
+      opts:["4 anak","8 anak","10 anak","25 anak"], ans:2,
+      why:"25% × 40 = 25/100 × 40 = 10 anak. Diagram lingkaran memang menampilkan bagian dari keseluruhan dalam persen." },
+    { q:"Mean dari data 5, 5, 6, 7, 7 adalah …",
+      opts:["5","6","7","30"], ans:1,
+      why:"Jumlah data = 5+5+6+7+7 = 30. Banyak data = 5. Mean = 30 ÷ 5 = 6." },
+    { q:"Median dari data 2, 4, 6, 8 adalah …",
+      opts:["4","5","6","10"], ans:1,
+      why:"Banyak data genap (4 data). Median = rata-rata dua nilai tengah: (4 + 6) ÷ 2 = 5." },
+    { q:"Hasil survei warna favorit: merah 5 siswa, biru 8 siswa, hijau 3 siswa, kuning 4 siswa. Jika dibuat diagram batang, batang tertinggi adalah warna …",
+      opts:["Merah","Biru","Hijau","Kuning"], ans:1,
+      why:"Batang tertinggi berarti frekuensi terbesar. Biru dipilih 8 siswa — paling banyak dibanding warna lain." },
+    { q:"Modus dari data 10, 20, 20, 30, 20, 40 adalah …",
+      opts:["10","30","20","40"], ans:2,
+      why:"Angka 20 muncul 3 kali, lebih sering daripada angka lain (masing-masing 1 kali). Modusnya 20." },
+    { q:"Mean dari 5 data adalah 8. Empat data pertama adalah 6, 7, 9, 10. Data kelima adalah …",
+      opts:["6","7","8","9"], ans:2,
+      why:"Jumlah kelima data = 5 × 8 = 40. Jumlah empat data pertama = 6+7+9+10 = 32. Data kelima = 40 − 32 = 8." },
+    { q:"Data banyak pengunjung perpustakaan: Senin 12, Selasa 15, Rabu 10, Kamis 15, Jumat 18. Modus data tersebut adalah …",
+      opts:["10","12","15","18"], ans:2,
+      why:"Angka 15 muncul 2 kali (Selasa dan Kamis), sedangkan angka lain hanya muncul 1 kali. Modusnya 15." }
+  ];
+  var CHEERS = ["Kerja bagus! Otak datamu makin tajam!","Betul sekali! Kamu memang Penjelajah Data!","Hebat! Terus pertahankan streak-mu!","Keren! Dipo bangga padamu!","Tepat! Satu langkah lagi menuju Master Statistika!"];
+  var OOPS = ["Belum tepat — tidak apa-apa, baca pembahasannya ya!","Hampir! Cek lagi langkahnya di pembahasan.","Salah itu wajar, yang penting belajar dari pembahasannya!","Tetap semangat! Soal berikutnya pasti bisa!"];
+  var quiz = null, quizTimer = null;
+
+  function quizOrder(){
+    var idx = QUESTIONS.map(function(_, i){ return i; });
+    for (var i = idx.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = idx[i]; idx[i] = idx[j]; idx[j] = t; }
+    return idx;
+  }
+  function startQuiz(){
+    quiz = { order: quizOrder(), pos: 0, correct: 0, xp: 0, streak: 0, bestStreak: 0, results: [], timeLeft: 30, locked: false };
+    $("quizStart").style.display = "none";
+    $("quizDone").style.display = "none";
+    $("quizPlay").style.display = "block";
+    renderDots();
+    showQuestion();
+  }
+  function renderDots(){
+    $("qDots").innerHTML = quiz.order.map(function(_, i){
+      var cls = "";
+      if (i < quiz.results.length) cls = quiz.results[i] ? "ok" : "bad";
+      else if (i === quiz.pos) cls = "now";
+      return "<i class='" + cls + "'></i>";
+    }).join("");
+  }
+  function stopTimer(){ if (quizTimer) { clearInterval(quizTimer); quizTimer = null; } }
+  function startTimer(){
+    stopTimer();
+    var useTimer = $("timerToggle").checked;
+    $("timerBarWrap").style.display = useTimer ? "block" : "none";
+    $("qTimerChip").style.display = useTimer ? "inline-flex" : "none";
+    if (!useTimer) return;
+    quiz.timeLeft = 30;
+    $("qTimer").textContent = "30";
+    $("timerFill").style.width = "100%";
+    quizTimer = setInterval(function(){
+      quiz.timeLeft--;
+      $("qTimer").textContent = Math.max(0, quiz.timeLeft);
+      $("timerFill").style.width = (Math.max(0, quiz.timeLeft) / 30 * 100) + "%";
+      if (quiz.timeLeft <= 0) { stopTimer(); answerQuestion(-1); }
+    }, 1000);
+  }
+  function showQuestion(){
+    var q = QUESTIONS[quiz.order[quiz.pos]];
+    quiz.locked = false;
+    $("qNow").textContent = quiz.pos + 1;
+    $("qScore").textContent = quiz.correct * 10;
+    $("qXp").textContent = quiz.xp;
+    $("qText").textContent = q.q;
+    $("qExplain").className = "explain";
+    $("qExplain").innerHTML = "";
+    $("btnNextQ").style.display = "none";
+    $("qBubble").textContent = quiz.streak >= 2 ? "Streak-mu " + quiz.streak + "! Jaga apinya, jangan sampai padam!" : "Baca baik-baik, lalu pilih jawaban terbaikmu.";
+    updateStreak();
+    var optsEl = $("qOpts");
+    optsEl.innerHTML = "";
+    var order = q.opts.map(function(_, i){ return i; });
+    for (var i = order.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = order[i]; order[i] = order[j]; order[j] = t; }
+    order.forEach(function(oi){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "opt";
+      b.innerHTML = "<span class='abc'>" + "ABCD".charAt(order.indexOf(oi)) + "</span><span>" + esc(q.opts[oi]) + "</span>";
+      b.addEventListener("click", function(){ answerQuestion(oi, b); });
+      optsEl.appendChild(b);
+    });
+    renderDots();
+    startTimer();
+  }
+  function updateStreak(){
+    $("qStreakNum").textContent = quiz.streak;
+    $("qStreak").classList.toggle("hot", quiz.streak >= 3);
+  }
+  function answerQuestion(chosen, btnEl){
+    if (!quiz || quiz.locked) return;
+    quiz.locked = true;
+    stopTimer();
+    var q = QUESTIONS[quiz.order[quiz.pos]];
+    var right = chosen === q.ans;
+    quiz.results.push(right);
+    var buttons = $("qOpts").querySelectorAll(".opt");
+    buttons.forEach(function(b, bi){
+      b.disabled = true;
+      var label = b.querySelector("span:last-child").textContent;
+      if (label === q.opts[q.ans]) b.classList.add("right");
+      else if (b === btnEl) b.classList.add("wrong");
+    });
+    var xpGain = 0;
+    if (right) {
+      quiz.correct++;
+      quiz.streak++;
+      quiz.bestStreak = Math.max(quiz.bestStreak, quiz.streak);
+      xpGain = 10;
+      if (quiz.streak === 3) { xpGain += 5; unlockBadge("streak3"); }
+      if (quiz.streak === 5) { xpGain += 10; unlockBadge("streak5"); }
+      if (quiz.streak > 5 && quiz.streak % 5 === 0) xpGain += 10;
+      $("qBubble").textContent = CHEERS[Math.floor(Math.random() * CHEERS.length)];
+      if (quiz.streak === 3 || quiz.streak === 5) confetti(45);
+    } else {
+      quiz.streak = 0;
+      $("qBubble").textContent = chosen === -1 ? "Waktunya habis! Tidak apa-apa — baca pembahasannya, lalu lanjut." : OOPS[Math.floor(Math.random() * OOPS.length)];
+    }
+    quiz.xp += xpGain;
+    addXP(xpGain, btnEl || $("qScore"));
+    $("qScore").textContent = quiz.correct * 10;
+    $("qXp").textContent = quiz.xp;
+    updateStreak();
+    renderDots();
+    var ex = $("qExplain");
+    ex.innerHTML = "<b>" + (right ? "Benar! " : (chosen === -1 ? "Waktu habis. " : "Belum tepat. ")) + "Pembahasan:</b> " + esc(q.why);
+    ex.classList.add("show");
+    var nx = $("btnNextQ");
+    nx.textContent = quiz.pos === quiz.order.length - 1 ? "Lihat Hasil Akhir →" : "Soal Berikutnya →";
+    nx.style.display = "inline-flex";
+  }
+  $("btnNextQ").addEventListener("click", function(){
+    if (!quiz) return;
+    if (quiz.pos < quiz.order.length - 1) { quiz.pos++; showQuestion(); }
+    else finishQuiz();
+  });
+  $("btnQuitQuiz").addEventListener("click", function(){
+    stopTimer(); quiz = null;
+    $("quizPlay").style.display = "none";
+    $("quizStart").style.display = "block";
+  });
+  $("btnStartQuiz").addEventListener("click", startQuiz);
+  $("btnRetryQuiz").addEventListener("click", startQuiz);
+
+  function finishQuiz(){
+    stopTimer();
+    var score = quiz.correct * 10;
+    var attempt = state.quizHistory.filter(function(h){ return state.student && h.nama === state.student.nama; }).length + 1;
+    state.quizHistory.push({ time: Date.now(), nama: state.student.nama, kelas: state.student.kelas, attempt: attempt, score: score, correct: quiz.correct });
+    if (score >= 80) unlockBadge("hebat");
+    if (score === 100) unlockBadge("master");
+    $("quizPlay").style.display = "none";
+    $("quizDone").style.display = "block";
+    $("finalScore").textContent = score;
+    var msg = score === 100 ? "SEMPURNA! Kamu Master Statistika sejati!" :
+              score >= 80 ? "Luar biasa! Sedikit lagi menuju sempurna!" :
+              score >= 60 ? "Bagus! Terus berlatih, kamu makin dekat!" :
+              score >= 40 ? " Lumayan! Baca lagi materinya lalu coba lagi, pasti naik!" :
+                            "Tidak apa-apa! Belajar dari pembahasan, lalu taklukkan misi berikutnya!";
+    $("finalMsg").textContent = msg.trim();
+    $("finalDetail").textContent = "Jawaban benar: " + quiz.correct + " dari 10 • Streak terbaik: " + quiz.bestStreak + " • XP didapat: +" + quiz.xp + " XP";
+    renderBadges();
+    renderHomeStats();
+    renderScoreBoard();
+    sendQuiz(score, attempt);
+    sendRingkasan();
+    if (score >= 60) confetti(score === 100 ? 220 : 130);
+  }
+  function renderHomeStats(){
+    var mine = state.student ? state.quizHistory.filter(function(h){ return h.nama === state.student.nama; }) : [];
+    $("statQuiz").textContent = mine.length + " kali";
+    $("statBest").textContent = mine.length ? Math.max.apply(null, mine.map(function(h){ return h.score; })) : "—";
+  }
+  function renderScoreBoard(){
+    var best = {};
+    state.quizHistory.forEach(function(h){
+      if (!best[h.nama] || h.score > best[h.nama].score) best[h.nama] = h;
+    });
+    var arr = Object.keys(best).map(function(k){ return best[k]; }).sort(function(a,b){ return b.score - a.score; }).slice(0, 5);
+    $("scoreBoardEmpty").style.display = arr.length ? "none" : "block";
+    $("scoreBoard").innerHTML = arr.map(function(h, i){
+      return "<li><span class='rank'>" + (i+1) + "</span><span style='flex:1'>" + esc(h.nama) + " <span class='muted'>(" + esc(h.kelas) + ")</span></span><b>" + h.score + "</b></li>";
+    }).join("");
+  }
+
+  /* ================== DATA GURU ================== */
+  function guruStatus(msg, ok){
+    var el = $("guruStatus");
+    el.textContent = msg;
+    el.className = "status-line " + (ok ? "ok" : "err");
+  }
+  function renderGuru(){
+    $("sheetUrlInput").value = state.sheetUrl;
+    var logins = state.loginLog.slice().reverse();
+    $("loginEmpty").style.display = logins.length ? "none" : "block";
+    $("tblLogin").innerHTML = logins.length ?
+      "<tr><th>Waktu</th><th>Nama</th><th>Kelas</th></tr>" + logins.map(function(l){
+        return "<tr><td>" + fmtTime(l.time) + "</td><td>" + esc(l.nama) + "</td><td>" + esc(l.kelas) + "</td></tr>";
+      }).join("") : "";
+    var menuHTML = LEARN_MENUS.map(function(m){
+      var done = !!state.menusVisited[m];
+      return "<div style='display:flex;justify-content:space-between;gap:.6rem;font-weight:800;padding:.45rem .7rem;border-radius:10px;background:var(--surface2);border:1.5px solid var(--line)'>" +
+        "<span>" + MENU_NAMES[m] + "</span><span style='color:" + (done ? "var(--teal)" : "var(--ink2)") + "'>" + (done ? "Sudah dipelajari ✓" : "Belum dibuka") + "</span></div>";
+    }).join("");
+    $("menuLearned").innerHTML = menuHTML;
+    var qs = state.quizHistory.slice().reverse();
+    $("kuisEmpty").style.display = qs.length ? "none" : "block";
+    $("tblKuis").innerHTML = qs.length ?
+      "<tr><th>Waktu</th><th>Nama</th><th>Ke-</th><th>Skor</th><th>Perkembangan</th></tr>" + qs.map(function(q){
+        var prev = state.quizHistory.filter(function(x){ return x.nama === q.nama && x.attempt === q.attempt - 1; })[0];
+        var trend = !prev ? "Awal" : q.score > prev.score ? "Naik ▲" : q.score < prev.score ? "Turun ▼" : "Tetap";
+        return "<tr><td>" + fmtTime(q.time) + "</td><td>" + esc(q.nama) + "</td><td>" + q.attempt + "</td><td><b>" + q.score + "</b></td><td>" + trend + "</td></tr>";
+      }).join("") : "";
+    var chrono = state.quizHistory.slice(-10);
+    $("sparkKuis").innerHTML = chrono.map(function(q){
+      return "<i style='height:" + Math.max(6, q.score / 100 * 64) + "px' title='Skor " + q.score + "'></i>";
+    }).join("");
+    renderScoreBoard();
+  }
+  $("btnMuatSheet").addEventListener("click", function(){
+    guruStatus("Menghubungi database Google Sheets…", true);
+    fetch(state.sheetUrl + "?app=" + APP_ID).then(function(r){ return r.json(); }).then(function(data){
+      var added = 0;
+      function rowsOf(key){ return Array.isArray(data[key]) ? data[key] : []; }
+      rowsOf("login").forEach(function(l){
+        var t = l.time ? new Date(l.time).getTime() : Date.now();
+        if (!state.loginLog.some(function(x){ return x.nama === l.nama && Math.abs(x.time - t) < 5000; })) {
+          state.loginLog.push({ time: t, nama: l.nama || "?", kelas: l.kelas || "?" }); added++;
+        }
+      });
+      rowsOf("kuis").forEach(function(k){
+        var t = k.time ? new Date(k.time).getTime() : Date.now();
+        if (!state.quizHistory.some(function(x){ return x.nama === k.nama && x.score === k.score && Math.abs(x.time - t) < 5000; })) {
+          state.quizHistory.push({ time: t, nama: k.nama || "?", kelas: k.kelas || "?", attempt: k.attemptNo || 1, score: k.score || 0, correct: (k.score || 0) / 10 }); added++;
+        }
+      });
+      state.quizHistory.sort(function(a,b){ return a.time - b.time; });
+      renderGuru(); renderHomeStats(); renderScoreBoard();
+      guruStatus("Data dari Sheet berhasil dimuat (" + added + " baris baru). Total login tampil: " + state.loginLog.length + ", total kuis: " + state.quizHistory.length + ".", true);
+    }).catch(function(){
+      guruStatus("Belum bisa membaca data dari Sheet. Periksa koneksi internet dan pastikan Apps Script sudah di-deploy ulang dengan versi terbaru.", false);
+    });
+  });
+  $("btnUjiKirim").addEventListener("click", function(){
+    guruStatus("Mengirim data uji ke Google Sheets…", true);
+    sheetPost({ type:"login", time:new Date().toISOString(), nama:"UJI KIRIM — Statistika 7", kelas:"UJI" }).then(function(ok){
+      if (ok) guruStatus("Data uji terkirim! Silakan periksa tab Login pada spreadsheet database pusat — cari nama “UJI KIRIM — Statistika 7”.", true);
+      else guruStatus("Pengiriman gagal. Periksa koneksi internet atau URL Web App di pengaturan.", false);
+    });
+  });
+  $("btnSaveUrl").addEventListener("click", function(){
+    var v = $("sheetUrlInput").value.trim();
+    if (v) { state.sheetUrl = v; guruStatus("URL database disimpan untuk sesi ini.", true); }
+  });
+  $("btnResetUrl").addEventListener("click", function(){
+    state.sheetUrl = SHEET_DEFAULT;
+    $("sheetUrlInput").value = SHEET_DEFAULT;
+    guruStatus("URL dikembalikan ke URL bawaan DapMath.", true);
+  });
+  $("btnCsv").addEventListener("click", function(){
+    var lines = ["Aplikasi,Waktu,Jenis,Nama,Kelas,Percobaan Ke,Skor,Menu Dipelajari"];
+    function csvEsc(s){ return '"' + ("" + (s == null ? "" : s)).replace(/"/g, '""') + '"'; }
+    state.loginLog.forEach(function(l){
+      lines.push([APP_ID, new Date(l.time).toISOString(), "Login", l.nama, l.kelas, "", "", ""].map(csvEsc).join(","));
+    });
+    state.quizHistory.forEach(function(q){
+      lines.push([APP_ID, new Date(q.time).toISOString(), "Kuis", q.nama, q.kelas, q.attempt, q.score, ""].map(csvEsc).join(","));
+    });
+    if (state.student) {
+      lines.push([APP_ID, new Date().toISOString(), "Ringkasan Sesi", state.student.nama, state.student.kelas, "", "", Object.keys(state.menusVisited).map(function(m){ return MENU_NAMES[m]; }).join("; ")].map(csvEsc).join(","));
+    }
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "laporan-statistika-7.csv";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+    guruStatus("Laporan CSV diunduh (" + (lines.length - 1) + " baris data).", true);
+  });
+
+  /* ================== INIT ================== */
+  renderLab();
+  renderUkuran();
+  renderBadges();
+  renderScoreBoard();
+  </script>
+  </body>
+</html>
