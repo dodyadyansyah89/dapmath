@@ -1,0 +1,1384 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Aplikasi Aritmetika Sosial — DapMath Kelas 7</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#fff7ec; --bg2:#ffeedd; --surface:#ffffff; --surface2:#fff3e0;
+        --ink:#33231a; --ink-soft:#6b5546; --line:#f3ddc4;
+        --oren:#f97316; --oren-d:#ea580c; --amber:#fbbf24; --emas:#f59e0b;
+        --hijau:#16a34a; --hijau-d:#15803d; --teal:#0d9488;
+        --merah:#dc2626; --biru:#2563eb; --pink:#ec4899;
+        --grad-hero:linear-gradient(120deg,#f97316 0%,#f43f5e 55%,#f59e0b 110%);
+        --grad-btn:linear-gradient(120deg,#f97316,#f43f5e);
+        --grad-hijau:linear-gradient(120deg,#16a34a,#0d9488);
+        --shadow:0 10px 30px rgba(194,90,20,.14);
+        --shadow-lg:0 22px 50px rgba(194,90,20,.22);
+        --r-lg:22px; --r-md:16px; --r-sm:11px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#1c1410; --bg2:#241a12; --surface:#2b1f16; --surface2:#362619;
+          --ink:#fdf3e7; --ink-soft:#d8bfa8; --line:#4a3524;
+          --shadow:0 10px 30px rgba(0,0,0,.4); --shadow-lg:0 22px 50px rgba(0,0,0,.5);
+        }
+      }
+      *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+      html{scroll-behavior:smooth;}
+      body{
+        margin:0; font-family:"Nunito",system-ui,sans-serif; color:var(--ink);
+        background:
+          radial-gradient(900px 420px at 110% -60px, rgba(251,191,36,.28), transparent 60%),
+          radial-gradient(800px 400px at -10% 240px, rgba(244,63,94,.14), transparent 60%),
+          linear-gradient(180deg,var(--bg),var(--bg2));
+        min-height:100vh; overflow-x:hidden;
+      }
+      h1,h2,h3,.disp{font-family:"Baloo 2","Nunito",sans-serif; line-height:1.15; margin:0;}
+      button{font-family:inherit; cursor:pointer;}
+      input,select{font-family:inherit;}
+      :focus-visible{outline:3px solid var(--biru); outline-offset:2px; border-radius:6px;}
+
+      /* ---------- Bilah atas ---------- */
+      .topbar{
+        position:sticky; top:0; z-index:60; display:flex; align-items:center; gap:12px;
+        padding:10px 16px; background:color-mix(in srgb, var(--surface) 88%, transparent);
+        backdrop-filter:blur(10px); border-bottom:2px solid var(--line);
+      }
+      .brand{display:flex; align-items:center; gap:10px; font-family:"Baloo 2"; font-weight:800; font-size:1.05rem;}
+      .brand .coin{width:36px;height:36px; animation:putar 7s linear infinite;}
+      @keyframes putar{from{transform:rotateY(0)}to{transform:rotateY(360deg)}}
+      .brand small{display:block; font-family:"Nunito"; font-weight:700; font-size:.68rem; color:var(--ink-soft); letter-spacing:.4px;}
+      .top-right{margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+      .chip-siswa{display:flex; align-items:center; gap:8px; background:var(--surface2); border:2px solid var(--line);
+        padding:6px 12px; border-radius:999px; font-weight:800; font-size:.9rem;}
+      .chip-siswa .avatar{width:28px;height:28px;border-radius:50%; background:var(--grad-btn); color:#fff;
+        display:grid; place-items:center; font-family:"Baloo 2"; font-size:.85rem;}
+      .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:999px;
+        padding:12px 22px; font-weight:900; font-size:1rem; min-height:52px; transition:transform .15s, box-shadow .15s;}
+      .btn:active{transform:scale(.96);}
+      .btn-utama{background:var(--grad-btn); color:#fff; box-shadow:0 8px 20px rgba(244,63,94,.35);}
+      .btn-utama:hover{transform:translateY(-2px); box-shadow:0 14px 26px rgba(244,63,94,.4);}
+      .btn-hijau{background:var(--grad-hijau); color:#fff; box-shadow:0 8px 20px rgba(22,163,74,.3);}
+      .btn-hijau:hover{transform:translateY(-2px);}
+      .btn-garis{background:var(--surface); color:var(--ink); border:2px solid var(--line); box-shadow:none;}
+      .btn-garis:hover{border-color:var(--oren); color:var(--oren-d);}
+      .btn-kecil{padding:8px 16px; min-height:44px; font-size:.9rem;}
+
+      /* ---------- Navigasi ---------- */
+      nav.menu{display:flex; gap:8px; padding:12px 16px 4px; flex-wrap:wrap; max-width:1180px; margin:0 auto;}
+      nav.menu button{border:2px solid var(--line); background:var(--surface); color:var(--ink);
+        border-radius:999px; padding:10px 18px; font-weight:800; font-size:.95rem; min-height:48px;
+        transition:all .18s; display:inline-flex; align-items:center; gap:7px;}
+      nav.menu button:hover{transform:translateY(-2px); border-color:var(--oren);}
+      nav.menu button.aktif{background:var(--grad-btn); color:#fff; border-color:transparent; box-shadow:0 8px 18px rgba(244,63,94,.35);}
+      nav.menu button svg{width:19px;height:19px;}
+
+      main{max-width:1180px; margin:0 auto; padding:8px 16px 30px;}
+      section.page{display:none;}
+      section.page.aktif{display:block; animation:masuk .45s cubic-bezier(.2,.9,.3,1.2);}
+      @keyframes masuk{from{opacity:0; transform:translateY(18px)}to{opacity:1; transform:none}}
+
+      /* ---------- Hero ---------- */
+      .hero{position:relative; border-radius:28px; overflow:hidden; padding:34px 30px 30px; margin-top:12px;
+        background:var(--grad-hero); color:#fff; box-shadow:var(--shadow-lg);}
+      .hero::after{content:""; position:absolute; inset:0;
+        background:radial-gradient(500px 220px at 85% 0%, rgba(255,255,255,.35), transparent 60%); pointer-events:none;}
+      .hero h1{font-size:clamp(1.9rem,5.2vw,3.2rem); font-weight:800; text-shadow:0 3px 0 rgba(0,0,0,.12); max-width:640px;}
+      .hero p{font-size:clamp(1rem,2.4vw,1.2rem); font-weight:700; max-width:560px; margin:12px 0 20px; opacity:.97;}
+      .hero .baris{display:flex; gap:22px; align-items:flex-end; position:relative; z-index:2; flex-wrap:wrap;}
+      .mascot{width:170px; flex:none; filter:drop-shadow(0 14px 16px rgba(0,0,0,.25)); animation:melayang 3.4s ease-in-out infinite;}
+      @keyframes melayang{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+      .gelembung{background:#fff; color:#7c2d12; font-weight:900; border-radius:16px; padding:10px 16px;
+        position:relative; box-shadow:0 8px 18px rgba(0,0,0,.18); max-width:290px; font-size:.98rem;}
+      .gelembung::before{content:""; position:absolute; left:-9px; top:26px; border:10px solid transparent; border-right-color:#fff; border-left:0;}
+      .koin-terbang{position:absolute; z-index:1; opacity:.85; animation:terbang linear infinite;}
+      @keyframes terbang{0%{transform:translateY(20px) rotate(0)}50%{transform:translateY(-26px) rotate(180deg)}100%{transform:translateY(20px) rotate(360deg)}}
+      .hero .btn{background:#fff; color:#c2410c; box-shadow:0 10px 22px rgba(0,0,0,.22);}
+      .hero .btn:hover{transform:translateY(-3px) scale(1.03);}
+
+      /* ---------- Kartu & grid ---------- */
+      .grid{display:grid; gap:18px;}
+      .grid-2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+      .grid-3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+      .kartu{background:var(--surface); border:2px solid var(--line); border-radius:var(--r-lg);
+        padding:22px; box-shadow:var(--shadow);}
+      .kartu h3{font-size:1.25rem; margin-bottom:8px;}
+      .kartu p{color:var(--ink-soft); font-weight:600; line-height:1.55; margin:6px 0;}
+      .kartu-menu{cursor:pointer; transition:transform .18s, box-shadow .18s; position:relative; overflow:hidden;}
+      .kartu-menu:hover{transform:translateY(-5px) rotate(-.4deg); box-shadow:var(--shadow-lg);}
+      .kartu-menu .ikon{width:58px;height:58px;border-radius:16px; display:grid; place-items:center; margin-bottom:12px;}
+      .kartu-menu .ikon svg{width:32px;height:32px;}
+      .judul-bab{display:flex; align-items:center; gap:14px; margin:26px 0 14px; flex-wrap:wrap;}
+      .judul-bab .no{width:46px;height:46px; flex:none; border-radius:14px; background:var(--grad-btn); color:#fff;
+        display:grid; place-items:center; font-family:"Baloo 2"; font-weight:800; font-size:1.3rem; box-shadow:0 8px 16px rgba(244,63,94,.3);}
+      .judul-bab h2{font-size:clamp(1.4rem,3.4vw,1.9rem);}
+      .judul-bab p{margin:2px 0 0; color:var(--ink-soft); font-weight:700;}
+      .rumus{display:inline-block; background:var(--surface2); border:2px dashed var(--emas); color:var(--ink);
+        border-radius:12px; padding:8px 14px; font-weight:900; margin:6px 6px 6px 0; font-size:1.02rem;}
+      .sorot{border-radius:14px; padding:14px 18px; font-weight:800; line-height:1.5; margin:12px 0;}
+      .sorot.hijau{background:rgba(22,163,74,.13); border:2px solid rgba(22,163,74,.45);}
+      .sorot.merah{background:rgba(220,38,38,.1); border:2px solid rgba(220,38,38,.4);}
+      .sorot.kuning{background:rgba(245,158,11,.13); border:2px solid rgba(245,158,11,.5);}
+      .sorot.biru{background:rgba(37,99,235,.1); border:2px solid rgba(37,99,235,.4);}
+
+      /* ---------- Kontrol ---------- */
+      label.lbl{display:block; font-weight:900; margin:14px 0 6px; font-size:.95rem;}
+      input[type=number],input[type=text],select{
+        width:100%; padding:13px 14px; border:2px solid var(--line); border-radius:var(--r-sm);
+        background:var(--surface); color:var(--ink); font-size:1.05rem; font-weight:700; min-height:52px;}
+      input[type=range]{width:100%; accent-color:var(--oren); height:34px; cursor:pointer;}
+      .nilai-besar{font-family:"Baloo 2"; font-weight:800; font-size:clamp(1.5rem,4vw,2.1rem);}
+      .rp{font-variant-numeric:tabular-nums;}
+      .langkah{margin:12px 0 0; padding:0; list-style:none; counter-reset:lk;}
+      .langkah li{counter-increment:lk; position:relative; padding:10px 12px 10px 46px; margin:8px 0;
+        background:var(--surface2); border-radius:12px; font-weight:700; line-height:1.5;}
+      .langkah li::before{content:counter(lk); position:absolute; left:10px; top:8px; width:26px; height:26px;
+        border-radius:50%; background:var(--grad-btn); color:#fff; display:grid; place-items:center;
+        font-family:"Baloo 2"; font-weight:800; font-size:.9rem;}
+
+      /* ---------- Simulasi Toko ---------- */
+      .saldo-bar{display:flex; gap:14px; flex-wrap:wrap; align-items:stretch; margin-bottom:18px;}
+      .saldo-kartu{flex:1 1 220px; border-radius:var(--r-lg); padding:18px 22px; color:#fff; background:var(--grad-hijau);
+        box-shadow:0 14px 28px rgba(13,148,136,.3); position:relative; overflow:hidden;}
+      .saldo-kartu small{font-weight:900; letter-spacing:.6px; text-transform:uppercase; font-size:.72rem; opacity:.9;}
+      .saldo-kartu .nilai-besar{font-size:clamp(1.8rem,5vw,2.5rem);}
+      .stat-mini{flex:1 1 130px; background:var(--surface); border:2px solid var(--line); border-radius:var(--r-lg);
+        padding:14px 16px; text-align:center; box-shadow:var(--shadow);}
+      .stat-mini .v{font-family:"Baloo 2"; font-weight:800; font-size:1.45rem;}
+      .stat-mini small{font-weight:800; color:var(--ink-soft);}
+      .barang{display:flex; flex-direction:column; gap:10px;}
+      .barang .emoji-b{font-size:2.6rem; line-height:1;}
+      .barang .harga-beli{font-weight:800; color:var(--ink-soft); font-size:.92rem;}
+      .barang .baris-jual{display:flex; gap:8px; align-items:center;}
+      .barang .baris-jual input{flex:1;}
+      .stok{display:inline-block; background:var(--surface2); border-radius:999px; padding:3px 12px; font-weight:900; font-size:.85rem;}
+      .log{max-height:260px; overflow:auto; display:flex; flex-direction:column; gap:8px; margin-top:10px;}
+      .log div{border-radius:12px; padding:10px 14px; font-weight:700; font-size:.94rem; animation:masuk .3s;}
+      .log .u{background:rgba(22,163,74,.13);} .log .r{background:rgba(220,38,38,.1);} .log .n{background:var(--surface2);}
+      .pop{animation:pop .45s cubic-bezier(.2,2.2,.4,1);}
+      @keyframes pop{0%{transform:scale(.85)}100%{transform:scale(1)}}
+
+      /* ---------- Diskon & BNT ---------- */
+      .coret{text-decoration:line-through; color:var(--merah); font-weight:800;}
+      .meter{height:30px; border-radius:999px; overflow:hidden; display:flex; border:2px solid var(--line); background:var(--surface2);}
+      .meter > div{height:100%; transition:width .5s cubic-bezier(.3,1.4,.4,1); display:grid; place-items:center;
+        color:#fff; font-weight:900; font-size:.82rem; white-space:nowrap; overflow:hidden;}
+      .kemasan{display:flex; justify-content:center; padding:8px 0;}
+      .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+      .tabs button{border:2px solid var(--line); background:var(--surface); border-radius:999px; padding:10px 18px;
+        font-weight:900; min-height:48px; font-size:.95rem;}
+      .tabs button.aktif{background:var(--grad-hijau); color:#fff; border-color:transparent;}
+      .panel-kalk{display:none;} .panel-kalk.aktif{display:block; animation:masuk .35s;}
+
+      /* ---------- Kuis ---------- */
+      .hud{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px;}
+      .hud .kotak{background:var(--surface); border:2px solid var(--line); border-radius:14px; padding:8px 16px;
+        font-weight:900; display:flex; align-items:center; gap:8px; min-height:48px; box-shadow:var(--shadow);}
+      .xpbar{flex:1 1 180px; height:22px; background:var(--surface2); border:2px solid var(--line); border-radius:999px; overflow:hidden;}
+      .xpbar > div{height:100%; width:0%; background:linear-gradient(90deg,#f59e0b,#f43f5e); transition:width .6s cubic-bezier(.3,1.3,.4,1);}
+      .streak-api{display:inline-block; animation:api .5s ease-in-out infinite alternate;}
+      @keyframes api{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.25) rotate(4deg)}}
+      .opsi{display:grid; gap:12px; margin-top:16px;}
+      .opsi button{text-align:left; background:var(--surface); border:3px solid var(--line); border-radius:16px;
+        padding:16px 18px; font-size:1.05rem; font-weight:800; min-height:60px; transition:all .15s; display:flex; gap:12px; align-items:center;}
+      .opsi button:hover:not(:disabled){border-color:var(--oren); transform:translateX(4px);}
+      .opsi button .huruf{width:34px;height:34px; flex:none; border-radius:10px; background:var(--surface2);
+        display:grid; place-items:center; font-family:"Baloo 2"; font-weight:800;}
+      .opsi button.benar{border-color:var(--hijau); background:rgba(22,163,74,.14);}
+      .opsi button.benar .huruf{background:var(--hijau); color:#fff;}
+      .opsi button.salah{border-color:var(--merah); background:rgba(220,38,38,.12); animation:goyang .4s;}
+      .opsi button.salah .huruf{background:var(--merah); color:#fff;}
+      @keyframes goyang{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+      .progres{display:flex; gap:6px; margin:14px 0;}
+      .progres span{flex:1; height:10px; border-radius:99px; background:var(--surface2); border:1px solid var(--line);}
+      .progres span.isi{background:var(--grad-btn); border-color:transparent;}
+      .lencana{display:inline-flex; align-items:center; gap:7px; background:linear-gradient(120deg,#fef3c7,#fde68a);
+        color:#92400e; border:2px solid #f59e0b; border-radius:999px; padding:7px 15px; font-weight:900; margin:4px 4px 4px 0;}
+      @media (prefers-color-scheme: dark){ .lencana{background:linear-gradient(120deg,#453208,#5c430c); color:#fde68a;} }
+      table{width:100%; border-collapse:collapse; font-size:.95rem;}
+      th,td{padding:10px 12px; text-align:left; border-bottom:2px solid var(--line); font-weight:700; vertical-align:top;}
+      th{font-family:"Baloo 2"; font-size:1rem;}
+      .tabel-bungkus{overflow-x:auto;}
+      .toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(90px); z-index:200;
+        background:#33231a; color:#fff; font-weight:800; padding:14px 24px; border-radius:999px;
+        box-shadow:0 16px 34px rgba(0,0,0,.35); transition:transform .35s cubic-bezier(.2,1.4,.4,1); max-width:92vw; text-align:center;}
+      .toast.tampil{transform:translateX(-50%) translateY(0);}
+      @media (prefers-color-scheme: dark){ .toast{background:#f5e8d8; color:#33231a;} }
+
+      /* ---------- Login ---------- */
+      .login-layar{position:fixed; inset:0; z-index:300; overflow:auto; display:grid; place-items:center; padding:18px;
+        background:
+          radial-gradient(700px 320px at 90% -40px, rgba(251,191,36,.5), transparent 60%),
+          radial-gradient(700px 340px at -5% 105%, rgba(22,163,74,.35), transparent 60%),
+          linear-gradient(140deg,#fff3e0,#ffe4e6);}
+      @media (prefers-color-scheme: dark){ .login-layar{background:linear-gradient(140deg,#241a12,#2b1a1e);} }
+      .login-kartu{background:var(--surface); border-radius:28px; box-shadow:var(--shadow-lg); max-width:480px; width:100%;
+        padding:30px 28px; border:3px solid var(--line); animation:masuk .5s cubic-bezier(.2,1.2,.3,1);}
+      .login-kartu .maskot-mini{display:flex; align-items:center; gap:14px;}
+
+      /* ---------- PIN ---------- */
+      .pin-layar{position:fixed; inset:0; z-index:250; background:rgba(30,16,8,.6); backdrop-filter:blur(6px);
+        display:none; place-items:center; padding:18px;}
+      .pin-layar.tampil{display:grid;}
+      .pin-kartu{background:var(--surface); border-radius:24px; padding:28px; max-width:400px; width:100%; box-shadow:var(--shadow-lg); text-align:center;}
+      .pin-titik{font-size:2rem; letter-spacing:12px; font-family:"Baloo 2"; min-height:52px; color:var(--oren-d);}
+      .pin-pad{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px;}
+      .pin-pad button{border:2px solid var(--line); background:var(--surface2); border-radius:16px; padding:16px;
+        font-family:"Baloo 2"; font-weight:800; font-size:1.35rem; min-height:62px;}
+      .pin-pad button:active{transform:scale(.93); background:var(--grad-btn); color:#fff;}
+
+      footer{margin-top:36px; padding:26px 16px 34px; text-align:center; color:var(--ink-soft); font-weight:700;
+        border-top:2px dashed var(--line);}
+      footer .nama{font-family:"Baloo 2"; font-weight:800; font-size:1.1rem;
+        background:var(--grad-btn); -webkit-background-clip:text; background-clip:text; color:transparent;}
+      #confetti{position:fixed; inset:0; pointer-events:none; z-index:400;}
+      .grafik-batang{display:flex; align-items:flex-end; gap:6px; height:170px; padding-top:8px;}
+      .grafik-batang .b{flex:1; border-radius:8px 8px 0 0; background:linear-gradient(180deg,#38bdf8,#2563eb);
+        position:relative; min-height:6px; transition:height .5s;}
+      .grafik-batang .b span{position:absolute; top:-22px; left:50%; transform:translateX(-50%); font-size:.72rem; font-weight:900; white-space:nowrap; color:var(--ink-soft);}
+      .sembunyi{display:none !important;}
+      @media (max-width:640px){
+        .hero{padding:24px 20px;} .mascot{width:120px;}
+        nav.menu{padding:10px 10px 2px;} main{padding:6px 10px 24px;}
+        .btn{min-height:54px;}
+      }
+      @media (prefers-reduced-motion: reduce){
+        *,*::before,*::after{animation-duration:.01ms !important; transition-duration:.01ms !important;}
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ============ LAYAR LOGIN ============ -->
+    <div class="login-layar" id="loginLayar">
+      <div class="login-kartu">
+        <div class="maskot-mini">
+          <svg width="86" height="86" viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="62" r="44" fill="#fbbf24" stroke="#d97706" stroke-width="5"/>
+            <circle cx="60" cy="62" r="33" fill="#fde68a" stroke="#d97706" stroke-width="3"/>
+            <circle cx="49" cy="56" r="4.5" fill="#7c2d12"/><circle cx="71" cy="56" r="4.5" fill="#7c2d12"/>
+            <path d="M47 70 Q60 82 73 70" stroke="#7c2d12" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <circle cx="40" cy="66" r="5" fill="#fca5a5" opacity=".8"/><circle cx="80" cy="66" r="5" fill="#fca5a5" opacity=".8"/>
+            <text x="60" y="42" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="17" fill="#b45309">Rp</text>
+          </svg>
+          <div>
+            <h1 style="font-size:1.55rem;">Halo, Juragan Muda!</h1>
+            <p style="margin:4px 0 0; color:var(--ink-soft); font-weight:700;">Aku <b>Koin</b>, teman belajarmu. Isi nama dan kelas dulu ya, supaya Pak Guru tahu siapa yang sedang belajar.</p>
+          </div>
+        </div>
+        <label class="lbl" for="inpNama">Nama Lengkap</label>
+        <input type="text" id="inpNama" placeholder="Contoh: Siti Rahma" autocomplete="name" maxlength="40" />
+        <label class="lbl" for="inpKelas">Kelas</label>
+        <select id="inpKelas">
+          <option value="">— Pilih kelas —</option>
+          <option>7A</option><option>7B</option><option>7C</option><option>7D</option>
+          <option>7E</option><option>7F</option><option>7G</option><option>7H</option>
+        </select>
+        <p id="loginErr" style="color:var(--merah); font-weight:800; min-height:24px; margin:10px 0 0;"></p>
+        <button class="btn btn-utama" id="btnMasuk" style="width:100%; margin-top:8px; font-size:1.15rem;">Mulai Belajar 🚀</button>
+        <p style="text-align:center; margin:16px 0 0; font-weight:700; color:var(--ink-soft); font-size:.9rem;">Aritmetika Sosial • Matematika Kelas 7 • DapMath</p>
+      </div>
+    </div>
+
+    <!-- ============ LAYAR PIN GURU ============ -->
+    <div class="pin-layar" id="pinLayar">
+      <div class="pin-kartu">
+        <h2 style="font-size:1.4rem;">🔐 Menu Data Guru</h2>
+        <p style="color:var(--ink-soft); font-weight:700;">Masukkan PIN guru untuk melanjutkan.</p>
+        <input type="password" id="pinInput" placeholder="PIN guru" autocomplete="off" style="text-align:center; font-size:1.3rem; letter-spacing:3px;" />
+        <p id="pinErr" style="color:var(--merah); font-weight:800; min-height:22px; margin:8px 0 0;"></p>
+        <button class="btn btn-utama" id="pinBuka" style="width:100%; margin-top:10px;">Buka Data Guru</button>
+        <button class="btn btn-garis btn-kecil" id="pinBatal" style="margin-top:10px;">Batal</button>
+      </div>
+    </div>
+
+    <!-- ============ BILAH ATAS ============ -->
+    <header class="topbar">
+      <div class="brand">
+        <svg class="coin" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="#fbbf24" stroke="#d97706" stroke-width="6"/><circle cx="60" cy="60" r="38" fill="#fde68a" stroke="#d97706" stroke-width="3"/><text x="60" y="74" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="30" fill="#b45309">Rp</text></svg>
+        <div>Aritmetika Sosial<small>DAPMATH • MATEMATIKA KELAS 7</small></div>
+      </div>
+      <div class="top-right">
+        <div class="chip-siswa"><span class="avatar" id="avatarHuruf">?</span><span id="chipNama">Belum login</span></div>
+        <button class="btn btn-garis btn-kecil" id="btnGanti">Ganti Siswa</button>
+      </div>
+    </header>
+
+    <!-- ============ NAVIGASI ============ -->
+    <nav class="menu" id="navMenu">
+      <button data-page="beranda" class="aktif">🏠 Beranda</button>
+      <button data-page="toko">🛒 Simulasi Toko</button>
+      <button data-page="diskon">🏷️ Diskon</button>
+      <button data-page="bnt">⚖️ Bruto-Neto-Tara</button>
+      <button data-page="bunga">🐷 Tabungan &amp; Bunga</button>
+      <button data-page="kalkulator">🧮 Kalkulator</button>
+      <button data-page="kuis">🏆 Kuis</button>
+      <button data-page="guru">🔐 Data Guru</button>
+    </nav>
+
+    <main>
+      <!-- ============ BERANDA ============ -->
+      <section class="page aktif" id="page-beranda">
+        <div class="hero" id="hero">
+          <svg class="koin-terbang" style="left:6%; top:16%; width:44px; animation-duration:5s;" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="#fde68a" stroke="#fff" stroke-width="5"/><text x="60" y="74" text-anchor="middle" font-weight="800" font-size="30" fill="#b45309">Rp</text></svg>
+          <svg class="koin-terbang" style="right:10%; top:8%; width:30px; animation-duration:6.5s;" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="#fde68a" stroke="#fff" stroke-width="5"/><text x="60" y="74" text-anchor="middle" font-weight="800" font-size="30" fill="#b45309">Rp</text></svg>
+          <svg class="koin-terbang" style="right:26%; bottom:10%; width:24px; animation-duration:4.2s;" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="#fde68a" stroke="#fff" stroke-width="5"/><text x="60" y="74" text-anchor="middle" font-weight="800" font-size="30" fill="#b45309">Rp</text></svg>
+          <div class="baris">
+            <div style="flex:1 1 340px; position:relative; z-index:2;">
+              <h1>Aritmetika Sosial:<br />Matematika Uang Sehari-hari 💰</h1>
+              <p>Belajar untung-rugi, diskon, bruto-neto-tara, dan bunga tabungan lewat permainan toko sungguhan. Siap jadi juragan cilik yang jago hitung?</p>
+              <button class="btn" data-goto="toko" style="font-size:1.1rem;">Mulai dari Simulasi Toko →</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <svg class="mascot" id="maskotHero" viewBox="0 0 200 190" role="img" aria-label="Koin, karakter pemandu">
+                <ellipse cx="100" cy="176" rx="52" ry="9" fill="rgba(0,0,0,.18)"/>
+                <path d="M150 96 q34 6 30 -26" stroke="#d97706" stroke-width="13" fill="none" stroke-linecap="round">
+                  <animateTransform attributeName="transform" type="rotate" values="0 150 96; -18 150 96; 0 150 96" dur="1.6s" repeatCount="indefinite"/>
+                </path>
+                <circle cx="100" cy="88" r="62" fill="#fbbf24" stroke="#d97706" stroke-width="6"/>
+                <circle cx="100" cy="88" r="46" fill="#fde68a" stroke="#d97706" stroke-width="3"/>
+                <path d="M52 58 a62 62 0 0 1 34 -28" stroke="#fff7d6" stroke-width="9" fill="none" stroke-linecap="round" opacity=".8"/>
+                <circle cx="82" cy="80" r="6" fill="#7c2d12"/><circle cx="118" cy="80" r="6" fill="#7c2d12"/>
+                <circle cx="84" cy="77" r="2.2" fill="#fff"/><circle cx="120" cy="77" r="2.2" fill="#fff"/>
+                <path d="M84 100 Q100 116 116 100" stroke="#7c2d12" stroke-width="5" fill="none" stroke-linecap="round"/>
+                <circle cx="66" cy="96" r="7" fill="#fca5a5" opacity=".85"/><circle cx="134" cy="96" r="7" fill="#fca5a5" opacity=".85"/>
+                <text x="100" y="58" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="22" fill="#b45309">Rp</text>
+              </svg>
+              <div class="gelembung" id="gelembungKoin">Hai! Aku Koin. Geser-geser, coba-coba, jangan takut salah — dari toko virtual ini kamu akan paham uang! 🪙</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="judul-bab"><div class="no">✦</div><div><h2>Peta Belajar</h2><p>Pilih petualanganmu hari ini</p></div></div>
+        <div class="grid grid-3">
+          <div class="kartu kartu-menu" data-goto="toko"><div class="ikon" style="background:rgba(249,115,22,.16);">🛒</div><h3>Simulasi Toko</h3><p>Buka tokomu sendiri! Atur harga jual, layani pembeli, dan lihat saldo serta untung-rugimu berubah langsung.</p></div>
+          <div class="kartu kartu-menu" data-goto="diskon"><div class="ikon" style="background:rgba(236,72,153,.14);">🏷️</div><h3>Lab Diskon</h3><p>Geser persen diskon dan saksikan harga terpotong. Termasuk trik diskon bertingkat yang sering menipu!</p></div>
+          <div class="kartu kartu-menu" data-goto="bnt"><div class="ikon" style="background:rgba(13,148,136,.14);">⚖️</div><h3>Bruto, Neto, Tara</h3><p>Timbang kemasan virtual: berapa berat isi sebenarnya setelah dikurangi berat bungkusnya?</p></div>
+          <div class="kartu kartu-menu" data-goto="bunga"><div class="ikon" style="background:rgba(37,99,235,.12);">🐷</div><h3>Tabungan &amp; Bunga</h3><p>Tanam uang di celengan bank dan panen bunga tunggal. Lihat tabunganmu tumbuh bulan demi bulan!</p></div>
+          <div class="kartu kartu-menu" data-goto="kalkulator"><div class="ikon" style="background:rgba(245,158,11,.16);">🧮</div><h3>Kalkulator + Langkah</h3><p>Empat kalkulator pintar lengkap dengan langkah penyelesaian — cocok untuk memeriksa PR-mu.</p></div>
+          <div class="kartu kartu-menu" data-goto="kuis"><div class="ikon" style="background:rgba(244,63,94,.13);">🏆</div><h3>Kuis Berhadiah XP</h3><p>10 soal, streak api, level, lencana, dan confetti. Kumpulkan XP dan naikkan level Juraganmu!</p></div>
+        </div>
+
+        <div class="judul-bab"><div class="no">📚</div><div><h2>Konsep Inti</h2><p>Ringkasan rumus yang wajib kamu kuasai</p></div></div>
+        <div class="grid grid-2">
+          <div class="kartu">
+            <h3>💹 Untung &amp; Rugi</h3>
+            <p><b>Untung</b> terjadi jika harga jual &gt; harga beli. <b>Rugi</b> jika harga jual &lt; harga beli. Jika sama, namanya <b>impas</b>.</p>
+            <span class="rumus">Untung = Harga Jual − Harga Beli</span>
+            <span class="rumus">Rugi = Harga Beli − Harga Jual</span>
+            <span class="rumus">% Untung = Untung ÷ Harga Beli × 100%</span>
+            <div class="sorot kuning">Ingat: persen untung/rugi selalu dihitung dari <b>harga beli</b>, bukan harga jual!</div>
+          </div>
+          <div class="kartu">
+            <h3>🏷️ Diskon (Potongan Harga)</h3>
+            <p>Diskon adalah potongan harga yang diberikan penjual, biasanya dalam persen dari harga awal.</p>
+            <span class="rumus">Potongan = % Diskon × Harga Awal</span>
+            <span class="rumus">Harga Bayar = Harga Awal − Potongan</span>
+            <div class="sorot biru">Diskon 20% lalu 10% <b>bukan</b> 30%! Coba buktikan sendiri di Lab Diskon.</div>
+          </div>
+          <div class="kartu">
+            <h3>⚖️ Bruto, Neto, Tara</h3>
+            <p><b>Bruto</b> = berat kotor (isi + kemasan). <b>Neto</b> = berat bersih (isi saja). <b>Tara</b> = berat kemasan.</p>
+            <span class="rumus">Bruto = Neto + Tara</span>
+            <span class="rumus">Neto = Bruto − Tara</span>
+            <span class="rumus">% Tara = Tara ÷ Bruto × 100%</span>
+          </div>
+          <div class="kartu">
+            <h3>🐷 Bunga Tunggal</h3>
+            <p>Bunga adalah jasa dari bank atas uang yang kita tabung. <b>Bunga tunggal</b> dihitung selalu dari modal awal saja.</p>
+            <span class="rumus">Bunga = Modal × % Bunga per Tahun × Lama (tahun)</span>
+            <span class="rumus">Saldo Akhir = Modal + Bunga</span>
+            <div class="sorot hijau">Jika lama dalam bulan, ubah dulu: lama tahun = bulan ÷ 12.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SIMULASI TOKO ============ -->
+      <section class="page" id="page-toko">
+        <div class="judul-bab"><div class="no">🛒</div><div><h2>Simulasi Toko “DapMart”</h2><p>Atur harga jual tiap barang, lalu klik Jual saat pembeli datang. Harga jual di atas modal = untung!</p></div></div>
+        <div class="saldo-bar">
+          <div class="saldo-kartu"><small>Saldo Kas Toko</small><div class="nilai-besar rp" id="saldoToko">Rp100.000</div><small id="saldoStatus">Modal awal dari tabunganmu</small></div>
+          <div class="stat-mini"><div class="v" id="statUntung" style="color:var(--hijau);">Rp0</div><small>Total Untung</small></div>
+          <div class="stat-mini"><div class="v" id="statRugi" style="color:var(--merah);">Rp0</div><small>Total Rugi</small></div>
+          <div class="stat-mini"><div class="v" id="statJual">0</div><small>Barang Terjual</small></div>
+        </div>
+        <div class="grid grid-2">
+          <div>
+            <div class="grid" id="etalase" style="grid-template-columns:repeat(auto-fill,minmax(215px,1fr));"></div>
+          </div>
+          <div class="kartu">
+            <h3>📋 Buku Kas Toko</h3>
+            <p>Setiap penjualan dan pembelian stok tercatat di sini.</p>
+            <div class="log" id="logToko"><div class="n">🏪 Toko dibuka! Modal awal Rp100.000 masuk ke kas. Selamat berjualan!</div></div>
+            <button class="btn btn-garis btn-kecil" id="btnResetToko" style="margin-top:14px;">↺ Ulangi Simulasi Toko</button>
+            <div class="sorot kuning" style="margin-bottom:0;">🎯 <b>Misi Koin:</b> cobalah jual satu barang dengan harga di bawah modal. Apa yang terjadi pada saldomu? Lalu naikkan harganya dan bandingkan!</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DISKON ============ -->
+      <section class="page" id="page-diskon">
+        <div class="judul-bab"><div class="no">🏷️</div><div><h2>Lab Diskon</h2><p>Geser persen diskon dan lihat harga terpotong di depan matamu</p></div></div>
+        <div class="grid grid-2">
+          <div class="kartu">
+            <h3>🎛️ Atur Sendiri</h3>
+            <label class="lbl" for="diskHarga">Harga Awal Barang (Rp)</label>
+            <input type="number" id="diskHarga" value="200000" min="0" step="1000" />
+            <label class="lbl">Diskon: <span id="diskPersenLbl" style="color:var(--pink);">25%</span></label>
+            <input type="range" id="diskPersen" min="0" max="90" value="25" step="5" />
+            <div style="margin-top:16px;">
+              <p style="margin:0;">Harga awal: <span class="coret rp" id="diskCoret">Rp200.000</span></p>
+              <p style="margin:6px 0;">Potongan harga: <b class="rp" id="diskPotong" style="color:var(--pink);">Rp50.000</b></p>
+              <p style="margin:6px 0;">Kamu membayar:</p>
+              <div class="nilai-besar rp" id="diskBayar" style="color:var(--hijau);">Rp150.000</div>
+            </div>
+            <ol class="langkah" id="diskLangkah"></ol>
+          </div>
+          <div class="kartu">
+            <h3>🪤 Jebakan Diskon Bertingkat</h3>
+            <p>Di mal sering ada tulisan <b>“Diskon 50% + 20%”</b>. Apakah itu sama dengan diskon 70%? Geser dan buktikan!</p>
+            <label class="lbl">Diskon pertama: <span id="disk2aLbl">50%</span></label>
+            <input type="range" id="disk2a" min="0" max="80" value="50" step="5" />
+            <label class="lbl">Diskon kedua (dari harga setelah diskon pertama): <span id="disk2bLbl">20%</span></label>
+            <input type="range" id="disk2b" min="0" max="80" value="20" step="5" />
+            <label class="lbl" for="disk2Harga">Harga Awal (Rp)</label>
+            <input type="number" id="disk2Harga" value="400000" min="0" step="1000" />
+            <div class="sorot merah" id="disk2Hasil" style="margin-bottom:6px;"></div>
+            <ol class="langkah" id="disk2Langkah"></ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ BRUTO NETO TARA ============ -->
+      <section class="page" id="page-bnt">
+        <div class="judul-bab"><div class="no">⚖️</div><div><h2>Bruto, Neto, dan Tara</h2><p>Kardus dan kaleng kemasan ikut tertimbang — tetapi yang kita makan hanya isinya!</p></div></div>
+        <div class="grid grid-2">
+          <div class="kartu">
+            <h3>📦 Kemasan Virtual</h3>
+            <div class="kemasan">
+              <svg width="300" height="210" viewBox="0 0 300 210" role="img" aria-label="Kemasan dengan isi dan berat kemasan">
+                <rect x="55" y="46" width="190" height="140" rx="12" fill="#d97706"/>
+                <rect x="55" y="46" width="190" height="30" rx="12" fill="#b45309"/>
+                <rect x="70" y="86" width="160" height="86" rx="8" fill="#fde68a" id="isiKemasan"/>
+                <text x="150" y="122" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="17" fill="#92400e">NETO (ISI)</text>
+                <text x="150" y="143" text-anchor="middle" font-weight="800" font-size="15" fill="#92400e" id="svgNeto">9,5 kg</text>
+                <text x="150" y="66" text-anchor="middle" font-weight="800" font-size="12" fill="#fff">KEMASAN (TARA)</text>
+                <rect x="30" y="190" width="240" height="8" rx="4" fill="#a8a29e"/>
+              </svg>
+            </div>
+            <label class="lbl">Bruto (berat kotor): <span id="bntBrutoLbl">10 kg</span></label>
+            <input type="range" id="bntBruto" min="1" max="50" value="10" step="0.5" />
+            <label class="lbl">Tara (berat kemasan): <span id="bntTaraLbl">5%</span> dari bruto</label>
+            <input type="range" id="bntTara" min="0" max="30" value="5" step="1" />
+            <p style="font-weight:800; margin:12px 0 6px;">Perbandingan berat:</p>
+            <div class="meter"><div id="meterNeto" style="background:var(--grad-hijau); width:95%;">Neto</div><div id="meterTara" style="background:#d97706; width:5%;">Tara</div></div>
+          </div>
+          <div class="kartu">
+            <h3>🔍 Hasil Timbangan</h3>
+            <div class="grid" style="gap:12px;">
+              <div class="sorot biru" style="margin:0;">BRUTO (isi + kemasan)<br /><span class="nilai-besar" id="bntBrutoOut">10 kg</span></div>
+              <div class="sorot merah" style="margin:0;">TARA (kemasan saja)<br /><span class="nilai-besar" id="bntTaraOut">0,5 kg</span></div>
+              <div class="sorot hijau" style="margin:0;">NETO (isi sebenarnya)<br /><span class="nilai-besar" id="bntNetoOut">9,5 kg</span></div>
+            </div>
+            <ol class="langkah" id="bntLangkah"></ol>
+            <div class="sorot kuning">🛒 Saat membeli beras 25 kg, neto 24,5 kg — berarti 0,5 kg yang kamu bayar adalah karungnya. Itulah tara!</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TABUNGAN & BUNGA ============ -->
+      <section class="page" id="page-bunga">
+        <div class="judul-bab"><div class="no">🐷</div><div><h2>Simulasi Tabungan &amp; Bunga Tunggal</h2><p>Bank memberi bunga sebagai “terima kasih” karena uangmu disimpan di sana</p></div></div>
+        <div class="grid grid-2">
+          <div class="kartu">
+            <h3>🎛️ Atur Tabunganmu</h3>
+            <label class="lbl" for="tabModal">Modal Awal (Rp)</label>
+            <input type="number" id="tabModal" value="1000000" min="0" step="50000" />
+            <label class="lbl">Suku Bunga: <span id="tabBungaLbl">6%</span> per tahun</label>
+            <input type="range" id="tabBunga" min="1" max="15" value="6" step="0.5" />
+            <label class="lbl">Lama Menabung: <span id="tabLamaLbl">24 bulan</span></label>
+            <input type="range" id="tabLama" min="1" max="60" value="24" step="1" />
+            <div class="sorot hijau">
+              Bunga yang kamu panen: <b class="rp" id="tabBungaOut">Rp120.000</b><br />
+              Saldo akhir: <span class="nilai-besar rp" id="tabSaldoOut">Rp1.120.000</span>
+            </div>
+            <ol class="langkah" id="tabLangkah"></ol>
+          </div>
+          <div class="kartu">
+            <h3>📈 Pertumbuhan per Tahun</h3>
+            <p>Tiap batang = saldo di akhir tahun. Bunga tunggal membuat saldo naik <b>sama besar</b> setiap tahun — garisnya lurus!</p>
+            <div class="grafik-batang" id="tabGrafik"></div>
+            <div style="display:flex; gap:6px; margin-top:26px;" id="tabGrafikLbl"></div>
+            <div class="sorot biru">💡 Karena bunganya selalu dihitung dari modal awal, tambahan per tahun selalu tetap: <b class="rp" id="tabPerTahun">Rp60.000</b>. Itulah ciri khas bunga <b>tunggal</b>.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ KALKULATOR ============ -->
+      <section class="page" id="page-kalkulator">
+        <div class="judul-bab"><div class="no">🧮</div><div><h2>Kalkulator Pintar</h2><p>Empat kalkulator dengan langkah penyelesaian — pahami caranya, bukan hanya jawabannya</p></div></div>
+        <div class="tabs" id="tabsKalk">
+          <button data-kalk="untung" class="aktif">💹 Untung / Rugi</button>
+          <button data-kalk="diskon">🏷️ Diskon</button>
+          <button data-kalk="bnt">⚖️ Bruto-Neto-Tara</button>
+          <button data-kalk="bunga">🐷 Bunga Tunggal</button>
+        </div>
+
+        <div class="panel-kalk aktif" id="kalk-untung">
+          <div class="kartu">
+            <div class="grid grid-2">
+              <div><label class="lbl" for="kuBeli">Harga Beli (Rp)</label><input type="number" id="kuBeli" value="75000" min="0" step="500" /></div>
+              <div><label class="lbl" for="kuJual">Harga Jual (Rp)</label><input type="number" id="kuJual" value="90000" min="0" step="500" /></div>
+            </div>
+            <button class="btn btn-utama" id="btnKu" style="margin-top:16px;">Hitung Untung/Rugi</button>
+            <div id="kuHasil"></div>
+          </div>
+        </div>
+
+        <div class="panel-kalk" id="kalk-diskon">
+          <div class="kartu">
+            <div class="grid grid-2">
+              <div><label class="lbl" for="kdHarga">Harga Awal (Rp)</label><input type="number" id="kdHarga" value="350000" min="0" step="1000" /></div>
+              <div><label class="lbl" for="kdPersen">Diskon (%)</label><input type="number" id="kdPersen" value="30" min="0" max="100" step="1" /></div>
+            </div>
+            <button class="btn btn-utama" id="btnKd" style="margin-top:16px;">Hitung Harga Bayar</button>
+            <div id="kdHasil"></div>
+          </div>
+        </div>
+
+        <div class="panel-kalk" id="kalk-bnt">
+          <div class="kartu">
+            <div class="grid grid-3">
+              <div><label class="lbl" for="kbBruto">Bruto (kg)</label><input type="number" id="kbBruto" value="50" min="0" step="0.1" /></div>
+              <div><label class="lbl" for="kbTaraP">Tara (%)</label><input type="number" id="kbTaraP" value="4" min="0" max="100" step="0.5" /></div>
+              <div><label class="lbl" for="kbHargaKg">Harga per kg Neto (Rp)</label><input type="number" id="kbHargaKg" value="12000" min="0" step="500" /></div>
+            </div>
+            <button class="btn btn-utama" id="btnKb" style="margin-top:16px;">Hitung Neto &amp; Harga Bayar</button>
+            <div id="kbHasil"></div>
+          </div>
+        </div>
+
+        <div class="panel-kalk" id="kalk-bunga">
+          <div class="kartu">
+            <div class="grid grid-3">
+              <div><label class="lbl" for="kbgModal">Modal (Rp)</label><input type="number" id="kbgModal" value="2000000" min="0" step="50000" /></div>
+              <div><label class="lbl" for="kbgPersen">Bunga (% per tahun)</label><input type="number" id="kbgPersen" value="8" min="0" step="0.5" /></div>
+              <div><label class="lbl" for="kbgBulan">Lama (bulan)</label><input type="number" id="kbgBulan" value="18" min="0" step="1" /></div>
+            </div>
+            <button class="btn btn-utama" id="btnKbg" style="margin-top:16px;">Hitung Bunga &amp; Saldo</button>
+            <div id="kbgHasil"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ KUIS ============ -->
+      <section class="page" id="page-kuis">
+        <div class="judul-bab"><div class="no">🏆</div><div><h2>Kuis Juragan Cilik</h2><p>10 soal • kumpulkan XP, jaga streak api, raih lencana, dan naik level!</p></div></div>
+
+        <div id="kuisMulai" class="kartu" style="text-align:center;">
+          <div style="font-size:3.4rem;">🎮</div>
+          <h3 style="font-size:1.5rem;">Siap Berburu XP?</h3>
+          <p>Jawaban benar = <b>+100 XP</b> (+bonus streak). Pembahasan muncul langsung setelah menjawab.</p>
+          <label style="display:inline-flex; align-items:center; gap:10px; font-weight:900; background:var(--surface2); padding:12px 20px; border-radius:999px; cursor:pointer; margin:8px 0 16px;">
+            <input type="checkbox" id="optTimer" checked style="width:22px; height:22px; accent-color:var(--oren);" /> ⏱️ Mode Timer (30 detik per soal)
+          </label>
+          <br />
+          <button class="btn btn-utama" id="btnMulaiKuis" style="font-size:1.15rem;">▶ Mulai Kuis</button>
+          <div id="papanSkor" style="margin-top:22px; text-align:left;"></div>
+        </div>
+
+        <div id="kuisMain" class="sembunyi">
+          <div class="hud">
+            <div class="kotak">⭐ Level <b id="hudLevel">1</b></div>
+            <div class="xpbar"><div id="hudXp"></div></div>
+            <div class="kotak"><span id="hudXpTeks">0 XP</span></div>
+            <div class="kotak"><span class="streak-api" id="hudApi">🔥</span> Streak <b id="hudStreak">0</b></div>
+            <div class="kotak sembunyi" id="hudTimerKotak">⏱️ <b id="hudTimer">30</b></div>
+            <div class="kotak">Soal <b id="hudSoal">1/10</b></div>
+          </div>
+          <div class="progres" id="kuisProgres"></div>
+          <div class="kartu">
+            <h3 id="soalTeks" style="font-size:1.3rem; line-height:1.45;"></h3>
+            <div class="opsi" id="soalOpsi"></div>
+            <div id="soalBahas" class="sembunyi"></div>
+            <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+              <button class="btn btn-hijau sembunyi" id="btnLanjut">Soal Berikutnya →</button>
+            </div>
+          </div>
+          <p id="pesanSemangat" style="text-align:center; font-weight:900; font-size:1.05rem; min-height:28px; margin-top:12px;"></p>
+        </div>
+
+        <div id="kuisSelesai" class="sembunyi">
+          <div class="kartu" style="text-align:center;">
+            <div style="font-size:3.6rem;" id="akhirEmoji">🏆</div>
+            <h3 style="font-size:1.7rem;" id="akhirJudul">Kuis Selesai!</h3>
+            <div class="nilai-besar" id="akhirSkor" style="font-size:3rem;">0</div>
+            <p id="akhirDetail" style="font-weight:800;"></p>
+            <div id="akhirLencana" style="margin:12px 0;"></div>
+            <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px;">
+              <button class="btn btn-utama" id="btnUlangKuis">↺ Main Lagi</button>
+              <button class="btn btn-garis" data-goto="beranda">🏠 Ke Beranda</button>
+            </div>
+          </div>
+          <div class="kartu" style="margin-top:18px;">
+            <h3>📜 Tinjau Jawabanmu</h3>
+            <div id="akhirReview"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DATA GURU ============ -->
+      <section class="page" id="page-guru">
+        <div class="judul-bab"><div class="no">🔐</div><div><h2>Data Guru</h2><p>Rekap siswa yang login, menu yang dipelajari, dan perkembangan skor kuis</p></div></div>
+
+        <div class="grid grid-3" style="margin-bottom:18px;">
+          <div class="stat-mini"><div class="v" id="guruJmlSiswa">0</div><small>Siswa Login (perangkat ini)</small></div>
+          <div class="stat-mini"><div class="v" id="guruJmlKuis">0</div><small>Total Percobaan Kuis</small></div>
+          <div class="stat-mini"><div class="v" id="guruRata">–</div><small>Rata-rata Skor Terakhir</small></div>
+        </div>
+
+        <div class="kartu" style="margin-bottom:18px;">
+          <h3>☁️ Database Google Sheets (Terpusat)</h3>
+          <p>Data login, hasil kuis, dan ringkasan otomatis terkirim ke Google Sheet pusat DapMath. URL Web App sudah tertanam; ganti hanya bila perlu.</p>
+          <label class="lbl" for="setUrl">URL Web App Apps Script</label>
+          <input type="text" id="setUrl" />
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+            <button class="btn btn-hijau btn-kecil" id="btnSimpanUrl">Simpan URL</button>
+            <button class="btn btn-utama btn-kecil" id="btnUjiKirim">📤 Uji Kirim Data Sekarang</button>
+            <button class="btn btn-garis btn-kecil" id="btnMuatSheet">🔄 Muat Data dari Sheet</button>
+          </div>
+          <p id="sheetStatus" style="font-weight:800; margin:12px 0 0;"></p>
+          <div id="sheetData"></div>
+        </div>
+
+        <div class="kartu" style="margin-bottom:18px;">
+          <h3>👩‍🎓 Daftar Siswa yang Login</h3>
+          <div class="tabel-bungkus"><table><thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th></tr></thead><tbody id="tabelLogin"></tbody></table></div>
+        </div>
+
+        <div class="kartu" style="margin-bottom:18px;">
+          <h3>📈 Perkembangan per Siswa</h3>
+          <div class="tabel-bungkus"><table><thead><tr><th>Siswa</th><th>Menu Dipelajari</th><th>Percobaan Kuis</th><th>Skor Terakhir</th><th>Skor Terbaik</th><th>Rata-rata</th><th>Tren Skor</th></tr></thead><tbody id="tabelRingkasan"></tbody></table></div>
+        </div>
+
+        <div class="kartu">
+          <h3>📝 Riwayat Skor Kuis</h3>
+          <div class="tabel-bungkus"><table><thead><tr><th>Waktu Selesai</th><th>Nama</th><th>Kelas</th><th>Percobaan ke-</th><th>Skor</th></tr></thead><tbody id="tabelKuis"></tbody></table></div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;">
+            <button class="btn btn-utama" id="btnCsv">⬇️ Unduh Laporan (CSV)</button>
+            <button class="btn btn-garis" id="btnHapusData">🗑️ Hapus Data Perangkat Ini</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>🧮 DapMath — Belajar Matematika Jadi Petualangan</div>
+      <div style="margin-top:6px;">Dibangun oleh <span class="nama">Dody Adyansyah</span></div>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+    <canvas id="confetti"></canvas>
+
+    <script>
+    "use strict";
+    /* ================= KONSTANTA & PENYIMPANAN ================= */
+    var APP_ID = "aritmetika-sosial";
+    var URL_SHEET_DEFAULT = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
+    var PIN_GURU = "d4pm4t";
+    var KUNCI = "dapmath-aritmetika-sosial-v1";
+    var memori = null; // cadangan bila localStorage tidak tersedia
+
+    function muatData(){
+      if (memori) return memori;
+      try {
+        var mentah = localStorage.getItem(KUNCI);
+        if (mentah) { memori = JSON.parse(mentah); return memori; }
+      } catch(e){}
+      memori = { siswa:null, logins:[], kuisHasil:[], menuKunjungan:{}, urlSheet:URL_SHEET_DEFAULT, skorTerbaik:[] };
+      return memori;
+    }
+    function simpanData(){
+      try { localStorage.setItem(KUNCI, JSON.stringify(memori)); } catch(e){}
+    }
+    var DB = muatData();
+    if (!DB.urlSheet) DB.urlSheet = URL_SHEET_DEFAULT;
+
+    /* ================= UTIL ================= */
+    function $(id){ return document.getElementById(id); }
+    function rp(n){ return "Rp" + Math.round(n).toLocaleString("id-ID"); }
+    function kg(n){ return (Math.round(n*100)/100).toLocaleString("id-ID") + " kg"; }
+    function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+    var toastTimer = null;
+    function toast(teks){
+      var t = $("toast"); t.textContent = teks; t.classList.add("tampil");
+      clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("tampil"); }, 3400);
+    }
+    function animasiAngka(el, dari, ke, format){
+      var mulai = null, dur = 600;
+      function langkah(ts){
+        if (!mulai) mulai = ts;
+        var p = Math.min(1, (ts-mulai)/dur);
+        var e = 1 - Math.pow(1-p, 3);
+        el.textContent = format(dari + (ke-dari)*e);
+        if (p < 1) requestAnimationFrame(langkah);
+      }
+      requestAnimationFrame(langkah);
+    }
+
+    /* ================= KIRIM KE GOOGLE SHEET ================= */
+    function urlSheet(){ return (DB.urlSheet || URL_SHEET_DEFAULT).trim(); }
+    function kirimSheet(payload){
+      try {
+        payload.app = APP_ID;
+        payload.time = new Date().toISOString();
+        var body = JSON.stringify(payload);
+        var url = urlSheet();
+        if (navigator.sendBeacon) {
+          try { navigator.sendBeacon(url, new Blob([body], {type:"text/plain"})); } catch(e){}
+        }
+        fetch(url, { method:"POST", headers:{"Content-Type":"text/plain"}, body:body, keepalive:true, mode:"no-cors" }).catch(function(){});
+      } catch(e){}
+    }
+    function kirimRingkasan(){
+      if (!DB.siswa) return;
+      var nama = DB.siswa.nama, hasil = DB.kuisHasil.filter(function(k){ return k.nama===nama; });
+      var skor = hasil.map(function(k){ return k.skor; });
+      kirimSheet({
+        type:"ringkasan", nama:nama, kelas:DB.siswa.kelas,
+        menus:(DB.menuKunjungan[nama]||[]).join(", "),
+        attempts:hasil.length,
+        last: skor.length? skor[skor.length-1] : "",
+        best: skor.length? Math.max.apply(null,skor) : "",
+        avg: skor.length? Math.round(skor.reduce(function(a,b){return a+b;},0)/skor.length) : ""
+      });
+    }
+
+    /* ================= LOGIN ================= */
+    function tampilkanSiswa(){
+      if (DB.siswa) {
+        $("chipNama").textContent = DB.siswa.nama + " • " + DB.siswa.kelas;
+        $("avatarHuruf").textContent = DB.siswa.nama.trim().charAt(0).toUpperCase() || "?";
+      } else {
+        $("chipNama").textContent = "Belum login";
+        $("avatarHuruf").textContent = "?";
+      }
+    }
+    function masukAplikasi(){
+      var nama = $("inpNama").value.trim(), kelas = $("inpKelas").value;
+      if (nama.length < 2) { $("loginErr").textContent = "Isi namamu dulu ya (minimal 2 huruf)."; return; }
+      if (!kelas) { $("loginErr").textContent = "Pilih kelasmu dulu ya."; return; }
+      $("loginErr").textContent = "";
+      DB.siswa = { nama:nama, kelas:kelas };
+      DB.logins.push({ waktu:new Date().toISOString(), nama:nama, kelas:kelas });
+      if (!DB.menuKunjungan[nama]) DB.menuKunjungan[nama] = [];
+      simpanData(); tampilkanSiswa();
+      $("loginLayar").style.display = "none";
+      kirimSheet({ type:"login", nama:nama, kelas:kelas });
+      toast("Selamat datang, " + nama + "! Selamat belajar 🎉");
+      confettiKecil();
+    }
+    $("btnMasuk").addEventListener("click", masukAplikasi);
+    $("inpNama").addEventListener("keydown", function(e){ if (e.key === "Enter") masukAplikasi(); });
+    $("btnGanti").addEventListener("click", function(){
+      DB.siswa = null; simpanData(); tampilkanSiswa();
+      $("inpNama").value = ""; $("inpKelas").value = "";
+      $("loginLayar").style.display = "grid";
+      bukaHalaman("beranda");
+    });
+    if (DB.siswa) { $("loginLayar").style.display = "none"; tampilkanSiswa(); }
+
+    /* ================= NAVIGASI ================= */
+    var halamanAktif = "beranda";
+    function catatMenu(page){
+      if (!DB.siswa) return;
+      var daftar = DB.menuKunjungan[DB.siswa.nama] || (DB.menuKunjungan[DB.siswa.nama] = []);
+      if (daftar.indexOf(page) === -1) { daftar.push(page); simpanData(); kirimRingkasan(); }
+    }
+    function bukaHalaman(page){
+      halamanAktif = page;
+      document.querySelectorAll("section.page").forEach(function(s){ s.classList.toggle("aktif", s.id === "page-" + page); });
+      document.querySelectorAll("#navMenu button").forEach(function(b){ b.classList.toggle("aktif", b.dataset.page === page); });
+      if (page !== "beranda") catatMenu(page);
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }
+    document.querySelectorAll("#navMenu button").forEach(function(b){
+      b.addEventListener("click", function(){
+        if (b.dataset.page === "guru") { mintaPin(); return; }
+        bukaHalaman(b.dataset.page);
+      });
+    });
+    document.querySelectorAll("[data-goto]").forEach(function(el){
+      el.addEventListener("click", function(){ bukaHalaman(el.dataset.goto); });
+    });
+
+    /* ================= HERO: PARALAKS & SAPAAN KOIN ================= */
+    var sapaan = [
+      "Hai! Aku Koin. Geser-geser, coba-coba, jangan takut salah — dari toko virtual ini kamu akan paham uang! 🪙",
+      "Tahukah kamu? Diskon 50% + 20% itu BUKAN 70%. Buktikan di Lab Diskon! 🏷️",
+      "Juragan yang hebat selalu tahu harga beli sebelum menentukan harga jual. Coba Simulasi Toko! 🛒",
+      "Menabung Rp10.000 tiap minggu terasa kecil, tapi bunganya membuatnya tumbuh. Coba simulasinya! 🐷",
+      "Berat beras di karung itu bruto. Yang kamu makan hanya netonya. Yuk timbang di menu Bruto-Neto-Tara! ⚖️"
+    ];
+    var idxSapaan = 0;
+    setInterval(function(){
+      idxSapaan = (idxSapaan + 1) % sapaan.length;
+      var g = $("gelembungKoin"); if (g) g.textContent = sapaan[idxSapaan];
+    }, 6000);
+    var hero = $("hero");
+    if (hero && window.matchMedia("(pointer:fine)").matches) {
+      hero.addEventListener("mousemove", function(e){
+        var r = hero.getBoundingClientRect();
+        var x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5;
+        var m = $("maskotHero");
+        if (m) m.style.transform = "translate(" + (x*16) + "px," + (y*12) + "px) rotate(" + (x*5) + "deg)";
+        hero.querySelectorAll(".koin-terbang").forEach(function(k, i){
+          k.style.translate = ((x*(14+i*9))) + "px " + ((y*(10+i*7))) + "px";
+        });
+      });
+    }
+
+    /* ================= SIMULASI TOKO ================= */
+    var BARANG = [
+      { id:"buku",  emoji:"📒", nama:"Buku Tulis",   beli:4000,  jual:6000,  stok:10 },
+      { id:"pensil",emoji:"✏️", nama:"Pensil 2B",    beli:2000,  jual:3500,  stok:15 },
+      { id:"tas",   emoji:"🎒", nama:"Tas Sekolah",  beli:85000, jual:110000, stok:4 },
+      { id:"botol", emoji:"🍶", nama:"Botol Minum",  beli:18000, jual:25000, stok:8 },
+      { id:"snack", emoji:"🍫", nama:"Cokelat Batang", beli:5000, jual:7500, stok:12 },
+      { id:"topi",  emoji:"🧢", nama:"Topi Keren",   beli:30000, jual:42000, stok:6 }
+    ];
+    var toko = { saldo:100000, untung:0, rugi:0, terjual:0 };
+    function gambarEtalase(){
+      var wadah = $("etalase"); wadah.innerHTML = "";
+      BARANG.forEach(function(b){
+        var kartu = document.createElement("div");
+        kartu.className = "kartu barang"; kartu.style.padding = "18px";
+        kartu.innerHTML =
+          '<div class="emoji-b">' + b.emoji + '</div>' +
+          '<h3 style="margin:0;">' + b.nama + '</h3>' +
+          '<div class="harga-beli">Modal (harga beli): ' + rp(b.beli) + ' / pcs</div>' +
+          '<div>Stok: <span class="stok" id="stok-' + b.id + '">' + b.stok + ' pcs</span></div>' +
+          '<label class="lbl" style="margin-top:4px;">Harga Jual (Rp)</label>' +
+          '<div class="baris-jual"><input type="number" id="jual-' + b.id + '" value="' + b.jual + '" min="0" step="500" /></div>' +
+          '<div style="display:flex; gap:8px;">' +
+            '<button class="btn btn-utama btn-kecil" style="flex:1;" data-jual="' + b.id + '">🛎️ Jual 1</button>' +
+            '<button class="btn btn-garis btn-kecil" data-stok="' + b.id + '">+ Stok</button>' +
+          '</div>' +
+          '<div id="info-' + b.id + '" style="font-weight:800; min-height:24px;"></div>';
+        wadah.appendChild(kartu);
+      });
+      wadah.querySelectorAll("[data-jual]").forEach(function(btn){
+        btn.addEventListener("click", function(){ jualBarang(btn.dataset.jual); });
+      });
+      wadah.querySelectorAll("[data-stok]").forEach(function(btn){
+        btn.addEventListener("click", function(){ tambahStok(btn.dataset.stok); });
+      });
+      BARANG.forEach(function(b){
+        $("jual-" + b.id).addEventListener("input", function(){ infoBarang(b); });
+        infoBarang(b);
+      });
+    }
+    function infoBarang(b){
+      var jual = parseFloat($("jual-" + b.id).value) || 0;
+      var el = $("info-" + b.id), selisih = jual - b.beli;
+      if (selisih > 0) { el.textContent = "Untung " + rp(selisih) + " per pcs 😄"; el.style.color = "var(--hijau)"; }
+      else if (selisih < 0) { el.textContent = "Rugi " + rp(-selisih) + " per pcs 😱"; el.style.color = "var(--merah)"; }
+      else { el.textContent = "Impas — tidak untung, tidak rugi 😐"; el.style.color = "var(--ink-soft)"; }
+    }
+    function catatLog(teks, jenis){
+      var log = $("logToko"), d = document.createElement("div");
+      d.className = jenis; d.innerHTML = teks;
+      log.insertBefore(d, log.children[1] || null);
+      while (log.children.length > 15) log.removeChild(log.lastChild);
+    }
+    function segarkanToko(animasi){
+      var el = $("saldoToko");
+      if (animasi) { animasiAngka(el, parseFloat(el.dataset.v || 100000), toko.saldo, rp); el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); }
+      el.dataset.v = toko.saldo; el.textContent = rp(toko.saldo);
+      $("statUntung").textContent = rp(toko.untung);
+      $("statRugi").textContent = rp(toko.rugi);
+      $("statJual").textContent = toko.terjual;
+      $("saldoStatus").textContent = toko.saldo >= 100000 ? "Tokomu sedang untung dari modal awal! 🎉" : (toko.saldo > 0 ? "Saldo di bawah modal awal — hati-hati mengatur harga!" : "Kas kosong! Ulangi simulasi untuk mencoba lagi.");
+    }
+    function jualBarang(id){
+      var b = BARANG.find(function(x){ return x.id === id; });
+      if (b.stok <= 0) { toast("Stok " + b.nama + " habis! Klik + Stok untuk membeli lagi."); return; }
+      var jual = parseFloat($("jual-" + id).value) || 0;
+      b.stok--; toko.terjual++;
+      toko.saldo += jual;
+      var selisih = jual - b.beli;
+      $("stok-" + id).textContent = b.stok + " pcs";
+      if (selisih > 0) { toko.untung += selisih; catatLog("✅ Terjual 1 " + b.emoji + " " + b.nama + " seharga " + rp(jual) + " → <b>untung " + rp(selisih) + "</b>", "u"); }
+      else if (selisih < 0) { toko.rugi += -selisih; catatLog("⚠️ Terjual 1 " + b.emoji + " " + b.nama + " seharga " + rp(jual) + ", padahal modalnya " + rp(b.beli) + " → <b>rugi " + rp(-selisih) + "</b>", "r"); }
+      else catatLog("➖ Terjual 1 " + b.emoji + " " + b.nama + " seharga " + rp(jual) + " → impas.", "n");
+      segarkanToko(true);
+    }
+    function tambahStok(id){
+      var b = BARANG.find(function(x){ return x.id === id; });
+      var beli5 = b.beli * 5;
+      if (toko.saldo < beli5) { toast("Saldo tidak cukup untuk membeli 5 " + b.nama + " (" + rp(beli5) + ")."); return; }
+      toko.saldo -= beli5; b.stok += 5;
+      $("stok-" + id).textContent = b.stok + " pcs";
+      catatLog("📦 Beli stok 5 " + b.emoji + " " + b.nama + " seharga " + rp(beli5) + " (dari kas toko).", "n");
+      segarkanToko(true);
+    }
+    $("btnResetToko").addEventListener("click", function(){
+      toko = { saldo:100000, untung:0, rugi:0, terjual:0 };
+      BARANG.forEach(function(b){ b.stok = {buku:10,pensil:15,tas:4,botol:8,snack:12,topi:6}[b.id]; });
+      gambarEtalase(); segarkanToko(false);
+      $("logToko").innerHTML = '<div class="n">🏪 Simulasi diulang. Modal awal Rp100.000 masuk ke kas. Selamat berjualan!</div>';
+    });
+    gambarEtalase(); segarkanToko(false);
+
+    /* ================= LAB DISKON ================= */
+    function hitungDiskon(){
+      var harga = parseFloat($("diskHarga").value) || 0;
+      var persen = parseFloat($("diskPersen").value) || 0;
+      $("diskPersenLbl").textContent = persen + "%";
+      var potong = harga * persen / 100, bayar = harga - potong;
+      $("diskCoret").textContent = rp(harga);
+      $("diskPotong").textContent = rp(potong);
+      animasiAngka($("diskBayar"), parseFloat($("diskBayar").dataset.v || bayar), bayar, rp);
+      $("diskBayar").dataset.v = bayar;
+      $("diskLangkah").innerHTML =
+        "<li>Potongan = " + persen + "% × " + rp(harga) + " = <b>" + rp(potong) + "</b></li>" +
+        "<li>Harga bayar = " + rp(harga) + " − " + rp(potong) + " = <b>" + rp(bayar) + "</b></li>" +
+        "<li>Cara cepat: bayar (" + (100 - persen) + "% × harga awal) = " + rp(bayar) + ". Sama!</li>";
+    }
+    ["diskHarga","diskPersen"].forEach(function(id){ $(id).addEventListener("input", hitungDiskon); });
+    function hitungDiskon2(){
+      var a = parseFloat($("disk2a").value) || 0, b = parseFloat($("disk2b").value) || 0;
+      var harga = parseFloat($("disk2Harga").value) || 0;
+      $("disk2aLbl").textContent = a + "%"; $("disk2bLbl").textContent = b + "%";
+      var h1 = harga - harga * a / 100;
+      var h2 = h1 - h1 * b / 100;
+      var totalAsli = (1 - h2 / (harga || 1)) * 100;
+      $("disk2Hasil").innerHTML = "🏁 Hasil akhir: <b>" + rp(h2) + "</b> — total potongan sebenarnya hanya <b>" +
+        (Math.round(totalAsli * 10) / 10).toLocaleString("id-ID") + "%</b>, BUKAN " + (a + b) + "%! " +
+        "Andai diskon tunggal " + (a + b) + "%, kamu hanya membayar " + rp(harga * (1 - (a + b) / 100)) + ".";
+      $("disk2Langkah").innerHTML =
+        "<li>Setelah diskon " + a + "%: " + rp(harga) + " − " + rp(harga * a / 100) + " = <b>" + rp(h1) + "</b></li>" +
+        "<li>Diskon " + b + "% dihitung dari harga BARU " + rp(h1) + ": potongan = " + rp(h1 * b / 100) + "</li>" +
+        "<li>Harga akhir = " + rp(h1) + " − " + rp(h1 * b / 100) + " = <b>" + rp(h2) + "</b></li>";
+    }
+    ["disk2a","disk2b","disk2Harga"].forEach(function(id){ $(id).addEventListener("input", hitungDiskon2); });
+    hitungDiskon(); hitungDiskon2();
+
+    /* ================= BRUTO NETO TARA ================= */
+    function hitungBNT(){
+      var bruto = parseFloat($("bntBruto").value) || 0;
+      var taraP = parseFloat($("bntTara").value) || 0;
+      $("bntBrutoLbl").textContent = kg(bruto);
+      $("bntTaraLbl").textContent = taraP + "%";
+      var tara = bruto * taraP / 100, neto = bruto - tara;
+      $("bntBrutoOut").textContent = kg(bruto);
+      $("bntTaraOut").textContent = kg(tara);
+      $("bntNetoOut").textContent = kg(neto);
+      $("svgNeto").textContent = kg(neto);
+      var isi = $("isiKemasan");
+      isi.setAttribute("height", Math.max(10, 86 * (1 - taraP / 100)));
+      isi.setAttribute("y", 86 + 86 * (taraP / 100));
+      $("meterNeto").style.width = (100 - taraP) + "%";
+      $("meterTara").style.width = taraP + "%";
+      $("meterNeto").textContent = taraP <= 80 ? "Neto " + kg(neto) : "";
+      $("meterTara").textContent = taraP >= 14 ? "Tara " + kg(tara) : "";
+      $("bntLangkah").innerHTML =
+        "<li>Tara = " + taraP + "% × bruto " + kg(bruto) + " = <b>" + kg(tara) + "</b></li>" +
+        "<li>Neto = bruto − tara = " + kg(bruto) + " − " + kg(tara) + " = <b>" + kg(neto) + "</b></li>" +
+        "<li>Cek: neto + tara = " + kg(neto) + " + " + kg(tara) + " = " + kg(bruto) + " = bruto ✔</li>";
+    }
+    ["bntBruto","bntTara"].forEach(function(id){ $(id).addEventListener("input", hitungBNT); });
+    hitungBNT();
+
+    /* ================= TABUNGAN & BUNGA ================= */
+    function hitungTabungan(){
+      var modal = parseFloat($("tabModal").value) || 0;
+      var persen = parseFloat($("tabBunga").value) || 0;
+      var bulan = parseFloat($("tabLama").value) || 0;
+      $("tabBungaLbl").textContent = (persen).toLocaleString("id-ID") + "%";
+      $("tabLamaLbl").textContent = bulan + " bulan (" + (Math.round(bulan / 12 * 100) / 100).toLocaleString("id-ID") + " tahun)";
+      var bunga = modal * persen / 100 * bulan / 12;
+      var saldo = modal + bunga;
+      $("tabBungaOut").textContent = rp(bunga);
+      $("tabSaldoOut").textContent = rp(saldo);
+      $("tabPerTahun").textContent = rp(modal * persen / 100);
+      $("tabLangkah").innerHTML =
+        "<li>Ubah lama ke tahun: " + bulan + " bulan ÷ 12 = " + (Math.round(bulan / 12 * 100) / 100).toLocaleString("id-ID") + " tahun</li>" +
+        "<li>Bunga = modal × suku bunga × lama = " + rp(modal) + " × " + persen + "% × " + (Math.round(bulan / 12 * 100) / 100).toLocaleString("id-ID") + " = <b>" + rp(bunga) + "</b></li>" +
+        "<li>Saldo akhir = " + rp(modal) + " + " + rp(bunga) + " = <b>" + rp(saldo) + "</b></li>";
+      var tahunPenuh = Math.max(1, Math.round(bulan / 12));
+      var g = $("tabGrafik"), lbl = $("tabGrafikLbl");
+      g.innerHTML = ""; lbl.innerHTML = "";
+      var maks = modal + modal * persen / 100 * tahunPenuh;
+      for (var t = 1; t <= tahunPenuh; t++) {
+        var s = modal + modal * persen / 100 * t;
+        var b = document.createElement("div"); b.className = "b";
+        b.style.height = Math.max(6, (maks ? s / maks : 0) * 150) + "px";
+        b.innerHTML = "<span>" + rp(s) + "</span>";
+        g.appendChild(b);
+        var l = document.createElement("div");
+        l.style.cssText = "flex:1; text-align:center; font-weight:800; font-size:.78rem; color:var(--ink-soft);";
+        l.textContent = "Thn " + t; lbl.appendChild(l);
+      }
+    }
+    ["tabModal","tabBunga","tabLama"].forEach(function(id){ $(id).addEventListener("input", hitungTabungan); });
+    hitungTabungan();
+
+    /* ================= KALKULATOR ================= */
+    document.querySelectorAll("#tabsKalk button").forEach(function(b){
+      b.addEventListener("click", function(){
+        document.querySelectorAll("#tabsKalk button").forEach(function(x){ x.classList.toggle("aktif", x === b); });
+        document.querySelectorAll(".panel-kalk").forEach(function(p){ p.classList.toggle("aktif", p.id === "kalk-" + b.dataset.kalk); });
+      });
+    });
+    $("btnKu").addEventListener("click", function(){
+      var beli = parseFloat($("kuBeli").value) || 0, jual = parseFloat($("kuJual").value) || 0;
+      var s = jual - beli, wadah = $("kuHasil"), isi;
+      if (s > 0) isi = '<div class="sorot hijau">🎉 <b>UNTUNG ' + rp(s) + '</b> (' + (Math.round(s / (beli || 1) * 1000) / 10).toLocaleString("id-ID") + '% dari harga beli)</div>' +
+        '<ol class="langkah"><li>Untung = harga jual − harga beli = ' + rp(jual) + ' − ' + rp(beli) + ' = <b>' + rp(s) + '</b></li><li>% Untung = ' + rp(s) + ' ÷ ' + rp(beli) + ' × 100% = <b>' + (Math.round(s / (beli || 1) * 1000) / 10).toLocaleString("id-ID") + '%</b></li></ol>';
+      else if (s < 0) isi = '<div class="sorot merah">😢 <b>RUGI ' + rp(-s) + '</b> (' + (Math.round(-s / (beli || 1) * 1000) / 10).toLocaleString("id-ID") + '% dari harga beli)</div>' +
+        '<ol class="langkah"><li>Rugi = harga beli − harga jual = ' + rp(beli) + ' − ' + rp(jual) + ' = <b>' + rp(-s) + '</b></li><li>% Rugi = ' + rp(-s) + ' ÷ ' + rp(beli) + ' × 100% = <b>' + (Math.round(-s / (beli || 1) * 1000) / 10).toLocaleString("id-ID") + '%</b></li></ol>';
+      else isi = '<div class="sorot kuning">😐 <b>IMPAS</b> — harga jual sama dengan harga beli, tidak untung dan tidak rugi.</div>';
+      wadah.innerHTML = isi;
+    });
+    $("btnKd").addEventListener("click", function(){
+      var harga = parseFloat($("kdHarga").value) || 0, persen = parseFloat($("kdPersen").value) || 0;
+      var potong = harga * persen / 100, bayar = harga - potong;
+      $("kdHasil").innerHTML = '<div class="sorot hijau">💸 Harga bayar: <span class="nilai-besar">' + rp(bayar) + '</span> (hemat ' + rp(potong) + ')</div>' +
+        '<ol class="langkah"><li>Potongan = ' + persen + '% × ' + rp(harga) + ' = <b>' + rp(potong) + '</b></li><li>Harga bayar = ' + rp(harga) + ' − ' + rp(potong) + ' = <b>' + rp(bayar) + '</b></li></ol>';
+    });
+    $("btnKb").addEventListener("click", function(){
+      var bruto = parseFloat($("kbBruto").value) || 0, taraP = parseFloat($("kbTaraP").value) || 0, hargaKg = parseFloat($("kbHargaKg").value) || 0;
+      var tara = bruto * taraP / 100, neto = bruto - tara, bayar = neto * hargaKg;
+      $("kbHasil").innerHTML = '<div class="sorot hijau">⚖️ Neto: <b>' + kg(neto) + '</b> • Harga bayar: <span class="nilai-besar">' + rp(bayar) + '</span></div>' +
+        '<ol class="langkah"><li>Tara = ' + taraP + '% × ' + kg(bruto) + ' = <b>' + kg(tara) + '</b></li><li>Neto = ' + kg(bruto) + ' − ' + kg(tara) + ' = <b>' + kg(neto) + '</b></li><li>Harga bayar = neto × harga per kg = ' + kg(neto) + ' × ' + rp(hargaKg) + ' = <b>' + rp(bayar) + '</b></li></ol>';
+    });
+    $("btnKbg").addEventListener("click", function(){
+      var modal = parseFloat($("kbgModal").value) || 0, persen = parseFloat($("kbgPersen").value) || 0, bulan = parseFloat($("kbgBulan").value) || 0;
+      var bunga = modal * persen / 100 * bulan / 12;
+      $("kbgHasil").innerHTML = '<div class="sorot hijau">🐷 Bunga: <b>' + rp(bunga) + '</b> • Saldo akhir: <span class="nilai-besar">' + rp(modal + bunga) + '</span></div>' +
+        '<ol class="langkah"><li>Lama = ' + bulan + ' bulan = ' + (Math.round(bulan / 12 * 100) / 100).toLocaleString("id-ID") + ' tahun</li><li>Bunga = ' + rp(modal) + ' × ' + persen + '% × ' + (Math.round(bulan / 12 * 100) / 100).toLocaleString("id-ID") + ' = <b>' + rp(bunga) + '</b></li><li>Saldo akhir = ' + rp(modal) + ' + ' + rp(bunga) + ' = <b>' + rp(modal + bunga) + '</b></li></ol>';
+    });
+
+    /* ================= KUIS ================= */
+    var SOAL = [
+      { t:"Bu Sari membeli sebuah tas seharga Rp50.000, lalu menjualnya kembali seharga Rp65.000. Berapa keuntungan Bu Sari?",
+        o:["Rp10.000","Rp15.000","Rp20.000","Rp115.000"], j:1,
+        b:"Untung = harga jual − harga beli = Rp65.000 − Rp50.000 = <b>Rp15.000</b>." },
+      { t:"Sebuah jam dibeli seharga Rp80.000. Karena ada cacat, jam itu hanya laku dijual Rp68.000. Pedagang mengalami…",
+        o:["Untung Rp12.000","Rugi Rp12.000","Untung Rp8.000","Rugi Rp148.000"], j:1,
+        b:"Harga jual lebih kecil dari harga beli → rugi. Rugi = Rp80.000 − Rp68.000 = <b>Rp12.000</b>." },
+      { t:"Modal sebuah boneka Rp200.000 dan dijual dengan keuntungan Rp30.000. Persentase keuntungannya adalah…",
+        o:["10%","12%","15%","30%"], j:2,
+        b:"% Untung = untung ÷ harga beli × 100% = 30.000 ÷ 200.000 × 100% = <b>15%</b>. Ingat, persen selalu dari harga beli!" },
+      { t:"Harga sebuah sepatu Rp150.000. Toko memberi diskon 20%. Berapa yang harus dibayar pembeli?",
+        o:["Rp30.000","Rp120.000","Rp130.000","Rp170.000"], j:1,
+        b:"Potongan = 20% × Rp150.000 = Rp30.000. Harga bayar = Rp150.000 − Rp30.000 = <b>Rp120.000</b>." },
+      { t:"Sebuah jaket berharga Rp240.000 didiskon 25%. Harga setelah diskon adalah…",
+        o:["Rp60.000","Rp180.000","Rp190.000","Rp215.000"], j:1,
+        b:"Bayar 75% dari harga awal: 75% × Rp240.000 = <b>Rp180.000</b>." },
+      { t:"Satu karung gabah memiliki bruto 50 kg dengan tara 2%. Neto gabah tersebut adalah…",
+        o:["48 kg","49 kg","49,5 kg","52 kg"], j:1,
+        b:"Tara = 2% × 50 kg = 1 kg. Neto = 50 − 1 = <b>49 kg</b>." },
+      { t:"Satu kaleng minyak goreng bruto 25 kg dan neto 24,5 kg. Tara kaleng tersebut adalah…",
+        o:["0,2 kg","0,5 kg","1 kg","49,5 kg"], j:1,
+        b:"Tara = bruto − neto = 25 − 24,5 = <b>0,5 kg</b> (berat kalengnya saja)." },
+      { t:"Andi menabung Rp1.000.000 di bank dengan bunga tunggal 6% per tahun. Bunga yang diperoleh setelah 2 tahun adalah…",
+        o:["Rp60.000","Rp120.000","Rp180.000","Rp1.120.000"], j:1,
+        b:"Bunga = Rp1.000.000 × 6% × 2 = <b>Rp120.000</b>. (Rp1.120.000 itu saldo akhirnya, bukan bunganya!)" },
+      { t:"Tabungan awal Rp2.000.000 dengan bunga tunggal 12% per tahun. Bunga setelah 9 bulan adalah…",
+        o:["Rp120.000","Rp180.000","Rp240.000","Rp2.180.000"], j:1,
+        b:"9 bulan = 9/12 tahun. Bunga = Rp2.000.000 × 12% × 9/12 = <b>Rp180.000</b>." },
+      { t:"Sebuah sepeda dijual Rp85.000 dan penjual rugi 15%. Harga beli sepeda itu adalah…",
+        o:["Rp72.250","Rp97.750","Rp100.000","Rp110.000"], j:2,
+        b:"Harga jual = 85% dari harga beli. Harga beli = Rp85.000 ÷ 85% = <b>Rp100.000</b>." }
+    ];
+    var SEMANGAT_BENAR = ["Keren! Kamu memang calon juragan hebat! 🌟","Betul sekali! Otak dagangmu makin tajam! 🧠","Hebat! Streak-mu menyala! 🔥","Mantap! Teruskan, XP mengalir deras! 💎","Luar biasa! Koin bangga padamu! 🪙"];
+    var SEMANGAT_SALAH = ["Belum tepat — tidak apa-apa, juragan pun pernah salah hitung. Baca pembahasannya ya! 💪","Hampir! Cek pembahasannya, soal berikutnya pasti bisa! 🌱","Salah itu guru terbaik. Tetap semangat! ✊"];
+    var quiz = null, timerInt = null;
+    function acak(arr){ var a = arr.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+    function gambarPapan(){
+      var el = $("papanSkor");
+      if (!DB.skorTerbaik || DB.skorTerbaik.length === 0) {
+        el.innerHTML = '<div class="sorot kuning" style="margin:0;">🏅 Belum ada skor. Jadilah yang pertama menaklukkan kuis ini!</div>'; return;
+      }
+      var baris = DB.skorTerbaik.slice(0, 5).map(function(s, i){
+        return "<tr><td>" + ["🥇","🥈","🥉","4.","5."][i] + "</td><td>" + esc(s.nama) + " (" + esc(s.kelas) + ")</td><td><b>" + s.skor + "</b></td><td>" + s.xp + " XP</td></tr>";
+      }).join("");
+      el.innerHTML = "<h3 style='margin-bottom:8px;'>🏆 Papan Skor Terbaik (perangkat ini)</h3><div class='tabel-bungkus'><table><thead><tr><th>#</th><th>Siswa</th><th>Skor</th><th>XP</th></tr></thead><tbody>" + baris + "</tbody></table></div>";
+    }
+    function mulaiKuis(){
+      quiz = { urutan: acak(SOAL.map(function(_, i){ return i; })), idx:0, benar:0, xp:0, streak:0, streakMax:0, pakaiTimer:$("optTimer").checked, jawaban:[], waktu:30, terkunci:false };
+      $("kuisMulai").classList.add("sembunyi");
+      $("kuisSelesai").classList.add("sembunyi");
+      $("kuisMain").classList.remove("sembunyi");
+      $("kuisProgres").innerHTML = SOAL.map(function(){ return "<span></span>"; }).join("");
+      tampilSoal();
+    }
+    function tampilSoal(){
+      clearInterval(timerInt);
+      var q = SOAL[quiz.urutan[quiz.idx]];
+      quiz.terkunci = false; quiz.waktu = 30;
+      $("hudSoal").textContent = (quiz.idx + 1) + "/10";
+      $("hudLevel").textContent = 1 + Math.floor(quiz.xp / 300);
+      $("hudXp").style.width = Math.min(100, quiz.xp / 1300 * 100) + "%";
+      $("hudXpTeks").textContent = quiz.xp + " XP";
+      $("hudStreak").textContent = quiz.streak;
+      $("hudApi").style.opacity = quiz.streak >= 2 ? "1" : ".25";
+      $("hudTimerKotak").classList.toggle("sembunyi", !quiz.pakaiTimer);
+      $("hudTimer").textContent = quiz.waktu;
+      $("soalTeks").textContent = "Soal " + (quiz.idx + 1) + ". " + q.t;
+      $("pesanSemangat").textContent = "";
+      var opsiBox = $("soalOpsi"); opsiBox.innerHTML = "";
+      var urutanOpsi = acak(q.o.map(function(_, i){ return i; }));
+      quiz.urutanOpsi = urutanOpsi;
+      urutanOpsi.forEach(function(oi, pos){
+        var b = document.createElement("button");
+        b.innerHTML = '<span class="huruf">' + "ABCD"[pos] + "</span><span>" + esc(q.o[oi]) + "</span>";
+        b.addEventListener("click", function(){ jawab(oi, b); });
+        opsiBox.appendChild(b);
+      });
+      $("soalBahas").classList.add("sembunyi");
+      $("btnLanjut").classList.add("sembunyi");
+      $("btnLanjut").textContent = quiz.idx === SOAL.length - 1 ? "Lihat Hasil Akhir 🏁" : "Soal Berikutnya →";
+      if (quiz.pakaiTimer) {
+        timerInt = setInterval(function(){
+          quiz.waktu--;
+          $("hudTimer").textContent = Math.max(0, quiz.waktu);
+          if (quiz.waktu <= 5) $("hudTimer").style.color = "var(--merah)";
+          if (quiz.waktu <= 0) { clearInterval(timerInt); if (!quiz.terkunci) jawab(-1, null); }
+        }, 1000);
+      }
+    }
+    function jawab(oi, tombol){
+      if (quiz.terkunci) return;
+      quiz.terkunci = true; clearInterval(timerInt);
+      var q = SOAL[quiz.urutan[quiz.idx]];
+      var benar = oi === q.j;
+      document.querySelectorAll("#soalOpsi button").forEach(function(b, pos){
+        b.disabled = true;
+        if (quiz.urutanOpsi[pos] === q.j) b.classList.add("benar");
+      });
+      if (tombol && !benar) tombol.classList.add("salah");
+      var bonus = 0;
+      if (benar) {
+        quiz.benar++; quiz.streak++; quiz.streakMax = Math.max(quiz.streakMax, quiz.streak);
+        bonus = Math.min(50, Math.max(0, (quiz.streak - 1) * 10));
+        quiz.xp += 100 + bonus;
+        $("pesanSemangat").textContent = SEMANGAT_BENAR[Math.floor(Math.random() * SEMANGAT_BENAR.length)] + " (+" + (100 + bonus) + " XP)";
+        $("pesanSemangat").style.color = "var(--hijau)";
+        confettiKecil();
+      } else {
+        quiz.streak = 0;
+        $("pesanSemangat").textContent = oi === -1 ? "⏰ Waktu habis! " + SEMANGAT_SALAH[Math.floor(Math.random() * SEMANGAT_SALAH.length)] : SEMANGAT_SALAH[Math.floor(Math.random() * SEMANGAT_SALAH.length)];
+        $("pesanSemangat").style.color = "var(--merah)";
+      }
+      quiz.jawaban.push({ soal:q.t, pilih: oi === -1 ? "(waktu habis)" : q.o[oi], kunci:q.o[q.j], benar:benar });
+      $("soalBahas").innerHTML = '<div class="sorot ' + (benar ? "hijau" : "merah") + '" style="margin-bottom:0;">' +
+        (benar ? "✅ <b>Benar!</b> " : "❌ <b>Belum tepat.</b> Jawaban benar: <b>" + esc(q.o[q.j]) + "</b>. ") + "💡 " + q.b + "</div>";
+      $("soalBahas").classList.remove("sembunyi");
+      var bilah = $("kuisProgres").children[quiz.idx];
+      if (bilah) bilah.classList.add("isi");
+      $("hudLevel").textContent = 1 + Math.floor(quiz.xp / 300);
+      $("hudXp").style.width = Math.min(100, quiz.xp / 1300 * 100) + "%";
+      $("hudXpTeks").textContent = quiz.xp + " XP";
+      $("hudStreak").textContent = quiz.streak;
+      $("hudApi").style.opacity = quiz.streak >= 2 ? "1" : ".25";
+      $("btnLanjut").classList.remove("sembunyi");
+    }
+    $("btnLanjut").addEventListener("click", function(){
+      quiz.idx++;
+      if (quiz.idx >= SOAL.length) selesaiKuis(); else tampilSoal();
+    });
+    function selesaiKuis(){
+      var skor = quiz.benar * 10;
+      $("kuisMain").classList.add("sembunyi");
+      $("kuisSelesai").classList.remove("sembunyi");
+      $("akhirSkor").textContent = skor;
+      $("akhirEmoji").textContent = skor >= 90 ? "🏆" : skor >= 70 ? "🎉" : skor >= 50 ? "🙂" : "🌱";
+      $("akhirJudul").textContent = skor >= 90 ? "Juragan Legendaris!" : skor >= 70 ? "Juragan Hebat!" : skor >= 50 ? "Juragan Berkembang!" : "Calon Juragan Tangguh!";
+      $("akhirDetail").textContent = "Benar " + quiz.benar + " dari 10 soal • " + quiz.xp + " XP • Streak terbaik " + quiz.streakMax + " 🔥 • Level " + (1 + Math.floor(quiz.xp / 300));
+      var lencana = [];
+      if (skor === 100) lencana.push("🌟 Sempurna!");
+      if (skor >= 80) lencana.push("🏅 Master Aritmetika Sosial");
+      if (quiz.streakMax >= 5) lencana.push("🔥 Raja Streak ×" + quiz.streakMax);
+      if (quiz.streakMax >= 3) lencana.push("⚡ Beruntun Panas");
+      if (skor >= 50) lencana.push("🎓 Lulus Kuis");
+      lencana.push("🪙 Juragan Cilik");
+      $("akhirLencana").innerHTML = lencana.map(function(l){ return '<span class="lencana">' + l + "</span>"; }).join("");
+      $("akhirReview").innerHTML = quiz.jawaban.map(function(j, i){
+        return '<div class="sorot ' + (j.benar ? "hijau" : "merah") + '"><b>Soal ' + (i + 1) + ".</b> " + esc(j.soal) + "<br/>Jawabanmu: <b>" + esc(j.pilih) + "</b>" + (j.benar ? " ✅" : " • Benar: <b>" + esc(j.kunci) + "</b>") + "</div>";
+      }).join("");
+      confettiBesar();
+      if (DB.siswa) {
+        var attemptNo = DB.kuisHasil.filter(function(k){ return k.nama === DB.siswa.nama; }).length + 1;
+        DB.kuisHasil.push({ waktu:new Date().toISOString(), nama:DB.siswa.nama, kelas:DB.siswa.kelas, attempt:attemptNo, skor:skor });
+        DB.skorTerbaik.push({ nama:DB.siswa.nama, kelas:DB.siswa.kelas, skor:skor, xp:quiz.xp });
+        DB.skorTerbaik.sort(function(a, b){ return b.skor - a.skor || b.xp - a.xp; });
+        DB.skorTerbaik = DB.skorTerbaik.slice(0, 10);
+        simpanData();
+        kirimSheet({ type:"kuis", nama:DB.siswa.nama, kelas:DB.siswa.kelas, attemptNo:attemptNo, score:skor });
+        kirimRingkasan();
+      }
+      gambarPapan();
+    }
+    $("btnMulaiKuis").addEventListener("click", mulaiKuis);
+    $("btnUlangKuis").addEventListener("click", mulaiKuis);
+    gambarPapan();
+
+    /* ================= CONFETTI ================= */
+    var cvs = $("confetti"), ctx2d = cvs.getContext("2d"), partikel = [], confettiJalan = false;
+    function ukuranCanvas(){ cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
+    window.addEventListener("resize", ukuranCanvas); ukuranCanvas();
+    var WARNA_CONFETTI = ["#f97316","#f43f5e","#f59e0b","#16a34a","#2563eb","#ec4899"];
+    function lemparConfetti(jumlah, besar){
+      for (var i = 0; i < jumlah; i++) {
+        partikel.push({
+          x: Math.random() * cvs.width, y: -20 - Math.random() * (besar ? cvs.height * .4 : 60),
+          w: 6 + Math.random() * 7, h: 4 + Math.random() * 6,
+          vy: 2.2 + Math.random() * 3.4, vx: -1.6 + Math.random() * 3.2,
+          rot: Math.random() * Math.PI, vr: -.12 + Math.random() * .24,
+          warna: WARNA_CONFETTI[Math.floor(Math.random() * WARNA_CONFETTI.length)]
+        });
+      }
+      if (!confettiJalan) { confettiJalan = true; requestAnimationFrame(tikConfetti); }
+    }
+    function tikConfetti(){
+      ctx2d.clearRect(0, 0, cvs.width, cvs.height);
+      partikel = partikel.filter(function(p){ return p.y < cvs.height + 30; });
+      partikel.forEach(function(p){
+        p.x += p.vx + Math.sin(p.y / 34) * 1.3; p.y += p.vy; p.rot += p.vr;
+        ctx2d.save(); ctx2d.translate(p.x, p.y); ctx2d.rotate(p.rot);
+        ctx2d.fillStyle = p.warna; ctx2d.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx2d.restore();
+      });
+      if (partikel.length) requestAnimationFrame(tikConfetti);
+      else { confettiJalan = false; ctx2d.clearRect(0, 0, cvs.width, cvs.height); }
+    }
+    function confettiKecil(){ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) lemparConfetti(26, false); }
+    function confettiBesar(){ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) { lemparConfetti(130, true); setTimeout(function(){ lemparConfetti(70, true); }, 350); } }
+
+    /* ================= DATA GURU & PIN ================= */
+    function mintaPin(){
+      $("pinInput").value = ""; $("pinErr").textContent = "";
+      $("pinLayar").classList.add("tampil");
+      setTimeout(function(){ $("pinInput").focus(); }, 60);
+    }
+    function cekPin(){
+      if ($("pinInput").value === PIN_GURU) {
+        $("pinLayar").classList.remove("tampil");
+        bukaHalaman("guru"); segarkanGuru();
+        toast("Selamat datang, Pak Guru! 👋");
+      } else {
+        $("pinErr").textContent = "PIN salah, coba lagi.";
+        $("pinInput").value = ""; $("pinInput").focus();
+      }
+    }
+    $("pinBuka").addEventListener("click", cekPin);
+    $("pinInput").addEventListener("keydown", function(e){ if (e.key === "Enter") cekPin(); });
+    $("pinBatal").addEventListener("click", function(){ $("pinLayar").classList.remove("tampil"); });
+
+    function trenSkor(skorArr){
+      if (skorArr.length < 2) return '<span style="color:var(--ink-soft);">—</span>';
+      var w = 92, h = 30, maks = 100;
+      var titik = skorArr.map(function(s, i){
+        return (i / (skorArr.length - 1) * (w - 8) + 4).toFixed(1) + "," + (h - 4 - (s / maks) * (h - 8)).toFixed(1);
+      }).join(" ");
+      return '<svg width="' + w + '" height="' + h + '"><polyline points="' + titik + '" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linejoin="round"/></svg>';
+    }
+    function segarkanGuru(){
+      $("setUrl").value = urlSheet();
+      $("tabelLogin").innerHTML = DB.logins.length ? DB.logins.slice().reverse().map(function(l){
+        return "<tr><td>" + new Date(l.waktu).toLocaleString("id-ID") + "</td><td>" + esc(l.nama) + "</td><td>" + esc(l.kelas) + "</td></tr>";
+      }).join("") : '<tr><td colspan="3" style="color:var(--ink-soft);">Belum ada siswa yang login di perangkat ini.</td></tr>';
+      $("tabelKuis").innerHTML = DB.kuisHasil.length ? DB.kuisHasil.slice().reverse().map(function(k){
+        return "<tr><td>" + new Date(k.waktu).toLocaleString("id-ID") + "</td><td>" + esc(k.nama) + "</td><td>" + esc(k.kelas) + "</td><td>" + k.attempt + "</td><td><b>" + k.skor + "</b></td></tr>";
+      }).join("") : '<tr><td colspan="5" style="color:var(--ink-soft);">Belum ada hasil kuis di perangkat ini.</td></tr>';
+      var namaUnik = {};
+      DB.logins.forEach(function(l){ namaUnik[l.nama] = l.kelas; });
+      var namaList = Object.keys(namaUnik);
+      var baris = namaList.map(function(nama){
+        var hasil = DB.kuisHasil.filter(function(k){ return k.nama === nama; });
+        var skorArr = hasil.map(function(k){ return k.skor; });
+        var menu = (DB.menuKunjungan[nama] || []).join(", ") || "—";
+        var avg = skorArr.length ? Math.round(skorArr.reduce(function(a, b){ return a + b; }, 0) / skorArr.length) : "–";
+        return "<tr><td><b>" + esc(nama) + "</b> (" + esc(namaUnik[nama]) + ")</td><td>" + esc(menu) + "</td><td>" + hasil.length + "</td><td>" + (skorArr.length ? skorArr[skorArr.length - 1] : "–") + "</td><td>" + (skorArr.length ? Math.max.apply(null, skorArr) : "–") + "</td><td>" + avg + "</td><td>" + trenSkor(skorArr) + "</td></tr>";
+      }).join("");
+      $("tabelRingkasan").innerHTML = baris || '<tr><td colspan="7" style="color:var(--ink-soft);">Belum ada data siswa.</td></tr>';
+      $("guruJmlSiswa").textContent = namaList.length;
+      $("guruJmlKuis").textContent = DB.kuisHasil.length;
+      var terakhirPerSiswa = namaList.map(function(nama){
+        var h = DB.kuisHasil.filter(function(k){ return k.nama === nama; });
+        return h.length ? h[h.length - 1].skor : null;
+      }).filter(function(x){ return x !== null; });
+      $("guruRata").textContent = terakhirPerSiswa.length ? Math.round(terakhirPerSiswa.reduce(function(a, b){ return a + b; }, 0) / terakhirPerSiswa.length) : "–";
+    }
+    $("btnSimpanUrl").addEventListener("click", function(){
+      var u = $("setUrl").value.trim();
+      if (!u) { toast("URL tidak boleh kosong."); return; }
+      DB.urlSheet = u; simpanData();
+      $("sheetStatus").textContent = "✅ URL database tersimpan.";
+      toast("URL database tersimpan.");
+    });
+    $("btnUjiKirim").addEventListener("click", function(){
+      kirimSheet({ type:"login", nama:"UJI KIRIM (Guru)", kelas:"-" });
+      if (DB.siswa) kirimRingkasan();
+      $("sheetStatus").textContent = "📤 Data uji terkirim ke Sheet. Periksa tab Login pada spreadsheet pusat (beri jeda beberapa detik).";
+      toast("Data uji terkirim! Periksa Google Sheet pusat.");
+    });
+    $("btnMuatSheet").addEventListener("click", function(){
+      $("sheetStatus").textContent = "⏳ Mengambil data dari Sheet…";
+      fetch(urlSheet() + "?app=" + encodeURIComponent(APP_ID)).then(function(r){ return r.json(); }).then(function(data){
+        var login = (data && data.login) || [], kuis = (data && data.kuis) || [];
+        var html = '<div class="sorot hijau">☁️ Data dari Sheet pusat: <b>' + login.length + ' login</b> dan <b>' + kuis.length + ' hasil kuis</b> untuk aplikasi ini.</div>';
+        if (login.length) {
+          html += '<div class="tabel-bungkus"><table><thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th></tr></thead><tbody>' +
+            login.slice(-12).reverse().map(function(l){ return "<tr><td>" + esc(l.time || "") + "</td><td>" + esc(l.nama || "") + "</td><td>" + esc(l.kelas || "") + "</td></tr>"; }).join("") + "</tbody></table></div>";
+        }
+        if (kuis.length) {
+          html += '<div class="tabel-bungkus" style="margin-top:12px;"><table><thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Ke-</th><th>Skor</th></tr></thead><tbody>' +
+            kuis.slice(-12).reverse().map(function(k){ return "<tr><td>" + esc(k.time || "") + "</td><td>" + esc(k.nama || "") + "</td><td>" + esc(k.kelas || "") + "</td><td>" + esc(k.attemptNo != null ? k.attemptNo : (k.attempt || "")) + "</td><td><b>" + esc(k.score != null ? k.score : (k.skor || "")) + "</b></td></tr>"; }).join("") + "</tbody></table></div>";
+        }
+        $("sheetData").innerHTML = html;
+        $("sheetStatus").textContent = "✅ Data Sheet berhasil dimuat.";
+      }).catch(function(){
+        $("sheetStatus").textContent = "⚠️ Gagal memuat dari Sheet. Periksa koneksi internet dan URL Web App, lalu coba lagi.";
+      });
+    });
+    $("btnCsv").addEventListener("click", function(){
+      var barisCsv = [["Bagian","Waktu","Nama","Kelas","Percobaan ke","Skor","Menu Dipelajari"]];
+      DB.logins.forEach(function(l){ barisCsv.push(["Login", new Date(l.waktu).toLocaleString("id-ID"), l.nama, l.kelas, "", "", ""]); });
+      DB.kuisHasil.forEach(function(k){ barisCsv.push(["Kuis", new Date(k.waktu).toLocaleString("id-ID"), k.nama, k.kelas, k.attempt, k.skor, ""]); });
+      var namaUnik = {};
+      DB.logins.forEach(function(l){ namaUnik[l.nama] = l.kelas; });
+      Object.keys(namaUnik).forEach(function(nama){
+        var h = DB.kuisHasil.filter(function(k){ return k.nama === nama; });
+        var s = h.map(function(k){ return k.skor; });
+        barisCsv.push(["Ringkasan", "", nama, namaUnik[nama], h.length, s.length ? ("terakhir " + s[s.length - 1] + " / terbaik " + Math.max.apply(null, s) + " / rata-rata " + Math.round(s.reduce(function(a, b){ return a + b; }, 0) / s.length)) : "", (DB.menuKunjungan[nama] || []).join("; ")]);
+      });
+      var csv = "\ufeff" + barisCsv.map(function(r){
+        return r.map(function(c){ return '"' + String(c == null ? "" : c).replace(/"/g, '""') + '"'; }).join(",");
+      }).join("\r\n");
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([csv], { type:"text/csv;charset=utf-8" }));
+      a.download = "laporan-aritmetika-sosial.csv";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+      toast("Laporan CSV diunduh 📄");
+    });
+    $("btnHapusData").addEventListener("click", function(){
+      DB.logins = []; DB.kuisHasil = []; DB.menuKunjungan = {}; DB.skorTerbaik = [];
+      simpanData(); segarkanGuru(); gambarPapan();
+      toast("Data perangkat ini telah dihapus.");
+    });
+    tampilkanSiswa();
+    </script>
+  </body>
+</html>
