@@ -442,6 +442,7 @@
       .kd-msg.bot { align-self: flex-start; background: var(--paper-2); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
       .kd-msg.user { align-self: flex-end; background: var(--teal); color: #fff; border-bottom-right-radius: 4px; }
       .kd-typing { font-style: italic; color: var(--ink-soft); }
+      .kd-debug { font-size: 0.72rem; opacity: 0.55; margin-top: 5px; }
       #kdForm { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--paper); }
       #kdInput {
         flex: 1; min-width: 0; font: inherit; font-size: 0.92rem; color: var(--ink);
@@ -1942,6 +1943,14 @@ function doGet() {
         kdMsgs.scrollTop = kdMsgs.scrollHeight;
         return d;
       }
+      function kdAddMsgCode(text, code) {
+        const d = kdAddMsg(text, "bot");
+        const s = document.createElement("div");
+        s.className = "kd-debug";
+        s.textContent = "(kode: " + code + ")";
+        d.appendChild(s);
+        kdMsgs.scrollTop = kdMsgs.scrollHeight;
+      }
       function kdToggle(buka) {
         const mauBuka = buka === undefined ? !kdPanel.classList.contains("open") : !!buka;
         kdPanel.classList.toggle("open", mauBuka);
@@ -1994,12 +2003,12 @@ function doGet() {
             } else if (data && data.error === "no_key") {
               kdAddMsg("Fitur tanya jawab belum aktif — beri tahu Pak Dody ya.", "bot");
             } else {
-              kdAddMsg("Maaf, ada kendala. Coba lagi sebentar ya.", "bot");
+              kdAddMsgCode("Maaf, ada kendala. Coba lagi sebentar ya.", (data && data.error) ? String(data.error) : "tak_dikenal");
             }
           })
           .catch(() => {
             typing.remove();
-            kdAddMsg("Maaf, ada kendala. Coba lagi sebentar ya.", "bot");
+            kdAddMsgCode("Maaf, ada kendala. Coba lagi sebentar ya.", "jaringan");
           })
           .finally(() => clearTimeout(timer));
       });
