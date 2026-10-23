@@ -256,6 +256,60 @@ footer.site .fname{font-family:"Baloo 2"; font-weight:800; font-size:1.05rem;}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms !important; transition-duration:.01ms !important;}
 }
+      /* ===== Tanya Kang Dody — AI tutor (tombol mengambang + panel chat) ===== */
+      #kdFab {
+        position: fixed; right: 18px; bottom: 18px; z-index: 60;
+        display: inline-flex; align-items: center; gap: 8px;
+        background: var(--teal, #0e7c66); color: #fff; border: none;
+        border-radius: 999px; padding: 13px 18px;
+        font-weight: 700; font-size: 0.95rem; font-family: inherit;
+        box-shadow: var(--shadow, 0 2px 6px rgba(23,53,44,.08), 0 14px 34px rgba(23,53,44,.07)); cursor: pointer;
+      }
+      #kdFab:hover { background: var(--teal-dark, #095c4a); }
+      #kdFab:active { transform: scale(0.97); }
+      #kdFab svg { width: 20px; height: 20px; flex: none; }
+      #kdPanel {
+        position: fixed; right: 18px; bottom: 82px; z-index: 61;
+        width: min(380px, calc(100vw - 36px)); height: min(540px, calc(100dvh - 120px));
+        background: var(--paper, #fffdf7); border: 1px solid var(--line, #ddd3bd);
+        border-radius: var(--radius, 18px);
+        box-shadow: var(--shadow, 0 2px 6px rgba(23,53,44,.08), 0 14px 34px rgba(23,53,44,.07));
+        display: none; flex-direction: column; overflow: hidden;
+      }
+      #kdPanel.open { display: flex; }
+      #kdHead {
+        display: flex; align-items: center; gap: 10px;
+        background: var(--teal-tint, #dcefe6); padding: 11px 12px 11px 14px;
+        border-bottom: 1px solid var(--line, #ddd3bd);
+      }
+      #kdHead .kd-title { font-weight: 800; font-size: 1rem; color: var(--ink, #17352c); }
+      #kdHead .kd-sub { font-size: 0.78rem; color: var(--ink-soft, #4c675c); }
+      #kdClose {
+        margin-left: auto; border: 1px solid var(--line, #ddd3bd); background: var(--paper, #fffdf7);
+        color: var(--ink, #17352c); border-radius: 10px; width: 32px; height: 32px;
+        font-size: 0.95rem; line-height: 1; cursor: pointer; flex: none;
+      }
+      #kdMsgs {
+        flex: 1; overflow-y: auto; padding: 12px;
+        display: flex; flex-direction: column; gap: 8px;
+      }
+      .kd-msg {
+        max-width: 88%; padding: 9px 12px; border-radius: 14px;
+        font-size: 0.92rem; line-height: 1.55; color: var(--ink, #17352c);
+        white-space: pre-wrap; word-wrap: break-word;
+      }
+      .kd-msg.bot { align-self: flex-start; background: var(--paper-2, #efe9da); border: 1px solid var(--line, #ddd3bd); border-bottom-left-radius: 4px; }
+      .kd-msg.user { align-self: flex-end; background: var(--teal, #0e7c66); color: #fff; border-bottom-right-radius: 4px; }
+      .kd-typing { font-style: italic; color: var(--ink-soft, #4c675c); }
+      .kd-debug { font-size: 0.72rem; opacity: 0.55; margin-top: 5px; }
+      #kdForm { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line, #ddd3bd); background: var(--paper, #fffdf7); }
+      #kdInput {
+        flex: 1; min-width: 0; font: inherit; font-size: 0.92rem; color: var(--ink, #17352c);
+        background: var(--paper-2, #efe9da); border: 1.5px solid var(--line, #ddd3bd);
+        border-radius: 10px; padding: 9px 12px;
+      }
+      #kdInput:focus { border-color: var(--teal, #0e7c66); outline: none; box-shadow: 0 0 0 3px var(--teal-tint, #dcefe6); }
+      #kdForm .btn.small { flex: none; }
 </style>
 </head>
 <body>
@@ -1298,5 +1352,153 @@ if(window.matchMedia && !window.matchMedia("(prefers-reduced-motion: reduce)").m
   }, {passive:true});
 }
 </script>
-</body>
+    <!-- ============ TANYA KANG DODY — AI tutor ============ -->
+    <button id="kdFab" aria-expanded="false" aria-controls="kdPanel" title="Tanya Kang Dody">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      Tanya Kang Dody
+    </button>
+    <section id="kdPanel" role="dialog" aria-label="Tanya Kang Dody">
+      <div id="kdHead">
+        <div>
+          <div class="kd-title">Tanya Kang Dody</div>
+          <div class="kd-sub">Tutor AI · materi PLSV</div>
+        </div>
+        <button id="kdClose" type="button" aria-label="Tutup chat">✕</button>
+      </div>
+      <div id="kdMsgs" aria-live="polite"></div>
+      <form id="kdForm" autocomplete="off">
+        <input id="kdInput" type="text" maxlength="500" placeholder="Tulis pertanyaanmu di sini…" aria-label="Pertanyaan untuk Kang Dody" />
+        <button type="submit" class="btn small">Kirim</button>
+      </form>
+    </section>
+    <script>
+    /* ---------- Tanya Kang Dody — AI tutor (chat dengan tutor AI materi PLSV) ---------- */
+    /* Mengirim {action:"ask", app, nama, kelas, question} ke Web App Apps Script guru
+       (memakai endpoint yang sama dengan Data Guru) lalu menampilkan jawabannya. */
+    (function () {
+      "use strict";
+      var KD_APP_ID = "plsv";
+      var KD_GREET = "Halo! Saya Kang Dody, tutor AI untuk materi PLSV. Ada yang mau ditanyakan? Contoh: \u201cbagaimana cara menyelesaikan 2x + 6 = 14?\u201d";
+      function kd$ (s) { return document.querySelector(s); }
+      function kdEndpoint() {
+        try {
+          if (typeof sheetEndpoint !== "undefined" && sheetEndpoint) return sheetEndpoint;
+          if (typeof state !== "undefined" && state && state.sheetUrl) return state.sheetUrl;
+          if (typeof sheetUrl !== "undefined" && sheetUrl) return sheetUrl;
+          if (typeof urlSheet === "function") { var u = urlSheet(); if (u) return u; }
+          if (typeof SHEET_URL_DEFAULT !== "undefined" && SHEET_URL_DEFAULT) return SHEET_URL_DEFAULT;
+          if (typeof DEFAULT_SHEET_URL !== "undefined" && DEFAULT_SHEET_URL) return DEFAULT_SHEET_URL;
+        } catch (e) {}
+        return "";
+      }
+      function kdStudent() {
+        var out = { nama: "", kelas: "" };
+        try {
+          var cands = [];
+          if (typeof currentStudent !== "undefined" && currentStudent) cands.push(currentStudent);
+          if (typeof student !== "undefined" && student) cands.push(student);
+          if (typeof siswa !== "undefined" && siswa) cands.push(siswa);
+          if (typeof current !== "undefined" && current) cands.push(current);
+          if (typeof DB !== "undefined" && DB && DB.siswa) cands.push(DB.siswa);
+          if (typeof state !== "undefined" && state) {
+            if (state.student) cands.push(state.student);
+            if (state.siswa) cands.push(state.siswa);
+            if (state.nama || state.kelas) cands.push({ nama: state.nama, kelas: state.kelas });
+          }
+          for (var i = 0; i < cands.length; i++) {
+            var c = cands[i];
+            if (c && (c.nama || c.kelas)) { out.nama = c.nama || ""; out.kelas = c.kelas || ""; break; }
+          }
+        } catch (e) {}
+        return out;
+      }
+      var kdFab = kd$("#kdFab"), kdPanel = kd$("#kdPanel"), kdMsgs = kd$("#kdMsgs"),
+        kdForm = kd$("#kdForm"), kdInput = kd$("#kdInput"), kdClose = kd$("#kdClose");
+      function kdAddMsg(text, who) {
+        var d = document.createElement("div");
+        d.className = "kd-msg " + who;
+        d.textContent = String(text);
+        kdMsgs.appendChild(d);
+        kdMsgs.scrollTop = kdMsgs.scrollHeight;
+        return d;
+      }
+      function kdAddMsgCode(text, code) {
+        var d = kdAddMsg(text, "bot");
+        var s = document.createElement("div");
+        s.className = "kd-debug";
+        s.textContent = "(kode: " + code + ")";
+        d.appendChild(s);
+        kdMsgs.scrollTop = kdMsgs.scrollHeight;
+      }
+      function kdToggle(buka) {
+        var mauBuka = buka === undefined ? !kdPanel.classList.contains("open") : !!buka;
+        kdPanel.classList.toggle("open", mauBuka);
+        kdFab.setAttribute("aria-expanded", mauBuka ? "true" : "false");
+        if (mauBuka) {
+          if (!kdMsgs.dataset.welcomed) {
+            kdMsgs.dataset.welcomed = "1";
+            kdAddMsg(KD_GREET, "bot");
+          }
+          kdInput.focus();
+        }
+      }
+      kdFab.addEventListener("click", function () { kdToggle(); });
+      kdClose.addEventListener("click", function () { kdToggle(false); });
+      kdForm.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var q = kdInput.value.trim();
+        if (!q) return;
+        if (q.length > 500) {
+          kdAddMsg("Pertanyaannya kepanjangan \u2014 coba dipersingkat jadi maksimal 500 karakter ya.", "bot");
+          return;
+        }
+        var ep = kdEndpoint();
+        if (!ep) {
+          kdAddMsg("Fitur tanya jawab belum aktif \u2014 beri tahu Pak Dody ya.", "bot");
+          return;
+        }
+        var st = kdStudent();
+        kdAddMsg(q, "user");
+        kdInput.value = "";
+        kdInput.focus();
+        var typing = kdAddMsg("Kang Dody sedang mengetik\u2026", "bot");
+        typing.classList.add("kd-typing");
+        var ctrl = new AbortController();
+        var timer = setTimeout(function () { ctrl.abort(); }, 60000);
+        fetch(ep, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "ask",
+            app: KD_APP_ID,
+            nama: st.nama,
+            kelas: st.kelas,
+            question: q
+          }),
+          signal: ctrl.signal
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+          })
+          .then(function (data) {
+            typing.remove();
+            if (data && data.ok) {
+              kdAddMsg(data.answer || "Hmm, saya tidak dapat jawaban. Coba tanyakan lagi ya.", "bot");
+            } else if (data && data.error === "no_key") {
+              kdAddMsg("Fitur tanya jawab belum aktif \u2014 beri tahu Pak Dody ya.", "bot");
+            } else {
+              kdAddMsgCode("Maaf, ada kendala. Coba lagi sebentar ya.", (data && data.error) ? String(data.error) : "tak_dikenal");
+            }
+          })
+          .catch(function () {
+            typing.remove();
+            kdAddMsgCode("Maaf, ada kendala. Coba lagi sebentar ya.", "jaringan");
+          })
+          .finally(function () { clearTimeout(timer); });
+      });
+    })();
+    </script>
+
+  </body>
 </html>
