@@ -106,6 +106,39 @@
   .dl-btn:hover{background:var(--teal-deep);transform:translateY(-2px)}
   .file-meta{font-size:12.5px;color:var(--ink-soft)}
 
+  /* ---------- Galeri Karya ---------- */
+  .galeri-cat{margin-bottom:36px}
+  .galeri-cat:last-child{margin-bottom:0}
+  .galeri-cat h3{margin:0 0 6px;font-size:19px;font-weight:800;display:flex;align-items:center;gap:11px}
+  .galeri-cat > p{margin:0 0 16px;color:var(--ink-soft);font-size:14.5px}
+  .cat-icon{flex:none;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:18px}
+  .ci-1{background:#e2f2ed;color:var(--teal)}
+  .ci-2{background:#fdeee3;color:var(--orange)}
+  .ci-3{background:#e6edfd;color:var(--blue)}
+  .ci-4{background:#e2f2ed;color:var(--teal-deep)}
+  .ci-5{background:#fdeee3;color:#a34a12}
+  .galeri-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .g-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);text-decoration:none;color:inherit;display:flex;gap:14px;align-items:center;transition:transform .15s,box-shadow .15s,border-color .15s}
+  a.g-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--teal)}
+  button.g-card{font:inherit;text-align:left;cursor:pointer;width:100%}
+  button.g-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--teal)}
+  .g-card .g-ic{flex:none;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:22px}
+  .g-card b{display:block;font-size:15.5px;line-height:1.4}
+  .g-card small{color:var(--ink-soft);font-size:13px}
+  .g-card .go{margin-left:auto;flex:none;color:var(--teal-deep);font-weight:800;font-size:14px}
+
+  /* ---------- Modal pembaca karya ---------- */
+  .reader-backdrop{position:fixed;inset:0;z-index:100;background:rgba(13,27,38,.72);display:flex;align-items:center;justify-content:center;padding:18px}
+  .reader-backdrop[hidden]{display:none}
+  .reader-dialog{background:#fff;border-radius:18px;width:min(1000px,100%);max-height:94vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+  .reader-head{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line)}
+  .reader-head h3{margin:0;font-size:17px;font-weight:800;flex:1;line-height:1.4}
+  .reader-close{appearance:none;flex:none;border:none;background:#eef1f6;width:38px;height:38px;border-radius:50%;font-size:21px;line-height:1;cursor:pointer;color:var(--ink);transition:background .15s}
+  .reader-close:hover{background:#dde4ef}
+  .reader-frame{width:100%;height:80vh;border:0;background:var(--bg)}
+  .reader-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 18px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-soft)}
+  .reader-foot a{color:var(--teal-deep);font-weight:700;white-space:nowrap}
+
   /* ---------- Tentang Saya ---------- */
   .about-grid{display:grid;grid-template-columns:280px 1fr;gap:44px;align-items:start}
   .about-photo{width:100%;max-width:280px;border-radius:20px;box-shadow:var(--shadow);border:1px solid var(--line)}
@@ -163,6 +196,7 @@
       <a href="#aplikasi">Aplikasi</a>
       <a href="#matematika">Tentang Matematika</a>
       <a href="#karya">Karya</a>
+      <a href="#galeri">Galeri Karya</a>
       <a href="#tentang">Tentang Saya</a>
       <a href="#kontak">Kontak</a>
     </div>
@@ -259,6 +293,130 @@
   </div>
 </section>
 
+<!-- ================= 4b. GALERI KARYA ================= -->
+<section id="galeri">
+  <div class="wrap">
+    <span class="eyebrow reveal">Koleksi Karya</span>
+    <h2 class="sec-title reveal">Galeri Karya</h2>
+    <p class="sec-sub reveal">Kumpulan karya saya lainnya: media interaktif, instrumen asesmen, permainan edukasi, buku, dan perangkat ajar. Buku dan modul ajar hanya dapat dibaca di dalam web ini.</p>
+
+    <div class="galeri-cat reveal">
+      <h3><span class="cat-icon ci-1">▶</span>Media Interaktif</h3>
+      <p>Media pembelajaran interaktif berbasis web — terbuka di tab baru.</p>
+      <div class="galeri-grid">
+        <a class="g-card" href="https://dodymath.my.canva.site/dap-math-transformasi-geometri" target="_blank" rel="noopener">
+          <span class="g-ic ci-1">▶</span>
+          <span><b>Transformasi Geometri</b><small>Canva</small></span>
+          <span class="go">↗</span>
+        </a>
+        <a class="g-card" href="https://dodymath.my.canva.site/teorema-pythagoras" target="_blank" rel="noopener">
+          <span class="g-ic ci-1">▶</span>
+          <span><b>Teorema Pythagoras</b><small>Canva</small></span>
+          <span class="go">↗</span>
+        </a>
+        <a class="g-card" href="https://app.astra-ai.co/id-ID/share/a/SyFY_eSuId0yeC7x" target="_blank" rel="noopener">
+          <span class="g-ic ci-1">▶</span>
+          <span><b>PLSV</b><small>Astra AI</small></span>
+          <span class="go">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="galeri-cat reveal">
+      <h3><span class="cat-icon ci-2">☑</span>Instrumen Asesmen</h3>
+      <p>Instrumen untuk mengenali profil dan pola pikir belajar siswa — terbuka di tab baru.</p>
+      <div class="galeri-grid">
+        <a class="g-card" href="https://dodymath.my.canva.site/asesmen-kecerdasan-majemuk-berdasarkan-teori-howard-gardner" target="_blank" rel="noopener">
+          <span class="g-ic ci-2">☑</span>
+          <span><b>Kecerdasan Majemuk</b><small>Teori Howard Gardner · Canva</small></span>
+          <span class="go">↗</span>
+        </a>
+        <a class="g-card" href="https://dodymath.my.canva.site/pptdanppb" target="_blank" rel="noopener">
+          <span class="g-ic ci-2">☑</span>
+          <span><b>Growth Mindset</b><small>Canva</small></span>
+          <span class="go">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="galeri-cat reveal">
+      <h3><span class="cat-icon ci-3">♟</span>Permainan</h3>
+      <p>Permainan edukasi untuk melatih logika dan ketangkasan berpikir — terbuka di tab baru.</p>
+      <div class="galeri-grid">
+        <a class="g-card" href="https://dodymath.my.canva.site/lompat-katak" target="_blank" rel="noopener">
+          <span class="g-ic ci-3">♟</span>
+          <span><b>Lompat Katak</b><small>Canva</small></span>
+          <span class="go">↗</span>
+        </a>
+        <a class="g-card" href="https://app.astra-ai.co/id-ID/lab/sudoku" target="_blank" rel="noopener">
+          <span class="g-ic ci-3">♟</span>
+          <span><b>Sudoku</b><small>Astra AI</small></span>
+          <span class="go">↗</span>
+        </a>
+        <a class="g-card" href="https://app.astra-ai.co/id-ID/lab/fifteen-puzzle" target="_blank" rel="noopener">
+          <span class="g-ic ci-3">♟</span>
+          <span><b>Puzzle</b><small>Fifteen Puzzle · Astra AI</small></span>
+          <span class="go">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="galeri-cat reveal">
+      <h3><span class="cat-icon ci-4">📖</span>Buku</h3>
+      <p>Buku karya saya — klik <b>Baca</b> untuk membaca langsung di dalam web ini (tanpa unduhan).</p>
+      <div class="galeri-grid">
+        <button type="button" class="g-card" data-read-title="Menyemai Pemahaman, Menuai Keajaiban" data-read-src="https://drive.google.com/file/d/1cFd5QJEBkClAiTb2k96jAg9elPDdSIoy/preview">
+          <span class="g-ic ci-4">📖</span>
+          <span><b>Menyemai Pemahaman, Menuai Keajaiban</b><small>Google Drive</small></span>
+          <span class="go">Baca →</span>
+        </button>
+        <button type="button" class="g-card" data-read-title="Komik Matematika" data-read-src="https://simplebooklet.com/komikzmc">
+          <span class="g-ic ci-4">📖</span>
+          <span><b>Komik Matematika</b><small>SimpleBooklet</small></span>
+          <span class="go">Baca →</span>
+        </button>
+        <button type="button" class="g-card" data-read-title="Sang Penjelajah Matematika" data-read-src="https://heyzine.com/flip-book/6ea8d4ebae.html">
+          <span class="g-ic ci-4">📖</span>
+          <span><b>Sang Penjelajah Matematika</b><small>Heyzine</small></span>
+          <span class="go">Baca →</span>
+        </button>
+        <button type="button" class="g-card" data-read-title="Mari Mengajar" data-read-src="https://heyzine.com/flip-book/9d5a37524c.html">
+          <span class="g-ic ci-4">📖</span>
+          <span><b>Mari Mengajar</b><small>Heyzine</small></span>
+          <span class="go">Baca →</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="galeri-cat reveal">
+      <h3><span class="cat-icon ci-5">📚</span>Perangkat Ajar</h3>
+      <p>Modul ajar karya saya — klik <b>Baca</b> untuk membaca langsung di dalam web ini (tanpa unduhan).</p>
+      <div class="galeri-grid">
+        <button type="button" class="g-card" data-read-title="Modul Projek Rekayasa Teknologi" data-read-src="https://www.canva.com/design/DAGThxvutAM/HIjF6sX7q_1qor00AojjBg/view?embed">
+          <span class="g-ic ci-5">📚</span>
+          <span><b>Modul Projek Rekayasa Teknologi</b><small>Canva</small></span>
+          <span class="go">Baca →</span>
+        </button>
+        <button type="button" class="g-card" data-read-title="Modul Matematika Kelas 9 Semester 1" data-read-src="https://www.canva.com/design/DAGN382VJhc/z3eEyca-QU8S_5bkWlbAfA/view?embed">
+          <span class="g-ic ci-5">📚</span>
+          <span><b>Modul Matematika Kelas 9 Semester 1</b><small>Canva</small></span>
+          <span class="go">Baca →</span>
+        </button>
+        <button type="button" class="g-card" data-read-title="Modul Matematika Kelas 9 Semester 2" data-read-src="https://www.canva.com/design/DAGbx6gnnYY/K-m7NRbOFNuutSwdztibbA/view?embed">
+          <span class="g-ic ci-5">📚</span>
+          <span><b>Modul Matematika Kelas 9 Semester 2</b><small>Canva</small></span>
+          <span class="go">Baca →</span>
+        </button>
+        <button type="button" class="g-card" data-read-title="Modul Matematika Kelas 8" data-read-src="https://www.canva.com/design/DAFmzp-wVYA/rW1klArJ0wOchM1pQ_SOBA/view?embed">
+          <span class="g-ic ci-5">📚</span>
+          <span><b>Modul Matematika Kelas 8</b><small>Canva</small></span>
+          <span class="go">Baca →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 5. TENTANG SAYA ================= -->
 <section id="tentang">
   <div class="wrap">
@@ -325,6 +483,21 @@
     <p>Membuat Matematika Menyenangkan.</p>
   </div>
 </footer>
+
+<!-- ================= MODAL PEMBACA KARYA ================= -->
+<div class="reader-backdrop" id="readerBackdrop" role="dialog" aria-modal="true" aria-labelledby="readerTitle" hidden>
+  <div class="reader-dialog">
+    <div class="reader-head">
+      <h3 id="readerTitle">Membaca…</h3>
+      <button type="button" class="reader-close" id="readerClose" aria-label="Tutup pembaca">×</button>
+    </div>
+    <iframe class="reader-frame" id="readerFrame" title="Pembaca karya" allow="fullscreen"></iframe>
+    <div class="reader-foot">
+      <span>Jika tampilan tidak muncul, karya mungkin memblokir penyematan.</span>
+      <a id="readerAlt" href="#" target="_blank" rel="noopener">Buka di tab baru ↗</a>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -411,7 +584,7 @@
 
   /* Status aktif pada navigasi */
   var navLinks = document.querySelectorAll("#navLinks a");
-  var sections = ["beranda","aplikasi","matematika","karya","tentang","kontak"].map(function(id){return document.getElementById(id);});
+  var sections = ["beranda","aplikasi","matematika","karya","galeri","tentang","kontak"].map(function(id){return document.getElementById(id);});
   if ("IntersectionObserver" in window){
     var nio = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
@@ -424,6 +597,37 @@
     }, {rootMargin:"-40% 0px -55% 0px"});
     sections.forEach(function(s){ if(s) nio.observe(s); });
   }
+
+  /* Modal pembaca karya (Buku & Perangkat Ajar) */
+  var rBack = document.getElementById("readerBackdrop");
+  var rTitle = document.getElementById("readerTitle");
+  var rFrame = document.getElementById("readerFrame");
+  var rAlt = document.getElementById("readerAlt");
+  var rClose = document.getElementById("readerClose");
+  function openReader(title, src){
+    rTitle.textContent = title;
+    rFrame.src = src;
+    rAlt.href = src;
+    rBack.hidden = false;
+    document.body.style.overflow = "hidden";
+    rClose.focus();
+  }
+  function closeReader(){
+    rBack.hidden = true;
+    rFrame.src = "about:blank";
+    document.body.style.overflow = "";
+  }
+  var readBtns = document.querySelectorAll("[data-read-src]");
+  for (var rb=0; rb<readBtns.length; rb++){
+    readBtns[rb].addEventListener("click", function(){
+      openReader(this.getAttribute("data-read-title"), this.getAttribute("data-read-src"));
+    });
+  }
+  rClose.addEventListener("click", closeReader);
+  rBack.addEventListener("click", function(e){ if (e.target === rBack) closeReader(); });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && !rBack.hidden) closeReader();
+  });
 })();
 </script>
 </body>
