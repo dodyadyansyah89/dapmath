@@ -5,236 +5,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="data:," />
-    <title>Aplikasi Koordinat Kartesius</title>
+    <title>Lingkaran — DapMath Kelas 8</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
     <style>
-      :root {
-        --bg: #edf1f4;
-        --surface: #ffffff;
-        --surface-2: #e2e9ee;
-        --ink: #17293c;
-        --muted: #55707f;
-        --line: #c9d6de;
-        --accent: #1668a8;
-        --accent-strong: #0f4f80;
-        --accent-soft: #d9eaf6;
-        --accent-ink: #ffffff;
-        --point: #d1495b;
-        --point-b: #e07b24;
-        --amber: #a86a00;
-        --amber-soft: #f6ead0;
-        --good: #157347;
-        --good-soft: #d9efe1;
-        --bad: #b3372f;
-        --bad-soft: #f8e0dc;
-        --grid: #d5e0e7;
-        --shadow: 0 2px 10px rgba(23, 41, 60, 0.09);
-        --radius: 14px;
+      :root{
+        --bg:#f4f7f5; --surface:#ffffff; --surface2:#eef3f0; --ink:#17302a; --ink-soft:#4a6159;
+        --line:#d7e2dc; --teal:#0e7a63; --teal-dark:#0a5c4b; --teal-soft:#dff2ec;
+        --amber:#e8930c; --amber-soft:#fdeed3; --red:#c0392b; --red-soft:#fbe9e6;
+        --green:#1e8e4f; --green-soft:#e2f4e8; --radius:16px;
+        --shadow:0 6px 24px rgba(14,60,48,.10);
       }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0d141b;
-          --surface: #16222d;
-          --surface-2: #1f303f;
-          --ink: #e8eef2;
-          --muted: #9db4c0;
-          --line: #2f4757;
-          --accent: #4aa3dd;
-          --accent-strong: #7dbde8;
-          --accent-soft: #1b3247;
-          --accent-ink: #081826;
-          --point: #e86a7c;
-          --point-b: #eda04f;
-          --amber: #e2a63d;
-          --amber-soft: #3a2f16;
-          --good: #4cc084;
-          --good-soft: #1d3527;
-          --bad: #e07a6e;
-          --bad-soft: #3d2320;
-          --grid: #243a49;
-          --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0e1714; --surface:#16231f; --surface2:#1c2c27; --ink:#e6f0ec; --ink-soft:#a7bcb3;
+          --line:#2b4038; --teal:#2fae8d; --teal-dark:#7fd4bd; --teal-soft:#123c32;
+          --amber:#f0a832; --amber-soft:#3d2f10; --red:#e08a7d; --red-soft:#3d201b;
+          --green:#5cc684; --green-soft:#173826; --shadow:0 6px 24px rgba(0,0,0,.35);
         }
       }
-      * { box-sizing: border-box; }
-      html { -webkit-text-size-adjust: 100%; }
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--ink);
-        font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-        font-size: 17px;
-        line-height: 1.55;
-      }
-      h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 1.2; margin: 0 0 0.5em; }
-      h1 { font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 900; }
-      h2 { font-size: clamp(1.35rem, 3.4vw, 1.8rem); font-weight: 700; }
-      h3 { font-size: 1.15rem; font-weight: 700; }
-      p { margin: 0 0 0.9em; }
-      .wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px 40px; }
-      [hidden] { display: none !important; }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+      h1,h2,h3{font-family:"Fredoka","Plus Jakarta Sans",sans-serif;line-height:1.2;margin:0}
+      button{font-family:inherit;cursor:pointer}
+      input,select{font-family:inherit}
+      .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
 
       /* ---------- Bilah atas ---------- */
-      .topbar {
-        position: sticky; top: 0; z-index: 40;
-        background: var(--surface);
-        border-bottom: 1px solid var(--line);
-      }
-      .topbar-inner {
-        max-width: 1060px; margin: 0 auto; padding: 10px 16px;
-        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-      }
-      .brand { font-family: "Fraunces", Georgia, serif; font-weight: 900; font-size: 1.15rem; margin-right: auto; }
-      .brand small { display: block; font-family: "Plus Jakarta Sans", sans-serif; font-weight: 600; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
-      .student-chip { display: flex; align-items: center; gap: 10px; }
-      .avatar {
-        width: 42px; height: 42px; border-radius: 50%;
-        background: var(--accent); color: var(--accent-ink);
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 800; font-size: 1rem; flex: none;
-      }
-      .student-meta { line-height: 1.25; }
-      .student-meta .nm { font-weight: 800; }
-      .student-meta .kl { font-size: 0.82rem; color: var(--muted); }
+      .topbar{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--line)}
+      .topbar-in{display:flex;align-items:center;gap:12px;padding:10px 0;flex-wrap:wrap}
+      .brand{display:flex;align-items:center;gap:10px;font-family:"Fredoka",sans-serif;font-weight:700;font-size:1.15rem}
+      .brand .dot{width:34px;height:34px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:1rem;flex:none}
+      .brand small{display:block;font-family:"Plus Jakarta Sans",sans-serif;font-weight:600;font-size:.72rem;color:var(--ink-soft)}
+      .student-chip{margin-left:auto;display:flex;align-items:center;gap:10px;background:var(--teal-soft);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 14px;font-weight:600;font-size:.9rem}
+      .btn{border:0;border-radius:12px;padding:12px 20px;font-weight:700;font-size:1rem;background:var(--teal);color:#fff;min-height:48px;transition:background .15s}
+      .btn:hover{background:var(--teal-dark)}
+      .btn.small{padding:8px 14px;min-height:40px;font-size:.88rem;border-radius:999px}
+      .btn.ghost{background:var(--surface2);color:var(--ink);border:1px solid var(--line)}
+      .btn.ghost:hover{background:var(--teal-soft)}
+      .btn.amber{background:var(--amber);color:#231600}
+      .btn.amber:hover{filter:brightness(1.07)}
+      .btn:disabled{opacity:.5;cursor:not-allowed}
 
-      /* ---------- Tombol ---------- */
-      .btn {
-        appearance: none; border: 1px solid var(--accent);
-        background: var(--accent); color: var(--accent-ink);
-        font: inherit; font-weight: 700; cursor: pointer;
-        min-height: 52px; padding: 12px 22px; border-radius: 12px;
-        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-        text-decoration: none; touch-action: manipulation;
-      }
-      .btn:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
-      .btn.secondary { background: transparent; color: var(--accent); }
-      .btn.secondary:hover { background: var(--accent-soft); }
-      .btn.ghost { background: var(--surface-2); border-color: var(--line); color: var(--ink); }
-      .btn.ghost:hover { background: var(--line); }
-      .btn.small { min-height: 44px; padding: 8px 16px; font-size: 0.95rem; }
-      .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-      .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+      /* ---------- Navigasi ---------- */
+      nav.menu{position:sticky;top:57px;z-index:39;background:var(--bg);padding:10px 0 4px}
+      .menu-in{display:flex;gap:8px;flex-wrap:wrap}
+      .menu button{flex:1 1 auto;min-height:52px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;font-weight:700;font-size:.98rem;padding:10px 12px;display:flex;align-items:center;justify-content:center;gap:8px}
+      .menu button.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+      .menu button svg{width:20px;height:20px;flex:none}
 
-      /* ---------- Navigasi menu ---------- */
-      .tabbar {
-        max-width: 1060px; margin: 0 auto; padding: 12px 16px 4px;
-        display: flex; flex-wrap: wrap; gap: 8px;
-      }
-      .tab-btn {
-        appearance: none; font: inherit; font-weight: 700; cursor: pointer;
-        min-height: 52px; padding: 10px 18px; border-radius: 999px;
-        border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-        flex: 1 1 auto; touch-action: manipulation;
-      }
-      .tab-btn[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-      .subbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; }
-      .sub-btn {
-        appearance: none; font: inherit; font-weight: 600; cursor: pointer;
-        min-height: 48px; padding: 8px 16px; border-radius: 10px;
-        border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-        touch-action: manipulation;
-      }
-      .sub-btn[aria-selected="true"] { background: var(--amber-soft); border-color: var(--amber); color: var(--ink); }
-
-      /* ---------- Kartu & panel ---------- */
-      .card {
-        background: var(--surface); border: 1px solid var(--line);
-        border-radius: var(--radius); box-shadow: var(--shadow);
-        padding: 22px; margin: 0 0 20px;
-      }
-      .grid { display: grid; gap: 16px; }
-      @media (min-width: 720px) { .grid.cols-3 { grid-template-columns: repeat(3, 1fr); } .grid.cols-2 { grid-template-columns: repeat(2, 1fr); } }
-      .menu-card h3 { margin-bottom: 6px; }
-      .menu-card p { color: var(--muted); font-size: 0.97rem; }
-      .formula {
-        background: var(--accent-soft); border-radius: 10px;
-        padding: 14px 18px; margin: 14px 0; font-size: 1.08rem;
-      }
-      .formula .lbl { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent-strong); display: block; margin-bottom: 4px; }
-      .note { background: var(--amber-soft); border-radius: 10px; padding: 12px 16px; font-size: 0.96rem; }
-      .muted { color: var(--muted); }
-      .viz { width: 100%; height: auto; display: block; margin: 8px 0; }
-      .plane { touch-action: none; cursor: crosshair; }
-      .plane .pt { cursor: grab; }
-      .result-line { font-size: 1.12rem; font-weight: 700; background: var(--surface-2); border-radius: 10px; padding: 12px 16px; margin-top: 12px; }
-      .result-line .big { font-size: 1.35rem; }
-      .steps { background: var(--surface-2); border-radius: 10px; padding: 14px 18px; margin-top: 12px; font-size: 1.02rem; }
-      .steps div { padding: 3px 0; }
-      .coord-badge {
-        display: inline-block; background: var(--surface-2); border: 1px solid var(--line);
-        border-radius: 10px; padding: 8px 16px; font-weight: 800; font-size: 1.15rem; margin: 4px 6px 4px 0;
-      }
-      .coord-badge.a { border-color: var(--point); color: var(--point); }
-      .coord-badge.b { border-color: var(--point-b); color: var(--point-b); }
-      table.signs { width: 100%; border-collapse: collapse; margin: 10px 0; }
-      table.signs th, table.signs td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; }
-      table.signs th { background: var(--surface-2); }
-      .qgrid { display: grid; gap: 12px; margin: 12px 0; }
-      @media (min-width: 640px) { .qgrid { grid-template-columns: repeat(2, 1fr); } }
-      .qcell { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--surface); }
-      .qcell b { font-size: 1.05rem; }
-
-      /* ---------- Formulir ---------- */
-      .field { margin-bottom: 16px; }
-      .field label { display: block; font-weight: 700; margin-bottom: 6px; }
-      .field input[type="text"], .field input[type="password"], .field input[type="url"], .field input[type="number"], .field select, textarea.code {
-        width: 100%; font: inherit; min-height: 54px; padding: 12px 14px;
-        border: 1px solid var(--line); border-radius: 10px;
-        background: var(--surface); color: var(--ink);
-      }
-      textarea.code { min-height: 180px; font-family: ui-monospace, Consolas, monospace; font-size: 0.78rem; line-height: 1.45; }
-      .form-row { display: grid; gap: 14px; }
-      @media (min-width: 640px) { .form-row.c4 { grid-template-columns: repeat(4, 1fr); } .form-row.c3 { grid-template-columns: repeat(3, 1fr); } .form-row.c2 { grid-template-columns: repeat(2, 1fr); } }
-      .error-box { background: var(--bad-soft); color: var(--bad); border-radius: 10px; padding: 12px 16px; font-weight: 600; }
-      .status-box { background: var(--surface-2); border-radius: 10px; padding: 12px 16px; font-size: 0.97rem; margin-top: 12px; }
-      .status-box.ok { background: var(--good-soft); }
+      main{padding:18px 0 30px}
+      section.page{display:none}
+      section.page.show{display:block}
+      .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);margin-bottom:18px}
+      .card h2{font-size:1.45rem;margin-bottom:6px}
+      .card h3{font-size:1.12rem;margin:18px 0 6px}
+      .lead{color:var(--ink-soft);margin:0 0 14px}
+      .formula{background:var(--teal-soft);border-radius:12px;padding:14px 18px;font-weight:700;font-size:1.12rem;text-align:center;margin:12px 0}
+      .formula small{display:block;font-weight:500;font-size:.85rem;color:var(--ink-soft);margin-top:4px}
+      .note{background:var(--amber-soft);border-radius:12px;padding:12px 16px;font-size:.94rem;margin:12px 0}
+      .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+      @media (max-width:760px){.grid2{grid-template-columns:1fr}}
+      ul.tight{margin:6px 0;padding-left:20px}
+      ul.tight li{margin:4px 0}
 
       /* ---------- Login ---------- */
-      .login-wrap { max-width: 520px; margin: 0 auto; padding: 36px 16px 48px; }
-      .login-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 30px 26px; }
-      .login-card .btn { width: 100%; }
+      #loginScreen{min-height:100dvh;display:grid;place-items:center;padding:20px;background:
+        radial-gradient(600px 300px at 15% 10%, var(--teal-soft), transparent 60%),
+        radial-gradient(500px 260px at 90% 90%, var(--amber-soft), transparent 60%), var(--bg)}
+      .login-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:30px;max-width:440px;width:100%}
+      .login-card .big-ico{width:64px;height:64px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;margin-bottom:14px}
+      .login-card h1{font-size:1.7rem;margin-bottom:4px}
+      .login-card p{color:var(--ink-soft);margin:0 0 18px}
+      label.f{display:block;font-weight:700;margin:14px 0 6px;font-size:.95rem}
+      input[type=text],input[type=number],input[type=password],select{
+        width:100%;padding:14px;border:1.5px solid var(--line);border-radius:12px;font-size:1.05rem;background:var(--surface);color:var(--ink);min-height:52px}
+      input:focus,select:focus{outline:2px solid var(--teal);border-color:var(--teal)}
+      .login-card .btn{width:100%;margin-top:20px;font-size:1.08rem;min-height:56px}
+      .err{color:var(--red);font-weight:600;font-size:.9rem;margin-top:8px;min-height:1.2em}
+
+      /* ---------- Diagram unsur ---------- */
+      .unsur-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+      @media (max-width:820px){.unsur-layout{grid-template-columns:1fr}}
+      .svg-box{background:var(--surface2);border-radius:14px;padding:10px}
+      .svg-box svg{width:100%;height:auto;display:block}
+      .hl{transition:opacity .2s}
+      .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+      .chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:10px 16px;font-weight:700;font-size:.92rem;min-height:44px}
+      .chip.active{background:var(--amber);border-color:var(--amber);color:#231600}
+      .explain{background:var(--surface2);border-radius:12px;padding:16px 18px;min-height:120px}
+      .explain h3{margin-top:0}
+      .explain .rumus{font-weight:800;color:var(--teal-dark)}
+      @media (prefers-color-scheme: dark){.explain .rumus{color:var(--teal)}}
+
+      /* ---------- Sudut ---------- */
+      input[type=range]{width:100%;accent-color:var(--teal);height:36px}
+      .angle-read{font-size:1.05rem;font-weight:700;text-align:center}
+      .angle-read b{color:var(--teal-dark);font-size:1.3rem}
+      @media (prefers-color-scheme: dark){.angle-read b{color:var(--teal)}}
+
+      /* ---------- Kalkulator ---------- */
+      .calc-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+      .calc-tabs button{flex:1 1 40%;min-height:50px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;font-size:.95rem;padding:10px}
+      .calc-tabs button.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+      .steps{background:var(--surface2);border-radius:12px;padding:16px 18px;margin-top:16px;font-size:1rem}
+      .steps .hasil{font-size:1.25rem;font-weight:800;color:var(--teal-dark)}
+      @media (prefers-color-scheme: dark){.steps .hasil{color:var(--teal)}}
+      .steps ol{margin:8px 0;padding-left:22px}
+      .steps li{margin:5px 0}
 
       /* ---------- Kuis ---------- */
-      .progress { height: 12px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin: 10px 0 18px; }
-      .progress > div { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
-      .opt {
-        display: block; width: 100%; text-align: left; font: inherit; cursor: pointer;
-        min-height: 56px; padding: 14px 18px; margin: 0 0 10px;
-        border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink);
-        touch-action: manipulation;
-      }
-      .opt:hover { border-color: var(--accent); }
-      .opt.correct { border-color: var(--good); background: var(--good-soft); font-weight: 700; }
-      .opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
-      .opt:disabled { cursor: default; opacity: 0.9; }
-      .explain { border-radius: 10px; padding: 14px 18px; margin-top: 6px; }
-      .explain.good { background: var(--good-soft); }
-      .explain.bad { background: var(--bad-soft); }
-      .score-big { font-family: "Fraunces", Georgia, serif; font-size: 3.4rem; font-weight: 900; text-align: center; line-height: 1; margin: 10px 0; }
+      .quiz-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+      .pill{background:var(--surface2);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.9rem}
+      .q-text{font-size:1.12rem;font-weight:600;margin-bottom:14px}
+      .opts{display:grid;gap:10px}
+      .opt{text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:14px 16px;font-size:1.02rem;font-weight:600;min-height:54px;width:100%}
+      .opt:hover{border-color:var(--teal)}
+      .opt.correct{background:var(--green-soft);border-color:var(--green)}
+      .opt.wrong{background:var(--red-soft);border-color:var(--red)}
+      .opt:disabled{cursor:default;opacity:.95}
+      .feedback{border-radius:12px;padding:14px 16px;margin-top:14px;font-size:.97rem;display:none}
+      .feedback.ok{background:var(--green-soft);display:block}
+      .feedback.no{background:var(--red-soft);display:block}
+      .progress{height:10px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:16px}
+      .progress i{display:block;height:100%;background:var(--teal);width:0;transition:width .3s}
+      .score-big{font-size:3rem;font-weight:800;font-family:"Fredoka",sans-serif;text-align:center;color:var(--teal-dark)}
+      @media (prefers-color-scheme: dark){.score-big{color:var(--teal)}}
+      .center{text-align:center}
 
       /* ---------- Data Guru ---------- */
-      .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
-      .stat { background: var(--surface-2); border-radius: 12px; padding: 14px; text-align: center; }
-      .stat b { display: block; font-size: 1.7rem; font-family: "Fraunces", Georgia, serif; }
-      .stat span { font-size: 0.82rem; color: var(--muted); font-weight: 700; }
-      .student-card { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; background: var(--surface); }
-      .student-card .head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-      .student-card .head b { font-size: 1.08rem; }
-      .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-      .chip { background: var(--accent-soft); border-radius: 999px; padding: 3px 12px; font-size: 0.83rem; font-weight: 600; }
-      .score-track { display: flex; align-items: flex-end; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-      .score-track .bar { width: 30px; background: var(--accent); border-radius: 5px 5px 0 0; min-height: 6px; }
-      .score-track .barwrap { text-align: center; font-size: 0.72rem; color: var(--muted); font-weight: 700; }
-      .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+      .pin-box{max-width:380px;margin:26px auto;text-align:center}
+      table{width:100%;border-collapse:collapse;font-size:.93rem}
+      th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+      th{font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft)}
+      .tbl-wrap{overflow-x:auto}
+      .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:14px 0}
+      .stat{background:var(--surface2);border-radius:12px;padding:14px;text-align:center}
+      .stat b{display:block;font-size:1.6rem;font-family:"Fredoka",sans-serif}
+      .stat span{font-size:.85rem;color:var(--ink-soft)}
+      .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+      .status-line{font-size:.92rem;font-weight:600;margin-top:10px;min-height:1.3em}
+      .status-line.ok{color:var(--green)}
+      .status-line.no{color:var(--red)}
+      .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem;word-break:break-all}
 
-      footer {
-        border-top: 1px solid var(--line); margin-top: 12px;
-        padding: 22px 16px 30px; text-align: center; color: var(--muted); font-size: 0.95rem;
-      }
-      footer b { color: var(--ink); }
-      @media (prefers-reduced-motion: reduce) { .progress > div { transition: none; } }
-          /* ===== Tanya Kang Dody — AI tutor (tombol mengambang + panel chat) ===== */
+      footer{border-top:1px solid var(--line);background:var(--surface);padding:20px 0 26px;margin-top:10px;text-align:center;color:var(--ink-soft);font-size:.92rem}
+      footer b{color:var(--ink)}
+      .hidden{display:none !important}
+              /* ===== Tanya Kang Dody — AI tutor (tombol mengambang + panel chat) ===== */
       #kdFab {
         position: fixed; right: 18px; bottom: 18px; z-index: 60;
         display: inline-flex; align-items: center; gap: 8px;
@@ -288,957 +208,823 @@
       }
       #kdInput:focus { border-color: var(--teal, #0e7c66); outline: none; box-shadow: 0 0 0 3px var(--teal-tint, #dcefe6); }
       #kdForm .btn.small { flex: none; }
-</style>
+
+      /* Sembunyikan widget selama layar login tampil */
+      #loginScreen:not(.hidden) ~ #kdFab,
+      #loginScreen:not(.hidden) ~ #kdPanel { display: none !important; }
+    </style>
   </head>
   <body>
 
-    <!-- ==================== HALAMAN LOGIN ==================== -->
-    <div id="loginView">
-      <div class="login-wrap">
-        <div class="login-card">
-          <h1>Koordinat Kartesius</h1>
-          <p class="muted">Aplikasi belajar matematika kelas 8 — bagian dari portal <b>DapMath</b>. Isi nama dan kelasmu dulu sebelum mulai belajar, supaya gurumu bisa melihat siapa saja yang sudah belajar dan bagaimana perkembangan nilai kuismu.</p>
-          <form id="loginForm" novalidate>
-            <div class="field">
-              <label for="namaInput">Nama Lengkap</label>
-              <input type="text" id="namaInput" placeholder="Contoh: Siti Rahma" autocomplete="name" maxlength="60" />
-            </div>
-            <div class="field">
-              <label for="kelasInput">Kelas</label>
-              <input type="text" id="kelasInput" placeholder="Contoh: 8A" autocomplete="off" maxlength="10" />
-            </div>
-            <div class="error-box" id="loginErr" hidden>Nama dan kelas wajib diisi dulu ya, sebelum mulai belajar.</div>
-            <p style="margin-top:16px"><button type="submit" class="btn">Mulai Belajar</button></p>
-          </form>
-          <p class="muted" style="font-size:0.9rem; margin-bottom:0">Untuk guru: masuk dengan nama sendiri, lalu buka menu <strong>Data Guru</strong> dan masukkan PIN guru untuk melihat data siswa. Data login dan kuis otomatis terkirim ke Google Sheet dari perangkat mana pun.</p>
-        </div>
+  <!-- ==================== LOGIN ==================== -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="big-ico" aria-hidden="true">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><path d="M12 12 L20 12"/></svg>
       </div>
-      <footer>Dibangun oleh <b>Dody Adyansyah</b> · DapMath — Matematika Kelas 8</footer>
+      <h1>Lingkaran</h1>
+      <p>Aplikasi belajar matematika kelas 8 — DapMath. Isi nama dan kelasmu dulu sebelum mulai belajar, ya!</p>
+      <form id="loginForm" novalidate>
+        <label class="f" for="inNama">Nama lengkap</label>
+        <input type="text" id="inNama" placeholder="Contoh: Siti Rahma" autocomplete="name" />
+        <label class="f" for="inKelas">Kelas</label>
+        <input type="text" id="inKelas" placeholder="Contoh: 8C" />
+        <div class="err" id="loginErr"></div>
+        <button class="btn" type="submit">Mulai Belajar</button>
+      </form>
+      <p style="text-align:center;color:var(--ink-soft);font-size:.88rem;margin:22px 0 0">Dibangun oleh <b style="color:var(--ink)">Dody Adyansyah</b> · DapMath</p>
     </div>
+  </div>
 
-    <!-- ==================== APLIKASI UTAMA ==================== -->
-    <div id="appView" hidden>
-      <div class="topbar">
-        <div class="topbar-inner">
-          <div class="brand">DapMath<small>KOORDINAT KARTESIUS · KELAS 8</small></div>
-          <div class="student-chip">
-            <div class="avatar" id="avatarEl">?</div>
-            <div class="student-meta">
-              <div class="nm" id="studentNameEl">—</div>
-              <div class="kl" id="studentClassEl">—</div>
-            </div>
-            <button class="btn ghost small" id="btnGantiSiswa" type="button">Ganti Siswa</button>
-          </div>
+  <!-- ==================== APLIKASI ==================== -->
+  <div id="appScreen" class="hidden">
+    <header class="topbar">
+      <div class="wrap topbar-in">
+        <div class="brand">
+          <span class="dot" aria-hidden="true">◯</span>
+          <span>Lingkaran<small>DapMath · Matematika Kelas 8</small></span>
+        </div>
+        <div class="student-chip">
+          <span id="chipSiswa">—</span>
+          <button class="btn small ghost" id="btnGanti" type="button">Ganti Siswa</button>
         </div>
       </div>
+    </header>
 
-      <nav class="tabbar" role="tablist" aria-label="Menu utama">
-        <button class="tab-btn" role="tab" data-tab="beranda" aria-selected="true" type="button">Beranda</button>
-        <button class="tab-btn" role="tab" data-tab="materi" aria-selected="false" type="button">Materi</button>
-        <button class="tab-btn" role="tab" data-tab="kalkulator" aria-selected="false" type="button">Kalkulator</button>
-        <button class="tab-btn" role="tab" data-tab="kuis" aria-selected="false" type="button">Kuis</button>
-        <button class="tab-btn" role="tab" data-tab="guru" aria-selected="false" type="button">Data Guru</button>
-      </nav>
+    <nav class="menu">
+      <div class="wrap menu-in" role="tablist">
+        <button data-page="materi" class="active" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
+          Materi</button>
+        <button data-page="kalkulator" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg>
+          Kalkulator</button>
+        <button data-page="kuis" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.3a2.6 2.6 0 1 1 3.6 2.4c-.8.3-1.1.8-1.1 1.6"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>
+          Kuis</button>
+        <button data-page="guru" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          Data Guru</button>
+      </div>
+    </nav>
 
-      <main class="wrap">
-        <!-- ========== BERANDA ========== -->
-        <section id="sec-beranda">
-          <div class="card">
-            <h2>Halo, <span id="haloNama">Siswa</span>! Siap memetakan titik?</h2>
-            <p>Sistem koordinat Kartesius adalah cara menentukan <b>posisi suatu titik</b> pada bidang datar dengan sepasang bilangan (x, y). Dengan sistem ini kita bisa menggambar peta, menentukan lokasi, sampai menghitung jarak antara dua tempat. Di aplikasi ini kamu akan belajar:</p>
-            <div class="qgrid">
-              <div class="qcell"><b>Bidang Kartesius</b><br><span class="muted">Sumbu X (mendatar) dan sumbu Y (tegak) berpotongan di titik asal O(0, 0). Setiap titik ditulis (x, y): x disebut <i>absis</i>, y disebut <i>ordinat</i>.</span></div>
-              <div class="qcell"><b>Empat Kuadran</b><br><span class="muted">Kedua sumbu membagi bidang menjadi empat daerah: Kuadran I, II, III, dan IV — masing-masing dengan pola tanda x dan y yang khas.</span></div>
-              <div class="qcell"><b>Posisi Titik</b><br><span class="muted">Titik bisa berada di kuadran, tepat pada sumbu, atau di titik asal. Menentukan posisinya cukup dari tanda absis dan ordinatnya.</span></div>
-              <div class="qcell"><b>Jarak Dua Titik</b><br><span class="muted">Jarak antara (x<sub>1</sub>, y<sub>1</sub>) dan (x<sub>2</sub>, y<sub>2</sub>) dihitung dengan teorema Pythagoras: √((x<sub>2</sub>−x<sub>1</sub>)² + (y<sub>2</sub>−y<sub>1</sub>)²).</span></div>
-            </div>
-            <p class="muted" style="margin-bottom:0">Geser-geser titiknya langsung di menu <b>Materi</b>, hitung dengan bantuan <b>Kalkulator</b>, lalu uji pemahamanmu di <b>Kuis</b>.</p>
-          </div>
-          <div class="grid cols-3">
-            <div class="card menu-card">
-              <h3>Materi Interaktif</h3>
-              <p>Bidang koordinat yang titiknya bisa digeser dan diklik, penjelasan empat kuadran, dan visual jarak dua titik.</p>
-              <button class="btn" type="button" data-goto="materi">Buka Materi</button>
-            </div>
-            <div class="card menu-card">
-              <h3>Kalkulator</h3>
-              <p>Hitung jarak dua titik lengkap dengan langkahnya, dan tentukan kuadran atau posisi suatu titik secara otomatis.</p>
-              <button class="btn" type="button" data-goto="kalkulator">Buka Kalkulator</button>
-            </div>
-            <div class="card menu-card">
-              <h3>Kuis 10 Soal</h3>
-              <p>Sepuluh soal pilihan ganda dengan pembahasan langsung di setiap soal dan skor akhir. Nilaimu tercatat untuk gurumu.</p>
-              <button class="btn" type="button" data-goto="kuis">Mulai Kuis</button>
-            </div>
-          </div>
-        </section>
+    <main class="wrap">
 
-        <!-- ========== MATERI ========== -->
-        <section id="sec-materi" hidden>
-          <h2>Materi Koordinat Kartesius</h2>
-          <p class="muted">Pilih topik di bawah ini. Pada bidang koordinat, kamu bisa <b>menyeret titik</b> dengan jari atau mouse, atau <b>mengklik sembarang tempat</b> untuk memindahkan titik ke sana.</p>
-          <div class="subbar" role="tablist" aria-label="Topik materi">
-            <button class="sub-btn" data-sub="bidang" aria-selected="true" type="button">Bidang Kartesius</button>
-            <button class="sub-btn" data-sub="kuadran" aria-selected="false" type="button">Empat Kuadran</button>
-            <button class="sub-btn" data-sub="jarak" aria-selected="false" type="button">Jarak Dua Titik</button>
-          </div>
-
-          <!-- Bidang Kartesius -->
-          <article class="card" id="sub-bidang">
-            <h3>1 · Bidang Koordinat Kartesius</h3>
-            <p>Bidang Kartesius dibentuk oleh dua garis bilangan yang saling tegak lurus: <b>sumbu X</b> (mendatar) dan <b>sumbu Y</b> (tegak). Keduanya berpotongan di <b>titik asal O(0, 0)</b>. Posisi titik ditulis sebagai pasangan berurutan <b>(x, y)</b> — bilangan pertama (absis) menunjukkan langkah ke kanan/kiri dari titik asal, bilangan kedua (ordinat) menunjukkan langkah ke atas/bawah.</p>
-            <div class="formula"><span class="lbl">Cara membaca titik (x, y)</span>Dari titik asal: bergerak x satuan (kanan jika positif, kiri jika negatif), lalu y satuan (atas jika positif, bawah jika negatif).</div>
-            <svg class="viz plane" id="planeBidang" viewBox="0 0 640 640" role="img" aria-label="Bidang koordinat Kartesius interaktif dengan satu titik yang bisa digeser"></svg>
+      <!-- ==================== MATERI ==================== -->
+      <section class="page show" id="page-materi">
+        <div class="card">
+          <h2>Unsur-Unsur Lingkaran</h2>
+          <p class="lead">Lingkaran adalah kumpulan titik-titik pada bidang yang berjarak sama dari sebuah titik tertentu. Klik nama unsur di bawah (atau langsung pada gambarnya) untuk menyorot dan membaca penjelasannya.</p>
+          <div class="unsur-layout">
+            <div class="svg-box">
+              <svg id="svgUnsur" viewBox="0 0 360 360" role="img" aria-label="Diagram lingkaran dengan unsur-unsurnya">
+                <!-- juring (sektor) -->
+                <path id="el-juring" class="hl" d="M180 180 L180 60 A120 120 0 0 1 265 95 Z" fill="#e8930c" opacity="0.18"/>
+                <!-- tembereng -->
+                <path id="el-tembereng" class="hl" d="M95 265 A120 120 0 0 0 265 265 Z" fill="#0e7a63" opacity="0.15"/>
+                <!-- lingkaran -->
+                <circle cx="180" cy="180" r="120" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+                <!-- busur -->
+                <path id="el-busur" class="hl" d="M92.6 255 A120 120 0 0 1 75 130" fill="none" stroke="#c0392b" stroke-width="6" opacity="0.25" stroke-linecap="round"/>
+                <!-- diameter -->
+                <line id="el-diameter" class="hl" x1="60" y1="180" x2="300" y2="180" stroke="#7c3aed" stroke-width="5" opacity="0.2" stroke-linecap="round"/>
+                <!-- tali busur -->
+                <line id="el-talibusur" class="hl" x1="95" y1="265" x2="265" y2="265" stroke="#0e7a63" stroke-width="5" opacity="0.2" stroke-linecap="round"/>
+                <!-- jari-jari -->
+                <line id="el-jarijari" class="hl" x1="180" y1="180" x2="265" y2="95" stroke="#e8930c" stroke-width="5" opacity="0.25" stroke-linecap="round"/>
+                <!-- titik pusat -->
+                <circle id="el-pusat" class="hl" cx="180" cy="180" r="9" fill="#c0392b" opacity="0.35"/>
+                <circle cx="180" cy="180" r="4" fill="var(--ink)"/>
+                <text x="188" y="172" font-size="15" font-weight="700" fill="var(--ink)">O</text>
+                <text x="230" y="128" font-size="13" font-style="italic" fill="var(--ink-soft)">r</text>
+                <!-- area klik transparan -->
+                <g fill="transparent" style="cursor:pointer">
+                  <circle data-u="pusat" cx="180" cy="180" r="20"><title>Titik Pusat</title></circle>
+                  <rect data-u="jarijari" x="205" y="105" width="46" height="46" rx="8"><title>Jari-jari</title></rect>
+                  <rect data-u="diameter" x="60" y="164" width="110" height="32" rx="8"><title>Diameter</title></rect>
+                  <rect data-u="talibusur" x="130" y="248" width="100" height="34" rx="8"><title>Tali Busur</title></rect>
+                  <rect data-u="juring" x="196" y="66" width="60" height="52" rx="8"><title>Juring</title></rect>
+                  <rect data-u="tembereng" x="150" y="272" width="60" height="34" rx="8"><title>Tembereng</title></rect>
+                  <rect data-u="busur" x="52" y="160" width="44" height="70" rx="8"><title>Busur</title></rect>
+                </g>
+              </svg>
+            </div>
             <div>
-              <span class="coord-badge a" id="bidangCoord">Titik A (3, 2)</span>
-              <span class="coord-badge" id="bidangPos">Kuadran I</span>
-            </div>
-            <div class="result-line" id="bidangInfo"></div>
-            <div class="note" style="margin-top:14px"><b>Coba sendiri:</b> seret titik A ke berbagai tempat. Perhatikan garis putus-putus dari titik menuju kedua sumbu — garis itu menunjukkan nilai absis dan ordinatnya. Coba juga letakkan titik tepat di atas sumbu atau tepat di titik asal, lalu baca keterangannya.</div>
-          </article>
-
-          <!-- Empat Kuadran -->
-          <article class="card" id="sub-kuadran" hidden>
-            <h3>2 · Empat Kuadran</h3>
-            <p>Sumbu X dan sumbu Y membagi bidang menjadi <b>empat daerah</b> yang disebut kuadran. Penomorannya berlawanan arah jarum jam, dimulai dari kanan atas. Setiap kuadran punya pola tanda yang tetap:</p>
-            <table class="signs">
-              <tr><th>Daerah</th><th>Tanda x</th><th>Tanda y</th><th>Contoh titik</th></tr>
-              <tr><td><b>Kuadran I</b> (kanan atas)</td><td>positif (+)</td><td>positif (+)</td><td>(4, 3)</td></tr>
-              <tr><td><b>Kuadran II</b> (kiri atas)</td><td>negatif (−)</td><td>positif (+)</td><td>(−5, 2)</td></tr>
-              <tr><td><b>Kuadran III</b> (kiri bawah)</td><td>negatif (−)</td><td>negatif (−)</td><td>(−3, −4)</td></tr>
-              <tr><td><b>Kuadran IV</b> (kanan bawah)</td><td>positif (+)</td><td>negatif (−)</td><td>(6, −1)</td></tr>
-            </table>
-            <p>Titik yang salah satu koordinatnya 0 <b>tidak berada di kuadran mana pun</b>: titik (5, 0) terletak pada sumbu X, titik (0, −3) terletak pada sumbu Y, dan (0, 0) adalah titik asal.</p>
-            <svg class="viz plane" id="planeKuadran" viewBox="0 0 640 640" role="img" aria-label="Bidang koordinat dengan empat kuadran berwarna dan satu titik yang bisa digeser"></svg>
-            <div>
-              <span class="coord-badge a" id="kuadranCoord">Titik P (−4, 3)</span>
-              <span class="coord-badge" id="kuadranPos">Kuadran II</span>
-            </div>
-            <div class="result-line" id="kuadranInfo"></div>
-            <div class="note" style="margin-top:14px"><b>Tantangan:</b> tanpa melihat tabel, seret titik P ke Kuadran III, lalu ke Kuadran IV. Kunci mengingatnya: mulai dari kanan atas (I), lalu berputar melawan arah jarum jam — II, III, IV.</div>
-          </article>
-
-          <!-- Jarak Dua Titik -->
-          <article class="card" id="sub-jarak" hidden>
-            <h3>3 · Jarak Antara Dua Titik</h3>
-            <p>Jarak antara titik A(x<sub>1</sub>, y<sub>1</sub>) dan B(x<sub>2</sub>, y<sub>2</sub>) adalah panjang garis lurus yang menghubungkan keduanya. Garis itu menjadi sisi miring segitiga siku-siku yang kaki-kakinya sejajar sumbu: kaki mendatar sepanjang |x<sub>2</sub> − x<sub>1</sub>| dan kaki tegak setinggi |y<sub>2</sub> − y<sub>1</sub>|. Dengan teorema Pythagoras diperoleh rumus jarak:</p>
-            <div class="formula"><span class="lbl">Rumus jarak dua titik</span>Jarak AB = √((x<sub>2</sub> − x<sub>1</sub>)<sup>2</sup> + (y<sub>2</sub> − y<sub>1</sub>)<sup>2</sup>)</div>
-            <svg class="viz plane" id="planeJarak" viewBox="0 0 640 640" role="img" aria-label="Bidang koordinat dengan dua titik yang bisa digeser dan garis penghubungnya"></svg>
-            <div>
-              <span class="coord-badge a" id="jarakCoordA">Titik A (−2, −1)</span>
-              <span class="coord-badge b" id="jarakCoordB">Titik B (3, 3)</span>
-            </div>
-            <div class="result-line">Jarak AB = <span class="big" id="jarakVal">—</span> satuan</div>
-            <div class="steps" id="jarakSteps"></div>
-            <div class="note" style="margin-top:14px"><b>Coba sendiri:</b> seret titik A atau B (atau klik bidang untuk memindahkan titik yang terdekat). Garis putus-putus menunjukkan selisih x dan selisih y — perhatikan bahwa jarak selalu dihitung dari kuadrat kedua selisih itu, jadi urutan titik tidak memengaruhi hasil.</div>
-          </article>
-        </section>
-
-        <!-- ========== KALKULATOR ========== -->
-        <section id="sec-kalkulator" hidden>
-          <h2>Kalkulator Jarak Dua Titik</h2>
-          <p class="muted">Masukkan koordinat dua titik, lalu klik Hitung. Langkah penyelesaiannya ditampilkan supaya kamu bisa mengikuti cara berpikirnya.</p>
-          <div class="card">
-            <div class="form-row c4">
-              <div class="field"><label for="dX1">x<sub>1</sub> (titik A)</label><input type="number" id="dX1" value="1" step="any" /></div>
-              <div class="field"><label for="dY1">y<sub>1</sub> (titik A)</label><input type="number" id="dY1" value="2" step="any" /></div>
-              <div class="field"><label for="dX2">x<sub>2</sub> (titik B)</label><input type="number" id="dX2" value="4" step="any" /></div>
-              <div class="field"><label for="dY2">y<sub>2</sub> (titik B)</label><input type="number" id="dY2" value="6" step="any" /></div>
-            </div>
-            <div class="error-box" id="distErr" hidden>Periksa lagi isianmu: keempat koordinat harus berupa angka.</div>
-            <p><button class="btn" id="btnDist" type="button">Hitung Jarak AB</button></p>
-            <div id="distOut" hidden>
-              <div class="result-line" id="distResult"></div>
-              <div class="steps" id="distSteps"></div>
-            </div>
-          </div>
-
-          <h2>Penentu Kuadran &amp; Posisi Titik</h2>
-          <p class="muted">Masukkan koordinat satu titik untuk mengetahui letaknya: di kuadran mana, pada sumbu, atau di titik asal.</p>
-          <div class="card">
-            <div class="form-row c2">
-              <div class="field"><label for="pX">Absis (x)</label><input type="number" id="pX" value="-5" step="any" /></div>
-              <div class="field"><label for="pY">Ordinat (y)</label><input type="number" id="pY" value="3" step="any" /></div>
-            </div>
-            <div class="error-box" id="posErr" hidden>Periksa lagi isianmu: absis dan ordinat harus berupa angka.</div>
-            <p><button class="btn" id="btnPos" type="button">Tentukan Posisi</button></p>
-            <div id="posOut" hidden>
-              <div class="result-line" id="posResult"></div>
-              <div class="steps" id="posSteps"></div>
-            </div>
-          </div>
-
-          <h2>Latihan Cepat</h2>
-          <p class="muted">Coba kerjakan empat soal ini sendiri dulu, isi jawabanmu, lalu klik Periksa. Ada pembahasan di setiap soal.</p>
-          <div id="latihanList"></div>
-        </section>
-
-        <!-- ========== KUIS ========== -->
-        <section id="sec-kuis" hidden>
-          <h2>Kuis Koordinat Kartesius</h2>
-          <div class="card" id="quizStart">
-            <p>Kuis ini berisi <b>10 soal pilihan ganda</b> tentang bidang Kartesius, empat kuadran, posisi titik, dan jarak dua titik. Setiap jawaban langsung dibahas, jadi kamu bisa belajar dari kesalahanmu. Skor akhir akan tercatat dan terkirim ke gurumu.</p>
-            <p style="margin-bottom:0"><button class="btn" id="btnStartQuiz" type="button">Mulai Kuis</button></p>
-          </div>
-          <div class="card" id="quizPlay" hidden>
-            <div style="display:flex; justify-content:space-between; font-weight:700">
-              <span id="quizProgressLabel">Soal 1 dari 10</span><span id="quizScoreLabel">Skor sementara: 0</span>
-            </div>
-            <div class="progress"><div id="quizBar"></div></div>
-            <h3 id="quizQuestion"></h3>
-            <div id="quizOptions"></div>
-            <div class="explain" id="quizExplain" hidden></div>
-            <p style="margin-top:16px; margin-bottom:0"><button class="btn" id="btnNextQ" type="button" hidden>Soal Berikutnya</button></p>
-          </div>
-          <div class="card" id="quizResult" hidden>
-            <h3 style="text-align:center">Kuis Selesai!</h3>
-            <div class="score-big" id="finalScore">0</div>
-            <p style="text-align:center" id="finalMsg"></p>
-            <p style="text-align:center" class="muted" id="finalDetail"></p>
-            <p style="text-align:center; margin-bottom:0">
-              <button class="btn" id="btnRetryQuiz" type="button">Ulangi Kuis</button>
-              <button class="btn secondary" id="btnBackMateri" type="button">Kembali ke Materi</button>
-            </p>
-          </div>
-        </section>
-
-        <!-- ========== DATA GURU ========== -->
-        <section id="sec-guru" hidden>
-          <h2>Data Guru</h2>
-
-          <div class="card" id="pinGate">
-            <h3>Menu Terkunci</h3>
-            <p>Menu ini berisi data seluruh siswa, jadi terkunci dengan PIN. Masukkan PIN guru untuk membukanya. (Pengiriman data login dan kuis dari perangkat siswa tetap berjalan otomatis tanpa PIN.)</p>
-            <form id="pinForm" novalidate>
-              <div class="field">
-                <label for="pinInput">PIN Guru</label>
-                <input type="password" id="pinInput" placeholder="Masukkan PIN guru" autocomplete="off" maxlength="32" />
+              <div class="chip-row" id="chipRow"></div>
+              <div class="explain" id="explainBox">
+                <h3>Pilih sebuah unsur</h3>
+                <p>Klik tombol unsur atau bagian gambar untuk melihat penjelasan lengkapnya di sini.</p>
               </div>
-              <div class="error-box" id="pinErr" hidden>PIN salah. Silakan periksa lagi dan coba kembali.</div>
-              <p style="margin-top:14px; margin-bottom:0"><button class="btn" type="submit">Buka Data Guru</button></p>
-            </form>
+            </div>
           </div>
+        </div>
 
-          <div id="guruContent" hidden>
+        <div class="grid2">
+          <div class="card">
+            <h2>Keliling Lingkaran</h2>
+            <p class="lead">Keliling adalah panjang garis lengkung yang membatasi lingkaran. Nilai π (pi) ≈ 3,14 atau 22/7.</p>
+            <div class="formula">K = 2 × π × r<small>atau K = π × d &nbsp;·&nbsp; r = jari-jari, d = diameter</small></div>
+            <p><b>Contoh:</b> r = 7 cm → K = 2 × 22/7 × 7 = <b>44 cm</b>.</p>
+            <p>Pakai π = 22/7 bila jari-jari/diameter kelipatan 7, dan π = 3,14 untuk bilangan lainnya.</p>
+          </div>
+          <div class="card">
+            <h2>Luas Lingkaran</h2>
+            <p class="lead">Luas adalah besar daerah yang dibatasi oleh lingkaran.</p>
+            <div class="formula">L = π × r × r = π r²<small>r = jari-jari lingkaran</small></div>
+            <p><b>Contoh:</b> r = 10 cm → L = 3,14 × 10 × 10 = <b>314 cm²</b>.</p>
+            <p>Perhatikan satuan: keliling memakai satuan panjang (cm), luas memakai satuan persegi (cm²).</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Sudut Pusat &amp; Sudut Keliling</h2>
+          <p class="lead"><b>Sudut pusat</b> dibentuk oleh dua jari-jari dengan titik sudut di pusat lingkaran. <b>Sudut keliling</b> dibentuk oleh dua tali busur dengan titik sudut pada lingkaran. Bila keduanya menghadap busur yang sama, berlaku:</p>
+          <div class="formula">Sudut pusat = 2 × sudut keliling<small>menghadap busur yang sama</small></div>
+          <p>Geser sudut kelilingnya dan amati: sudut pusat selalu tepat dua kalinya.</p>
+          <div class="grid2">
+            <div class="svg-box">
+              <svg id="svgSudut" viewBox="0 0 360 300" role="img" aria-label="Diagram sudut pusat dan sudut keliling">
+                <circle cx="180" cy="150" r="110" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+                <path id="arcSama" d="" fill="none" stroke="#c0392b" stroke-width="6" opacity="0.35" stroke-linecap="round"/>
+                <line id="lnOA" x1="180" y1="150" stroke="#e8930c" stroke-width="3"/>
+                <line id="lnOB" x1="180" y1="150" stroke="#e8930c" stroke-width="3"/>
+                <line id="lnPA" stroke="#0e7a63" stroke-width="3"/>
+                <line id="lnPB" stroke="#0e7a63" stroke-width="3"/>
+                <circle cx="180" cy="150" r="4.5" fill="var(--ink)"/>
+                <circle id="ptP" r="7" fill="#0e7a63" style="cursor:pointer"/>
+                <circle id="ptA" r="5" fill="#c0392b"/>
+                <circle id="ptB" r="5" fill="#c0392b"/>
+                <text x="188" y="142" font-size="14" font-weight="700" fill="var(--ink)">O</text>
+                <text id="txP" font-size="14" font-weight="700" fill="#0e7a63">P</text>
+              </svg>
+            </div>
+            <div>
+              <label class="f" for="rngSudut">Besar sudut keliling ∠P</label>
+              <input type="range" id="rngSudut" min="15" max="80" value="35" step="1" />
+              <p class="angle-read">Sudut keliling ∠APB = <b id="valKeliling">35°</b><br/>Sudut pusat ∠AOB = <b id="valPusat">70°</b></p>
+              <div class="note">Titik P dapat digeser di sepanjang lingkaran — selama P tetap pada busur besar yang sama, besar sudut kelilingnya tidak berubah. Coba geser titik hijau pada gambar!</div>
+              <p>Akibatnya: sudut keliling yang menghadap <b>diameter</b> selalu <b>90°</b> (sudut siku-siku), karena sudut pusatnya 180°.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== KALKULATOR ==================== -->
+      <section class="page" id="page-kalkulator">
+        <div class="card">
+          <h2>Kalkulator Lingkaran</h2>
+          <p class="lead">Pilih jenis hitungan, masukkan nilainya, lalu lihat langkah penyelesaiannya selangkah demi selangkah.</p>
+          <div class="calc-tabs" id="calcTabs">
+            <button data-calc="keliling" class="active" type="button">Keliling</button>
+            <button data-calc="luas" type="button">Luas</button>
+            <button data-calc="busur" type="button">Panjang Busur</button>
+            <button data-calc="juring" type="button">Luas Juring</button>
+          </div>
+          <div class="grid2">
+            <div>
+              <label class="f" for="inR">Jari-jari (r) — dalam cm</label>
+              <input type="number" id="inR" min="0" step="any" placeholder="Contoh: 14" />
+            </div>
+            <div id="sudutField">
+              <label class="f" for="inSudut">Sudut pusat (θ) — dalam derajat</label>
+              <input type="number" id="inSudut" min="0" max="360" step="any" placeholder="Contoh: 90" />
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="btnHitung" type="button">Hitung</button>
+          </div>
+          <div class="steps hidden" id="stepsBox"></div>
+        </div>
+        <div class="card">
+          <h3>Ingat rumusnya</h3>
+          <ul class="tight">
+            <li>Keliling: <b>K = 2πr</b></li>
+            <li>Luas: <b>L = πr²</b></li>
+            <li>Panjang busur: <b>(θ/360°) × 2πr</b></li>
+            <li>Luas juring: <b>(θ/360°) × πr²</b></li>
+          </ul>
+          <p>Busur dan juring adalah "potongan" dari lingkaran penuh (360°), jadi rumusnya memakai perbandingan θ/360°.</p>
+        </div>
+      </section>
+
+      <!-- ==================== KUIS ==================== -->
+      <section class="page" id="page-kuis">
+        <div class="card" id="quizStart">
+          <h2>Kuis Lingkaran</h2>
+          <p class="lead">10 soal pilihan ganda. Setiap jawaban langsung dibahas, jadi kamu bisa belajar dari kesalahan. Skor akhirmu akan tercatat dan terkirim ke guru.</p>
+          <div class="btn-row">
+            <button class="btn" id="btnMulaiKuis" type="button">Mulai Kuis</button>
+          </div>
+          <p id="quizBest" style="margin-top:12px"></p>
+        </div>
+
+        <div class="card hidden" id="quizPlay">
+          <div class="quiz-meta">
+            <span class="pill" id="qCounter">Soal 1 dari 10</span>
+            <span class="pill" id="qScore">Skor sementara: 0</span>
+          </div>
+          <div class="progress"><i id="qBar"></i></div>
+          <p class="q-text" id="qText"></p>
+          <div class="opts" id="qOpts"></div>
+          <div class="feedback" id="qFeed"></div>
+          <div class="btn-row">
+            <button class="btn hidden" id="btnNextQ" type="button">Soal Berikutnya</button>
+          </div>
+        </div>
+
+        <div class="card hidden" id="quizDone">
+          <h2 class="center">Kuis Selesai!</h2>
+          <div class="score-big" id="finalScore">0</div>
+          <p class="center" id="finalMsg"></p>
+          <div class="btn-row" style="justify-content:center">
+            <button class="btn" id="btnUlangKuis" type="button">Kerjakan Lagi</button>
+            <button class="btn ghost" id="btnKeMateri" type="button">Kembali ke Materi</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== DATA GURU ==================== -->
+      <section class="page" id="page-guru">
+        <div class="card" id="pinGate">
+          <div class="pin-box">
+            <h2>Menu Khusus Guru</h2>
+            <p class="lead">Masukkan PIN guru untuk melihat data siswa.</p>
+            <label class="f" for="inPin" style="text-align:left">PIN Guru</label>
+            <input type="password" id="inPin" placeholder="••••••" autocomplete="off" />
+            <div class="err" id="pinErr"></div>
+            <button class="btn" id="btnPin" type="button" style="width:100%;margin-top:10px">Buka Data Guru</button>
+          </div>
+        </div>
+
+        <div id="guruContent" class="hidden">
+          <div class="card">
+            <h2>Data Guru — Lingkaran</h2>
+            <p class="lead">Data di perangkat ini, digabung dengan data dari Google Sheet bila dimuat.</p>
             <div class="stat-row">
-              <div class="stat"><b id="statSiswa">0</b><span>Siswa Tercatat</span></div>
-              <div class="stat"><b id="statLogin">0</b><span>Total Login</span></div>
-              <div class="stat"><b id="statKuis">0</b><span>Percobaan Kuis</span></div>
+              <div class="stat"><b id="stSiswa">0</b><span>Siswa login</span></div>
+              <div class="stat"><b id="stKuis">0</b><span>Percobaan kuis</span></div>
+              <div class="stat"><b id="stRata">–</b><span>Rata-rata skor</span></div>
             </div>
-            <div class="card">
-              <h3>Ringkasan Siswa</h3>
-              <p class="muted">Data pada sesi ini di perangkat ini, ditambah data dari Google Sheet bila dimuat. Skor menunjukkan perkembangan tiap siswa dari percobaan ke percobaan.</p>
-              <div class="btn-row">
-                <button class="btn" id="btnCsv" type="button">Unduh Laporan (CSV)</button>
-                <button class="btn secondary" id="btnSheetLoad" type="button">Muat Data dari Sheet</button>
-                <button class="btn secondary" id="btnSheetSummary" type="button">Kirim Ringkasan ke Sheet</button>
-              </div>
-              <div id="studentList"></div>
-              <p class="muted" id="emptyStudents">Belum ada data siswa pada sesi ini. Minta siswa login dan belajar dari perangkat ini, atau klik "Muat Data dari Sheet" untuk menarik data dari semua perangkat.</p>
+            <h3>Daftar Siswa &amp; Perkembangan</h3>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Nama</th><th>Kelas</th><th>Menu Dipelajari</th><th>Kuis</th><th>Terakhir</th><th>Terbaik</th><th>Rata-rata</th></tr></thead>
+                <tbody id="tblSiswa"><tr><td colspan="7">Belum ada data.</td></tr></tbody>
+              </table>
             </div>
-
-            <div class="card">
-              <h3>Database Google Sheets</h3>
-              <p>Aplikasi ini terhubung permanen ke Google Sheet pusat DapMath. Setiap login siswa, hasil kuis, dan ringkasan otomatis terkirim ke Sheet tersebut dari perangkat mana pun, ditandai aplikasi <b>koordinat-kartesius</b>.</p>
-              <div class="btn-row">
-                <button class="btn" id="btnUjiKirim" type="button">Uji Kirim Data Sekarang</button>
-              </div>
-              <div class="field">
-                <label for="sheetUrl">URL Aplikasi Web Google Sheets (bisa diganti bila perlu)</label>
-                <input type="url" id="sheetUrl" autocomplete="off" spellcheck="false" />
-              </div>
-              <p><button class="btn secondary" id="btnSheetConnect" type="button">Hubungkan ke URL Ini</button></p>
-              <div class="status-box" id="sheetStatus">Status: memakai URL Google Sheet yang tertanam di aplikasi.</div>
-              <p class="muted" style="margin-top:14px">Jika kolom URL dikosongkan lalu klik Hubungkan, aplikasi kembali memakai URL yang tertanam. Sheet-nya sendiri tetap hanya bisa dibuka lewat akun Google pemiliknya; menu Data Guru di aplikasi ini terkunci PIN.</p>
-              <details>
-                <summary style="font-weight:700; cursor:pointer; padding:8px 0">Kode Apps Script (untuk Sheet pusat DapMath)</summary>
-                <p class="muted">Tempel kode ini di spreadsheet pusat lewat menu Ekstensi → Apps Script, lalu Deploy sebagai Aplikasi Web dengan akses "Siapa saja". Kode ini membaca kolom Aplikasi sehingga satu Sheet bisa dipakai semua aplikasi DapMath.</p>
-                <textarea class="code" id="appsScriptCode" readonly></textarea>
-                <p style="margin-top:10px; margin-bottom:0"><button class="btn secondary small" id="btnCopyScript" type="button">Salin Kode Apps Script</button></p>
-              </details>
+            <h3>Riwayat Login</h3>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th></tr></thead>
+                <tbody id="tblLogin"><tr><td colspan="3">Belum ada data.</td></tr></tbody>
+              </table>
             </div>
+            <h3>Riwayat Kuis</h3>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Percobaan ke</th><th>Skor</th></tr></thead>
+                <tbody id="tblKuis"><tr><td colspan="5">Belum ada data.</td></tr></tbody>
+              </table>
+            </div>
+            <div class="btn-row">
+              <button class="btn" id="btnCsv" type="button">Unduh Laporan (CSV)</button>
+              <button class="btn ghost" id="btnMuat" type="button">Muat Data dari Sheet</button>
+              <button class="btn amber" id="btnUji" type="button">Uji Kirim Data</button>
+            </div>
+            <div class="status-line" id="sheetStatus"></div>
           </div>
-        </section>
-      </main>
 
-      <footer>Dibangun oleh <b>Dody Adyansyah</b> · DapMath — Matematika Kelas 8</footer>
-    </div>
+          <div class="card">
+            <h2>Database Google Sheets</h2>
+            <p class="lead">Aplikasi ini terhubung ke database terpusat DapMath. Data login, kuis, dan ringkasan otomatis terkirim dengan penanda aplikasi <b>lingkaran</b>.</p>
+            <label class="f" for="inSheetUrl">URL Web App Apps Script</label>
+            <input type="text" id="inSheetUrl" class="mono" />
+            <div class="btn-row">
+              <button class="btn" id="btnSimpanUrl" type="button">Simpan URL</button>
+              <button class="btn ghost" id="btnResetUrl" type="button">Kembalikan URL Bawaan</button>
+            </div>
+            <div class="status-line" id="urlStatus"></div>
+          </div>
+        </div>
+      </section>
+    </main>
 
-    <script>
-      "use strict";
-      const $ = (s, r) => (r || document).querySelector(s);
-      const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
-      const fmt = (x) => {
-        if (typeof x !== "number" || !isFinite(x)) return String(x);
-        const r = Math.round(x * 100) / 100;
-        return r.toLocaleString("id-ID", { maximumFractionDigits: 2 });
-      };
-      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-      const nowISO = () => new Date().toISOString();
-      const fmtTime = (d) => {
-        try { return new Date(d).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); }
-        catch (e) { return "—"; }
-      };
-      const sgn = (v) => v > 0 ? "positif" : (v < 0 ? "negatif" : "nol");
-      function posisiTitik(x, y) {
-        if (x === 0 && y === 0) return "Titik Asal O(0, 0)";
-        if (y === 0) return "Pada Sumbu X";
-        if (x === 0) return "Pada Sumbu Y";
-        if (x > 0 && y > 0) return "Kuadran I";
-        if (x < 0 && y > 0) return "Kuadran II";
-        if (x < 0 && y < 0) return "Kuadran III";
-        return "Kuadran IV";
-      }
+    <footer>
+      <div class="wrap">Dibangun oleh <b>Dody Adyansyah</b> · DapMath — Aplikasi Belajar Matematika</div>
+    </footer>
+  </div>
 
-      /* ================= Integrasi Google Sheets ================= */
-      const APP_ID = "koordinat-kartesius";
-      const DEFAULT_SHEET_URL = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
-      let sheetEndpoint = DEFAULT_SHEET_URL;
-      function setSheetStatus(msg, ok) {
-        const el = $("#sheetStatus");
-        if (!el) return;
-        el.textContent = msg;
-        el.classList.toggle("ok", !!ok);
-      }
-      function sheetSend(payload) {
-        if (!sheetEndpoint) return Promise.resolve(false);
-        payload.app = APP_ID;
-        const body = JSON.stringify(payload);
-        const viaBeacon = () => {
-          try {
-            if (navigator.sendBeacon) {
-              return navigator.sendBeacon(sheetEndpoint, new Blob([body], { type: "text/plain;charset=utf-8" }));
-            }
-          } catch (err) { /* abaikan */ }
-          return false;
-        };
-        return fetch(sheetEndpoint, {
-          method: "POST", mode: "no-cors", keepalive: true,
-          headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body,
-        }).then(() => true).catch(() => viaBeacon());
-      }
-      function sheetLoad() {
-        const sep = sheetEndpoint.indexOf("?") >= 0 ? "&" : "?";
-        return fetch(sheetEndpoint + sep + "app=" + encodeURIComponent(APP_ID)).then((r) => r.json());
-      }
+<script>
+(function(){
+"use strict";
+/* =============== KONFIGURASI =============== */
+var APP_ID = "lingkaran";
+var DEFAULT_SHEET_URL = "https://script.google.com/macros/s/AKfycbwswVXKokFANBgPvHQHHG0A9mxmhgwaIETEoeJ9Npcd_SLLQUUwcJHIBvNECG1XuI61/exec";
+var GURU_PIN = "d4pm4t";
+var LS = { siswa:"lk_siswa", data:"lk_data", url:"lk_sheet_url" };
 
-      /* ================= Data sesi (memori perangkat ini) ================= */
-      const TAB_LABELS = {
-        beranda: "Beranda", materi: "Materi", kalkulator: "Kalkulator", kuis: "Kuis",
-        "materi-bidang": "Materi: Bidang Kartesius", "materi-kuadran": "Materi: Empat Kuadran",
-        "materi-jarak": "Materi: Jarak Dua Titik",
-      };
-      let studentRecords = [];
-      let currentStudent = null;
-      const keyOf = (nama, kelas) => (nama + "|" + kelas).toLowerCase();
-      function findRecord(nama, kelas) {
-        return studentRecords.find((r) => keyOf(r.nama, r.kelas) === keyOf(nama, kelas));
-      }
-      function makeRecord(nama, kelas, t) {
-        return { nama: nama, kelas: kelas, firstLogin: t || new Date(), logins: 0, visits: {}, lastActivity: t || new Date(), attempts: [] };
-      }
-      function trackVisit(key) {
-        if (!currentStudent) return;
-        currentStudent.visits[key] = (currentStudent.visits[key] || 0) + 1;
-        currentStudent.lastActivity = new Date();
-      }
+/* =============== PENYIMPANAN LOKAL (dengan cadangan memori) =============== */
+var memStore = {};
+function storeGet(k){ try{ var v = localStorage.getItem(k); return v===null ? (memStore[k]||null) : v; }catch(e){ return memStore[k]||null; } }
+function storeSet(k,v){ memStore[k]=v; try{ localStorage.setItem(k,v); }catch(e){} }
+function storeDel(k){ delete memStore[k]; try{ localStorage.removeItem(k); }catch(e){} }
 
-      /* ================= Login ================= */
-      $("#loginForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const nama = $("#namaInput").value.trim();
-        const kelas = $("#kelasInput").value.trim();
-        if (!nama || !kelas) { $("#loginErr").hidden = false; return; }
-        $("#loginErr").hidden = true;
-        let rec = findRecord(nama, kelas);
-        if (!rec) { rec = makeRecord(nama, kelas, new Date()); studentRecords.push(rec); }
-        rec.logins += 1;
-        rec.lastActivity = new Date();
-        currentStudent = rec;
-        $("#studentNameEl").textContent = rec.nama;
-        $("#studentClassEl").textContent = "Kelas " + rec.kelas;
-        $("#haloNama").textContent = rec.nama.split(" ")[0];
-        $("#avatarEl").textContent = rec.nama.split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
-        $("#loginView").hidden = true;
-        $("#appView").hidden = false;
-        sheetSend({ type: "login", time: nowISO(), nama: rec.nama, kelas: rec.kelas });
-        showTab("beranda");
-        window.scrollTo({ top: 0 });
+function sheetUrl(){ return storeGet(LS.url) || DEFAULT_SHEET_URL; }
+function loadData(){
+  try{ var d = JSON.parse(storeGet(LS.data)||"null"); if(d && d.login && d.kuis) return d; }catch(e){}
+  return { login:[], kuis:[], progress:{} };
+}
+function saveData(d){ storeSet(LS.data, JSON.stringify(d)); }
+var data = loadData();
+var sheetData = null; /* data hasil GET dari Sheet */
+
+/* =============== KIRIM KE SHEET =============== */
+function postSheet(payload){
+  payload.app = APP_ID;
+  var url = sheetUrl(); if(!url) return;
+  var body = JSON.stringify(payload);
+  try{
+    fetch(url, { method:"POST", headers:{"Content-Type":"text/plain"}, body:body, keepalive:true }).catch(function(){});
+  }catch(e){}
+  try{
+    if(navigator.sendBeacon){
+      var blob = new Blob([body], {type:"text/plain"});
+      navigator.sendBeacon(url, blob);
+    }
+  }catch(e){}
+}
+
+/* =============== SISWA AKTIF =============== */
+var siswa = null;
+try{ siswa = JSON.parse(storeGet(LS.siswa)||"null"); }catch(e){ siswa = null; }
+
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function fmtTime(t){ try{ var d = new Date(t); return d.toLocaleDateString("id-ID")+" "+d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"}); }catch(e){ return String(t||""); } }
+function keySiswa(nama,kelas){ return (nama+"|"+kelas).toLowerCase(); }
+
+function catatMenu(page){
+  if(!siswa) return;
+  var k = keySiswa(siswa.nama, siswa.kelas);
+  if(!data.progress[k]) data.progress[k] = { nama:siswa.nama, kelas:siswa.kelas, menus:[] };
+  if(data.progress[k].menus.indexOf(page) === -1) data.progress[k].menus.push(page);
+  saveData(data);
+}
+function kirimRingkasan(){
+  if(!siswa) return;
+  var k = keySiswa(siswa.nama, siswa.kelas);
+  var p = data.progress[k] || { menus:[] };
+  var ks = data.kuis.filter(function(q){ return keySiswa(q.nama,q.kelas)===k; });
+  var scores = ks.map(function(q){ return q.score; });
+  var last = scores.length? scores[scores.length-1] : "";
+  var best = scores.length? Math.max.apply(null,scores) : "";
+  var avg  = scores.length? Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length*10)/10 : "";
+  postSheet({ type:"ringkasan", time:new Date().toISOString(), nama:siswa.nama, kelas:siswa.kelas,
+    menus:(p.menus||[]).join(", "), attempts:scores.length, last:last, best:best, avg:avg });
+}
+
+/* =============== NAVIGASI =============== */
+var guruUnlocked = false;
+var menuBtns = document.querySelectorAll("nav.menu button");
+function showPage(page){
+  if(page !== "guru") guruUnlocked = false;
+  menuBtns.forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-page")===page); });
+  document.querySelectorAll("section.page").forEach(function(s){ s.classList.toggle("show", s.id==="page-"+page); });
+  if(page === "guru") renderGuruGate();
+  if(siswa && page !== "guru") catatMenu(page);
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+menuBtns.forEach(function(b){ b.addEventListener("click", function(){ showPage(b.getAttribute("data-page")); }); });
+
+/* =============== LOGIN =============== */
+function masukApp(){
+  $("loginScreen").classList.add("hidden");
+  $("appScreen").classList.remove("hidden");
+  $("chipSiswa").textContent = siswa.nama + " · Kelas " + siswa.kelas;
+  updateQuizBest();
+}
+$("loginForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var nama = $("inNama").value.trim(), kelas = $("inKelas").value.trim();
+  if(!nama || !kelas){ $("loginErr").textContent = "Nama dan kelas wajib diisi dulu, ya."; return; }
+  $("loginErr").textContent = "";
+  siswa = { nama:nama, kelas:kelas };
+  storeSet(LS.siswa, JSON.stringify(siswa));
+  var now = new Date().toISOString();
+  data.login.push({ time:now, nama:nama, kelas:kelas });
+  saveData(data);
+  postSheet({ type:"login", time:now, nama:nama, kelas:kelas });
+  masukApp();
+  showPage("materi");
+});
+$("btnGanti").addEventListener("click", function(){
+  kirimRingkasan();
+  siswa = null; storeDel(LS.siswa);
+  $("inNama").value = ""; $("inKelas").value = "";
+  $("appScreen").classList.add("hidden");
+  $("loginScreen").classList.remove("hidden");
+});
+
+/* =============== UNSUR LINGKARAN =============== */
+var UNSUR = {
+  pusat:    { nama:"Titik Pusat (O)", el:"el-pusat", op:1,
+    teks:"Titik yang berada tepat di tengah lingkaran. Semua titik pada lingkaran berjarak sama dari titik pusat ini.",
+    rumus:"Pusat lingkaran pada gambar adalah titik O." },
+  jarijari: { nama:"Jari-Jari (r)", el:"el-jarijari", op:1,
+    teks:"Garis yang menghubungkan titik pusat dengan sebuah titik pada lingkaran. Panjangnya setengah dari diameter.",
+    rumus:"r = d ÷ 2" },
+  diameter: { nama:"Diameter (d)", el:"el-diameter", op:0.85,
+    teks:"Garis lurus yang menghubungkan dua titik pada lingkaran dan melewati titik pusat. Diameter adalah tali busur terpanjang.",
+    rumus:"d = 2 × r" },
+  talibusur:{ nama:"Tali Busur", el:"el-talibusur", op:0.85,
+    teks:"Garis lurus yang menghubungkan dua titik pada lingkaran, tetapi tidak harus melewati titik pusat.",
+    rumus:"Contoh pada gambar: garis hijau di bagian bawah lingkaran." },
+  busur:    { nama:"Busur", el:"el-busur", op:0.9,
+    teks:"Bagian dari garis lingkaran (garis lengkung) yang dibatasi oleh dua titik pada lingkaran.",
+    rumus:"Panjang busur = (θ/360°) × 2πr" },
+  juring:   { nama:"Juring", el:"el-juring", op:0.55,
+    teks:"Daerah di dalam lingkaran yang dibatasi oleh dua jari-jari dan sebuah busur. Bentuknya seperti potongan kue atau pizza.",
+    rumus:"Luas juring = (θ/360°) × πr²" },
+  tembereng:{ nama:"Tembereng", el:"el-tembereng", op:0.55,
+    teks:"Daerah di dalam lingkaran yang dibatasi oleh sebuah tali busur dan busurnya.",
+    rumus:"Luas tembereng = luas juring − luas segitiga di dalamnya." }
+};
+var chipRow = $("chipRow"), unsurAktif = null;
+Object.keys(UNSUR).forEach(function(k){
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "chip"; b.textContent = UNSUR[k].nama; b.setAttribute("data-u", k);
+  b.addEventListener("click", function(){ pilihUnsur(k); });
+  chipRow.appendChild(b);
+});
+document.querySelectorAll("#svgUnsur [data-u]").forEach(function(g){
+  g.addEventListener("click", function(){ pilihUnsur(g.getAttribute("data-u")); });
+});
+function pilihUnsur(k){
+  unsurAktif = k;
+  Object.keys(UNSUR).forEach(function(key){
+    var el = $(UNSUR[key].el);
+    if(el) el.setAttribute("opacity", key===k ? UNSUR[key].op : (key==="juring"||key==="tembereng" ? 0.08 : 0.06));
+  });
+  chipRow.querySelectorAll(".chip").forEach(function(c){ c.classList.toggle("active", c.getAttribute("data-u")===k); });
+  $("explainBox").innerHTML = "<h3>"+esc(UNSUR[k].nama)+"</h3><p>"+esc(UNSUR[k].teks)+"</p><p class='rumus'>"+esc(UNSUR[k].rumus)+"</p>";
+}
+
+/* =============== SUDUT PUSAT & KELILING =============== */
+var CX=180, CY=150, R=110;
+var sudutKel = 35, posP = 200; /* derajat posisi titik P pada lingkaran */
+function polar(cx,cy,r,deg){ var a=(deg-90)*Math.PI/180; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
+function gambarSudut(){
+  var A = polar(CX,CY,R,-55), B = polar(CX,CY,R,55), P = polar(CX,CY,R,posP);
+  /* busur AB (yang dihadap kedua sudut) — sisi kanan */
+  var arc = document.getElementById("arcSama");
+  arc.setAttribute("d", "M"+A[0].toFixed(1)+" "+A[1].toFixed(1)+" A"+R+" "+R+" 0 0 1 "+B[0].toFixed(1)+" "+B[1].toFixed(1));
+  var set = function(id,x1,y1,x2,y2){ var l=$(id); l.setAttribute("x1",x1); l.setAttribute("y1",y1); l.setAttribute("x2",x2); l.setAttribute("y2",y2); };
+  set("lnOA",CX,CY,A[0],A[1]); set("lnOB",CX,CY,B[0],B[1]);
+  set("lnPA",P[0],P[1],A[0],A[1]); set("lnPB",P[0],P[1],B[0],B[1]);
+  var pEl=$("ptP"); pEl.setAttribute("cx",P[0]); pEl.setAttribute("cy",P[1]);
+  var aEl=$("ptA"); aEl.setAttribute("cx",A[0]); aEl.setAttribute("cy",A[1]);
+  var bEl=$("ptB"); bEl.setAttribute("cx",B[0]); bEl.setAttribute("cy",B[1]);
+  var t=$("txP"); t.setAttribute("x",P[0]-22); t.setAttribute("y",P[1]+5);
+  /* hubungan posisi P dengan sudut keliling: sudut keliling = ½ × sudut pusat (110°) bila P di busur besar.
+     Slider mengatur sudut keliling → sudut pusat = 2×, dicapai dengan menggerakkan A dan B simetris. */
+  var pusat = sudutKel*2, half = pusat/2;
+  var A2 = polar(CX,CY,R,-half), B2 = polar(CX,CY,R,half);
+  arc.setAttribute("d", "M"+A2[0].toFixed(1)+" "+A2[1].toFixed(1)+" A"+R+" "+R+" 0 0 1 "+B2[0].toFixed(1)+" "+B2[1].toFixed(1));
+  set("lnOA",CX,CY,A2[0],A2[1]); set("lnOB",CX,CY,B2[0],B2[1]);
+  set("lnPA",P[0],P[1],A2[0],A2[1]); set("lnPB",P[0],P[1],B2[0],B2[1]);
+  aEl.setAttribute("cx",A2[0]); aEl.setAttribute("cy",A2[1]);
+  bEl.setAttribute("cx",B2[0]); bEl.setAttribute("cy",B2[1]);
+  $("valKeliling").textContent = sudutKel + "°";
+  $("valPusat").textContent = (sudutKel*2) + "°";
+}
+$("rngSudut").addEventListener("input", function(){ sudutKel = parseInt(this.value,10); gambarSudut(); });
+/* geser titik P */
+(function(){
+  var svg = $("svgSudut"), dragging = false;
+  function toAngle(evt){
+    var pt = svg.createSVGPoint(); pt.x = evt.clientX; pt.y = evt.clientY;
+    var loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+    var deg = Math.atan2(loc.y-CY, loc.x-CX)*180/Math.PI + 90;
+    if(deg < 0) deg += 360;
+    return deg;
+  }
+  function move(evt){ if(!dragging) return; var d = toAngle(evt); if(d>105 && d<255){ posP = d; gambarSudut(); } }
+  $("ptP").addEventListener("pointerdown", function(e){ dragging = true; e.preventDefault(); });
+  window.addEventListener("pointermove", move);
+  window.addEventListener("pointerup", function(){ dragging = false; });
+})();
+gambarSudut();
+
+/* =============== KALKULATOR =============== */
+var calcMode = "keliling";
+var NEED_SUDUT = { busur:true, juring:true };
+function refreshCalc(){
+  document.querySelectorAll("#calcTabs button").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-calc")===calcMode); });
+  $("sudutField").style.display = NEED_SUDUT[calcMode] ? "" : "none";
+}
+document.querySelectorAll("#calcTabs button").forEach(function(b){
+  b.addEventListener("click", function(){ calcMode = b.getAttribute("data-calc"); refreshCalc(); $("stepsBox").classList.add("hidden"); });
+});
+refreshCalc();
+function fmtNum(x){
+  if(!isFinite(x)) return "–";
+  var v = Math.round(x*100)/100;
+  return (""+v).replace(".", ",");
+}
+function pilihPi(r){
+  if(Math.abs(r % 7) < 1e-9 || Math.abs(r % 3.5) < 1e-9) return { val:22/7, label:"22/7", alasan:"r kelipatan 7, jadi π = 22/7" };
+  return { val:3.14, label:"3,14", alasan:"r bukan kelipatan 7, jadi π = 3,14" };
+}
+$("btnHitung").addEventListener("click", function(){
+  var r = parseFloat($("inR").value);
+  var box = $("stepsBox");
+  if(!(r > 0)){ box.classList.remove("hidden"); box.innerHTML = "<b>Isi jari-jari (r) dulu dengan bilangan positif, ya.</b>"; return; }
+  var pi = pilihPi(r), steps = [], hasil = "", satuan = "cm";
+  if(calcMode === "keliling"){
+    var K = 2*pi.val*r;
+    steps = ["Rumus keliling: K = 2 × π × r", "π yang dipakai: "+pi.label+" ("+pi.alasan+")",
+      "K = 2 × "+pi.label+" × "+fmtNum(r), "K = "+fmtNum(K)+" cm"];
+    hasil = "Keliling = "+fmtNum(K)+" cm";
+  } else if(calcMode === "luas"){
+    var L = pi.val*r*r;
+    steps = ["Rumus luas: L = π × r²", "π yang dipakai: "+pi.label+" ("+pi.alasan+")",
+      "L = "+pi.label+" × "+fmtNum(r)+" × "+fmtNum(r), "L = "+fmtNum(L)+" cm²"];
+    hasil = "Luas = "+fmtNum(L)+" cm²";
+  } else {
+    var th = parseFloat($("inSudut").value);
+    if(!(th > 0 && th <= 360)){ box.classList.remove("hidden"); box.innerHTML = "<b>Isi sudut pusat (θ) antara 1° sampai 360° dulu, ya.</b>"; return; }
+    var frac = th/360;
+    if(calcMode === "busur"){
+      var Pb = frac*2*pi.val*r;
+      steps = ["Rumus panjang busur: (θ/360°) × 2 × π × r", "π yang dipakai: "+pi.label+" ("+pi.alasan+")",
+        "Panjang busur = ("+fmtNum(th)+"/360) × 2 × "+pi.label+" × "+fmtNum(r),
+        "Panjang busur = "+fmtNum(frac)+" × "+fmtNum(2*pi.val*r), "Panjang busur = "+fmtNum(Pb)+" cm"];
+      hasil = "Panjang busur = "+fmtNum(Pb)+" cm";
+    } else {
+      var Lj = frac*pi.val*r*r;
+      steps = ["Rumus luas juring: (θ/360°) × π × r²", "π yang dipakai: "+pi.label+" ("+pi.alasan+")",
+        "Luas juring = ("+fmtNum(th)+"/360) × "+pi.label+" × "+fmtNum(r)+" × "+fmtNum(r),
+        "Luas juring = "+fmtNum(frac)+" × "+fmtNum(pi.val*r*r), "Luas juring = "+fmtNum(Lj)+" cm²"];
+      hasil = "Luas juring = "+fmtNum(Lj)+" cm²";
+    }
+  }
+  var html = "<b>Langkah penyelesaian:</b><ol>";
+  steps.forEach(function(s){ html += "<li>"+esc(s)+"</li>"; });
+  html += "</ol><div class='hasil'>"+esc(hasil)+"</div>";
+  box.innerHTML = html; box.classList.remove("hidden");
+});
+
+/* =============== KUIS =============== */
+var SOAL = [
+  { q:"Keliling lingkaran dengan jari-jari 7 cm adalah … (π = 22/7)",
+    o:["22 cm","44 cm","88 cm","154 cm"], a:1,
+    bahas:"K = 2 × π × r = 2 × 22/7 × 7 = 44 cm." },
+  { q:"Luas lingkaran dengan jari-jari 10 cm adalah … (π = 3,14)",
+    o:["31,4 cm²","62,8 cm²","314 cm²","3.140 cm²"], a:2,
+    bahas:"L = π × r² = 3,14 × 10 × 10 = 314 cm²." },
+  { q:"Sebuah lingkaran berdiameter 20 cm. Jari-jarinya adalah …",
+    o:["5 cm","10 cm","20 cm","40 cm"], a:1,
+    bahas:"Jari-jari = diameter ÷ 2 = 20 ÷ 2 = 10 cm." },
+  { q:"Panjang busur dengan sudut pusat 90° dan jari-jari 14 cm adalah … (π = 22/7)",
+    o:["11 cm","22 cm","44 cm","88 cm"], a:1,
+    bahas:"Panjang busur = (90/360) × 2 × 22/7 × 14 = ¼ × 88 = 22 cm." },
+  { q:"Luas juring dengan sudut pusat 90° dan jari-jari 7 cm adalah … (π = 22/7)",
+    o:["19,25 cm²","38,5 cm²","77 cm²","154 cm²"], a:1,
+    bahas:"Luas juring = (90/360) × 22/7 × 7 × 7 = ¼ × 154 = 38,5 cm²." },
+  { q:"Sudut pusat besarnya 80°. Sudut keliling yang menghadap busur yang sama besarnya …",
+    o:["20°","40°","80°","160°"], a:1,
+    bahas:"Sudut keliling = ½ × sudut pusat = ½ × 80° = 40°." },
+  { q:"Garis lurus yang menghubungkan titik pusat dengan titik pada lingkaran disebut …",
+    o:["Diameter","Tali busur","Jari-jari","Apotema"], a:2,
+    bahas:"Itulah jari-jari (r). Diameter menghubungkan dua titik pada lingkaran melewati pusat, sedangkan tali busur tidak harus melewati pusat." },
+  { q:"Keliling lingkaran dengan diameter 20 cm adalah … (π = 3,14)",
+    o:["31,4 cm","62,8 cm","125,6 cm","314 cm"], a:1,
+    bahas:"K = π × d = 3,14 × 20 = 62,8 cm." },
+  { q:"Luas juring dengan sudut pusat 60° dan jari-jari 21 cm adalah … (π = 22/7)",
+    o:["115,5 cm²","231 cm²","462 cm²","1.386 cm²"], a:1,
+    bahas:"Luas lingkaran penuh = 22/7 × 21 × 21 = 1.386 cm². Juring 60° = 60/360 = ⅙ bagian → 1.386 ÷ 6 = 231 cm²." },
+  { q:"Keliling sebuah lingkaran adalah 88 cm. Jari-jarinya adalah … (π = 22/7)",
+    o:["7 cm","14 cm","28 cm","44 cm"], a:1,
+    bahas:"K = 2πr → 88 = 2 × 22/7 × r → r = 88 × 7 / 44 = 14 cm." }
+];
+var qi = 0, qSkor = 0, qJawab = false;
+function updateQuizBest(){
+  if(!siswa){ $("quizBest").textContent = ""; return; }
+  var k = keySiswa(siswa.nama, siswa.kelas);
+  var ks = data.kuis.filter(function(q){ return keySiswa(q.nama,q.kelas)===k; });
+  if(ks.length){
+    var best = Math.max.apply(null, ks.map(function(q){ return q.score; }));
+    $("quizBest").innerHTML = "Kamu sudah mengerjakan kuis <b>"+ks.length+" kali</b>. Skor terbaikmu: <b>"+best+"</b>.";
+  } else $("quizBest").textContent = "Kamu belum pernah mengerjakan kuis. Ayo coba!";
+}
+function mulaiKuis(){
+  qi = 0; qSkor = 0;
+  $("quizStart").classList.add("hidden");
+  $("quizDone").classList.add("hidden");
+  $("quizPlay").classList.remove("hidden");
+  tampilSoal();
+}
+function tampilSoal(){
+  qJawab = false;
+  var s = SOAL[qi];
+  $("qCounter").textContent = "Soal "+(qi+1)+" dari "+SOAL.length;
+  $("qScore").textContent = "Skor sementara: "+qSkor;
+  $("qBar").style.width = (qi/SOAL.length*100)+"%";
+  $("qText").textContent = s.q;
+  var box = $("qOpts"); box.innerHTML = "";
+  s.o.forEach(function(opt, idx){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "opt"; b.textContent = "ABCD"[idx]+". "+opt;
+    b.addEventListener("click", function(){ jawab(idx, b); });
+    box.appendChild(b);
+  });
+  var f = $("qFeed"); f.className = "feedback"; f.innerHTML = "";
+  $("btnNextQ").classList.add("hidden");
+  $("btnNextQ").textContent = qi === SOAL.length-1 ? "Lihat Hasil" : "Soal Berikutnya";
+}
+function jawab(idx, btn){
+  if(qJawab) return; qJawab = true;
+  var s = SOAL[qi], benar = idx === s.a;
+  if(benar) qSkor += 10;
+  var btns = $("qOpts").querySelectorAll(".opt");
+  btns.forEach(function(b, i){
+    b.disabled = true;
+    if(i === s.a) b.classList.add("correct");
+    else if(i === idx) b.classList.add("wrong");
+  });
+  var f = $("qFeed");
+  f.className = "feedback " + (benar ? "ok" : "no");
+  f.innerHTML = (benar ? "<b>Benar! +10 poin.</b> " : "<b>Belum tepat.</b> Jawaban yang benar: <b>"+esc(s.o[s.a])+"</b>. ") + esc(s.bahas);
+  $("qScore").textContent = "Skor sementara: "+qSkor;
+  $("btnNextQ").classList.remove("hidden");
+}
+$("btnMulaiKuis").addEventListener("click", mulaiKuis);
+$("btnUlangKuis").addEventListener("click", mulaiKuis);
+$("btnKeMateri").addEventListener("click", function(){ showPage("materi"); $("quizDone").classList.add("hidden"); $("quizStart").classList.remove("hidden"); });
+$("btnNextQ").addEventListener("click", function(){
+  if(qi < SOAL.length-1){ qi++; tampilSoal(); }
+  else selesaiKuis();
+});
+function selesaiKuis(){
+  $("quizPlay").classList.add("hidden");
+  $("quizDone").classList.remove("hidden");
+  $("finalScore").textContent = qSkor;
+  var msg = qSkor >= 90 ? "Luar biasa! Kamu sudah sangat menguasai materi lingkaran."
+    : qSkor >= 70 ? "Bagus! Sedikit lagi menuju sempurna — baca lagi bagian yang masih ragu."
+    : qSkor >= 50 ? "Cukup baik. Pelajari kembali pembahasannya dan coba lagi, ya."
+    : "Tidak apa-apa, ini proses belajar. Kembali ke materi, lalu coba lagi!";
+  $("finalMsg").textContent = msg + " Skor ini sudah tercatat dan terkirim ke gurumu.";
+  var k = keySiswa(siswa.nama, siswa.kelas);
+  var attemptNo = data.kuis.filter(function(q){ return keySiswa(q.nama,q.kelas)===k; }).length + 1;
+  var now = new Date().toISOString();
+  data.kuis.push({ time:now, nama:siswa.nama, kelas:siswa.kelas, attemptNo:attemptNo, score:qSkor });
+  saveData(data);
+  postSheet({ type:"kuis", time:now, nama:siswa.nama, kelas:siswa.kelas, attemptNo:attemptNo, score:qSkor });
+  kirimRingkasan();
+  updateQuizBest();
+}
+
+/* =============== DATA GURU =============== */
+function renderGuruGate(){
+  if(guruUnlocked){ $("pinGate").classList.add("hidden"); $("guruContent").classList.remove("hidden"); renderGuru(); }
+  else { $("pinGate").classList.remove("hidden"); $("guruContent").classList.add("hidden"); $("inPin").value = ""; $("pinErr").textContent = ""; }
+}
+$("btnPin").addEventListener("click", cekPin);
+$("inPin").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); cekPin(); } });
+function cekPin(){
+  if($("inPin").value === GURU_PIN){ guruUnlocked = true; renderGuruGate(); }
+  else $("pinErr").textContent = "PIN salah. Coba lagi.";
+}
+function gabungData(){
+  var login = data.login.slice(), kuis = data.kuis.slice(), progress = {};
+  Object.keys(data.progress).forEach(function(k){ progress[k] = { nama:data.progress[k].nama, kelas:data.progress[k].kelas, menus:(data.progress[k].menus||[]).slice() }; });
+  if(sheetData){
+    (sheetData.login||[]).forEach(function(r){ if(r && r.nama) login.push({ time:r.time, nama:r.nama, kelas:r.kelas }); });
+    (sheetData.kuis||[]).forEach(function(r){ if(r && r.nama) kuis.push({ time:r.time, nama:r.nama, kelas:r.kelas, attemptNo:r.attemptNo, score:Number(r.score) }); });
+    (sheetData.ringkasan||[]).forEach(function(r){
+      if(!r || !r.nama) return;
+      var k = keySiswa(r.nama, r.kelas);
+      if(!progress[k]) progress[k] = { nama:r.nama, kelas:r.kelas, menus:[] };
+      String(r.menus||"").split(",").map(function(m){ return m.trim(); }).forEach(function(m){
+        if(m && progress[k].menus.indexOf(m) === -1) progress[k].menus.push(m);
       });
-      $("#btnGantiSiswa").addEventListener("click", () => {
-        currentStudent = null;
-        guruUnlocked = false;
-        $("#appView").hidden = true;
-        $("#loginView").hidden = false;
-        $("#namaInput").value = "";
-        $("#kelasInput").value = "";
-        $("#namaInput").focus();
-      });
+    });
+  }
+  return { login:login, kuis:kuis, progress:progress };
+}
+var NAMA_MENU = { materi:"Materi", kalkulator:"Kalkulator", kuis:"Kuis" };
+function renderGuru(){
+  var g = gabungData();
+  var siswaMap = {};
+  g.login.forEach(function(r){ siswaMap[keySiswa(r.nama, r.kelas)] = { nama:r.nama, kelas:r.kelas }; });
+  g.kuis.forEach(function(r){ siswaMap[keySiswa(r.nama, r.kelas)] = { nama:r.nama, kelas:r.kelas }; });
+  Object.keys(g.progress).forEach(function(k){ siswaMap[k] = { nama:g.progress[k].nama, kelas:g.progress[k].kelas }; });
 
-      /* ================= Navigasi ================= */
-      let guruUnlocked = false;
-      function showTab(tab) {
-        $$(".tab-btn").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === tab ? "true" : "false"));
-        ["beranda", "materi", "kalkulator", "kuis", "guru"].forEach((t) => { $("#sec-" + t).hidden = t !== tab; });
-        if (tab !== "guru") guruUnlocked = false;
-        if (tab === "guru") renderGuruGate();
-        if (tab === "beranda" || tab === "kalkulator" || tab === "kuis") trackVisit(tab);
-        if (tab === "materi") trackVisit(currentSubKey());
-        window.scrollTo({ top: 0 });
-      }
-      $$(".tab-btn").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
-      $$("[data-goto]").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.goto)));
+  var rows = Object.keys(siswaMap).map(function(k){
+    var s = siswaMap[k];
+    var p = g.progress[k] || { menus:[] };
+    var ks = g.kuis.filter(function(q){ return keySiswa(q.nama,q.kelas)===k; });
+    var scores = ks.map(function(q){ return Number(q.score)||0; });
+    return { nama:s.nama, kelas:s.kelas,
+      menus:(p.menus||[]).map(function(m){ return NAMA_MENU[m]||m; }).join(", ") || "–",
+      n:scores.length,
+      last:scores.length? scores[scores.length-1] : "–",
+      best:scores.length? Math.max.apply(null,scores) : "–",
+      avg:scores.length? Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length*10)/10 : "–" };
+  }).sort(function(a,b){ return a.nama.localeCompare(b.nama); });
 
-      const SUBS = ["bidang", "kuadran", "jarak"];
-      function currentSubKey() {
-        const active = $(".sub-btn[aria-selected='true']", $("#sec-materi"));
-        return "materi-" + (active ? active.dataset.sub : "bidang");
-      }
-      $$(".sub-btn[data-sub]").forEach((b) => b.addEventListener("click", () => {
-        $$(".sub-btn[data-sub]").forEach((x) => x.setAttribute("aria-selected", x === b ? "true" : "false"));
-        SUBS.forEach((s) => { $("#sub-" + s).hidden = s !== b.dataset.sub; });
-        trackVisit("materi-" + b.dataset.sub);
-      }));
+  $("stSiswa").textContent = rows.length;
+  $("stKuis").textContent = g.kuis.length;
+  $("stRata").textContent = g.kuis.length ? Math.round(g.kuis.reduce(function(a,q){ return a+(Number(q.score)||0); },0)/g.kuis.length) : "–";
 
-      /* ================= Mesin bidang koordinat ================= */
-      const RNG = 9;                 // koordinat dari -9 sampai 9
-      const UNIT = 640 / (2 * RNG + 2); // piksel per satuan (ada margin 1 satuan)
-      const C0 = 640 / 2;            // titik asal dalam piksel
-      const px = (x) => C0 + x * UNIT;
-      const py = (y) => C0 - y * UNIT;
-      function gridSVG(shadeQuadrants) {
-        let s = "";
-        if (shadeQuadrants) {
-          s += '<rect x="' + px(0) + '" y="' + py(RNG + 0.5) + '" width="' + (RNG + 0.5) * UNIT + '" height="' + (RNG + 0.5) * UNIT + '" fill="var(--accent)" opacity="0.10"/>';
-          s += '<rect x="' + px(-RNG - 0.5) + '" y="' + py(RNG + 0.5) + '" width="' + (RNG + 0.5) * UNIT + '" height="' + (RNG + 0.5) * UNIT + '" fill="var(--point-b)" opacity="0.12"/>';
-          s += '<rect x="' + px(-RNG - 0.5) + '" y="' + py(0) + '" width="' + (RNG + 0.5) * UNIT + '" height="' + (RNG + 0.5) * UNIT + '" fill="var(--point)" opacity="0.10"/>';
-          s += '<rect x="' + px(0) + '" y="' + py(0) + '" width="' + (RNG + 0.5) * UNIT + '" height="' + (RNG + 0.5) * UNIT + '" fill="var(--good)" opacity="0.10"/>';
-          const lbl = 'font-size="21" font-weight="800" fill="currentColor" opacity="0.45"';
-          s += '<text x="' + px(6.4) + '" y="' + py(7.6) + '" text-anchor="middle" ' + lbl + '>Kuadran I</text>';
-          s += '<text x="' + px(-6.4) + '" y="' + py(7.6) + '" text-anchor="middle" ' + lbl + '>Kuadran II</text>';
-          s += '<text x="' + px(-6.4) + '" y="' + py(-7.2) + '" text-anchor="middle" ' + lbl + '>Kuadran III</text>';
-          s += '<text x="' + px(6.4) + '" y="' + py(-7.2) + '" text-anchor="middle" ' + lbl + '>Kuadran IV</text>';
-          const sgn2 = 'font-size="15" font-weight="700" fill="currentColor" opacity="0.45"';
-          s += '<text x="' + px(6.4) + '" y="' + py(6.7) + '" text-anchor="middle" ' + sgn2 + '>(+, +)</text>';
-          s += '<text x="' + px(-6.4) + '" y="' + py(6.7) + '" text-anchor="middle" ' + sgn2 + '>(−, +)</text>';
-          s += '<text x="' + px(-6.4) + '" y="' + py(-8.1) + '" text-anchor="middle" ' + sgn2 + '>(−, −)</text>';
-          s += '<text x="' + px(6.4) + '" y="' + py(-8.1) + '" text-anchor="middle" ' + sgn2 + '>(+, −)</text>';
-        }
-        for (let i = -RNG; i <= RNG; i++) {
-          s += '<line x1="' + px(i) + '" y1="' + py(-RNG - 0.5) + '" x2="' + px(i) + '" y2="' + py(RNG + 0.5) + '" stroke="var(--grid)" stroke-width="1"/>';
-          s += '<line x1="' + px(-RNG - 0.5) + '" y1="' + py(i) + '" x2="' + px(RNG + 0.5) + '" y2="' + py(i) + '" stroke="var(--grid)" stroke-width="1"/>';
-        }
-        s += '<line x1="' + px(-RNG - 0.5) + '" y1="' + py(0) + '" x2="' + px(RNG + 0.5) + '" y2="' + py(0) + '" stroke="currentColor" stroke-width="2.4"/>';
-        s += '<line x1="' + px(0) + '" y1="' + py(-RNG - 0.5) + '" x2="' + px(0) + '" y2="' + py(RNG + 0.5) + '" stroke="currentColor" stroke-width="2.4"/>';
-        s += '<path d="M ' + px(RNG + 0.5) + ' ' + py(0) + ' l -11 -6 v 12 z" fill="currentColor"/>';
-        s += '<path d="M ' + px(0) + ' ' + py(RNG + 0.5) + ' l -6 11 h 12 z" fill="currentColor"/>';
-        for (let i = -RNG; i <= RNG; i++) {
-          if (i === 0) continue;
-          if (i % 1 === 0) {
-            s += '<text x="' + px(i) + '" y="' + (py(0) + 21) + '" text-anchor="middle" font-size="12.5" fill="currentColor" opacity="0.65">' + i + "</text>";
-            s += '<text x="' + (px(0) - 9) + '" y="' + (py(i) + 4) + '" text-anchor="end" font-size="12.5" fill="currentColor" opacity="0.65">' + i + "</text>";
-          }
-        }
-        s += '<text x="' + (px(0) - 10) + '" y="' + (py(0) + 22) + '" text-anchor="end" font-size="13" font-weight="700" fill="currentColor" opacity="0.7">O</text>';
-        s += '<text x="' + px(RNG + 0.15) + '" y="' + (py(0) - 10) + '" text-anchor="end" font-size="17" font-weight="800" fill="currentColor">X</text>';
-        s += '<text x="' + (px(0) + 12) + '" y="' + py(RNG + 0.3) + '" font-size="17" font-weight="800" fill="currentColor">Y</text>';
-        return s;
-      }
-      function pointSVG(x, y, color, label) {
-        const lx = x >= 0 ? px(x) + 17 : px(x) - 17;
-        const anchor = x >= 0 ? "start" : "end";
-        return '<g class="pt">' +
-          '<circle cx="' + px(x) + '" cy="' + py(y) + '" r="24" fill="transparent"/>' +
-          '<circle cx="' + px(x) + '" cy="' + py(y) + '" r="10" fill="' + color + '" stroke="var(--surface)" stroke-width="3"/>' +
-          '<text x="' + lx + '" y="' + (py(y) - 14) + '" text-anchor="' + anchor + '" font-size="17" font-weight="800" fill="' + color + '">' + label + "</text></g>";
-      }
-      function svgToCoord(svg, evt) {
-        const r = svg.getBoundingClientRect();
-        const sx = (evt.clientX - r.left) / r.width * 640;
-        const sy = (evt.clientY - r.top) / r.height * 640;
-        let x = Math.round((sx - C0) / UNIT);
-        let y = Math.round((C0 - sy) / UNIT);
-        x = Math.max(-RNG, Math.min(RNG, x));
-        y = Math.max(-RNG, Math.min(RNG, y));
-        return { x: x, y: y };
-      }
-      // Bidang dengan titik-titik yang bisa diseret. points: [{x,y}], onMove(i, pt)
-      function makeDraggable(svg, points, onMove) {
-        let dragIdx = -1;
-        const pick = (evt) => {
-          const c = svgToCoord(svg, evt);
-          let best = -1, bestD = 1e9;
-          points.forEach((p, i) => {
-            const d = Math.abs(p.x - c.x) + Math.abs(p.y - c.y);
-            if (d < bestD) { bestD = d; best = i; }
-          });
-          return { idx: best, coord: c };
-        };
-        svg.addEventListener("pointerdown", (evt) => {
-          evt.preventDefault();
-          const p = pick(evt);
-          dragIdx = p.idx;
-          try { svg.setPointerCapture(evt.pointerId); } catch (e) { /* abaikan */ }
-          points[dragIdx] = p.coord;
-          onMove(dragIdx, p.coord);
-        });
-        svg.addEventListener("pointermove", (evt) => {
-          if (dragIdx < 0) return;
-          const c = svgToCoord(svg, evt);
-          if (c.x !== points[dragIdx].x || c.y !== points[dragIdx].y) {
-            points[dragIdx] = c;
-            onMove(dragIdx, c);
-          }
-        });
-        const end = () => { dragIdx = -1; };
-        svg.addEventListener("pointerup", end);
-        svg.addEventListener("pointercancel", end);
-      }
+  $("tblSiswa").innerHTML = rows.length ? rows.map(function(r){
+    return "<tr><td>"+esc(r.nama)+"</td><td>"+esc(r.kelas)+"</td><td>"+esc(r.menus)+"</td><td>"+r.n+"×</td><td>"+r.last+"</td><td>"+r.best+"</td><td>"+r.avg+"</td></tr>";
+  }).join("") : "<tr><td colspan='7'>Belum ada data siswa.</td></tr>";
 
-      /* ================= Materi 1: Bidang Kartesius ================= */
-      const bidangPts = [{ x: 3, y: 2 }];
-      function renderBidang() {
-        const p = bidangPts[0];
-        let s = gridSVG(false);
-        s += '<line x1="' + px(p.x) + '" y1="' + py(p.y) + '" x2="' + px(p.x) + '" y2="' + py(0) + '" stroke="var(--point)" stroke-width="2" stroke-dasharray="6 5" opacity="0.75"/>';
-        s += '<line x1="' + px(p.x) + '" y1="' + py(p.y) + '" x2="' + px(0) + '" y2="' + py(p.y) + '" stroke="var(--point)" stroke-width="2" stroke-dasharray="6 5" opacity="0.75"/>';
-        s += pointSVG(p.x, p.y, "var(--point)", "A");
-        $("#planeBidang").innerHTML = s;
-        $("#bidangCoord").textContent = "Titik A (" + p.x + ", " + p.y + ")";
-        const pos = posisiTitik(p.x, p.y);
-        $("#bidangPos").textContent = pos;
-        let langkah;
-        if (p.x === 0 && p.y === 0) langkah = "Titik A tepat berada di titik asal — tidak perlu bergerak ke mana pun.";
-        else {
-          const parts = [];
-          if (p.x !== 0) parts.push("bergerak " + Math.abs(p.x) + " satuan ke " + (p.x > 0 ? "kanan" : "kiri"));
-          if (p.y !== 0) parts.push("bergerak " + Math.abs(p.y) + " satuan ke " + (p.y > 0 ? "atas" : "bawah"));
-          langkah = "Dari titik asal, titik A dicapai dengan " + parts.join(", lalu ") + ".";
-        }
-        $("#bidangInfo").innerHTML = "Absis (x) = <b>" + p.x + "</b> · Ordinat (y) = <b>" + p.y + "</b> · Posisi: <b>" + pos + "</b><br>" +
-          '<span style="font-weight:400; font-size:0.98rem">' + langkah + "</span>";
-      }
-      makeDraggable($("#planeBidang"), bidangPts, renderBidang);
-      renderBidang();
+  var loginDesc = g.login.slice().reverse();
+  $("tblLogin").innerHTML = loginDesc.length ? loginDesc.map(function(r){
+    return "<tr><td>"+esc(fmtTime(r.time))+"</td><td>"+esc(r.nama)+"</td><td>"+esc(r.kelas)+"</td></tr>";
+  }).join("") : "<tr><td colspan='3'>Belum ada data login.</td></tr>";
 
-      /* ================= Materi 2: Empat Kuadran ================= */
-      const kuadranPts = [{ x: -4, y: 3 }];
-      function renderKuadran() {
-        const p = kuadranPts[0];
-        let s = gridSVG(true);
-        s += pointSVG(p.x, p.y, "var(--point)", "P");
-        $("#planeKuadran").innerHTML = s;
-        $("#kuadranCoord").textContent = "Titik P (" + p.x + ", " + p.y + ")";
-        const pos = posisiTitik(p.x, p.y);
-        $("#kuadranPos").textContent = pos;
-        let ket;
-        if (p.x === 0 && p.y === 0) ket = "Kedua koordinat nol: ini titik asal, bukan bagian kuadran mana pun.";
-        else if (p.y === 0) ket = "Ordinatnya 0, jadi titik ini terletak tepat pada sumbu X — bukan di kuadran mana pun.";
-        else if (p.x === 0) ket = "Absisnya 0, jadi titik ini terletak tepat pada sumbu Y — bukan di kuadran mana pun.";
-        else ket = "Absisnya " + sgn(p.x) + " dan ordinatnya " + sgn(p.y) + " — pola tanda (" + (p.x > 0 ? "+" : "−") + ", " + (p.y > 0 ? "+" : "−") + ") adalah ciri khas " + pos + ".";
-        $("#kuadranInfo").innerHTML = "Titik P(" + p.x + ", " + p.y + ") → <b>" + pos + "</b><br>" +
-          '<span style="font-weight:400; font-size:0.98rem">' + ket + "</span>";
-      }
-      makeDraggable($("#planeKuadran"), kuadranPts, renderKuadran);
-      renderKuadran();
+  var kuisDesc = g.kuis.slice().reverse();
+  $("tblKuis").innerHTML = kuisDesc.length ? kuisDesc.map(function(r){
+    return "<tr><td>"+esc(fmtTime(r.time))+"</td><td>"+esc(r.nama)+"</td><td>"+esc(r.kelas)+"</td><td>"+esc(r.attemptNo!=null?r.attemptNo:"–")+"</td><td>"+esc(r.score)+"</td></tr>";
+  }).join("") : "<tr><td colspan='5'>Belum ada data kuis.</td></tr>";
 
-      /* ================= Materi 3: Jarak Dua Titik ================= */
-      const jarakPts = [{ x: -2, y: -1 }, { x: 3, y: 3 }];
-      function renderJarak() {
-        const A = jarakPts[0], B = jarakPts[1];
-        const dx = B.x - A.x, dy = B.y - A.y;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        let s = gridSVG(false);
-        // kaki segitiga siku-siku (putus-putus) dari A sejajar sumbu menuju sudut di bawah/atas B
-        s += '<line x1="' + px(A.x) + '" y1="' + py(A.y) + '" x2="' + px(B.x) + '" y2="' + py(A.y) + '" stroke="currentColor" stroke-width="2" stroke-dasharray="7 5" opacity="0.55"/>';
-        s += '<line x1="' + px(B.x) + '" y1="' + py(A.y) + '" x2="' + px(B.x) + '" y2="' + py(B.y) + '" stroke="currentColor" stroke-width="2" stroke-dasharray="7 5" opacity="0.55"/>';
-        s += '<line x1="' + px(A.x) + '" y1="' + py(A.y) + '" x2="' + px(B.x) + '" y2="' + py(B.y) + '" stroke="var(--accent)" stroke-width="3.5"/>';
-        const midX = (px(A.x) + px(B.x)) / 2, midY = (py(A.y) + py(B.y)) / 2;
-        s += '<text x="' + midX + '" y="' + (midY - 12) + '" text-anchor="middle" font-size="16" font-weight="800" fill="var(--accent-strong)">' + fmt(d) + "</text>";
-        s += pointSVG(A.x, A.y, "var(--point)", "A");
-        s += pointSVG(B.x, B.y, "var(--point-b)", "B");
-        $("#planeJarak").innerHTML = s;
-        $("#jarakCoordA").textContent = "Titik A (" + A.x + ", " + A.y + ")";
-        $("#jarakCoordB").textContent = "Titik B (" + B.x + ", " + B.y + ")";
-        $("#jarakVal").textContent = fmt(d);
-        const sempurna = Number.isInteger(d);
-        $("#jarakSteps").innerHTML =
-          "<div>Selisih absis: x<sub>2</sub> − x<sub>1</sub> = " + B.x + " − (" + A.x + ") = <b>" + dx + "</b></div>" +
-          "<div>Selisih ordinat: y<sub>2</sub> − y<sub>1</sub> = " + B.y + " − (" + A.y + ") = <b>" + dy + "</b></div>" +
-          "<div>Jarak AB = √((" + dx + ")<sup>2</sup> + (" + dy + ")<sup>2</sup>) = √(" + (dx * dx) + " + " + (dy * dy) + ") = √" + (dx * dx + dy * dy) + (sempurna ? " = <b>" + fmt(d) + "</b>" : " ≈ <b>" + fmt(d) + "</b>") + "</div>";
-      }
-      makeDraggable($("#planeJarak"), jarakPts, renderJarak);
-      renderJarak();
+  $("inSheetUrl").value = sheetUrl();
+}
+function setStatus(el, msg, ok){ el.textContent = msg; el.className = "status-line " + (ok===true ? "ok" : ok===false ? "no" : ""); }
 
-      /* ================= Kalkulator Jarak ================= */
-      $("#btnDist").addEventListener("click", () => {
-        const x1 = parseFloat($("#dX1").value), y1 = parseFloat($("#dY1").value);
-        const x2 = parseFloat($("#dX2").value), y2 = parseFloat($("#dY2").value);
-        if (![x1, y1, x2, y2].every(isFinite)) { $("#distErr").hidden = false; $("#distOut").hidden = true; return; }
-        $("#distErr").hidden = true;
-        const dx = x2 - x1, dy = y2 - y1;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        $("#distResult").innerHTML = "Jarak antara (" + fmt(x1) + ", " + fmt(y1) + ") dan (" + fmt(x2) + ", " + fmt(y2) + ") = <b>" + fmt(d) + " satuan</b>";
-        $("#distSteps").innerHTML =
-          "<div>Selisih absis: " + fmt(x2) + " − (" + fmt(x1) + ") = " + fmt(dx) + "</div>" +
-          "<div>Selisih ordinat: " + fmt(y2) + " − (" + fmt(y1) + ") = " + fmt(dy) + "</div>" +
-          "<div>Jarak = √((" + fmt(dx) + ")<sup>2</sup> + (" + fmt(dy) + ")<sup>2</sup>) = √(" + fmt(dx * dx) + " + " + fmt(dy * dy) + ") = √" + fmt(dx * dx + dy * dy) + (Number.isInteger(d) ? " = <b>" + fmt(d) + "</b>" : " ≈ <b>" + fmt(d) + "</b>") + "</div>" +
-          "<div class='muted'>Tanda negatif pada selisih hilang karena dikuadratkan — jadi jarak tidak pernah negatif.</div>";
-        $("#distOut").hidden = false;
-      });
+$("btnMuat").addEventListener("click", function(){
+  setStatus($("sheetStatus"), "Memuat data dari Sheet …", null);
+  fetch(sheetUrl() + "?app=" + APP_ID).then(function(r){ return r.json(); }).then(function(j){
+    sheetData = j; renderGuru();
+    setStatus($("sheetStatus"), "Data dari Sheet berhasil dimuat dan digabung.", true);
+  }).catch(function(){ setStatus($("sheetStatus"), "Gagal memuat data dari Sheet. Periksa koneksi internet dan URL.", false); });
+});
+$("btnUji").addEventListener("click", function(){
+  setStatus($("sheetStatus"), "Mengirim data uji …", null);
+  var payload = { type:"login", time:new Date().toISOString(), nama:"UJI KONEKSI", kelas:"-", app:APP_ID };
+  fetch(sheetUrl(), { method:"POST", headers:{"Content-Type":"text/plain"}, body:JSON.stringify(payload) })
+    .then(function(){ return fetch(sheetUrl() + "?app=" + APP_ID); })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      sheetData = j; renderGuru();
+      setStatus($("sheetStatus"), "Uji berhasil! Data uji terkirim dan terbaca kembali dari Sheet ("+((j.login||[]).length)+" baris login).", true);
+    })
+    .catch(function(){ setStatus($("sheetStatus"), "Uji gagal. Periksa koneksi internet dan URL Web App.", false); });
+});
+$("btnSimpanUrl").addEventListener("click", function(){
+  var u = $("inSheetUrl").value.trim();
+  if(!u){ setStatus($("urlStatus"), "URL tidak boleh kosong.", false); return; }
+  storeSet(LS.url, u);
+  setStatus($("urlStatus"), "URL tersimpan di perangkat ini.", true);
+});
+$("btnResetUrl").addEventListener("click", function(){
+  storeDel(LS.url); $("inSheetUrl").value = DEFAULT_SHEET_URL;
+  setStatus($("urlStatus"), "URL dikembalikan ke bawaan DapMath.", true);
+});
+$("btnCsv").addEventListener("click", function(){
+  var g = gabungData();
+  function csvEsc(v){ v = String(v==null?"":v); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+  var lines = [];
+  lines.push("=== RINGKASAN SISWA — Aplikasi Lingkaran (DapMath) ===");
+  lines.push("Nama,Kelas,Menu Dipelajari,Percobaan Kuis,Skor Terakhir,Skor Terbaik,Rata-rata");
+  var siswaMap = {};
+  g.login.forEach(function(r){ siswaMap[keySiswa(r.nama, r.kelas)] = { nama:r.nama, kelas:r.kelas }; });
+  g.kuis.forEach(function(r){ siswaMap[keySiswa(r.nama, r.kelas)] = { nama:r.nama, kelas:r.kelas }; });
+  Object.keys(g.progress).forEach(function(k){ siswaMap[k] = { nama:g.progress[k].nama, kelas:g.progress[k].kelas }; });
+  Object.keys(siswaMap).sort().forEach(function(k){
+    var s = siswaMap[k], p = g.progress[k] || { menus:[] };
+    var ks = g.kuis.filter(function(q){ return keySiswa(q.nama,q.kelas)===k; });
+    var sc = ks.map(function(q){ return Number(q.score)||0; });
+    lines.push([s.nama, s.kelas, (p.menus||[]).join(" + ") || "-", sc.length,
+      sc.length? sc[sc.length-1] : "-", sc.length? Math.max.apply(null,sc) : "-",
+      sc.length? Math.round(sc.reduce(function(a,b){return a+b;},0)/sc.length*10)/10 : "-"].map(csvEsc).join(","));
+  });
+  lines.push("");
+  lines.push("=== RIWAYAT LOGIN ===");
+  lines.push("Waktu,Nama,Kelas");
+  g.login.forEach(function(r){ lines.push([fmtTime(r.time), r.nama, r.kelas].map(csvEsc).join(",")); });
+  lines.push("");
+  lines.push("=== RIWAYAT KUIS ===");
+  lines.push("Waktu,Nama,Kelas,Percobaan ke,Skor");
+  g.kuis.forEach(function(r){ lines.push([fmtTime(r.time), r.nama, r.kelas, r.attemptNo, r.score].map(csvEsc).join(",")); });
+  var blob = new Blob(["\ufeff" + lines.join("\n")], { type:"text/csv;charset=utf-8" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "laporan-lingkaran.csv";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+});
 
-      /* ================= Penentu Posisi ================= */
-      $("#btnPos").addEventListener("click", () => {
-        const x = parseFloat($("#pX").value), y = parseFloat($("#pY").value);
-        if (![x, y].every(isFinite)) { $("#posErr").hidden = false; $("#posOut").hidden = true; return; }
-        $("#posErr").hidden = true;
-        const pos = posisiTitik(x, y);
-        $("#posResult").innerHTML = "Titik (" + fmt(x) + ", " + fmt(y) + ") terletak di: <b>" + pos + "</b>";
-        let alasan;
-        if (x === 0 && y === 0) alasan = "Kedua koordinat bernilai 0, jadi titik ini adalah titik potong kedua sumbu.";
-        else if (y === 0) alasan = "Ordinat (y) bernilai 0, jadi titik ini tepat berada pada garis sumbu X, " + Math.abs(x) + " satuan di sebelah " + (x > 0 ? "kanan" : "kiri") + " titik asal.";
-        else if (x === 0) alasan = "Absis (x) bernilai 0, jadi titik ini tepat berada pada garis sumbu Y, " + Math.abs(y) + " satuan di " + (y > 0 ? "atas" : "bawah") + " titik asal.";
-        else alasan = "Absisnya " + sgn(x) + " (" + fmt(x) + ") dan ordinatnya " + sgn(y) + " (" + fmt(y) + "). Kombinasi tanda ini adalah ciri " + pos + ".";
-        $("#posSteps").innerHTML =
-          "<div>Absis (x) = " + fmt(x) + " → " + sgn(x) + "</div>" +
-          "<div>Ordinat (y) = " + fmt(y) + " → " + sgn(y) + "</div>" +
-          "<div>" + alasan + "</div>" +
-          "<div class='muted'>Jarak titik ini dari titik asal: √((" + fmt(x) + ")<sup>2</sup> + (" + fmt(y) + ")<sup>2</sup>) = " + fmt(Math.sqrt(x * x + y * y)) + " satuan.</div>";
-        $("#posOut").hidden = false;
-      });
+/* catatan: membuka menu kuis dihitung sebagai aktivitas belajar */
+document.querySelector('nav.menu button[data-page="kuis"]').addEventListener("click", function(){ /* showPage menangani */ });
 
-      /* ================= Latihan Cepat ================= */
-      const LATIHAN = [
-        { q: "Berapakah jarak antara titik A(0, 0) dan B(3, 4)?", ans: 5, exp: "Selisih absis = 3 dan selisih ordinat = 4. Jarak = √(3² + 4²) = √(9 + 16) = √25 = 5 satuan." },
-        { q: "Berapakah jarak antara titik P(2, 1) dan Q(5, 5)?", ans: 5, exp: "Selisih absis = 5 − 2 = 3 dan selisih ordinat = 5 − 1 = 4. Jarak = √(3² + 4²) = √25 = 5 satuan." },
-        { q: "Berapakah jarak antara titik R(−2, −3) dan S(4, 5)?", ans: 10, exp: "Selisih absis = 4 − (−2) = 6 dan selisih ordinat = 5 − (−3) = 8. Jarak = √(6² + 8²) = √(36 + 64) = √100 = 10 satuan." },
-        { q: "Berapakah jarak titik T(7, 0) dari titik asal O(0, 0)?", ans: 7, exp: "Titik T(7, 0) terletak pada sumbu X, 7 satuan di kanan titik asal, jadi jaraknya dari titik asal adalah 7 satuan. Dengan rumus: √(7² + 0²) = √49 = 7." },
-      ];
-      const latihanWrap = $("#latihanList");
-      LATIHAN.forEach((item, idx) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML =
-          "<h3>Soal " + (idx + 1) + "</h3><p>" + esc(item.q) + "</p>" +
-          '<div class="form-row c2"><div class="field" style="margin-bottom:0"><label for="latIn' + idx + '">Jawabanmu (dalam satuan)</label><input type="number" id="latIn' + idx + '" step="any" placeholder="Ketik jawaban…" /></div>' +
-          '<div style="display:flex; align-items:flex-end"><button class="btn" type="button" data-lat="' + idx + '">Periksa Jawaban</button></div></div>' +
-          '<div class="explain" id="latFb' + idx + '" hidden></div>';
-        latihanWrap.appendChild(card);
-      });
-      $$("[data-lat]").forEach((btn) => btn.addEventListener("click", () => {
-        const idx = +btn.dataset.lat;
-        const val = parseFloat($("#latIn" + idx).value);
-        const fb = $("#latFb" + idx);
-        fb.hidden = false;
-        if (isFinite(val) && Math.abs(val - LATIHAN[idx].ans) < 0.001) {
-          fb.className = "explain good";
-          fb.innerHTML = "<b>Benar!</b> " + esc(LATIHAN[idx].exp);
-        } else {
-          fb.className = "explain bad";
-          fb.innerHTML = "<b>Belum tepat.</b> Coba hitung lagi. Pembahasan: " + esc(LATIHAN[idx].exp);
-        }
-      }));
-
-      /* ================= Kuis ================= */
-      const QUIZ = [
-        { q: "Titik A(3, −5) terletak pada kuadran …", opts: ["Kuadran I", "Kuadran II", "Kuadran III", "Kuadran IV"], ans: 3, exp: "Absis 3 positif dan ordinat −5 negatif. Pola tanda (+, −) adalah ciri Kuadran IV (kanan bawah)." },
-        { q: "Titik B(−4, 2) terletak pada kuadran …", opts: ["Kuadran I", "Kuadran II", "Kuadran III", "Kuadran IV"], ans: 1, exp: "Absis −4 negatif dan ordinat 2 positif. Pola tanda (−, +) adalah ciri Kuadran II (kiri atas)." },
-        { q: "Titik berikut yang terletak tepat pada sumbu X adalah …", opts: ["(0, 5)", "(−3, 0)", "(2, 2)", "(0, 0)"], ans: 1, exp: "Titik pada sumbu X selalu memiliki ordinat 0. Titik (−3, 0) ordinatnya 0, jadi ia berada pada sumbu X. Pilihan (0, 0) adalah titik asal, titik potong kedua sumbu." },
-        { q: "Jarak antara titik P(1, 2) dan Q(4, 6) adalah … satuan", opts: ["5", "6", "7", "25"], ans: 0, exp: "Selisih absis = 4 − 1 = 3, selisih ordinat = 6 − 2 = 4. Jarak = √(3² + 4²) = √25 = 5 satuan." },
-        { q: "Sebuah titik berada 3 satuan di sebelah kiri sumbu Y dan 4 satuan di atas sumbu X. Koordinat titik tersebut adalah …", opts: ["(3, 4)", "(4, −3)", "(−3, 4)", "(−4, 3)"], ans: 2, exp: "Di kiri sumbu Y berarti absisnya negatif: x = −3. Di atas sumbu X berarti ordinatnya positif: y = 4. Jadi titiknya (−3, 4)." },
-        { q: "Jarak titik (0, 0) ke titik (6, 8) adalah … satuan", opts: ["10", "12", "14", "100"], ans: 0, exp: "Jarak = √(6² + 8²) = √(36 + 64) = √100 = 10 satuan." },
-        { q: "Titik C(−7, −3) terletak pada kuadran …", opts: ["Kuadran I", "Kuadran II", "Kuadran III", "Kuadran IV"], ans: 2, exp: "Kedua koordinat negatif: absis −7 dan ordinat −3. Pola tanda (−, −) adalah ciri Kuadran III (kiri bawah)." },
-        { q: "Absis dari titik D(−2, 5) adalah …", opts: ["5", "−2", "2", "−5"], ans: 1, exp: "Absis adalah bilangan pertama pada pasangan (x, y), yaitu nilai x. Untuk titik D(−2, 5), absisnya −2 dan ordinatnya 5." },
-        { q: "Ordinat dari titik E(4, −6) adalah …", opts: ["4", "−4", "6", "−6"], ans: 3, exp: "Ordinat adalah bilangan kedua pada pasangan (x, y), yaitu nilai y. Untuk titik E(4, −6), ordinatnya −6 dan absisnya 4." },
-        { q: "Jarak antara titik F(−1, 3) dan G(2, −1) adalah … satuan", opts: ["4", "5", "6", "7"], ans: 1, exp: "Selisih absis = 2 − (−1) = 3, selisih ordinat = −1 − 3 = −4. Jarak = √(3² + (−4)²) = √(9 + 16) = √25 = 5 satuan." },
-      ];
-      let quizIdx = 0, quizScore = 0, quizAnswered = false;
-      function startQuiz() {
-        quizIdx = 0; quizScore = 0;
-        $("#quizStart").hidden = true;
-        $("#quizResult").hidden = true;
-        $("#quizPlay").hidden = false;
-        renderQuestion();
-      }
-      function renderQuestion() {
-        quizAnswered = false;
-        const item = QUIZ[quizIdx];
-        $("#quizProgressLabel").textContent = "Soal " + (quizIdx + 1) + " dari " + QUIZ.length;
-        $("#quizScoreLabel").textContent = "Skor sementara: " + quizScore;
-        $("#quizBar").style.width = (quizIdx / QUIZ.length * 100) + "%";
-        $("#quizQuestion").textContent = item.q;
-        const wrap = $("#quizOptions");
-        wrap.innerHTML = "";
-        item.opts.forEach((opt, oi) => {
-          const b = document.createElement("button");
-          b.type = "button"; b.className = "opt";
-          b.textContent = String.fromCharCode(65 + oi) + ". " + opt;
-          b.addEventListener("click", () => answerQuestion(oi));
-          wrap.appendChild(b);
-        });
-        $("#quizExplain").hidden = true;
-        $("#btnNextQ").hidden = true;
-        $("#btnNextQ").textContent = quizIdx === QUIZ.length - 1 ? "Lihat Hasil Akhir" : "Soal Berikutnya";
-      }
-      function answerQuestion(oi) {
-        if (quizAnswered) return;
-        quizAnswered = true;
-        const item = QUIZ[quizIdx];
-        const buttons = $$("#quizOptions .opt");
-        buttons.forEach((b, bi) => {
-          b.disabled = true;
-          if (bi === item.ans) b.classList.add("correct");
-          else if (bi === oi) b.classList.add("wrong");
-        });
-        const benar = oi === item.ans;
-        if (benar) quizScore += 10;
-        $("#quizScoreLabel").textContent = "Skor sementara: " + quizScore;
-        const ex = $("#quizExplain");
-        ex.hidden = false;
-        ex.className = "explain " + (benar ? "good" : "bad");
-        ex.innerHTML = "<b>" + (benar ? "Benar! +10 poin." : "Belum tepat. Jawaban yang benar: " + String.fromCharCode(65 + item.ans) + ". " + esc(item.opts[item.ans])) + "</b><br>" + esc(item.exp);
-        $("#btnNextQ").hidden = false;
-      }
-      function finishQuiz() {
-        $("#quizPlay").hidden = true;
-        $("#quizResult").hidden = false;
-        $("#finalScore").textContent = quizScore;
-        const benar = quizScore / 10;
-        let msg = "Tetap semangat! Coba pelajari lagi materinya, lalu ulangi kuisnya.";
-        if (quizScore >= 90) msg = "Luar biasa! Kamu sudah menguasai koordinat Kartesius.";
-        else if (quizScore >= 70) msg = "Bagus! Sedikit lagi menuju sempurna.";
-        else if (quizScore >= 50) msg = "Cukup baik. Baca lagi pembahasannya dan coba sekali lagi.";
-        $("#finalMsg").textContent = msg;
-        $("#finalDetail").textContent = "Kamu menjawab benar " + benar + " dari " + QUIZ.length + " soal.";
-        if (currentStudent) {
-          const attemptNo = currentStudent.attempts.length + 1;
-          currentStudent.attempts.push({ time: new Date(), score: quizScore, attemptNo: attemptNo });
-          currentStudent.lastActivity = new Date();
-          sheetSend({ type: "kuis", time: nowISO(), nama: currentStudent.nama, kelas: currentStudent.kelas, attemptNo: attemptNo, score: quizScore });
-        }
-      }
-      $("#btnStartQuiz").addEventListener("click", startQuiz);
-      $("#btnRetryQuiz").addEventListener("click", startQuiz);
-      $("#btnBackMateri").addEventListener("click", () => showTab("materi"));
-      $("#btnNextQ").addEventListener("click", () => {
-        if (quizIdx < QUIZ.length - 1) { quizIdx++; renderQuestion(); }
-        else finishQuiz();
-      });
-
-      /* ================= Data Guru ================= */
-      const GURU_PIN = "d4pm4t";
-      function renderGuruGate() {
-        const locked = !guruUnlocked;
-        $("#pinGate").hidden = !locked;
-        $("#guruContent").hidden = locked;
-        if (!locked) renderGuru();
-        else { $("#pinInput").value = ""; $("#pinErr").hidden = true; }
-      }
-      $("#pinForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        if ($("#pinInput").value === GURU_PIN) {
-          guruUnlocked = true;
-          $("#pinErr").hidden = true;
-          renderGuruGate();
-        } else {
-          $("#pinErr").hidden = false;
-        }
-      });
-      function studentStats(r) {
-        const scores = r.attempts.map((a) => a.score);
-        return {
-          last: scores.length ? scores[scores.length - 1] : null,
-          best: scores.length ? Math.max.apply(null, scores) : null,
-          avg: scores.length ? Math.round(scores.reduce((x, y) => x + y, 0) / scores.length) : null,
-        };
-      }
-      function renderGuru() {
-        $("#statSiswa").textContent = studentRecords.length;
-        $("#statLogin").textContent = studentRecords.reduce((s, r) => s + r.logins, 0);
-        $("#statKuis").textContent = studentRecords.reduce((s, r) => s + r.attempts.length, 0);
-        const list = $("#studentList");
-        list.innerHTML = "";
-        $("#emptyStudents").style.display = studentRecords.length ? "none" : "block";
-        const sorted = studentRecords.slice().sort((a, b) => a.nama.localeCompare(b.nama));
-        sorted.forEach((r) => {
-          const st = studentStats(r);
-          const menus = Object.keys(r.visits).map((t) => TAB_LABELS[t] || t);
-          const trend = r.attempts.length > 1
-            ? (st.last > r.attempts[0].score ? " · tren: naik" : (st.last < r.attempts[0].score ? " · tren: turun" : " · tren: tetap"))
-            : "";
-          const bars = r.attempts.map((a) =>
-            '<div class="barwrap"><div class="bar" style="height:' + Math.max(6, a.score * 0.5) + 'px"></div>' + a.score + "</div>"
-          ).join("");
-          const card = document.createElement("div");
-          card.className = "student-card";
-          card.innerHTML =
-            '<div class="head"><b>' + esc(r.nama) + '</b><span class="muted">Kelas ' + esc(r.kelas) + " · login " + r.logins + "× · pertama: " + fmtTime(r.firstLogin) + "</span></div>" +
-            '<div class="chips">' + (menus.length ? menus.map((m) => '<span class="chip">' + esc(m) + "</span>").join("") : '<span class="muted">Belum membuka menu belajar pada sesi ini.</span>') + "</div>" +
-            (r.attempts.length
-              ? '<div class="muted">Kuis: ' + r.attempts.length + " percobaan · terakhir <b>" + st.last + "</b> · terbaik <b>" + st.best + "</b> · rata-rata <b>" + st.avg + "</b>" + trend + '</div><div class="score-track">' + bars + "</div>"
-              : '<div class="muted">Belum pernah mengerjakan kuis.</div>');
-          list.appendChild(card);
-        });
-      }
-
-      /* ---------- CSV ---------- */
-      function csvCell(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
-      $("#btnCsv").addEventListener("click", () => {
-        if (!studentRecords.length) { setSheetStatus("Belum ada data siswa untuk diunduh."); return; }
-        const rows = [["Nama", "Kelas", "Login Pertama", "Jumlah Login", "Menu Dipelajari", "Percobaan Kuis", "Skor Terakhir", "Skor Terbaik", "Rata-rata Skor", "Riwayat Skor"]];
-        studentRecords.slice().sort((a, b) => a.nama.localeCompare(b.nama)).forEach((r) => {
-          const st = studentStats(r);
-          rows.push([
-            r.nama, r.kelas, new Date(r.firstLogin).toLocaleString("id-ID"), r.logins,
-            Object.keys(r.visits).map((t) => TAB_LABELS[t] || t).join("; "),
-            r.attempts.length,
-            st.last == null ? "" : st.last, st.best == null ? "" : st.best, st.avg == null ? "" : st.avg,
-            r.attempts.map((a) => a.score).join(" - "),
-          ]);
-        });
-        const csv = rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
-        const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "laporan-koordinat-kartesius.csv";
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-      });
-
-      /* ---------- Integrasi Sheet: muat, ringkasan, uji kirim, pengaturan ---------- */
-      function mergeSheetData(data) {
-        let siswaBaru = 0, kuisBaru = 0;
-        (data.login || []).forEach((row) => {
-          if (!row.nama || !row.kelas) return;
-          const t = new Date(row.time);
-          let rec = findRecord(String(row.nama), String(row.kelas));
-          if (!rec) { rec = makeRecord(String(row.nama), String(row.kelas), isNaN(t) ? new Date() : t); studentRecords.push(rec); siswaBaru++; }
-          else if (!isNaN(t) && t < rec.firstLogin) rec.firstLogin = t;
-        });
-        (data.kuis || []).forEach((row) => {
-          if (!row.nama || !row.kelas) return;
-          const t = new Date(row.time);
-          let rec = findRecord(String(row.nama), String(row.kelas));
-          if (!rec) { rec = makeRecord(String(row.nama), String(row.kelas), isNaN(t) ? new Date() : t); studentRecords.push(rec); siswaBaru++; }
-          const no = row.attemptNo || rec.attempts.length + 1;
-          if (!rec.attempts.some((a) => a.attemptNo === no)) {
-            rec.attempts.push({ time: isNaN(t) ? new Date() : t, score: +row.score || 0, attemptNo: no });
-            rec.attempts.sort((a, b) => a.attemptNo - b.attemptNo);
-            kuisBaru++;
-          }
-        });
-        return { siswaBaru: siswaBaru, kuisBaru: kuisBaru };
-      }
-      $("#btnSheetLoad").addEventListener("click", () => {
-        setSheetStatus("Memuat data dari Google Sheet…");
-        sheetLoad().then((data) => {
-          const m = mergeSheetData(data || {});
-          renderGuru();
-          setSheetStatus("Data dari Sheet berhasil dimuat: " + m.siswaBaru + " siswa baru dan " + m.kuisBaru + " hasil kuis baru ditambahkan ke dasbor.", true);
-        }).catch(() => setSheetStatus("Gagal memuat data dari Sheet. Periksa koneksi internet dan URL Aplikasi Web-nya, lalu coba lagi."));
-      });
-      $("#btnSheetSummary").addEventListener("click", () => {
-        if (!studentRecords.length) { setSheetStatus("Belum ada data siswa pada sesi ini untuk dikirim."); return; }
-        setSheetStatus("Mengirim ringkasan sesi ke Sheet…");
-        const jobs = studentRecords.map((r) => {
-          const st = studentStats(r);
-          return sheetSend({
-            type: "ringkasan", nama: r.nama, kelas: r.kelas,
-            menus: Object.keys(r.visits).map((t) => TAB_LABELS[t] || t).join(", "),
-            attempts: r.attempts.length,
-            last: st.last == null ? "" : st.last, best: st.best == null ? "" : st.best, avg: st.avg == null ? "" : st.avg,
-          });
-        });
-        Promise.all(jobs).then(() => setSheetStatus("Ringkasan sesi terkirim — silakan periksa tab \"Ringkasan\" pada Sheet untuk memastikan datanya masuk.", true));
-      });
-      $("#btnUjiKirim").addEventListener("click", () => {
-        setSheetStatus("Mengirim data uji ke Sheet…");
-        sheetSend({ type: "login", time: nowISO(), nama: "UJI KONEKSI", kelas: "UJI" }).then((ok) => {
-          if (!ok) { setSheetStatus("Pengiriman uji tidak terkonfirmasi. Periksa koneksi internet, lalu coba lagi."); return; }
-          setSheetStatus("Data uji terkirim. Membaca kembali isi Sheet untuk memastikan…");
-          setTimeout(() => {
-            sheetLoad().then((data) => {
-              const nLogin = (data.login || []).length, nKuis = (data.kuis || []).length;
-              setSheetStatus("Uji berhasil! Sheet bisa menerima dan mengirim data aplikasi koordinat-kartesius. Saat ini terbaca " + nLogin + " baris login dan " + nKuis + " baris kuis. Baris uji berlabel \"UJI KONEKSI\" boleh dihapus dari Sheet.", true);
-            }).catch(() => setSheetStatus("Data uji terkirim, tetapi pembacaan kembali dari Sheet gagal. Cek tab Login di Sheet — baris \"UJI KONEKSI\" seharusnya sudah masuk."));
-          }, 1600);
-        });
-      });
-      $("#btnSheetConnect").addEventListener("click", () => {
-        const url = $("#sheetUrl").value.trim();
-        if (!url) {
-          sheetEndpoint = DEFAULT_SHEET_URL;
-          $("#sheetUrl").value = DEFAULT_SHEET_URL;
-          setSheetStatus("Kolom URL dikosongkan — aplikasi kembali memakai URL Google Sheet yang tertanam.", true);
-          return;
-        }
-        if (!/^https:\/\//i.test(url)) {
-          setSheetStatus("URL tidak valid (harus diawali https:// dan biasanya berakhiran /exec) — URL sebelumnya tetap dipakai.");
-          $("#sheetUrl").focus();
-          return;
-        }
-        sheetEndpoint = url;
-        setSheetStatus("Terhubung ke URL baru. Login dan hasil kuis mulai sekarang terkirim ke Sheet pada URL tersebut.", true);
-      });
-      $("#sheetUrl").value = DEFAULT_SHEET_URL;
-
-      /* ---------- Kode Apps Script untuk disalin ---------- */
-      const APPS_SCRIPT_CODE = [
-        "// Kode Apps Script untuk Google Sheet pusat DapMath.",
-        "// Tempel di spreadsheet lewat Ekstensi > Apps Script, lalu Deploy",
-        "// sebagai Aplikasi Web dengan akses \"Siapa saja\" (Anyone).",
-        "function ambilSheet(ss, nama, header) {",
-        "  var sh = ss.getSheetByName(nama);",
-        "  if (!sh) { sh = ss.insertSheet(nama); sh.appendRow(header); }",
-        "  return sh;",
-        "}",
-        "function doPost(e) {",
-        "  var data = JSON.parse(e.postData.contents);",
-        "  var ss = SpreadsheetApp.getActiveSpreadsheet();",
-        "  var app = data.app || \"\";",
-        "  if (data.type === \"login\") {",
-        "    ambilSheet(ss, \"Login\", [\"Waktu\", \"Nama\", \"Kelas\", \"Aplikasi\"])",
-        "      .appendRow([new Date(data.time), data.nama, data.kelas, app]);",
-        "  } else if (data.type === \"kuis\") {",
-        "    ambilSheet(ss, \"Kuis\", [\"Waktu Selesai\", \"Nama\", \"Kelas\", \"Percobaan ke\", \"Skor\", \"Aplikasi\"])",
-        "      .appendRow([new Date(data.time), data.nama, data.kelas, data.attemptNo, data.score, app]);",
-        "  } else if (data.type === \"ringkasan\") {",
-        "    ambilSheet(ss, \"Ringkasan\", [\"Waktu Kirim\", \"Nama\", \"Kelas\", \"Menu Dipelajari\", \"Percobaan Kuis\", \"Skor Terakhir\", \"Skor Terbaik\", \"Rata-rata Skor\", \"Aplikasi\"])",
-        "      .appendRow([new Date(), data.nama, data.kelas, data.menus, data.attempts, data.last, data.best, data.avg, app]);",
-        "  }",
-        "  return ContentService.createTextOutput(JSON.stringify({ ok: true }))",
-        "    .setMimeType(ContentService.MimeType.JSON);",
-        "}",
-        "function bacaBaris(ss, nama, app) {",
-        "  var sh = ss.getSheetByName(nama);",
-        "  if (!sh || sh.getLastRow() < 2) return [];",
-        "  var rows = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues();",
-        "  if (!app) return rows;",
-        "  return rows.filter(function (r) { return r[r.length - 1] === app; });",
-        "}",
-        "function doGet(e) {",
-        "  var ss = SpreadsheetApp.getActiveSpreadsheet();",
-        "  var app = (e && e.parameter && e.parameter.app) || \"\";",
-        "  var login = bacaBaris(ss, \"Login\", app).map(function (r) {",
-        "    return { time: r[0], nama: r[1], kelas: r[2] };",
-        "  });",
-        "  var kuis = bacaBaris(ss, \"Kuis\", app).map(function (r) {",
-        "    return { time: r[0], nama: r[1], kelas: r[2], attemptNo: r[3], score: r[4] };",
-        "  });",
-        "  return ContentService.createTextOutput(JSON.stringify({ login: login, kuis: kuis }))",
-        "    .setMimeType(ContentService.MimeType.JSON);",
-        "}",
-      ].join("\n");
-      $("#appsScriptCode").value = APPS_SCRIPT_CODE;
-      $("#btnCopyScript").addEventListener("click", () => {
-        const box = $("#appsScriptCode"), btn = $("#btnCopyScript");
-        const done = () => { btn.textContent = "Kode Tersalin ✓"; setTimeout(() => { btn.textContent = "Salin Kode Apps Script"; }, 2200); };
-        box.select(); box.setSelectionRange(0, box.value.length);
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(box.value).then(done).catch(() => { try { document.execCommand("copy"); } catch (err) { /* abaikan */ } done(); });
-        } else { try { document.execCommand("copy"); } catch (err) { /* abaikan */ } done(); }
-      });
-    </script>
+/* =============== MULAI =============== */
+if(siswa && siswa.nama){ masukApp(); }
+})();
+</script>
       <!-- ============ TANYA KANG DODY — AI tutor ============ -->
     <button id="kdFab" aria-expanded="false" aria-controls="kdPanel" title="Tanya Kang Dody">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -1258,6 +1044,7 @@
         <button type="submit" class="btn small">Kirim</button>
       </form>
     </section>
+
     <script>
     /* ---------- Tanya Kang Dody — AI tutor (chat dengan tutor AI materi Lingkaran) ---------- */
     /* Mengirim {action:"ask", app, nama, kelas, question} ke Web App Apps Script guru
@@ -1271,7 +1058,9 @@
         try {
           if (typeof sheetEndpoint !== "undefined" && sheetEndpoint) return sheetEndpoint;
           if (typeof state !== "undefined" && state && state.sheetUrl) return state.sheetUrl;
-          if (typeof sheetUrl !== "undefined" && sheetUrl) return sheetUrl;
+          if (typeof sheetUrl !== "undefined" && sheetUrl) {
+            return (typeof sheetUrl === "function") ? (sheetUrl() || "") : sheetUrl;
+          }
           if (typeof urlSheet === "function") { var u = urlSheet(); if (u) return u; }
           if (typeof SHEET_URL_DEFAULT !== "undefined" && SHEET_URL_DEFAULT) return SHEET_URL_DEFAULT;
           if (typeof DEFAULT_SHEET_URL !== "undefined" && DEFAULT_SHEET_URL) return DEFAULT_SHEET_URL;
