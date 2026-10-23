@@ -397,6 +397,58 @@
       details.sheet-steps[open ] summary .chev { transform: rotate(180deg); }
 
       footer { max-width: 1180px; margin: 0 auto; padding: 0 16px 34px; color: var(--ink-soft); font-size: 0.92rem; text-align: center; }
+
+      /* ===== Tanya Kang Dody — pilot AI tutor (tombol mengambang + panel chat) ===== */
+      #kdFab {
+        position: fixed; right: 18px; bottom: 18px; z-index: 60;
+        display: inline-flex; align-items: center; gap: 8px;
+        background: var(--teal); color: #fff; border: none;
+        border-radius: 999px; padding: 13px 18px;
+        font-weight: 700; font-size: 0.95rem; font-family: inherit;
+        box-shadow: var(--shadow); cursor: pointer;
+      }
+      #kdFab:hover { background: var(--teal-dark); }
+      #kdFab:active { transform: scale(0.97); }
+      #kdFab svg { width: 20px; height: 20px; flex: none; }
+      #kdPanel {
+        position: fixed; right: 18px; bottom: 82px; z-index: 61;
+        width: min(380px, calc(100vw - 36px)); height: min(540px, calc(100dvh - 120px));
+        background: var(--paper); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow);
+        display: none; flex-direction: column; overflow: hidden;
+      }
+      #kdPanel.open { display: flex; }
+      #kdHead {
+        display: flex; align-items: center; gap: 10px;
+        background: var(--teal-tint); padding: 11px 12px 11px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+      #kdHead .kd-title { font-weight: 800; font-size: 1rem; color: var(--ink); }
+      #kdHead .kd-sub { font-size: 0.78rem; color: var(--ink-soft); }
+      #kdClose {
+        margin-left: auto; border: 1px solid var(--line); background: var(--paper);
+        color: var(--ink); border-radius: 10px; width: 32px; height: 32px;
+        font-size: 0.95rem; line-height: 1; cursor: pointer; flex: none;
+      }
+      #kdMsgs {
+        flex: 1; overflow-y: auto; padding: 12px;
+        display: flex; flex-direction: column; gap: 8px;
+      }
+      .kd-msg {
+        max-width: 88%; padding: 9px 12px; border-radius: 14px;
+        font-size: 0.92rem; line-height: 1.55; color: var(--ink);
+        white-space: pre-wrap; word-wrap: break-word;
+      }
+      .kd-msg.bot { align-self: flex-start; background: var(--paper-2); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+      .kd-msg.user { align-self: flex-end; background: var(--teal); color: #fff; border-bottom-right-radius: 4px; }
+      .kd-typing { font-style: italic; color: var(--ink-soft); }
+      #kdForm { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--paper); }
+      #kdInput {
+        flex: 1; min-width: 0; font: inherit; font-size: 0.92rem; color: var(--ink);
+        background: var(--paper-2); border: 1.5px solid var(--line);
+        border-radius: 10px; padding: 9px 12px;
+      }
+      #kdInput:focus { border-color: var(--teal); outline: none; box-shadow: 0 0 0 3px var(--teal-tint); }
     </style>
   </head>
   <body>
@@ -942,6 +994,26 @@ function doGet() {
     </main>
 
     <footer>Media pembelajaran Matematika SMP Kelas 8 · Materi Teorema Pythagoras · Kurikulum Merdeka<br />Dibangun oleh <strong>Dody Adyansyah</strong></footer>
+
+    <!-- ============ TANYA KANG DODY — pilot AI tutor ============ -->
+    <button id="kdFab" aria-expanded="false" aria-controls="kdPanel" title="Tanya Kang Dody">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      Tanya Kang Dody
+    </button>
+    <section id="kdPanel" role="dialog" aria-label="Tanya Kang Dody">
+      <div id="kdHead">
+        <div>
+          <div class="kd-title">Tanya Kang Dody</div>
+          <div class="kd-sub">Tutor AI · materi Teorema Pythagoras</div>
+        </div>
+        <button id="kdClose" type="button" aria-label="Tutup chat">✕</button>
+      </div>
+      <div id="kdMsgs" aria-live="polite"></div>
+      <form id="kdForm" autocomplete="off">
+        <input id="kdInput" type="text" maxlength="500" placeholder="Tulis pertanyaanmu di sini…" aria-label="Pertanyaan untuk Kang Dody" />
+        <button type="submit" class="btn small">Kirim</button>
+      </form>
+    </section>
 
     <script>
       "use strict";
@@ -1854,6 +1926,82 @@ function doGet() {
         a.click();
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 2000);
+      });
+
+      /* ---------- Tanya Kang Dody — pilot AI tutor (chat dengan tutor AI materi Pythagoras) ---------- */
+      // Mengirim {action:"ask", app, nama, kelas, question} ke Web App Apps Script guru
+      // (memakai sheetEndpoint yang sama dengan Data Guru) lalu menampilkan jawabannya.
+      const KD_APP_ID = "pythagoras";
+      const kdFab = $("#kdFab"), kdPanel = $("#kdPanel"), kdMsgs = $("#kdMsgs"),
+        kdForm = $("#kdForm"), kdInput = $("#kdInput"), kdClose = $("#kdClose");
+      function kdAddMsg(text, who) {
+        const d = document.createElement("div");
+        d.className = "kd-msg " + who;
+        d.textContent = String(text); // textContent aman dari HTML; CSS pre-wrap menjaga baris baru
+        kdMsgs.appendChild(d);
+        kdMsgs.scrollTop = kdMsgs.scrollHeight;
+        return d;
+      }
+      function kdToggle(buka) {
+        const mauBuka = buka === undefined ? !kdPanel.classList.contains("open") : !!buka;
+        kdPanel.classList.toggle("open", mauBuka);
+        kdFab.setAttribute("aria-expanded", mauBuka ? "true" : "false");
+        if (mauBuka) {
+          if (!kdMsgs.dataset.welcomed) {
+            kdMsgs.dataset.welcomed = "1";
+            kdAddMsg("Halo! Saya Kang Dody, tutor AI untuk materi Teorema Pythagoras. Ada yang mau ditanyakan? Contoh: “kapan memakai rumus a² + b² = c²?”", "bot");
+          }
+          kdInput.focus();
+        }
+      }
+      kdFab.addEventListener("click", () => kdToggle());
+      kdClose.addEventListener("click", () => kdToggle(false));
+      kdForm.addEventListener("submit", (ev) => {
+        ev.preventDefault();
+        const q = kdInput.value.trim();
+        if (!q) return;
+        if (q.length > 500) {
+          kdAddMsg("Pertanyaannya kepanjangan — coba dipersingkat jadi maksimal 500 karakter ya.", "bot");
+          return;
+        }
+        kdAddMsg(q, "user");
+        kdInput.value = "";
+        kdInput.focus();
+        const typing = kdAddMsg("Kang Dody sedang mengetik…", "bot");
+        typing.classList.add("kd-typing");
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 60000);
+        fetch(sheetEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "ask",
+            app: KD_APP_ID,
+            nama: currentStudent ? currentStudent.nama : "",
+            kelas: currentStudent ? currentStudent.kelas : "",
+            question: q,
+          }),
+          signal: ctrl.signal,
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+          })
+          .then((data) => {
+            typing.remove();
+            if (data && data.ok) {
+              kdAddMsg(data.answer || "Hmm, saya tidak dapat jawaban. Coba tanyakan lagi ya.", "bot");
+            } else if (data && data.error === "no_key") {
+              kdAddMsg("Fitur tanya jawab belum aktif — beri tahu Pak Dody ya.", "bot");
+            } else {
+              kdAddMsg("Maaf, ada kendala. Coba lagi sebentar ya.", "bot");
+            }
+          })
+          .catch(() => {
+            typing.remove();
+            kdAddMsg("Maaf, ada kendala. Coba lagi sebentar ya.", "bot");
+          })
+          .finally(() => clearTimeout(timer));
       });
     </script>
   </body>
