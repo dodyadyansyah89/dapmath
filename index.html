@@ -1,554 +1,430 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light dark" />
-    <link rel="icon" href="data:," />
-    <title>DapMath — Aplikasi Matematika Interaktif SMP</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
-    <style>
-      :root {
-        --bg: #f4f6f9;
-        --surface: #ffffff;
-        --surface-soft: #eef1f6;
-        --ink: #17233b;
-        --ink-soft: #47536b;
-        --line: #dde3ee;
-        --grid-line: rgba(23, 35, 59, 0.055);
-        --accent: #0e7c66;
-        --accent-ink: #ffffff;
-        --k7: #0e7c66;
-        --k7-soft: #e2f2ed;
-        --k8: #d95d1e;
-        --k8-soft: #fdeee3;
-        --k9: #2563eb;
-        --k9-soft: #e6edfd;
-        --badge-bg: #eef1f6;
-        --badge-ink: #5b6a86;
-        --live-bg: #0e7c66;
-        --live-ink: #ffffff;
-        --shadow: 0 1px 2px rgba(23, 35, 59, 0.06), 0 8px 24px rgba(23, 35, 59, 0.06);
-        --shadow-hover: 0 2px 4px rgba(23, 35, 59, 0.08), 0 16px 36px rgba(23, 35, 59, 0.12);
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0e1420;
-          --surface: #17202f;
-          --surface-soft: #1e2a3d;
-          --ink: #eef2f9;
-          --ink-soft: #a7b3c7;
-          --line: #2a3850;
-          --grid-line: rgba(238, 242, 249, 0.05);
-          --k7-soft: #12352c;
-          --k8-soft: #3d2413;
-          --k9-soft: #1b2c52;
-          --badge-bg: #22304a;
-          --badge-ink: #a7b3c7;
-          --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3);
-          --shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.35), 0 16px 36px rgba(0, 0, 0, 0.45);
-        }
-      }
-      * { box-sizing: border-box; }
-      html { scroll-behavior: smooth; }
-      body {
-        margin: 0;
-        font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-        background: var(--bg);
-        color: var(--ink);
-        line-height: 1.55;
-        -webkit-font-smoothing: antialiased;
-      }
-      .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Dody Adyansyah, M.Pd. — DapMath | Membuat Matematika Menyenangkan</title>
+<meta name="description" content="Situs pribadi Dody Adyansyah, M.Pd. — guru matematika SMP dan pembangun 24 aplikasi pembelajaran interaktif DapMath untuk kelas 7, 8, dan 9." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230e7c66'/%3E%3Ctext x='50' y='72' font-size='62' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'%3E%CF%80%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --teal:#0e7c66; --teal-deep:#0a5a4b; --orange:#d95d1e; --blue:#2563eb;
+    --ink:#17233b; --ink-soft:#5b6a86; --bg:#f6f8fb; --surface:#ffffff;
+    --line:#e3e8f2; --hero-grad:linear-gradient(135deg,#07332b 0%,#0b5a4a 45%,#0e7c66 100%);
+    --shadow:0 1px 2px rgba(23,35,59,.07),0 10px 28px rgba(23,35,59,.08);
+    --shadow-hover:0 2px 4px rgba(23,35,59,.1),0 18px 40px rgba(23,35,59,.14);
+    --radius:16px;
+    --nav-h:64px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 12px)}
+  body{margin:0;font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  section{padding:72px 0}
+  section:nth-of-type(even){background:var(--surface)}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:10px}
+  h2.sec-title{margin:0 0 8px;font-size:clamp(26px,4vw,36px);font-weight:800;letter-spacing:-.02em;line-height:1.2}
+  .sec-sub{margin:0 0 34px;color:var(--ink-soft);max-width:44em;font-size:16px}
 
-      /* ---------- Hero ---------- */
-      .hero {
-        position: relative;
-        overflow: hidden;
-        background:
-          linear-gradient(var(--grid-line) 1px, transparent 1px),
-          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-        background-size: 34px 34px;
-        border-bottom: 1px solid var(--line);
-      }
-      .hero-inner { position: relative; padding: 52px 0 44px; }
-      .hero .doodle { position: absolute; pointer-events: none; opacity: 0.9; }
-      .hero h1 {
-        margin: 0;
-        font-size: clamp(44px, 8vw, 76px);
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        line-height: 1.02;
-      }
-      .hero h1 .math { color: var(--k8); }
-      .hero .tagline {
-        margin: 14px 0 0;
-        font-size: clamp(17px, 2.6vw, 21px);
-        font-weight: 600;
-        color: var(--ink);
-        max-width: 34em;
-      }
-      .hero .sub {
-        margin: 8px 0 0;
-        color: var(--ink-soft);
-        font-size: 15.5px;
-        max-width: 40em;
-      }
-      .builder-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 24px;
-        padding: 8px 16px 8px 8px;
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        box-shadow: var(--shadow);
-        font-size: 14.5px;
-        font-weight: 600;
-      }
-      .builder-chip .avatar {
-        width: 34px; height: 34px;
-        border-radius: 50%;
-        background: var(--accent);
-        color: #fff;
-        display: grid; place-items: center;
-        font-weight: 800; font-size: 14px;
-        letter-spacing: 0.02em;
-      }
-      .builder-chip small { display: block; font-weight: 500; color: var(--ink-soft); font-size: 12.5px; line-height: 1.3; }
-      .hero-stats {
-        display: flex; flex-wrap: wrap; gap: 10px 28px;
-        margin-top: 28px;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 13.5px;
-        color: var(--ink-soft);
-      }
-      .hero-stats b { color: var(--ink); font-size: 17px; font-weight: 600; }
+  /* ---------- Navigasi ---------- */
+  nav{position:sticky;top:0;z-index:50;height:var(--nav-h);background:rgba(255,255,255,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav-inner{max-width:1120px;margin:0 auto;padding:0 20px;height:var(--nav-h);display:flex;align-items:center;gap:8px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:800;font-size:19px;letter-spacing:-.02em;margin-right:auto}
+  .brand .logo{width:34px;height:34px;border-radius:10px;background:var(--teal);color:#fff;display:grid;place-items:center;font-family:Georgia,serif;font-style:italic;font-size:20px}
+  .brand .math{color:var(--orange)}
+  .nav-links{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-links a{white-space:nowrap;text-decoration:none;color:var(--ink-soft);font-weight:600;font-size:14.5px;padding:8px 13px;border-radius:999px;transition:color .15s,background .15s}
+  .nav-links a:hover{color:var(--ink);background:#eef1f6}
+  .nav-links a.active{color:#fff;background:var(--teal)}
 
-      /* ---------- Filter bar ---------- */
-      .filterbar {
-        position: sticky; top: 0; z-index: 20;
-        background: var(--bg);
-        border-bottom: 1px solid var(--line);
-      }
-      .filterbar-inner {
-        display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
-        padding-top: 14px; padding-bottom: 14px;
-      }
-      .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
-      .tab {
-        appearance: none;
-        border: 1.5px solid var(--line);
-        background: var(--surface);
-        color: var(--ink-soft);
-        font: inherit; font-weight: 700; font-size: 14.5px;
-        padding: 9px 18px;
-        border-radius: 999px;
-        cursor: pointer;
-        transition: border-color 0.15s, color 0.15s, background 0.15s;
-      }
-      .tab:hover { border-color: var(--ink-soft); color: var(--ink); }
-      .tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-      .searchbox { margin-left: auto; flex: 1 1 220px; max-width: 340px; }
-      .searchbox input {
-        width: 100%;
-        font: inherit; font-size: 14.5px;
-        padding: 10px 16px;
-        border: 1.5px solid var(--line);
-        border-radius: 999px;
-        background: var(--surface);
-        color: var(--ink);
-      }
-      .searchbox input::placeholder { color: var(--ink-soft); }
-      .searchbox input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  /* ---------- Hero / Beranda ---------- */
+  #beranda{background:var(--hero-grad);color:#fff;position:relative;overflow:hidden;padding:84px 0 90px}
+  #beranda .float{position:absolute;pointer-events:none;color:rgba(255,255,255,.14);font-family:Georgia,serif;font-style:italic;animation:drift 9s ease-in-out infinite}
+  @keyframes drift{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-18px) rotate(4deg)}}
+  .hero-grid{display:grid;grid-template-columns:220px 1fr;gap:44px;align-items:center;position:relative}
+  .hero-photo{width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:top;border:6px solid rgba(255,255,255,.9);box-shadow:0 18px 50px rgba(0,0,0,.3);background:#fff}
+  .hero-eyebrow{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:7px 16px;border-radius:999px;margin-bottom:16px}
+  #beranda h1{margin:0;font-size:clamp(34px,5.4vw,54px);font-weight:800;letter-spacing:-.025em;line-height:1.08}
+  #beranda .tagline{margin:12px 0 0;font-size:clamp(18px,2.6vw,23px);font-weight:600;color:#ffe9d6}
+  #beranda .tagline .hl{color:#ffd9a8}
+  .hero-stats{display:flex;flex-wrap:wrap;gap:10px 34px;margin:26px 0 30px}
+  .hero-stats .stat b{display:block;font-size:30px;font-weight:800;letter-spacing:-.02em}
+  .hero-stats .stat span{font-size:13.5px;color:rgba(255,255,255,.78)}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:15.5px;padding:13px 26px;border-radius:999px;transition:transform .15s,box-shadow .15s,background .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:#fff;color:var(--teal-deep);box-shadow:0 8px 22px rgba(0,0,0,.22)}
+  .btn-ghost{border:2px solid rgba(255,255,255,.55);color:#fff}
+  .btn-ghost:hover{background:rgba(255,255,255,.12)}
 
-      /* ---------- Sections & cards ---------- */
-      main { padding: 8px 0 30px; }
-      .kelas { padding: 30px 0 6px; }
-      .kelas-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 18px; }
-      .kelas-head h2 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
-      .kelas-head .count { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; color: var(--ink-soft); }
-      .kelas-head .kelas-tag {
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 12px; font-weight: 600;
-        padding: 3px 10px; border-radius: 6px;
-      }
-      .tag-7 { background: var(--k7-soft); color: var(--k7); }
-      .tag-8 { background: var(--k8-soft); color: var(--k8); }
-      .tag-9 { background: var(--k9-soft); color: var(--k9); }
+  /* ---------- Aplikasi ---------- */
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+  .tab{appearance:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);font:inherit;font-weight:700;font-size:14.5px;padding:9px 20px;border-radius:999px;cursor:pointer;transition:all .15s}
+  .tab:hover{border-color:var(--ink-soft);color:var(--ink)}
+  .tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:16px}
+  .app-card{position:relative;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+  .app-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover)}
+  .app-card[data-kelas="7"]:hover{border-color:var(--teal)}
+  .app-card[data-kelas="8"]:hover{border-color:var(--orange)}
+  .app-card[data-kelas="9"]:hover{border-color:var(--blue)}
+  .app-card .icon{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;font-size:24px;font-weight:800;margin-bottom:2px}
+  .icon-7{background:#e2f2ed;color:var(--teal)}
+  .icon-8{background:#fdeee3;color:var(--orange)}
+  .icon-9{background:#e6edfd;color:var(--blue)}
+  .app-card h3{margin:0;font-size:17px;font-weight:700;line-height:1.35;padding-right:64px}
+  .app-card p{margin:0;font-size:13.8px;color:var(--ink-soft);flex:1}
+  .grade-badge{position:absolute;top:18px;right:16px;font-size:11.5px;font-weight:800;padding:4px 11px;border-radius:999px;white-space:nowrap}
+  .gb-7{background:#e2f2ed;color:var(--teal-deep)}
+  .gb-8{background:#fdeee3;color:#a34a12}
+  .gb-9{background:#e6edfd;color:#1d4fd7}
+  .open-link{margin-top:4px;font-size:14px;font-weight:700;color:var(--teal-deep);display:inline-flex;align-items:center;gap:6px}
+  .app-card[hidden]{display:none}
+  .app-count{font-size:14px;color:var(--ink-soft);margin-bottom:14px}
 
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
-        gap: 16px;
-      }
-      .card {
-        position: relative;
-        display: flex; flex-direction: column; gap: 8px;
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 20px 20px 18px;
-        box-shadow: var(--shadow);
-        text-decoration: none;
-        color: inherit;
-      }
-      a.card { transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; }
-      a.card:hover, a.card:focus-visible {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-hover);
-        border-color: var(--k8);
-        outline: none;
-      }
-      .card .icon {
-        width: 46px; height: 46px;
-        border-radius: 12px;
-        display: grid; place-items: center;
-        margin-bottom: 2px;
-      }
-      .icon-7 { background: var(--k7-soft); color: var(--k7); }
-      .icon-8 { background: var(--k8-soft); color: var(--k8); }
-      .icon-9 { background: var(--k9-soft); color: var(--k9); }
-      .card h3 { margin: 0; font-size: 17.5px; font-weight: 700; line-height: 1.3; padding-right: 76px; }
-      .card p { margin: 0; font-size: 14px; color: var(--ink-soft); flex: 1; }
-      .badge {
-        position: absolute; top: 18px; right: 16px;
-        font-size: 11.5px; font-weight: 700;
-        padding: 4px 10px; border-radius: 999px;
-        letter-spacing: 0.01em;
-        white-space: nowrap;
-      }
-      .badge-soon { background: var(--badge-bg); color: var(--badge-ink); }
-      .badge-live { background: var(--live-bg); color: var(--live-ink); }
-      .card .open-link {
-        margin-top: 6px;
-        font-size: 14px; font-weight: 700;
-        color: var(--k8);
-        display: inline-flex; align-items: center; gap: 6px;
-      }
-      .card.soon { opacity: 0.82; }
-      .card[hidden], .kelas[hidden] { display: none; }
-      .no-result {
-        display: none;
-        text-align: center;
-        color: var(--ink-soft);
-        padding: 44px 16px;
-        font-size: 15.5px;
-      }
-      .no-result.show { display: block; }
+  /* ---------- Tentang Matematika ---------- */
+  #matematika .quote-card{background:linear-gradient(135deg,#fff 0%,#f2faf7 100%);border:1px solid var(--line);border-left:6px solid var(--teal);border-radius:var(--radius);padding:34px 36px;box-shadow:var(--shadow);position:relative}
+  #matematika .quote-card::before{content:"\201C";position:absolute;top:6px;left:20px;font-family:Georgia,serif;font-size:72px;color:var(--teal);opacity:.18;line-height:1}
+  #matematika blockquote{margin:0;font-size:clamp(16.5px,2.2vw,19.5px);line-height:1.75;color:var(--ink)}
+  #matematika blockquote p{margin:0 0 14px}
+  #matematika blockquote p:last-child{margin-bottom:0}
+  .pill-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .pill{background:#e2f2ed;color:var(--teal-deep);font-weight:700;font-size:13.5px;padding:8px 18px;border-radius:999px}
 
-      /* ---------- Footer ---------- */
-      footer {
-        border-top: 1px solid var(--line);
-        margin-top: 34px;
-        padding: 28px 0 40px;
-        text-align: center;
-      }
-      footer .foot-brand { font-weight: 800; font-size: 18px; letter-spacing: -0.02em; }
-      footer .foot-brand .math { color: var(--k8); }
-      footer p { margin: 6px 0 0; color: var(--ink-soft); font-size: 14px; }
-      footer .built { margin-top: 14px; font-weight: 600; color: var(--ink); font-size: 14.5px; }
+  /* ---------- Karya ---------- */
+  .karya-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .karya-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;transition:transform .15s,box-shadow .15s}
+  .karya-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover)}
+  .karya-card .doc-icon{width:52px;height:52px;border-radius:14px;background:#e6edfd;color:var(--blue);display:grid;place-items:center}
+  .karya-card h3{margin:0;font-size:18px;font-weight:700}
+  .karya-card p{margin:0;font-size:14.5px;color:var(--ink-soft);flex:1}
+  .dl-btn{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;text-decoration:none;background:var(--teal);color:#fff;font-weight:700;font-size:14.5px;padding:11px 22px;border-radius:999px;transition:background .15s,transform .15s}
+  .dl-btn:hover{background:var(--teal-deep);transform:translateY(-2px)}
+  .file-meta{font-size:12.5px;color:var(--ink-soft)}
 
-      @media (max-width: 560px) {
-        .hero-inner { padding: 38px 0 34px; }
-        .searchbox { margin-left: 0; max-width: none; flex-basis: 100%; order: 3; }
-        .card h3 { padding-right: 70px; }
-        .hero .doodle { display: none; }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        html { scroll-behavior: auto; }
-        a.card { transition: none; }
-      }
-    </style>
-  </head>
-  <body>
-    <header class="hero">
-      <div class="wrap hero-inner">
-        <svg class="doodle" style="top:26px; right:6%;" width="72" height="72" viewBox="0 0 72 72" aria-hidden="true"><path d="M10 58 L62 58 L62 14 Z" fill="none" stroke="#d95d1e" stroke-width="3" stroke-linejoin="round"/><path d="M50 58 L62 58 L62 46" fill="none" stroke="#d95d1e" stroke-width="3"/></svg>
-        <svg class="doodle" style="top:120px; right:16%;" width="46" height="46" viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="17" fill="none" stroke="#0e7c66" stroke-width="3"/><circle cx="23" cy="23" r="2.5" fill="#0e7c66"/></svg>
-        <svg class="doodle" style="bottom:30px; right:4%;" width="58" height="40" viewBox="0 0 58 40" aria-hidden="true"><path d="M4 34 Q 20 4, 30 20 T 54 10" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/></svg>
-        <h1>Dap<span class="math">Math</span></h1>
-        <p class="tagline">Belajar matematika SMP jadi lebih hidup — jelajahi materi lewat aplikasi interaktif.</p>
-        <p class="sub">Kumpulan aplikasi pembelajaran matematika interaktif untuk siswa SMP kelas 7, 8, dan 9: ada lab virtual, visualisasi, kalkulator langkah-demi-langkah, dan kuis di setiap materinya.</p>
-        <div class="builder-chip">
-          <span class="avatar" aria-hidden="true">DA</span>
-          <span>Dody Adyansyah<small>Guru Matematika · Pembangun DapMath</small></span>
-        </div>
-        <div class="hero-stats">
-          <span><b>24</b> aplikasi materi</span>
-          <span><b>3</b> jenjang kelas</span>
-          <span><b>24</b> sudah bisa dimainkan</span>
-        </div>
+  /* ---------- Tentang Saya ---------- */
+  .about-grid{display:grid;grid-template-columns:280px 1fr;gap:44px;align-items:start}
+  .about-photo{width:100%;max-width:280px;border-radius:20px;box-shadow:var(--shadow);border:1px solid var(--line)}
+  .about-text p{margin:0 0 14px;font-size:16px}
+  .achieve{margin-top:26px}
+  .achieve h3{margin:0 0 14px;font-size:19px;font-weight:800}
+  .achieve ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+  .achieve li{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:14px;font-weight:600}
+  .achieve li .check{flex:none;width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800;margin-top:1px}
+
+  /* ---------- Kontak ---------- */
+  .kontak-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  .kontak-card{display:flex;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+  .kontak-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--teal)}
+  .kontak-card .k-icon{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;color:#fff}
+  .k-mail{background:var(--teal)} .k-yt{background:#e11d2e} .k-ig{background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)}
+  .kontak-card b{display:block;font-size:16.5px}
+  .kontak-card small{color:var(--ink-soft);font-size:13.5px;word-break:break-all}
+
+  /* ---------- Footer ---------- */
+  footer{background:#0d1b26;color:#c7d2e3;text-align:center;padding:34px 20px 40px}
+  footer .foot-brand{font-weight:800;font-size:20px;color:#fff;letter-spacing:-.02em}
+  footer .foot-brand .math{color:var(--orange)}
+  footer p{margin:8px 0 0;font-size:14px}
+
+  /* ---------- Animasi reveal ---------- */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.visible{opacity:1;transform:none}
+
+  @media (max-width:760px){
+    section{padding:54px 0}
+    .hero-grid{grid-template-columns:1fr;text-align:center;gap:26px}
+    .hero-photo{width:170px;height:170px;margin:0 auto}
+    .hero-stats{justify-content:center}
+    .hero-cta{justify-content:center}
+    #beranda{padding:60px 0 66px}
+    .about-grid{grid-template-columns:1fr;gap:26px}
+    .about-photo{max-width:220px;margin:0 auto}
+    .nav-links a{font-size:13.5px;padding:8px 10px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none;transition:none}
+    #beranda .float{animation:none}
+    .btn,.app-card,.karya-card,.kontak-card,.dl-btn{transition:none}
+  }
+</style>
+</head>
+<body>
+<nav aria-label="Navigasi utama">
+  <div class="nav-inner">
+    <a class="brand" href="#beranda"><span class="logo">π</span><span>Dap<span class="math">Math</span></span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#beranda" class="active">Beranda</a>
+      <a href="#aplikasi">Aplikasi</a>
+      <a href="#matematika">Tentang Matematika</a>
+      <a href="#karya">Karya</a>
+      <a href="#tentang">Tentang Saya</a>
+      <a href="#kontak">Kontak</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= 1. BERANDA ================= -->
+<section id="beranda">
+  <span class="float" style="top:12%;left:6%;font-size:64px">∑</span>
+  <span class="float" style="top:64%;left:3%;font-size:48px;animation-delay:1.4s">√</span>
+  <span class="float" style="top:20%;right:8%;font-size:56px;animation-delay:2.6s">π</span>
+  <span class="float" style="top:70%;right:5%;font-size:70px;animation-delay:.8s">△</span>
+  <span class="float" style="top:44%;left:44%;font-size:40px;animation-delay:3.4s">∞</span>
+  <div class="wrap hero-grid">
+    <img class="hero-photo" src="assets/foto-dody.jpg" alt="Foto Dody Adyansyah" />
+    <div>
+      <span class="hero-eyebrow">Guru Matematika · SMP</span>
+      <h1>Dody Adyansyah, M.Pd.</h1>
+      <p class="tagline">Membuat <span class="hl">Matematika Menyenangkan</span> lewat teknologi pembelajaran interaktif.</p>
+      <div class="hero-stats">
+        <div class="stat"><b>24</b><span>Aplikasi Pembelajaran</span></div>
+        <div class="stat"><b>7–9</b><span>Kelas SMP Tercakup</span></div>
+        <div class="stat"><b>1</b><span>Database Siswa Terpusat</span></div>
       </div>
-    </header>
-
-    <div class="filterbar">
-      <div class="wrap filterbar-inner">
-        <div class="tabs" role="tablist" aria-label="Filter kelas">
-          <button class="tab" role="tab" aria-selected="true" data-filter="all">Semua Kelas</button>
-          <button class="tab" role="tab" aria-selected="false" data-filter="7">Kelas 7</button>
-          <button class="tab" role="tab" aria-selected="false" data-filter="8">Kelas 8</button>
-          <button class="tab" role="tab" aria-selected="false" data-filter="9">Kelas 9</button>
-        </div>
-        <div class="searchbox">
-          <input type="search" id="search" placeholder="Cari materi… misalnya “lingkaran”" aria-label="Cari materi" />
-        </div>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#aplikasi">Jelajahi Aplikasi →</a>
+        <a class="btn btn-ghost" href="#tentang">Tentang Saya</a>
       </div>
     </div>
+  </div>
+</section>
 
-    <main class="wrap" id="main">
-      <!-- ================= KELAS 7 ================= -->
-      <section class="kelas" data-kelas="7" aria-labelledby="judul-7">
-        <div class="kelas-head">
-          <span class="kelas-tag tag-7">SMP · Kelas VII</span>
-          <h2 id="judul-7">Kelas 7</h2>
-          <span class="count">8 aplikasi · 8 tersedia</span>
-        </div>
-        <div class="grid">
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/bilangan-bulat-pecahan/" data-name="bilangan bulat pecahan">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-7"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 12h16"/><path d="M8 8l-3 4 3 4M16 8l3 4-3 4"/></svg></span>
-            <h3>Bilangan Bulat &amp; Pecahan</h3>
-            <p>Operasi hitung bilangan bulat dan pecahan, dari garis bilangan sampai soal cerita sehari-hari.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/bentuk-aljabar/" data-name="bentuk aljabar">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-7"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l6 14M19 5l-6 14M8.5 12h7"/></svg></span>
-            <h3>Bentuk Aljabar</h3>
-            <p>Variabel, koefisien, konstanta, dan operasi pada suku-suku aljabar.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/plsv/" data-name="plsv persamaan linear satu variabel">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-7"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 9h16M4 15h16"/><path d="M9 5v14" opacity="0.55"/></svg></span>
-            <h3>PLSV</h3>
-            <p>Persamaan linear satu variabel: kalimat terbuka dan cara menemukan penyelesaiannya.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/perbandingan/" data-name="perbandingan rasio skala">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-7"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="2.2"/><circle cx="16" cy="8" r="2.2"/><circle cx="8" cy="16" r="2.2"/><circle cx="16" cy="16" r="2.2"/></svg></span>
-            <h3>Perbandingan</h3>
-            <p>Rasio, skala pada peta, serta perbandingan senilai dan berbalik nilai.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/aritmetika-sosial/" data-name="aritmetika sosial untung rugi diskon">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-7"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h2l2.4 10.2A1.8 1.8 0 0 0 10.2 19h7.9a1.8 1.8 0 0 0 1.8-1.4L21.5 9H7"/><circle cx="10.5" cy="22" r="0.4" fill="currentColor"/><circle cx="18" cy="22" r="0.4" fill="currentColor"/></svg></span>
-            <h3>Aritmetika Sosial</h3>
-            <p>Untung–rugi, diskon, bruto–neto–tara, bunga tunggal, dan pajak dalam jual beli.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/garis-sudut/" data-name="garis sudut">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-7"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20L20 6M4 20h16M4 20l6-9" /><path d="M12.5 20a8.5 8.5 0 0 0-1.6-5" opacity="0.55"/></svg></span>
-            <h3>Garis &amp; Sudut</h3>
-            <p>Kedudukan dua garis dan hubungan antar sudut: berpenyiku, berpelurus, dan bertolak belakang.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/segiempat-segitiga/" data-name="segiempat segitiga bangun datar">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-7"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3.5" y="10" width="9" height="9"/><path d="M15 19l3.2-8L22 19z"/></svg></span>
-            <h3>Segiempat &amp; Segitiga</h3>
-            <p>Sifat-sifat bangun datar serta cara menghitung keliling dan luasnya.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/statistika-7/" data-name="statistika data">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-7"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4v16h16"/><path d="M8.5 20v-6M13 20V8M17.5 20v-9"/></svg></span>
-            <h3>Statistika</h3>
-            <p>Mengumpulkan, menyajikan, dan membaca data dalam tabel dan diagram.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-        </div>
-      </section>
+<!-- ================= 2. APLIKASI ================= -->
+<section id="aplikasi">
+  <div class="wrap">
+    <span class="eyebrow reveal">DapMath</span>
+    <h2 class="sec-title reveal">Aplikasi Pembelajaran</h2>
+    <p class="sec-sub reveal">24 aplikasi matematika interaktif untuk SMP kelas 7, 8, dan 9 — materi, lab virtual, kalkulator, kuis, dan asisten AI "Tanya Kang Dody" di setiap aplikasi.</p>
+    <div class="tabs reveal" role="tablist" aria-label="Filter kelas">
+      <button class="tab" role="tab" aria-selected="true" data-filter="all">Semua</button>
+      <button class="tab" role="tab" aria-selected="false" data-filter="7">Kelas 7</button>
+      <button class="tab" role="tab" aria-selected="false" data-filter="8">Kelas 8</button>
+      <button class="tab" role="tab" aria-selected="false" data-filter="9">Kelas 9</button>
+    </div>
+    <p class="app-count" id="appCount"></p>
+    <div class="app-grid" id="appGrid"></div>
+  </div>
+</section>
 
-      <!-- ================= KELAS 8 ================= -->
-      <section class="kelas" data-kelas="8" aria-labelledby="judul-8">
-        <div class="kelas-head">
-          <span class="kelas-tag tag-8">SMP · Kelas VIII</span>
-          <h2 id="judul-8">Kelas 8</h2>
-          <span class="count">9 aplikasi · 9 tersedia</span>
-        </div>
-        <div class="grid">
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/pola-bilangan/" data-name="pola bilangan barisan deret">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-8"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="17" r="1.8"/><circle cx="9.5" cy="13.5" r="1.8"/><circle cx="14" cy="10" r="1.8"/><circle cx="18.5" cy="6.5" r="1.8"/></svg></span>
-            <h3>Pola Bilangan</h3>
-            <p>Barisan dan deret bilangan serta pola konfigurasi objek yang beraturan.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/koordinat-kartesius/" data-name="koordinat kartesius bidang koordinat">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v18M3 12h18"/><circle cx="16.5" cy="7.5" r="1.9" fill="currentColor" stroke="none"/></svg></span>
-            <h3>Koordinat Kartesius</h3>
-            <p>Menentukan posisi titik, garis, dan bangun pada bidang koordinat.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/relasi-fungsi/" data-name="relasi fungsi">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="6" cy="12" rx="2.6" ry="6"/><ellipse cx="18" cy="12" rx="2.6" ry="6"/><path d="M8.3 9.5C11 10.5 13 10.5 15.7 9M8.3 14.5C11 13.8 13 13.8 15.7 15"/></svg></span>
-            <h3>Relasi &amp; Fungsi</h3>
-            <p>Relasi dua himpunan, pengertian fungsi, dan cara menghitung nilai fungsi.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/persamaan-garis-lurus/" data-name="persamaan garis lurus gradien pgl">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20h16M4 20V4"/><path d="M5 17L19 6"/></svg></span>
-            <h3>Persamaan Garis Lurus</h3>
-            <p>Gradien, grafik garis lurus, dan menentukan persamaan dari dua titik.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/spldv/" data-name="spldv sistem persamaan linear dua variabel">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6c4 2 12 8 16 10M4 18C8 16 16 8 20 6"/></svg></span>
-            <h3>SPLDV</h3>
-            <p>Sistem persamaan linear dua variabel: metode grafik, substitusi, eliminasi, dan campuran.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/pythagoras/" data-name="teorema pythagoras segitiga siku-siku">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 20h14V6z"/><path d="M15.5 20h3.5v-3.5" opacity="0.6"/></svg></span>
-            <h3>Teorema Pythagoras</h3>
-            <p>Lab segitiga interaktif, bukti visual a² + b² = c², kalkulator sisi, triple Pythagoras, dan kuis.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/lingkaran/" data-name="lingkaran">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.2"/><path d="M12 12l5.8-5.8" stroke-linecap="round"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg></span>
-            <h3>Lingkaran</h3>
-            <p>Unsur-unsur lingkaran, keliling, luas, dan sudut pusat–sudut keliling.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/bangun-ruang-sisi-datar/" data-name="bangun ruang sisi datar kubus balok prisma limas">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg></span>
-            <h3>Bangun Ruang Sisi Datar</h3>
-            <p>Kubus, balok, prisma, dan limas: jaring-jaring, luas permukaan, dan volume.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/statistika-8/" data-name="statistika peluang data">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="9" cy="9" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg></span>
-            <h3>Statistika &amp; Peluang</h3>
-            <p>Mean, median, modus, serta peluang suatu kejadian dari percobaan sederhana.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-        </div>
-      </section>
-
-      <!-- ================= KELAS 9 ================= -->
-      <section class="kelas" data-kelas="9" aria-labelledby="judul-9">
-        <div class="kelas-head">
-          <span class="kelas-tag tag-9">SMP · Kelas IX</span>
-          <h2 id="judul-9">Kelas 9</h2>
-          <span class="count">7 aplikasi · 7 tersedia</span>
-        </div>
-        <div class="grid">
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/bilangan-berpangkat/" data-name="bilangan berpangkat bentuk akar eksponen">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-9"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20L10 6l3 9 2-4h5"/></svg></span>
-            <h3>Bilangan Berpangkat &amp; Bentuk Akar</h3>
-            <p>Sifat-sifat pangkat, operasi bentuk akar, dan penulisan notasi ilmiah.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/persamaan-kuadrat/" data-name="persamaan kuadrat">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-9"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 18c3-1 5-9 8-9s4 6 7 5"/><path d="M6 21l4-6M15 21l-3.5-5.5" opacity="0.6"/></svg></span>
-            <h3>Persamaan Kuadrat</h3>
-            <p>Menentukan akar-akar persamaan kuadrat dengan pemfaktoran, kuadrat sempurna, dan rumus abc.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/fungsi-kuadrat/" data-name="fungsi kuadrat parabola">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-9"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4c1 9 4 14 8 14s7-5 8-14"/><path d="M12 18v3M4 21h16" opacity="0.6"/></svg></span>
-            <h3>Fungsi Kuadrat</h3>
-            <p>Grafik parabola, sumbu simetri, titik puncak, dan nilai maksimum–minimum.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/transformasi-geometri/" data-name="transformasi geometri refleksi translasi rotasi dilatasi">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-9"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18" stroke-dasharray="3 3"/><path d="M4 17l3-6 3 6z"/><path d="M14 11l3-5 3 5z" opacity="0.55"/></svg></span>
-            <h3>Transformasi Geometri</h3>
-            <p>Pencerminan, pergeseran, perputaran, dan perbesaran suatu bangun pada bidang koordinat.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/kesebangunan/" data-name="kesebangunan kekongruenan sebangun kongruen">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-9"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 19l4.5-9L13 19z"/><path d="M13.5 19l3.2-6.4L20 19z" opacity="0.55"/></svg></span>
-            <h3>Kesebangunan &amp; Kekongruenan</h3>
-            <p>Syarat dua bangun datar sebangun dan kongruen, termasuk pada segitiga.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/bangun-ruang-sisi-lengkung/" data-name="bangun ruang sisi lengkung tabung kerucut bola">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-9"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="6" rx="6.5" ry="2.4"/><path d="M5.5 6v11c0 1.3 2.9 2.4 6.5 2.4s6.5-1.1 6.5-2.4V6"/></svg></span>
-            <h3>Bangun Ruang Sisi Lengkung</h3>
-            <p>Tabung, kerucut, dan bola: luas permukaan dan volume bangun bersisi lengkung.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a class="card" href="https://dodyadyansyah89.github.io/dapmath/statistika-9/" data-name="statistika peluang data">
-            <span class="badge badge-live">Tersedia</span>
-            <span class="icon icon-9"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4v16h16"/><path d="M7 15l4-5 3.5 3L19 7"/><circle cx="19" cy="7" r="1.4" fill="currentColor" stroke="none"/></svg></span>
-            <h3>Statistika &amp; Peluang</h3>
-            <p>Penyajian data, ukuran pemusatan dan penyebaran, serta peluang teoretik dan empirik.</p>
-            <span class="open-link">Buka aplikasi <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-        </div>
-      </section>
-
-      <p class="no-result" id="noResult">Tidak ada materi yang cocok dengan pencarian itu. Coba kata kunci lain, ya.</p>
-    </main>
-
-    <footer>
-      <div class="wrap">
-        <div class="foot-brand">Dap<span class="math">Math</span></div>
-        <p>Aplikasi matematika interaktif untuk siswa SMP kelas 7, 8, dan 9.</p>
-        <p class="built">Dibangun oleh Dody Adyansyah</p>
+<!-- ================= 3. TENTANG MATEMATIKA ================= -->
+<section id="matematika">
+  <div class="wrap">
+    <span class="eyebrow reveal">Filosofi</span>
+    <h2 class="sec-title reveal">Tentang Matematika</h2>
+    <p class="sec-sub reveal">Kenapa saya membangun semua ini.</p>
+    <div class="quote-card reveal">
+      <blockquote>
+        <p>Matematika sering dicap sulit dan menakutkan. Padahal matematika adalah bahasa pola — ia ada di musik, arsitektur, teknologi, hingga keputusan sehari-hari.</p>
+        <p>Saya percaya setiap siswa bisa menyukai matematika bila disajikan dengan cara yang tepat: visual, interaktif, dan dekat dengan kehidupan mereka. Semangat Kurikulum Merdeka dan pembelajaran discovery inilah yang menjiwai setiap aplikasi DapMath: siswa diajak menemukan sendiri, berlatih, lalu menguji pemahaman lewat kuis — dengan pendampingan AI Kang Dody kapan pun dibutuhkan.</p>
+      </blockquote>
+      <div class="pill-row">
+        <span class="pill">Visual</span>
+        <span class="pill">Interaktif</span>
+        <span class="pill">Discovery Learning</span>
+        <span class="pill">Kurikulum Merdeka</span>
+        <span class="pill">Didampingi AI</span>
       </div>
-    </footer>
+    </div>
+  </div>
+</section>
 
-    <script>
-      (function () {
-        var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
-        var sections = Array.prototype.slice.call(document.querySelectorAll(".kelas"));
-        var search = document.getElementById("search");
-        var noResult = document.getElementById("noResult");
-        var activeFilter = "all";
+<!-- ================= 4. KARYA & PERANGKAT ================= -->
+<section id="karya">
+  <div class="wrap">
+    <span class="eyebrow reveal">Unduhan Gratis</span>
+    <h2 class="sec-title reveal">Karya &amp; Perangkat</h2>
+    <p class="sec-sub reveal">Dokumen pembelajaran karya saya yang bisa diunduh dan dipakai langsung di kelas.</p>
+    <div class="karya-grid">
+      <article class="karya-card reveal">
+        <span class="doc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></span>
+        <h3>Paket Soal Lomba Matematika SD Kelas 1</h3>
+        <p>30 soal lomba (20 pilihan ganda + 10 isian, nilai maksimal 100) — lengkap dengan kunci jawaban, pedoman penskoran, dan pembahasan singkat. Format Word siap cetak.</p>
+        <span class="file-meta">DOCX · ±39 KB</span>
+        <a class="dl-btn" href="unduhan/Paket%20Soal%20Lomba%20Matematika%20SD%20Kelas%201.docx" download>⭳ Unduh Dokumen</a>
+      </article>
+      <article class="karya-card reveal">
+        <span class="doc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></span>
+        <h3>LKPD Transformasi Geometri</h3>
+        <p>Lembar Kerja Peserta Didik 8 halaman (translasi, refleksi, rotasi, dilatasi) dengan gambar bidang koordinat presisi — khusus guru dilengkapi kunci jawaban dan pedoman penskoran. Format Word siap cetak.</p>
+        <span class="file-meta">DOCX · ±102 KB</span>
+        <a class="dl-btn" href="unduhan/LKPD%20Transformasi%20Geometri.docx" download>⭳ Unduh Dokumen</a>
+      </article>
+    </div>
+  </div>
+</section>
 
-        function apply() {
-          var q = search.value.trim().toLowerCase();
-          var anyVisible = false;
-          sections.forEach(function (sec) {
-            var kelasMatch = activeFilter === "all" || sec.getAttribute("data-kelas") === activeFilter;
-            var visibleCards = 0;
-            Array.prototype.forEach.call(sec.querySelectorAll(".card"), function (card) {
-              var nameMatch = !q || (card.getAttribute("data-name") || "").indexOf(q) !== -1 ||
-                card.querySelector("h3").textContent.toLowerCase().indexOf(q) !== -1;
-              var show = kelasMatch && nameMatch;
-              card.hidden = !show;
-              if (show) visibleCards++;
-            });
-            sec.hidden = visibleCards === 0;
-            if (visibleCards > 0) anyVisible = true;
+<!-- ================= 5. TENTANG SAYA ================= -->
+<section id="tentang">
+  <div class="wrap">
+    <span class="eyebrow reveal">Profil</span>
+    <h2 class="sec-title reveal">Tentang Saya</h2>
+    <p class="sec-sub reveal">Guru, pembelajar, dan pembangun DapMath.</p>
+    <div class="about-grid">
+      <img class="about-photo reveal" src="assets/foto-dody.jpg" alt="Foto formal Dody Adyansyah" />
+      <div class="about-text reveal">
+        <p><strong>Dody Adyansyah, M.Pd.</strong> adalah guru matematika SMP dan Guru Penggerak Angkatan 10 yang percaya bahwa matematika bisa dipelajari dengan cara yang menyenangkan. Baginya, tugas guru bukan sekadar menyampaikan rumus, melainkan menghilangkan stigma bahwa matematika itu sulit — dan menggantinya dengan rasa penasaran.</p>
+        <p>Melalui <strong>DapMath</strong>, ia membangun 24 aplikasi pembelajaran matematika interaktif untuk kelas 7, 8, dan 9 — lengkap dengan materi, latihan, kuis, hingga asisten AI "Tanya Kang Dody" yang siap membantu siswa kapan saja.</p>
+        <p>Di luar kelas, Dody aktif sebagai penyusun soal TKA jenjang SMP, narasumber berbagai webinar dan pelatihan, fasilitator SMERU, penggerak komunitas belajar MGMP, Wardah Inspiring Teacher Gen 8, Juara Naskah Praktik Baik Jakedufast 2026, serta peraih Medali Perunggu Olimpiade Sains Guru 2025.</p>
+      </div>
+    </div>
+    <div class="achieve reveal">
+      <h3>Pencapaian</h3>
+      <ul>
+        <li><span class="check">✓</span>Penyusun Soal TKA Jenjang SMP</li>
+        <li><span class="check">✓</span>Pendidik Tersertifikasi Gemini</li>
+        <li><span class="check">✓</span>Narsum Webinar Seni Selfie</li>
+        <li><span class="check">✓</span>Wardah Inspiring Teacher Gen 8</li>
+        <li><span class="check">✓</span>Juara Naskah Praktik Baik Jakedufast 2026</li>
+        <li><span class="check">✓</span>Narsum STEM Deep Learning</li>
+        <li><span class="check">✓</span>Fasilitator Pelatihan MENGEJAR (SMERU)</li>
+        <li><span class="check">✓</span>Fasilitator Pelatihan HOTS (SMERU)</li>
+        <li><span class="check">✓</span>Fasilitator Pendampingan Guru (SMERU)</li>
+        <li><span class="check">✓</span>Penggerak Komunitas Belajar MGMP</li>
+        <li><span class="check">✓</span>Guru Komite Pembelajaran</li>
+        <li><span class="check">✓</span>Narsum Webinar Ngopi Aja</li>
+        <li><span class="check">✓</span>Guru Penggerak Angkatan 10</li>
+        <li><span class="check">✓</span>Medali Perunggu Olimpiade Sains Guru 2025</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. KONTAK ================= -->
+<section id="kontak">
+  <div class="wrap">
+    <span class="eyebrow reveal">Hubungi Saya</span>
+    <h2 class="sec-title reveal">Kontak</h2>
+    <p class="sec-sub reveal">Silakan menghubungi saya melalui kanal berikut.</p>
+    <div class="kontak-grid">
+      <a class="kontak-card reveal" href="mailto:dodyadyansyah89@guru.smp.belajar.id">
+        <span class="k-icon k-mail"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg></span>
+        <span><b>Email</b><small>dodyadyansyah89@guru.smp.belajar.id</small></span>
+      </a>
+      <a class="kontak-card reveal" href="https://www.youtube.com/@dodyadyansyah3146" target="_blank" rel="noopener">
+        <span class="k-icon k-yt"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.3-1C16.6 3.5 12 3.5 12 3.5s-4.6 0-7.8.4c-.4.1-1.4.1-2.3 1-.7.7-.9 2.3-.9 2.3S.8 9.1.8 11v1.8c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2 .9 2.5 1 1.8.2 7.6.4 7.6.4s4.6 0 7.8-.4c.4-.1 1.4-.1 2.3-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8V11c0-1.9-.2-3.8-.2-3.8zM9.8 15.1V8.4l6.2 3.4-6.2 3.3z"/></svg></span>
+        <span><b>YouTube</b><small>@dodyadyansyah3146</small></span>
+      </a>
+      <a class="kontak-card reveal" href="https://www.instagram.com/dody_adyansyah" target="_blank" rel="noopener">
+        <span class="k-icon k-ig"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+        <span><b>Instagram</b><small>@dody_adyansyah</small></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-brand">Dap<span class="math">Math</span></div>
+    <p>© 2026 Dody Adyansyah · DapMath</p>
+    <p>Membuat Matematika Menyenangkan.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var APPS = [
+    /* ---- Kelas 7 ---- */
+    {f:"bilangan-bulat-pecahan", k:7, s:"±",  n:"Bilangan Bulat & Pecahan", d:"Operasi hitung bilangan bulat dan pecahan, dari garis bilangan sampai soal cerita sehari-hari."},
+    {f:"bentuk-aljabar",         k:7, s:"x",  n:"Bentuk Aljabar",           d:"Variabel, koefisien, konstanta, dan operasi pada suku-suku aljabar."},
+    {f:"plsv",                  k:7, s:"=",  n:"PLSV",                     d:"Persamaan linear satu variabel: kalimat terbuka dan cara menemukan penyelesaiannya."},
+    {f:"perbandingan",           k:7, s:"%",  n:"Perbandingan",             d:"Rasio, skala pada peta, serta perbandingan senilai dan berbalik nilai."},
+    {f:"aritmetika-sosial",      k:7, s:"Rp", n:"Aritmetika Sosial",        d:"Untung–rugi, diskon, bruto–neto–tara, bunga tunggal, dan pajak dalam jual beli."},
+    {f:"garis-sudut",            k:7, s:"∠",  n:"Garis & Sudut",            d:"Kedudukan dua garis dan hubungan antar sudut: berpenyiku, berpelurus, dan bertolak belakang."},
+    {f:"segiempat-segitiga",     k:7, s:"△",  n:"Segiempat & Segitiga",     d:"Sifat-sifat bangun datar serta cara menghitung keliling dan luasnya."},
+    {f:"statistika-7",           k:7, s:"▦",  n:"Statistika",               d:"Mengumpulkan, menyajikan, dan membaca data dalam tabel dan diagram."},
+    /* ---- Kelas 8 ---- */
+    {f:"pola-bilangan",            k:8, s:"⋯", n:"Pola Bilangan",              d:"Barisan dan deret bilangan serta pola konfigurasi objek yang beraturan."},
+    {f:"koordinat-kartesius",      k:8, s:"+", n:"Koordinat Kartesius",         d:"Menentukan posisi titik, garis, dan bangun pada bidang koordinat."},
+    {f:"relasi-fungsi",            k:8, s:"ƒ", n:"Relasi & Fungsi",             d:"Relasi dua himpunan, pengertian fungsi, dan cara menghitung nilai fungsi."},
+    {f:"persamaan-garis-lurus",    k:8, s:"⁄", n:"Persamaan Garis Lurus",       d:"Gradien, grafik garis lurus, dan menentukan persamaan dari dua titik."},
+    {f:"spldv",                    k:8, s:"{", n:"SPLDV",                       d:"Sistem persamaan linear dua variabel: metode grafik, substitusi, eliminasi, dan campuran."},
+    {f:"pythagoras",               k:8, s:"a²",n:"Teorema Pythagoras",          d:"Lab segitiga interaktif, bukti visual a² + b² = c², kalkulator sisi, triple Pythagoras, dan kuis."},
+    {f:"lingkaran",                k:8, s:"○", n:"Lingkaran",                   d:"Unsur-unsur lingkaran, keliling, luas, dan sudut pusat–sudut keliling."},
+    {f:"bangun-ruang-sisi-datar",  k:8, s:"⬒", n:"Bangun Ruang Sisi Datar",     d:"Kubus, balok, prisma, dan limas: jaring-jaring, luas permukaan, dan volume."},
+    {f:"statistika-8",             k:8, s:"⚄", n:"Statistika & Peluang",        d:"Mean, median, modus, serta peluang suatu kejadian dari percobaan sederhana."},
+    /* ---- Kelas 9 ---- */
+    {f:"bilangan-berpangkat",          k:9, s:"xⁿ", n:"Bilangan Berpangkat & Bentuk Akar", d:"Sifat-sifat pangkat, operasi bentuk akar, dan penulisan notasi ilmiah."},
+    {f:"persamaan-kuadrat",            k:9, s:"x²", n:"Persamaan Kuadrat",                 d:"Menentukan akar-akar persamaan kuadrat dengan pemfaktoran, kuadrat sempurna, dan rumus abc."},
+    {f:"fungsi-kuadrat",               k:9, s:"∩",  n:"Fungsi Kuadrat",                    d:"Grafik parabola, sumbu simetri, titik puncak, dan nilai maksimum–minimum."},
+    {f:"transformasi-geometri",        k:9, s:"⇄",  n:"Transformasi Geometri",             d:"Pencerminan, pergeseran, perputaran, dan perbesaran suatu bangun pada bidang koordinat."},
+    {f:"kesebangunan",                 k:9, s:"~",  n:"Kesebangunan & Kekongruenan",       d:"Syarat dua bangun datar sebangun dan kongruen, termasuk pada segitiga."},
+    {f:"bangun-ruang-sisi-lengkung",   k:9, s:"◍",  n:"Bangun Ruang Sisi Lengkung",        d:"Tabung, kerucut, dan bola: luas permukaan dan volume bangun bersisi lengkung."},
+    {f:"statistika-9",                 k:9, s:"σ",  n:"Statistika & Peluang",              d:"Penyajian data, ukuran pemusatan dan penyebaran, serta peluang teoretik dan empirik."}
+  ];
+
+  var grid = document.getElementById("appGrid");
+  var countEl = document.getElementById("appCount");
+  var activeFilter = "all";
+
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+  function cardHTML(a){
+    return '<a class="app-card" data-kelas="'+a.k+'" href="./'+a.f+'/">'
+      + '<span class="grade-badge gb-'+a.k+'">Kelas '+a.k+'</span>'
+      + '<span class="icon icon-'+a.k+'">'+esc(a.s)+'</span>'
+      + '<h3>'+esc(a.n)+'</h3>'
+      + '<p>'+esc(a.d)+'</p>'
+      + '<span class="open-link">Buka aplikasi <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>'
+      + '</a>';
+  }
+  grid.innerHTML = APPS.map(cardHTML).join("");
+
+  function applyFilter(){
+    var shown = 0;
+    var cards = grid.querySelectorAll(".app-card");
+    for (var i=0;i<cards.length;i++){
+      var show = activeFilter==="all" || cards[i].getAttribute("data-kelas")===activeFilter;
+      cards[i].hidden = !show;
+      if (show) shown++;
+    }
+    countEl.textContent = "Menampilkan "+shown+" dari "+APPS.length+" aplikasi";
+  }
+  var tabs = document.querySelectorAll(".tab");
+  for (var t=0;t<tabs.length;t++){
+    tabs[t].addEventListener("click", function(){
+      for (var j=0;j<tabs.length;j++) tabs[j].setAttribute("aria-selected","false");
+      this.setAttribute("aria-selected","true");
+      activeFilter = this.getAttribute("data-filter");
+      applyFilter();
+    });
+  }
+  applyFilter();
+
+  /* Reveal saat scroll */
+  var revealEls = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add("visible"); io.unobserve(e.target); }
+      });
+    }, {threshold:.12});
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add("visible"); });
+  }
+
+  /* Status aktif pada navigasi */
+  var navLinks = document.querySelectorAll("#navLinks a");
+  var sections = ["beranda","aplikasi","matematika","karya","tentang","kontak"].map(function(id){return document.getElementById(id);});
+  if ("IntersectionObserver" in window){
+    var nio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){
+          navLinks.forEach(function(a){
+            a.classList.toggle("active", a.getAttribute("href")==="#"+e.target.id);
           });
-          noResult.classList.toggle("show", !anyVisible);
         }
-
-        tabs.forEach(function (tab) {
-          tab.addEventListener("click", function () {
-            tabs.forEach(function (t) { t.setAttribute("aria-selected", "false"); });
-            tab.setAttribute("aria-selected", "true");
-            activeFilter = tab.getAttribute("data-filter");
-            apply();
-          });
-        });
-        search.addEventListener("input", apply);
-      })();
-    </script>
-  </body>
+      });
+    }, {rootMargin:"-40% 0px -55% 0px"});
+    sections.forEach(function(s){ if(s) nio.observe(s); });
+  }
+})();
+</script>
+</body>
 </html>
