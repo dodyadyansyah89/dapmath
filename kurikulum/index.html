@@ -1,0 +1,1415 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Aplikasi Administrasi Kurikulum</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Lora:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#f4f6f3; --surface:#ffffff; --surface2:#eef2ed; --ink:#1c2420; --ink2:#4c5a52;
+        --line:#d8e0d8; --accent:#0d7a5f; --accent-ink:#ffffff; --accent-soft:#e2f2ec;
+        --amber:#b97e10; --amber-soft:#faf0da; --red:#b3382e; --red-soft:#f9e6e3;
+        --ok:#0d7a5f; --shadow:0 1px 3px rgba(20,40,30,.08),0 8px 24px rgba(20,40,30,.06);
+        --radius:12px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#101613; --surface:#1a211d; --surface2:#232c27; --ink:#e7ede8; --ink2:#a7b5ab;
+          --line:#33413a; --accent:#2fae8c; --accent-ink:#0b1512; --accent-soft:#173a30;
+          --amber:#e0aa3e; --amber-soft:#3a2f14; --red:#e07a6d; --red-soft:#3d201c;
+          --ok:#2fae8c; --shadow:0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+      a{color:var(--accent)}
+      h1,h2,h3{line-height:1.25;margin:0}
+      button{font:inherit;cursor:pointer}
+      input,select,textarea{font:inherit;color:var(--ink)}
+      .wrap{max-width:1120px;margin:0 auto;padding:0 16px 64px}
+
+      /* ---------- top bar ---------- */
+      .topbar{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--line)}
+      .topbar-in{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+      .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;letter-spacing:.01em}
+      .brand .mark{width:34px;height:34px;border-radius:9px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:"Lora",serif;font-weight:700;font-size:17px;flex:none}
+      .brand small{display:block;font-weight:600;color:var(--ink2);font-size:11.5px;letter-spacing:.02em}
+      .userchip{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+      .userchip b{color:var(--ink)}
+      .nav{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px;max-width:1120px;margin:0 auto}
+      .nav button{border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:7px 14px;font-weight:600;font-size:13.5px}
+      .nav button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+      .nav button:hover{border-color:var(--accent)}
+
+      /* ---------- generic ---------- */
+      .view{display:none;padding-top:22px}
+      .view.on{display:block}
+      .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+      .card h2{font-size:19px;margin-bottom:4px}
+      .card h3{font-size:15.5px;margin:18px 0 8px}
+      .card h3:first-child{margin-top:0}
+      .sub{color:var(--ink2);font-size:13.5px;margin:0 0 14px}
+      .grid{display:grid;gap:14px}
+      @media(min-width:760px){.grid.c3{grid-template-columns:repeat(3,1fr)}.grid.c2{grid-template-columns:repeat(2,1fr)}}
+      .stat{background:var(--surface2);border-radius:10px;padding:14px 16px}
+      .stat .n{font-size:26px;font-weight:800;line-height:1.1}
+      .stat .l{font-size:12.5px;color:var(--ink2);font-weight:600}
+      label.f{display:block;font-size:13px;font-weight:700;margin:14px 0 5px}
+      label.f:first-child{margin-top:0}
+      .hint{font-size:12px;color:var(--ink2);font-weight:400;margin-top:3px}
+      .inp,select.inp,textarea.inp{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;background:var(--surface);font-size:14.5px}
+      .inp:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+      textarea.inp{min-height:74px;resize:vertical}
+      textarea.inp.sm{min-height:52px}
+      .row2{display:grid;gap:12px}
+      @media(min-width:640px){.row2{grid-template-columns:1fr 1fr}.row3{grid-template-columns:1fr 1fr 1fr}}
+      .btn{display:inline-flex;align-items:center;gap:7px;border-radius:9px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:9px 16px;font-weight:700;font-size:14px;text-decoration:none}
+      .btn.ghost{background:transparent;color:var(--accent)}
+      .btn.plain{border-color:var(--line);background:var(--surface);color:var(--ink)}
+      .btn.warn{border-color:var(--amber);background:var(--amber);color:#fff}
+      .btn.sm{padding:6px 11px;font-size:13px;border-radius:8px}
+      .btn:disabled{opacity:.5;cursor:not-allowed}
+      .btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+      .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--accent-soft);color:var(--accent)}
+      .pill.amb{background:var(--amber-soft);color:var(--amber)}
+      .pill.red{background:var(--red-soft);color:var(--red)}
+      .ok-yes{color:var(--ok);font-weight:800}
+      .ok-no{color:var(--ink2)}
+      table.data{width:100%;border-collapse:collapse;font-size:13.5px}
+      table.data th,table.data td{border-bottom:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top}
+      table.data th{font-size:12px;letter-spacing:.03em;color:var(--ink2);text-transform:uppercase}
+      .tblwrap{overflow-x:auto}
+      @media(max-width:640px){
+        table.data.stack thead{display:none}
+        table.data.stack tr{display:block;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:6px 4px}
+        table.data.stack td{display:flex;justify-content:space-between;gap:14px;border-bottom:none;padding:5px 9px}
+        table.data.stack td::before{content:attr(data-l);font-weight:700;font-size:12px;color:var(--ink2);text-transform:uppercase;letter-spacing:.03em}
+        table.data.stack td.ctr{justify-content:flex-start}
+      }
+      .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:92vw;text-align:center;box-shadow:var(--shadow)}
+      .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+      .note{border-radius:10px;padding:12px 14px;font-size:13.5px;background:var(--amber-soft);color:var(--ink);margin:12px 0}
+      .note.green{background:var(--accent-soft)}
+      .empty{color:var(--ink2);font-size:14px;padding:14px 0;text-align:center}
+      code.k{background:var(--surface2);padding:1px 6px;border-radius:5px;font-size:12.5px}
+      pre.code{background:#14201b;color:#d9efe4;border-radius:10px;padding:14px;font-size:12px;overflow-x:auto;line-height:1.5;white-space:pre}
+      @media (prefers-color-scheme: dark){pre.code{background:#0a0f0d}}
+      ol.steps{margin:8px 0 0;padding-left:20px;font-size:14px}
+      ol.steps li{margin-bottom:7px}
+
+      /* ---------- wizard ---------- */
+      .stepsbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+      .stepsbar button{flex:1 1 150px;border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;text-align:left;font-weight:700;font-size:13.5px;color:var(--ink2)}
+      .stepsbar button .sn{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);font-weight:700}
+      .stepsbar button.on{border-color:var(--accent);color:var(--ink);background:var(--accent-soft)}
+      .stepsbar button.done{border-color:var(--accent);color:var(--accent)}
+      .gstep{display:none}
+      .gstep.on{display:block}
+      .dynrow{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:var(--surface)}
+      .dynrow .rh{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+      .dynrow .rh b{font-size:13.5px}
+      .iconbtn{margin-left:auto;border:1px solid var(--line);background:var(--surface);border-radius:7px;width:28px;height:28px;display:grid;place-items:center;color:var(--red);font-weight:800;line-height:1}
+      .chips{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+      .chip{border:1.5px dashed var(--accent);color:var(--accent);background:transparent;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:600}
+      .chip:hover{background:var(--accent-soft)}
+      .dpl{display:grid;gap:8px}
+      @media(min-width:640px){.dpl{grid-template-columns:1fr 1fr}}
+      .dpl label{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13.5px;font-weight:600;cursor:pointer}
+      .dpl label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+      .dpl input{width:17px;height:17px;margin-top:2px;accent-color:var(--accent);flex:none}
+      fieldset{border:1px solid var(--line);border-radius:10px;padding:14px 16px 16px;margin:0 0 16px}
+      legend{font-weight:800;font-size:14px;padding:0 6px}
+      .pertemuan-blok{border:1.5px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+      .pertemuan-blok>h4{margin:0 0 4px;font-size:15px;color:var(--accent)}
+
+      /* ---------- document preview ---------- */
+      .sheet{background:#fff;color:#1a1a1a;border-radius:6px;box-shadow:0 2px 14px rgba(0,0,0,.18);padding:38px 40px;font-family:"Lora",Georgia,serif;font-size:14.5px;line-height:1.6;margin-top:14px}
+      @media(max-width:640px){.sheet{padding:24px 18px;font-size:13.5px}}
+      .sheet .kop{text-align:center;border-bottom:3.5px double #1a1a1a;padding-bottom:10px;margin-bottom:16px}
+      .sheet .kop .sk{font-size:19px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+      .sheet .kop .ks{font-size:12.5px;font-style:italic;color:#444}
+      .sheet h1.doct{font-size:17px;text-align:center;margin:4px 0 2px;letter-spacing:.02em}
+      .sheet .docsub{text-align:center;font-size:13px;color:#333;margin-bottom:16px}
+      .sheet h2.sec{font-size:14.5px;margin:18px 0 7px;padding-bottom:3px;border-bottom:1.5px solid #1a1a1a}
+      .sheet h3.sub2{font-size:14px;margin:13px 0 5px}
+      .sheet p{margin:0 0 7px;text-align:justify}
+      .sheet table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13.5px}
+      .sheet table th,.sheet table td{border:1px solid #555;padding:6px 8px;text-align:left;vertical-align:top}
+      .sheet table th{background:#ececec;font-weight:700}
+      .sheet table.kv td:first-child{width:31%;font-weight:600;background:#f5f5f5}
+      .sheet table.kv td{border-color:#999}
+      .sheet ul{margin:4px 0 10px;padding-left:20px}
+      .sheet li{margin-bottom:3px;text-align:justify}
+      .sheet .sign{display:flex;justify-content:space-between;gap:30px;margin-top:34px;font-size:13.5px;flex-wrap:wrap}
+      .sheet .sign .col{min-width:200px}
+      .sheet .sign .nm{margin-top:58px;font-weight:700;text-decoration:underline}
+      .sheet .lbl{font-weight:700}
+      #printArea{display:none}
+      @media print{
+        body>*{display:none !important}
+        #printArea{display:block !important}
+        #printArea .sheet{box-shadow:none;border-radius:0;padding:6mm 4mm}
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-in">
+        <div class="brand"><span class="mark">K</span><span>Administrasi Kurikulum<small>SMP Negeri 171 Jakarta · Tahap 1</small></span></div>
+        <div class="userchip" id="userChip"></div>
+      </div>
+      <nav class="nav" id="mainNav">
+        <button data-v="beranda" class="on">Beranda</button>
+        <button data-v="kumpul">Pengumpulan Perangkat</button>
+        <button data-v="generator">Generator Perangkat Ajar</button>
+        <button data-v="dasbor">Dasbor Wakil Kurikulum</button>
+        <button data-v="pengaturan">Pengaturan &amp; Panduan</button>
+      </nav>
+    </header>
+
+    <div class="wrap">
+      <!-- ================= BERANDA ================= -->
+      <section class="view on" id="v-beranda">
+        <div class="card">
+          <h2>Selamat datang</h2>
+          <p class="sub">Aplikasi ini membantu 45 guru SMP Negeri 171 Jakarta mengumpulkan perangkat ajar dan menyusunnya dengan generator, serta membantu Wakil Kepala Sekolah bidang Kurikulum memantau semuanya dari satu dasbor. Data terpusat di Google Spreadsheet sekolah melalui Apps Script Web App — pasang URL-nya di menu <b>Pengaturan &amp; Panduan</b>. Tanpa URL pun aplikasi tetap bisa dipakai: pengumpulan tersimpan di perangkat ini dan dokumen tetap bisa diunduh.</p>
+          <div class="grid c3">
+            <div class="stat"><div class="n" id="stTotal">0</div><div class="l">Pengumpulan tercatat (perangkat ini)</div></div>
+            <div class="stat"><div class="n" id="stGuru">0</div><div class="l">Guru sudah mengumpulkan</div></div>
+            <div class="stat"><div class="n" id="stGen">0</div><div class="l">Dokumen dibuat lewat generator</div></div>
+          </div>
+          <div class="btnrow">
+            <button class="btn" data-go="kumpul">Kumpulkan Perangkat Ajar</button>
+            <button class="btn ghost" data-go="generator">Buat dengan Generator</button>
+            <button class="btn plain" data-go="dasbor">Buka Dasbor</button>
+          </div>
+        </div>
+        <div class="grid c2">
+          <div class="card">
+            <h3>Modul 1 — Pengumpulan Perangkat Ajar</h3>
+            <p class="sub" style="margin-bottom:8px">Guru masuk dengan nama dan mata pelajaran, lalu mengirimkan tautan Google Drive dokumen ATP, RPP, instrumen asesmen, atau dokumen lainnya per kelas dan semester. Wakil kurikulum memantau rekapnya di dasbor yang terkunci PIN.</p>
+          </div>
+          <div class="card">
+            <h3>Modul 2 — Generator Perangkat Ajar</h3>
+            <p class="sub" style="margin-bottom:8px">Empat langkah berurutan: Identitas → ATP → RPP Pembelajaran Mendalam → Instrumen Asesmen. Setiap dokumen bisa dipratinjau, lalu diunduh sebagai Word (.docx) atau disimpan sebagai PDF. Semua pilihan selalu punya opsi ketik sendiri.</p>
+          </div>
+        </div>
+        <div class="card" id="dbStatusCard"></div>
+      </section>
+
+      <!-- ================= PENGUMPULAN ================= -->
+      <section class="view" id="v-kumpul">
+        <div class="card" id="loginCard"></div>
+        <div class="card" id="formCard" style="display:none">
+          <h2>Formulir Pengumpulan Perangkat Ajar</h2>
+          <p class="sub">Unggah dulu dokumen Bapak/Ibu ke Google Drive, lalu tempel tautannya di sini. Pastikan izin berbagi Drive diatur agar Wakil Kurikulum dapat membuka dokumennya.</p>
+          <form id="formKumpul">
+            <div class="row2">
+              <div>
+                <label class="f" for="fkJenis">Jenis Dokumen</label>
+                <select class="inp" id="fkJenis" required>
+                  <option value="ATP">ATP (Alur Tujuan Pembelajaran)</option>
+                  <option value="RPP">RPP Pembelajaran Mendalam</option>
+                  <option value="Instrumen Asesmen">Instrumen Asesmen</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+              <div>
+                <label class="f" for="fkSemester">Semester</label>
+                <select class="inp" id="fkSemester" required>
+                  <option value="Ganjil">Ganjil</option>
+                  <option value="Genap">Genap</option>
+                </select>
+              </div>
+            </div>
+            <div class="row2">
+              <div>
+                <label class="f" for="fkTingkat">Kelas</label>
+                <select class="inp" id="fkTingkat" required>
+                  <option value="VII">VII</option>
+                  <option value="VIII">VIII</option>
+                  <option value="IX">IX</option>
+                </select>
+              </div>
+              <div>
+                <label class="f" for="fkRombel">Rombel <span style="font-weight:400;color:var(--ink2)">(mis. A, B, 1 — boleh kosong)</span></label>
+                <input class="inp" id="fkRombel" maxlength="6" placeholder="A" />
+              </div>
+            </div>
+            <label class="f" for="fkLink">Tautan Google Drive Dokumen</label>
+            <input class="inp" id="fkLink" type="url" placeholder="https://drive.google.com/file/d/…" />
+            <label class="f" for="fkKet">Keterangan File <span style="font-weight:400;color:var(--ink2)">(nama file / lokasi dokumen, bila tautan belum ada)</span></label>
+            <input class="inp" id="fkKet" placeholder="Mis. RPP Fungsi Kuadrat Kelas IX — file di folder Drive mapel" />
+            <p class="hint">Isi minimal salah satu: tautan Drive atau keterangan file.</p>
+            <div class="btnrow">
+              <button type="submit" class="btn" id="btnKirimKumpul">Kirim Pengumpulan</button>
+            </div>
+          </form>
+        </div>
+        <div class="card" id="riwayatCard" style="display:none">
+          <h3>Pengumpulan Saya di Perangkat Ini</h3>
+          <div id="riwayatList"></div>
+        </div>
+      </section>
+
+      <!-- ================= GENERATOR ================= -->
+      <section class="view" id="v-generator">
+        <div class="stepsbar" id="genSteps">
+          <button data-s="1" class="on"><span class="sn">Langkah 1</span>Identitas</button>
+          <button data-s="2"><span class="sn">Langkah 2</span>ATP</button>
+          <button data-s="3"><span class="sn">Langkah 3</span>RPP Pembelajaran Mendalam</button>
+          <button data-s="4"><span class="sn">Langkah 4</span>Instrumen Asesmen</button>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="gstep on" id="gs1">
+          <div class="card">
+            <h2>Identitas Perangkat Ajar</h2>
+            <p class="sub">Identitas ini dipakai bersama oleh ATP, RPP, dan instrumen asesmen. Semua isian masih bisa diubah kapan pun sebelum dokumen diunduh.</p>
+            <label class="f" for="gSekolah">Nama Sekolah</label>
+            <input class="inp" id="gSekolah" />
+            <div class="row2">
+              <div>
+                <label class="f" for="gMapel">Mata Pelajaran</label>
+                <select class="inp" id="gMapel"></select>
+                <input class="inp" id="gMapelCustom" placeholder="Ketik mata pelajaran…" style="display:none;margin-top:8px" />
+              </div>
+              <div>
+                <label class="f" for="gGuru">Nama Guru</label>
+                <input class="inp" id="gGuru" placeholder="Nama lengkap dan gelar" />
+              </div>
+            </div>
+            <div class="row2 row3">
+              <div>
+                <label class="f" for="gTingkat">Kelas</label>
+                <select class="inp" id="gTingkat"><option>VII</option><option>VIII</option><option>IX</option></select>
+              </div>
+              <div>
+                <label class="f" for="gSemester">Semester</label>
+                <select class="inp" id="gSemester"><option>Ganjil</option><option>Genap</option></select>
+              </div>
+              <div>
+                <label class="f" for="gTahun">Tahun Ajaran</label>
+                <input class="inp" id="gTahun" placeholder="2026/2027" />
+              </div>
+            </div>
+            <label class="f" for="gMateri">Materi Pokok</label>
+            <input class="inp" id="gMateri" placeholder="Mis. Fungsi Kuadrat" />
+            <label class="f" for="gAlokasi">Alokasi Waktu</label>
+            <input class="inp" id="gAlokasi" placeholder="Mis. 6 × 40 menit (3 pertemuan)" />
+            <div class="btnrow">
+              <button class="btn" id="toStep2">Lanjut ke ATP →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 : ATP -->
+        <div class="gstep" id="gs2">
+          <div class="card">
+            <h2>Alur Tujuan Pembelajaran (ATP)</h2>
+            <p class="sub">ATP adalah dokumen terpisah yang disusun <b>sebelum</b> RPP. Pilih capaian pembelajaran (CP) dari daftar atau ketik sendiri, lalu susun tujuan pembelajaran (TP) per pertemuan. TP ini otomatis ditarik ke RPP pada langkah berikutnya.</p>
+            <div id="cpPilihWrap">
+              <label class="f" for="gElemen">Elemen CP — Matematika Fase D</label>
+              <select class="inp" id="gElemen"></select>
+              <p class="hint">Memilih elemen akan mengisi teks CP resmi di bawah. Untuk mata pelajaran lain, langsung ketik CP pada kolom teks.</p>
+            </div>
+            <label class="f" for="gCP">Capaian Pembelajaran (CP)</label>
+            <textarea class="inp" id="gCP" placeholder="Pilih elemen di atas atau ketik CP sendiri di sini…"></textarea>
+            <h3 style="margin-top:20px">Tujuan Pembelajaran per Pertemuan</h3>
+            <p class="sub">Klik saran untuk menambahkan, atau tambah baris kosong lalu ketik sendiri. Semua teks bisa diedit.</p>
+            <div class="chips" id="tpSaran"></div>
+            <div id="tpList"></div>
+            <div class="btnrow">
+              <button class="btn plain" id="tpAdd">+ Tambah Pertemuan</button>
+            </div>
+            <div class="btnrow" style="border-top:1px solid var(--line);padding-top:16px">
+              <button class="btn plain" data-prev="1">← Identitas</button>
+              <button class="btn ghost" id="prevATP">Pratinjau ATP</button>
+              <button class="btn" id="dlATP">Unduh Word (.docx)</button>
+              <button class="btn plain" id="pdfATP">Cetak / Simpan PDF</button>
+              <button class="btn" id="toStep3">Lanjut ke RPP →</button>
+            </div>
+            <div id="prevATPBox"></div>
+          </div>
+        </div>
+
+        <!-- STEP 3 : RPP -->
+        <div class="gstep" id="gs3">
+          <div class="card">
+            <h2>RPP Pembelajaran Mendalam</h2>
+            <p class="sub">Tujuan pembelajaran diambil otomatis dari ATP (langkah 2) dan tetap bisa diedit di sini. Lengkapi bagian A sampai D.</p>
+
+            <fieldset><legend>A. Identifikasi — Peserta Didik</legend>
+              <label class="f" for="rpdAwal">Pengetahuan Awal</label>
+              <textarea class="inp sm" id="rpdAwal" placeholder="Kemampuan dan konsep yang sudah dikuasai peserta didik sebelum pembelajaran…"></textarea>
+              <label class="f" for="rpdMinat">Minat</label>
+              <textarea class="inp sm" id="rpdMinat" placeholder="Hal-hal yang menarik minat peserta didik terkait materi ini…"></textarea>
+              <label class="f" for="rpdLatar">Latar Belakang</label>
+              <textarea class="inp sm" id="rpdLatar" placeholder="Konteks sosial, budaya, dan lingkungan peserta didik yang relevan…"></textarea>
+              <label class="f" for="rpdButuh">Kebutuhan Belajar</label>
+              <textarea class="inp sm" id="rpdButuh" placeholder="Kebutuhan belajar, termasuk peserta didik berkebutuhan khusus bila ada…"></textarea>
+            </fieldset>
+
+            <fieldset><legend>A. Identifikasi — Materi Pelajaran</legend>
+              <label class="f" for="rmtPengetahuan">Pengetahuan yang Akan Dicapai</label>
+              <textarea class="inp sm" id="rmtPengetahuan" placeholder="Konsep, fakta, dan keterampilan yang akan dicapai melalui materi ini…"></textarea>
+              <label class="f" for="rmtRelevansi">Relevansi dengan Kehidupan Nyata</label>
+              <textarea class="inp sm" id="rmtRelevansi" placeholder="Keterkaitan materi dengan pengalaman dan persoalan sehari-hari…"></textarea>
+              <label class="f" for="rmtSulit">Tingkat Kesulitan</label>
+              <select class="inp" id="rmtSulit"><option>Rendah</option><option selected>Sedang</option><option>Tinggi</option></select>
+              <label class="f" for="rmtStruktur">Struktur Materi</label>
+              <textarea class="inp sm" id="rmtStruktur" placeholder="Urutan dan keterkaitan antar konsep dalam materi…"></textarea>
+              <label class="f" for="rmtKarakter">Integrasi Nilai dan Karakter</label>
+              <textarea class="inp sm" id="rmtKarakter" placeholder="Nilai dan karakter yang diintegrasikan, mis. kejujuran, ketekunan, tanggung jawab…"></textarea>
+            </fieldset>
+
+            <fieldset><legend>A. Identifikasi — Dimensi Profil Lulusan</legend>
+              <p class="sub">Centang dimensi yang dikembangkan dalam pembelajaran ini.</p>
+              <div class="dpl" id="dplList"></div>
+            </fieldset>
+
+            <fieldset><legend>B. Desain Pembelajaran</legend>
+              <label class="f" for="rbdCP">Capaian Pembelajaran</label>
+              <textarea class="inp" id="rbdCP"></textarea>
+              <label class="f" for="rbdLintas">Lintas Disiplin Ilmu</label>
+              <input class="inp" id="rbdLintas" placeholder="Mis. Bahasa Indonesia (teks eksplanasi), IPA — atau ketik sendiri" />
+              <label class="f">Tujuan Pembelajaran per Pertemuan <span style="font-weight:400;color:var(--ink2)">(dari ATP, bisa diedit)</span></label>
+              <div id="rppTpList"></div>
+              <label class="f" for="rbdTopik">Topik Pembelajaran</label>
+              <input class="inp" id="rbdTopik" placeholder="Topik utama yang dibahas…" />
+              <label class="f" for="rbdPraktik">Praktik Pedagogis</label>
+              <select class="inp" id="rbdPraktik"></select>
+              <input class="inp" id="rbdPraktikCustom" placeholder="Ketik praktik pedagogis sendiri…" style="display:none;margin-top:8px" />
+              <label class="f" for="rbdKemitraan">Kemitraan Pembelajaran</label>
+              <textarea class="inp sm" id="rbdKemitraan" placeholder="Pihak yang dilibatkan: guru mapel lain, orang tua, komunitas, dunia kerja…"></textarea>
+              <label class="f">Lingkungan Pembelajaran</label>
+              <input class="inp" id="rbdLingFisik" placeholder="Ruang fisik: kelas, laboratorium, perpustakaan…" style="margin-bottom:8px" />
+              <input class="inp" id="rbdLingVirtual" placeholder="Ruang virtual: LMS, aplikasi belajar, grup diskusi…" style="margin-bottom:8px" />
+              <input class="inp" id="rbdLingBudaya" placeholder="Budaya belajar: kesepakatan kelas, norma diskusi…" />
+              <label class="f" for="rbdDigital">Pemanfaatan Digital</label>
+              <textarea class="inp sm" id="rbdDigital" placeholder="Media dan teknologi digital yang digunakan, mis. aplikasi interaktif, simulasi, kuis digital…"></textarea>
+            </fieldset>
+
+            <fieldset><legend>C. Pengalaman Belajar per Pertemuan</legend>
+              <p class="sub">Dirancang dengan prinsip <b>berkesadaran, bermakna, dan menggembirakan</b>. Jumlah blok mengikuti jumlah pertemuan pada ATP.</p>
+              <div id="pengalamanList"></div>
+            </fieldset>
+
+            <fieldset><legend>D. Asesmen Pembelajaran</legend>
+              <label class="f" for="rasAwal">Asesmen Awal <span style="font-weight:400;color:var(--ink2)">(assessment as learning — sebelum pembelajaran)</span></label>
+              <textarea class="inp sm" id="rasAwal" placeholder="Teknik dan instrumen untuk memetakan kesiapan belajar, mis. pertanyaan pemantik, kuis singkat diagnostik…"></textarea>
+              <label class="f" for="rasProses">Asesmen Proses <span style="font-weight:400;color:var(--ink2)">(assessment for learning — selama pembelajaran)</span></label>
+              <textarea class="inp sm" id="rasProses" placeholder="Teknik formatif selama pembelajaran, mis. observasi diskusi, tanya jawab, umpan balik tugas…"></textarea>
+              <label class="f" for="rasAkhir">Asesmen Akhir <span style="font-weight:400;color:var(--ink2)">(assessment of learning — akhir pembelajaran)</span></label>
+              <textarea class="inp sm" id="rasAkhir" placeholder="Teknik sumatif di akhir, mis. tes tertulis, proyek, presentasi — sesuai instrumen pada langkah 4…"></textarea>
+            </fieldset>
+
+            <div class="btnrow">
+              <button class="btn plain" data-prev="2">← ATP</button>
+              <button class="btn ghost" id="prevRPP">Pratinjau RPP</button>
+              <button class="btn" id="dlRPP">Unduh Word (.docx)</button>
+              <button class="btn plain" id="pdfRPP">Cetak / Simpan PDF</button>
+              <button class="btn" id="toStep4">Lanjut ke Instrumen →</button>
+            </div>
+            <div id="prevRPPBox"></div>
+          </div>
+        </div>
+
+        <!-- STEP 4 : INSTRUMEN -->
+        <div class="gstep" id="gs4">
+          <div class="card">
+            <h2>Instrumen Asesmen</h2>
+            <p class="sub">Dokumen instrumen terpisah dari RPP: kisi-kisi, soal beserta kunci jawaban, dan rubrik penilaian.</p>
+            <h3>Kisi-Kisi Soal</h3>
+            <div id="kisiList"></div>
+            <div class="btnrow"><button class="btn plain" id="kisiAdd">+ Tambah Baris Kisi-Kisi</button></div>
+            <h3 style="margin-top:22px">Soal dan Kunci Jawaban</h3>
+            <div id="soalList"></div>
+            <div class="btnrow"><button class="btn plain" id="soalAdd">+ Tambah Soal</button></div>
+            <h3 style="margin-top:22px">Rubrik Penilaian</h3>
+            <div id="rubrikList"></div>
+            <div class="btnrow"><button class="btn plain" id="rubrikAdd">+ Tambah Aspek Rubrik</button></div>
+            <div class="btnrow" style="border-top:1px solid var(--line);padding-top:16px">
+              <button class="btn plain" data-prev="3">← RPP</button>
+              <button class="btn ghost" id="prevIns">Pratinjau Instrumen</button>
+              <button class="btn" id="dlIns">Unduh Word (.docx)</button>
+              <button class="btn plain" id="pdfIns">Cetak / Simpan PDF</button>
+            </div>
+            <div id="prevInsBox"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= DASBOR ================= -->
+      <section class="view" id="v-dasbor">
+        <div class="card" id="pinCard">
+          <h2>Dasbor Wakil Kurikulum</h2>
+          <p class="sub">Menu ini khusus Wakil Kepala Sekolah bidang Kurikulum dan terkunci PIN, sama seperti pola menu Data Guru pada aplikasi DapMath.</p>
+          <form id="formPin" style="max-width:360px">
+            <label class="f" for="pinInput">PIN Dasbor</label>
+            <input class="inp" id="pinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="••••••" />
+            <div class="btnrow"><button class="btn" type="submit">Buka Dasbor</button></div>
+            <p class="hint" id="pinErr" style="color:var(--red);font-weight:700"></p>
+          </form>
+        </div>
+        <div id="dasborBody" style="display:none">
+          <div class="card">
+            <h2>Rekap Pengumpulan Perangkat Ajar</h2>
+            <p class="sub" id="dasborSrc">Sumber data: perangkat ini.</p>
+            <div class="grid c3">
+              <div class="stat"><div class="n" id="dTotal">0</div><div class="l">Total dokumen masuk</div></div>
+              <div class="stat"><div class="n" id="dGuru">0</div><div class="l">Guru sudah mengumpulkan</div></div>
+              <div class="stat"><div class="n" id="dBelum">–</div><div class="l">Guru belum mengumpulkan</div></div>
+            </div>
+            <div class="row2 row3" style="margin-top:6px">
+              <div><label class="f" for="fSemester">Semester</label>
+                <select class="inp" id="fSemester"><option value="">Semua</option><option>Ganjil</option><option>Genap</option></select></div>
+              <div><label class="f" for="fJenis">Jenis Dokumen</label>
+                <select class="inp" id="fJenis"><option value="">Semua</option><option>ATP</option><option>RPP</option><option>Instrumen Asesmen</option><option>Lainnya</option></select></div>
+              <div><label class="f" for="fTingkat">Kelas</label>
+                <select class="inp" id="fTingkat"><option value="">Semua</option><option>VII</option><option>VIII</option><option>IX</option></select></div>
+            </div>
+            <label class="f" for="fCari">Cari Nama Guru / Mata Pelajaran</label>
+            <input class="inp" id="fCari" placeholder="Ketik nama atau mapel…" />
+            <div class="btnrow">
+              <button class="btn ghost" id="btnMuatPusat">Muat Data dari Spreadsheet Pusat</button>
+              <button class="btn plain" id="btnCsv">Unduh CSV Rekap</button>
+              <button class="btn plain" id="btnKunci">Kunci Dasbor</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Status per Guru</h3>
+            <p class="sub">Tanda ✓ berarti guru yang bersangkutan sudah mengumpulkan dokumen jenis tersebut (sesuai filter di atas).</p>
+            <div class="tblwrap"><table class="data stack" id="tblGuru"></table></div>
+          </div>
+
+          <div class="card">
+            <h3>Rekap per Kelas</h3>
+            <div class="tblwrap"><table class="data stack" id="tblKelas"></table></div>
+          </div>
+
+          <div class="card">
+            <h3>Daftar Nama Guru (untuk status “belum mengumpulkan”)</h3>
+            <p class="sub">Tempel daftar nama 45 guru di sini — satu nama per baris, boleh disertai mata pelajaran setelah tanda koma (mis. <i>Siti Rahma, Matematika</i>). Daftar ini tersimpan di perangkat ini dan dipakai untuk menghitung siapa yang belum mengumpulkan pada filter yang dipilih.</p>
+            <textarea class="inp" id="rosterInput" style="min-height:130px" placeholder="Satu nama per baris…"></textarea>
+            <div class="btnrow"><button class="btn" id="btnRoster">Simpan Daftar Guru</button></div>
+            <div id="belumBox" style="margin-top:14px"></div>
+          </div>
+
+          <div class="card">
+            <h3>Semua Pengumpulan Masuk</h3>
+            <div class="tblwrap"><table class="data stack" id="tblSemua"></table></div>
+          </div>
+
+          <div class="card">
+            <h3>PIN Dasbor</h3>
+            <p class="sub">PIN tersimpan di perangkat ini. PIN bawaan diberikan saat aplikasi diserahkan; ganti bila perlu.</p>
+            <div class="row2">
+              <div><label class="f" for="pinBaru">PIN Baru (angka)</label><input class="inp" id="pinBaru" type="password" inputmode="numeric" placeholder="••••••" /></div>
+            </div>
+            <div class="btnrow"><button class="btn plain" id="btnPinBaru">Simpan PIN Baru</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PENGATURAN ================= -->
+      <section class="view" id="v-pengaturan">
+        <div class="card">
+          <h2>Database Pusat — Google Spreadsheet</h2>
+          <p class="sub">Mengikuti pola aplikasi DapMath: buat satu Google Spreadsheet, tempel kode Apps Script yang disediakan di bawah, deploy sebagai Web App, lalu tempel URL-nya di sini. Setelah terpasang, setiap pengumpulan guru dan metadata dokumen dari generator otomatis tercatat di spreadsheet pusat dan bisa dimuat ke dasbor dari perangkat mana pun.</p>
+          <label class="f" for="urlInput">URL Web App Apps Script</label>
+          <input class="inp" id="urlInput" type="url" placeholder="https://script.google.com/macros/s/…/exec" />
+          <div class="btnrow">
+            <button class="btn" id="btnSimpanUrl">Simpan URL</button>
+            <button class="btn ghost" id="btnUji">Uji Kirim Data Sekarang</button>
+          </div>
+          <p class="hint" id="urlStatus"></p>
+        </div>
+        <div class="card">
+          <h3>Panduan Deploy Apps Script</h3>
+          <ol class="steps">
+            <li>Buat <b>Google Spreadsheet</b> baru (mis. “Database Kurikulum SMPN 171”) di akun Google sekolah/guru.</li>
+            <li>Di spreadsheet itu, klik menu <b>Extensions → Apps Script</b>.</li>
+            <li>Hapus isi editor, lalu tempel seluruh kode di bawah ini. Klik <b>Save</b>.</li>
+            <li>Klik <b>Deploy → New deployment → Web app</b>. Isi: Execute as = <b>Me</b>, Who has access = <b>Anyone</b>. Klik Deploy, lalu setujui izin akses (Run pertama memerlukan izin “Connect to an external service” — jalankan fungsi <code class="k">ujiIzin</code> sekali dari editor bila diminta).</li>
+            <li>Salin <b>Web app URL</b> yang muncul dan tempel pada kolom URL di atas, lalu klik <b>Uji Kirim Data Sekarang</b>.</li>
+            <li>Setiap mengubah kode, ulangi Deploy → Manage deployments → Edit → <b>New version</b> agar perubahan aktif.</li>
+          </ol>
+          <div class="btnrow"><button class="btn plain" id="btnSalinKode">Salin Kode Apps Script</button></div>
+          <pre class="code" id="kodeApps"></pre>
+        </div>
+        <div class="card">
+          <h3>Catatan Penyimpanan</h3>
+          <p class="sub" style="margin-bottom:0">Data yang tersimpan di perangkat ini (riwayat pengumpulan lokal, draf generator, daftar nama guru, dan PIN dasbor) hanya ada di browser perangkat ini — sama seperti batasan aplikasi DapMath sebelumnya. Agar data terpusat dan bisa diakses lintas perangkat, pasang URL Web App di atas. PIN dasbor adalah gerbang praktis untuk kelas/sekolah, bukan enkripsi; spreadsheet pusat tetap hanya bisa dibuka lewat akun Google pemiliknya.</p>
+        </div>
+      </section>
+    </div>
+
+    <div id="printArea"></div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+    "use strict";
+    /* ================= util & state ================= */
+    var $ = function(id){ return document.getElementById(id); };
+    function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+    function lsGet(k, d){ try{ var v = localStorage.getItem(k); return v? JSON.parse(v) : d; }catch(e){ return d; } }
+    function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+    function uid(){ return "id" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+    function tglJam(ts){ var d = new Date(ts); return d.toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"}) + " " + d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"}); }
+    var toastTimer = null;
+    function toast(msg){ var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 3400); }
+
+    var MAPEL = ["Matematika","Bahasa Indonesia","Bahasa Inggris","Ilmu Pengetahuan Alam (IPA)","Ilmu Pengetahuan Sosial (IPS)","Pendidikan Pancasila","Pendidikan Agama Islam","Pendidikan Agama Kristen","Pendidikan Agama Katolik","PJOK","Informatika","Seni Budaya","Bahasa Sunda","Prakarya","Bimbingan Konseling"];
+    var JENIS = ["ATP","RPP","Instrumen Asesmen","Lainnya"];
+    var DPL = ["Keimanan dan Ketakwaan terhadap Tuhan YME","Kewargaan","Penalaran Kritis","Kreativitas","Kolaborasi","Kemandirian","Kesehatan","Komunikasi"];
+    var PRAKTIK = ["Pembelajaran Berbasis Masalah (Problem Based Learning)","Pembelajaran Berbasis Proyek (Project Based Learning)","Pembelajaran Inkuiri","Pembelajaran Kontekstual (Contextual Teaching and Learning)","Discovery Learning"];
+    var CP_MAT = {
+      "Bilangan": "Siswa mampu mengoperasikan bilangan rasional dan irasional, bilangan berpangkat, serta menggunakan faktorisasi, rasio, skala, proporsi, dan laju perubahan dalam penyelesaian masalah.",
+      "Aljabar": "Siswa mengenali dan menggeneralisasi pola, menyatakan situasi dalam bentuk aljabar, memahami relasi dan fungsi, serta menyelesaikan persamaan dan pertidaksamaan linear satu variabel maupun sistem persamaan linear dua variabel.",
+      "Geometri": "Siswa dapat menentukan luas, keliling, dan volume berbagai bangun datar dan ruang, menerapkan teorema Pythagoras, memahami kesebangunan dan kekongruenan, serta melakukan transformasi geometri di bidang koordinat.",
+      "Pengukuran": "Siswa mampu menjelaskan cara menentukan luas lingkaran, permukaan, dan volume bangun ruang, serta memahami pengaruh perubahan ukuran terhadap panjang, luas, dan volume.",
+      "Analisis Data dan Peluang": "Siswa dapat mengumpulkan, menyajikan, dan menganalisis data menggunakan berbagai representasi visual, menghitung mean, median, modus, range, serta menentukan nilai peluang dan frekuensi harapan dalam percobaan sederhana."
+    };
+    var TP_SARAN = {
+      "Bilangan": [
+        "Melalui diskusi kelompok, peserta didik dapat mengoperasikan bilangan berpangkat dan bentuk akar dalam menyelesaikan masalah kontekstual dengan tepat.",
+        "Melalui eksplorasi, peserta didik dapat menggunakan faktorisasi prima untuk menentukan KPK dan FPB dalam penyelesaian masalah sehari-hari.",
+        "Melalui latihan terbimbing, peserta didik dapat menerapkan rasio, skala, dan proporsi untuk menyelesaikan masalah perbandingan dalam kehidupan nyata."
+      ],
+      "Aljabar": [
+        "Melalui pengamatan pola, peserta didik dapat mengenali dan menggeneralisasi pola bilangan serta menyatakannya dalam bentuk aljabar.",
+        "Melalui diskusi, peserta didik dapat memahami konsep relasi dan fungsi serta menyajikannya dalam berbagai representasi.",
+        "Melalui pemecahan masalah, peserta didik dapat menyelesaikan sistem persamaan linear dua variabel dalam konteks kehidupan sehari-hari."
+      ],
+      "Geometri": [
+        "Melalui eksplorasi, peserta didik dapat menentukan keliling dan luas berbagai bangun datar dalam menyelesaikan masalah kontekstual.",
+        "Melalui pembuktian sederhana, peserta didik dapat menerapkan teorema Pythagoras untuk menentukan panjang sisi segitiga siku-siku.",
+        "Melalui praktik, peserta didik dapat melakukan transformasi geometri (translasi, refleksi, rotasi, dilatasi) pada bidang koordinat."
+      ],
+      "Pengukuran": [
+        "Melalui eksplorasi, peserta didik dapat menentukan luas lingkaran dan menggunakannya dalam penyelesaian masalah.",
+        "Melalui diskusi, peserta didik dapat menentukan luas permukaan dan volume bangun ruang sisi datar dan sisi lengkung.",
+        "Melalui penyelidikan, peserta didik dapat menganalisis pengaruh perubahan ukuran terhadap panjang, luas, dan volume suatu bangun."
+      ],
+      "Analisis Data dan Peluang": [
+        "Melalui proyek mini, peserta didik dapat mengumpulkan dan menyajikan data menggunakan berbagai representasi visual yang sesuai.",
+        "Melalui analisis data, peserta didik dapat menghitung dan menginterpretasikan mean, median, modus, dan range dari sekumpulan data.",
+        "Melalui percobaan sederhana, peserta didik dapat menentukan peluang suatu kejadian dan frekuensi harapannya."
+      ]
+    };
+
+    var user = lsGet("akur_user", null);           // {nama, mapel}
+    var dbUrl = lsGet("akur_url", "");
+    var subsLocal = lsGet("akur_subs", []);        // pengumpulan tersimpan lokal
+    var genLogLocal = lsGet("akur_genlog", []);    // metadata dokumen generator (lokal)
+    var pinUnlocked = false;
+
+    /* ================= kirim ke pusat ================= */
+    function kirimPusat(payload){
+      if(!dbUrl) return Promise.resolve(false);
+      return fetch(dbUrl, { method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(payload), keepalive:true })
+        .then(function(r){ return r.ok; }).catch(function(){ return false; });
+    }
+    function muatPusat(){
+      if(!dbUrl) return Promise.reject(new Error("no-url"));
+      return fetch(dbUrl + (dbUrl.indexOf("?")>=0?"&":"?") + "action=list", { method:"GET" })
+        .then(function(r){ return r.json(); })
+        .then(function(j){ return (j && j.rows) ? j.rows : []; });
+    }
+
+    /* ================= navigasi ================= */
+    function go(v){
+      var views = document.querySelectorAll(".view");
+      for(var i=0;i<views.length;i++) views[i].classList.toggle("on", views[i].id === "v-"+v);
+      var btns = document.querySelectorAll("#mainNav button");
+      for(var j=0;j<btns.length;j++) btns[j].classList.toggle("on", btns[j].getAttribute("data-v") === v);
+      if(v === "dasbor" && !pinUnlocked){ $("pinInput").value = ""; $("pinErr").textContent = ""; }
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+    document.querySelectorAll("#mainNav button").forEach(function(b){ b.addEventListener("click", function(){ go(b.getAttribute("data-v")); }); });
+    document.querySelectorAll("[data-go]").forEach(function(b){ b.addEventListener("click", function(){ go(b.getAttribute("data-go")); }); });
+
+    /* ================= login guru ================= */
+    function mapelOptions(sel, withCustom){
+      var h = MAPEL.map(function(m){ return '<option value="'+esc(m)+'"'+(m===sel?" selected":"")+">"+esc(m)+"</option>"; }).join("");
+      if(withCustom) h += '<option value="__custom"'+(sel==="__custom"?" selected":"")+">Lainnya — ketik sendiri…</option>";
+      else if(sel && MAPEL.indexOf(sel)<0) h += '<option value="'+esc(sel)+'" selected>'+esc(sel)+"</option>";
+      return h;
+    }
+    function renderUserChip(){
+      var c = $("userChip");
+      if(user){ c.innerHTML = "Masuk sebagai <b>"+esc(user.nama)+"</b> · "+esc(user.mapel); }
+      else { c.innerHTML = "Belum masuk sebagai guru"; }
+    }
+    function renderLogin(){
+      var card = $("loginCard");
+      if(!user){
+        card.innerHTML = "<h2>Masuk sebagai Guru</h2>" +
+          '<p class="sub">Masuk sekali dengan nama dan mata pelajaran. Identitas ini dipakai pada formulir pengumpulan dan generator perangkat ajar.</p>' +
+          '<form id="formLogin"><div class="row2"><div><label class="f" for="lgNama">Nama Guru</label>' +
+          '<input class="inp" id="lgNama" required placeholder="Nama lengkap dan gelar" /></div>' +
+          '<div><label class="f" for="lgMapel">Mata Pelajaran</label><select class="inp" id="lgMapel">'+ mapelOptions("Matematika", true) +'</select>' +
+          '<input class="inp" id="lgMapelCustom" placeholder="Ketik mata pelajaran…" style="display:none;margin-top:8px" /></div></div>' +
+          '<div class="btnrow"><button class="btn" type="submit">Masuk</button></div></form>';
+        var sel = $("lgMapel");
+        sel.addEventListener("change", function(){ $("lgMapelCustom").style.display = sel.value==="__custom" ? "block" : "none"; });
+        $("formLogin").addEventListener("submit", function(ev){
+          ev.preventDefault();
+          var m = sel.value==="__custom" ? $("lgMapelCustom").value.trim() : sel.value;
+          if(!m){ toast("Isi mata pelajaran dulu ya."); return; }
+          user = { nama: $("lgNama").value.trim(), mapel: m };
+          lsSet("akur_user", user);
+          renderUserChip(); renderLogin(); renderBeranda();
+          if(!$("gGuru").value) $("gGuru").value = user.nama;
+          syncGenFromForm(); saveGen();
+          toast("Selamat datang, " + user.nama + "!");
+        });
+        $("formCard").style.display = "none"; $("riwayatCard").style.display = "none";
+      } else {
+        card.innerHTML = "<h2>Halo, "+esc(user.nama)+"</h2>" +
+          '<p class="sub">Mata pelajaran: <b>'+esc(user.mapel)+'</b>. Silakan isi formulir pengumpulan di bawah, atau buka Generator Perangkat Ajar untuk menyusun dokumen baru.</p>' +
+          '<div class="btnrow"><button class="btn plain" id="btnGantiUser">Ganti Pengguna</button><button class="btn ghost" data-go2="generator">Ke Generator</button></div>';
+        $("btnGantiUser").addEventListener("click", function(){ user = null; lsSet("akur_user", null); renderUserChip(); renderLogin(); renderBeranda(); });
+        card.querySelector("[data-go2]").addEventListener("click", function(){ go("generator"); });
+        $("formCard").style.display = ""; $("riwayatCard").style.display = "";
+        renderRiwayat();
+      }
+    }
+    function renderRiwayat(){
+      var mine = subsLocal.filter(function(s){ return user && s.nama === user.nama; });
+      var box = $("riwayatList");
+      if(!mine.length){ box.innerHTML = '<p class="empty">Belum ada pengumpulan dari perangkat ini. Pengumpulan yang dikirim akan tercatat di sini.</p>'; return; }
+      var h = '<div class="tblwrap"><table class="data stack"><thead><tr><th>Waktu</th><th>Jenis</th><th>Kelas</th><th>Semester</th><th>Tautan / Keterangan</th><th>Status</th></tr></thead><tbody>';
+      mine.slice().reverse().forEach(function(s){
+        h += "<tr><td data-l='Waktu'>"+esc(tglJam(s.ts))+"</td><td data-l='Jenis'>"+esc(s.jenis)+"</td><td data-l='Kelas'>"+esc(s.kelas)+"</td><td data-l='Semester'>"+esc(s.semester)+"</td><td data-l='Tautan'>" +
+          (s.link ? '<a href="'+esc(s.link)+'" target="_blank" rel="noopener">Buka dokumen</a>' : esc(s.ket||"—")) +
+          "</td><td data-l='Status'><span class='pill"+(s.terkirim?"":" amb")+"'>"+(s.terkirim?"Terkirim ke pusat":"Lokal")+"</span></td></tr>";
+      });
+      box.innerHTML = h + "</tbody></table></div>";
+    }
+
+    /* ================= formulir pengumpulan ================= */
+    $("formKumpul").addEventListener("submit", function(ev){
+      ev.preventDefault();
+      if(!user){ toast("Masuk sebagai guru dulu ya."); return; }
+      var link = $("fkLink").value.trim(), ket = $("fkKet").value.trim();
+      if(!link && !ket){ toast("Isi tautan Google Drive atau keterangan file terlebih dahulu."); return; }
+      var kelas = $("fkTingkat").value + ($("fkRombel").value.trim() ? " " + $("fkRombel").value.trim().toUpperCase() : "");
+      var rec = { id: uid(), ts: Date.now(), nama: user.nama, mapel: user.mapel,
+        jenis: $("fkJenis").value, kelas: kelas, semester: $("fkSemester").value,
+        link: link, ket: ket, terkirim: false };
+      subsLocal.push(rec); lsSet("akur_subs", subsLocal);
+      $("btnKirimKumpul").disabled = true;
+      kirimPusat({ action:"kumpul", id:rec.id, ts:rec.ts, nama:rec.nama, mapel:rec.mapel, jenis:rec.jenis, kelas:rec.kelas, semester:rec.semester, link:rec.link, ket:rec.ket })
+        .then(function(ok){
+          rec.terkirim = !!ok; lsSet("akur_subs", subsLocal);
+          $("btnKirimKumpul").disabled = false;
+          renderRiwayat(); renderBeranda();
+          toast(ok ? "Pengumpulan terkirim ke database pusat. Terima kasih!" : (dbUrl ? "Tersimpan di perangkat ini (pusat belum merespons — akan tercatat lokal)." : "Tersimpan di perangkat ini. Pasang URL Web App agar tercatat di pusat."));
+          $("fkLink").value = ""; $("fkKet").value = "";
+        });
+    });
+
+    /* ================= beranda ================= */
+    function renderBeranda(){
+      $("stTotal").textContent = subsLocal.length;
+      var nama = {};
+      subsLocal.forEach(function(s){ nama[s.nama] = 1; });
+      $("stGuru").textContent = Object.keys(nama).length;
+      $("stGen").textContent = genLogLocal.length;
+      $("dbStatusCard").innerHTML = "<h3>Status Database Pusat</h3>" +
+        (dbUrl ? '<p class="sub" style="margin-bottom:0">Terhubung ke spreadsheet pusat melalui Web App. Pengumpulan dan metadata generator akan tercatat di sana, dan dasbor dapat memuat data dari semua perangkat.</p>'
+               : '<p class="sub" style="margin-bottom:0">Belum terpasang. Aplikasi tetap berfungsi dengan penyimpanan lokal per perangkat. Wakil kurikulum dapat memasang URL Web App Apps Script di menu <b>Pengaturan &amp; Panduan</b> agar data terpusat.</p>');
+    }
+
+    /* ================= dasbor wakil kurikulum ================= */
+    var DEFAULT_PIN = "171171";
+    var subsPusat = null; // hasil muat dari spreadsheet pusat
+    function getPin(){ return lsGet("akur_pin", DEFAULT_PIN); }
+    $("formPin").addEventListener("submit", function(ev){
+      ev.preventDefault();
+      if($("pinInput").value === getPin()){
+        pinUnlocked = true; $("pinCard").style.display = "none"; $("dasborBody").style.display = "";
+        renderDasbor(); toast("Dasbor terbuka.");
+      } else { $("pinErr").textContent = "PIN salah. Coba lagi."; }
+    });
+    $("btnKunci").addEventListener("click", function(){
+      pinUnlocked = false; $("pinCard").style.display = ""; $("dasborBody").style.display = "none"; go("dasbor");
+    });
+    $("btnPinBaru").addEventListener("click", function(){
+      var p = $("pinBaru").value.trim();
+      if(!/^\d{4,}$/.test(p)){ toast("PIN baru harus angka, minimal 4 digit."); return; }
+      lsSet("akur_pin", p); $("pinBaru").value = ""; toast("PIN dasbor berhasil diganti (berlaku di perangkat ini).");
+    });
+    function semuaSubs(){
+      var map = {};
+      subsLocal.forEach(function(s){ map[s.id] = s; });
+      if(subsPusat){ subsPusat.forEach(function(s){ if(!map[s.id]) map[s.id] = s; }); }
+      return Object.keys(map).map(function(k){ return map[k]; }).sort(function(a,b){ return a.ts - b.ts; });
+    }
+    function subsTerfilter(){
+      var sem = $("fSemester").value, jen = $("fJenis").value, ting = $("fTingkat").value, cari = $("fCari").value.trim().toLowerCase();
+      return semuaSubs().filter(function(s){
+        if(sem && s.semester !== sem) return false;
+        if(jen && s.jenis !== jen) return false;
+        if(ting && String(s.kelas).indexOf(ting) !== 0) return false;
+        if(cari && (String(s.nama).toLowerCase().indexOf(cari) < 0 && String(s.mapel).toLowerCase().indexOf(cari) < 0)) return false;
+        return true;
+      });
+    }
+    function renderDasbor(){
+      var rows = subsTerfilter();
+      $("dasborSrc").textContent = "Sumber data: " + (subsPusat ? "spreadsheet pusat + perangkat ini" : "perangkat ini saja") +
+        (dbUrl ? "" : " — URL Web App belum dipasang, data lintas perangkat belum bisa dimuat.") ;
+      $("dTotal").textContent = rows.length;
+      var perGuru = {};
+      rows.forEach(function(s){
+        if(!perGuru[s.nama]) perGuru[s.nama] = { nama:s.nama, mapel:s.mapel, jenis:{}, terakhir:0 };
+        perGuru[s.nama].jenis[s.jenis] = true;
+        if(s.ts > perGuru[s.nama].terakhir) perGuru[s.nama].terakhir = s.ts;
+      });
+      $("dGuru").textContent = Object.keys(perGuru).length;
+      var roster = lsGet("akur_roster", []);
+      var belumN = roster.filter(function(r){ return !perGuru[r.nama]; }).length;
+      $("dBelum").textContent = roster.length ? belumN : "–";
+
+      var h = "<thead><tr><th>Guru</th><th>Mapel</th>" + JENIS.map(function(j){ return "<th>"+esc(j)+"</th>"; }).join("") + "<th>Terakhir</th></tr></thead><tbody>";
+      var list = Object.keys(perGuru).map(function(k){ return perGuru[k]; }).sort(function(a,b){ return a.nama.localeCompare(b.nama); });
+      if(!list.length) h += "<tr><td colspan='8' class='empty'>Belum ada data pada filter ini.</td></tr>";
+      list.forEach(function(g){
+        h += "<tr><td data-l='Guru'><b>"+esc(g.nama)+"</b></td><td data-l='Mapel'>"+esc(g.mapel)+"</td>" +
+          JENIS.map(function(j){ return "<td data-l='"+esc(j)+"' class='ctr'>"+(g.jenis[j] ? "<span class='ok-yes'>✓</span>" : "<span class='ok-no'>—</span>")+"</td>"; }).join("") +
+          "<td data-l='Terakhir'>"+esc(tglJam(g.terakhir))+"</td></tr>";
+      });
+      $("tblGuru").innerHTML = h + "</tbody>";
+
+      var perKelas = {};
+      rows.forEach(function(s){
+        if(!perKelas[s.kelas]) perKelas[s.kelas] = { kelas:s.kelas, jenis:{}, total:0, guru:{} };
+        perKelas[s.kelas].jenis[s.jenis] = (perKelas[s.kelas].jenis[s.jenis]||0) + 1;
+        perKelas[s.kelas].total++; perKelas[s.kelas].guru[s.nama] = 1;
+      });
+      var h2 = "<thead><tr><th>Kelas</th>" + JENIS.map(function(j){ return "<th>"+esc(j)+"</th>"; }).join("") + "<th>Guru Mengumpulkan</th><th>Total</th></tr></thead><tbody>";
+      var lk = Object.keys(perKelas).sort();
+      if(!lk.length) h2 += "<tr><td colspan='7' class='empty'>Belum ada data pada filter ini.</td></tr>";
+      lk.forEach(function(k){ var c = perKelas[k];
+        h2 += "<tr><td data-l='Kelas'><b>"+esc(c.kelas)+"</b></td>" + JENIS.map(function(j){ return "<td data-l='"+esc(j)+"' class='ctr'>"+(c.jenis[j]||0)+"</td>"; }).join("") +
+          "<td data-l='Guru' class='ctr'>"+Object.keys(c.guru).length+"</td><td data-l='Total' class='ctr'><b>"+c.total+"</b></td></tr>";
+      });
+      $("tblKelas").innerHTML = h2 + "</tbody>";
+
+      var h3 = "<thead><tr><th>Waktu</th><th>Guru</th><th>Mapel</th><th>Jenis</th><th>Kelas</th><th>Semester</th><th>Dokumen</th></tr></thead><tbody>";
+      if(!rows.length) h3 += "<tr><td colspan='7' class='empty'>Belum ada pengumpulan masuk.</td></tr>";
+      rows.slice().reverse().forEach(function(s){
+        h3 += "<tr><td data-l='Waktu'>"+esc(tglJam(s.ts))+"</td><td data-l='Guru'>"+esc(s.nama)+"</td><td data-l='Mapel'>"+esc(s.mapel)+"</td><td data-l='Jenis'>"+esc(s.jenis)+"</td><td data-l='Kelas'>"+esc(s.kelas)+"</td><td data-l='Semester'>"+esc(s.semester)+"</td><td data-l='Dokumen'>" +
+          (s.link ? '<a href="'+esc(s.link)+'" target="_blank" rel="noopener">Buka</a>' : esc(s.ket||"—")) + "</td></tr>";
+      });
+      $("tblSemua").innerHTML = h3 + "</tbody>";
+      renderBelum();
+    }
+    function renderBelum(){
+      var roster = lsGet("akur_roster", []);
+      var box = $("belumBox");
+      if(!roster.length){ box.innerHTML = '<p class="empty">Daftar guru belum diisi, jadi status “belum mengumpulkan” belum dapat dihitung.</p>'; return; }
+      var rows = subsTerfilter();
+      var sudah = {};
+      rows.forEach(function(s){ sudah[s.nama] = 1; });
+      var belum = roster.filter(function(r){ return !sudah[r.nama]; });
+      if(!belum.length){ box.innerHTML = '<div class="note green">Semua guru pada daftar sudah mengumpulkan (sesuai filter di atas). Kerja bagus!</div>'; return; }
+      box.innerHTML = "<h4 style='margin:0 0 6px'>Belum mengumpulkan ("+belum.length+" guru)</h4><p style='margin:0;font-size:14px'>" +
+        belum.map(function(r){ return esc(r.nama) + (r.mapel ? " <span style='color:var(--ink2)'>("+esc(r.mapel)+")</span>" : ""); }).join(" · ") + "</p>";
+    }
+    ["fSemester","fJenis","fTingkat","fCari"].forEach(function(id){ $(id).addEventListener("input", function(){ if(pinUnlocked) renderDasbor(); }); });
+    $("btnRoster").addEventListener("click", function(){
+      var lines = $("rosterInput").value.split("\n").map(function(x){ return x.trim(); }).filter(Boolean);
+      var roster = lines.map(function(l){ var p = l.split(","); return { nama: p[0].trim(), mapel: (p[1]||"").trim() }; });
+      lsSet("akur_roster", roster); renderDasbor(); toast("Daftar " + roster.length + " guru tersimpan.");
+    });
+    $("btnMuatPusat").addEventListener("click", function(){
+      if(!dbUrl){ toast("URL Web App belum dipasang. Lihat menu Pengaturan & Panduan."); return; }
+      toast("Memuat data dari spreadsheet pusat…");
+      muatPusat().then(function(rows){
+        subsPusat = rows.map(function(r){ return { id:r.id||uid(), ts:Number(r.ts)||Date.now(), nama:r.nama||"", mapel:r.mapel||"", jenis:r.jenis||"", kelas:r.kelas||"", semester:r.semester||"", link:r.link||"", ket:r.ket||"" }; });
+        renderDasbor(); toast("Data pusat dimuat: " + subsPusat.length + " baris.");
+      }).catch(function(){ toast("Gagal memuat data pusat. Periksa URL dan izin deploy Web App (akses: Anyone)."); });
+    });
+    $("btnCsv").addEventListener("click", function(){
+      var rows = subsTerfilter();
+      var csv = "Waktu;Nama Guru;Mata Pelajaran;Jenis Dokumen;Kelas;Semester;Tautan Drive;Keterangan\n" + rows.map(function(s){
+        return [new Date(s.ts).toLocaleString("id-ID"), s.nama, s.mapel, s.jenis, s.kelas, s.semester, s.link, s.ket].map(function(x){ return '"'+String(x||"").replace(/"/g,'""')+'"'; }).join(";");
+      }).join("\n");
+      unduhBlob(new Blob(["\ufeff"+csv], {type:"text/csv;charset=utf-8"}), "rekap-pengumpulan-perangkat-ajar.csv");
+    });
+
+    /* ================= pengaturan & apps script ================= */
+    var KODE_APPS = [
+      "// Database Kurikulum SMPN 171 — Apps Script Web App",
+      "// Tempel seluruh kode ini di Apps Script spreadsheet pusat, lalu deploy sebagai Web App",
+      "// (Execute as: Me, Who has access: Anyone).",
+      "",
+      "function dapatSheet_(nama) {",
+      "  var ss = SpreadsheetApp.getActiveSpreadsheet();",
+      "  var sh = ss.getSheetByName(nama);",
+      "  if (!sh) {",
+      "    sh = ss.insertSheet(nama);",
+      "    if (nama === 'Pengumpulan') sh.appendRow(['ID','Waktu','Nama Guru','Mata Pelajaran','Jenis Dokumen','Kelas','Semester','Tautan Drive','Keterangan']);",
+      "    if (nama === 'Generator') sh.appendRow(['Waktu','Nama Guru','Mata Pelajaran','Kelas','Jenis Dokumen','Materi']);",
+      "  }",
+      "  return sh;",
+      "}",
+      "",
+      "function doPost(e) {",
+      "  var d = {};",
+      "  try { d = JSON.parse(e.postData.contents); } catch (err) {}",
+      "  if (d.action === 'kumpul') {",
+      "    dapatSheet_('Pengumpulan').appendRow([d.id, new Date(d.ts || Date.now()), d.nama, d.mapel, d.jenis, d.kelas, d.semester, d.link, d.ket]);",
+      "  } else if (d.action === 'genlog') {",
+      "    dapatSheet_('Generator').appendRow([new Date(d.ts || Date.now()), d.nama, d.mapel, d.kelas, d.jenis, d.materi]);",
+      "  }",
+      "  return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);",
+      "}",
+      "",
+      "function doGet(e) {",
+      "  var out = { rows: [] };",
+      "  if (e.parameter.action === 'list') {",
+      "    var sh = dapatSheet_('Pengumpulan');",
+      "    var vals = sh.getDataRange().getValues();",
+      "    for (var i = 1; i < vals.length; i++) {",
+      "      out.rows.push({ id: String(vals[i][0]), ts: new Date(vals[i][1]).getTime(), nama: vals[i][2], mapel: vals[i][3], jenis: vals[i][4], kelas: vals[i][5], semester: vals[i][6], link: vals[i][7], ket: vals[i][8] });",
+      "    }",
+      "  }",
+      "  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);",
+      "}",
+      "",
+      "// Jalankan fungsi ini satu kali dari editor bila izin akses eksternal diminta.",
+      "function ujiIzin() { Logger.log('Siap. Sheet Pengumpulan: ' + dapatSheet_('Pengumpulan').getName()); }"
+    ].join("\n");
+    $("kodeApps").textContent = KODE_APPS;
+    $("urlInput").value = dbUrl;
+    function urlStatusMsg(){ $("urlStatus").textContent = dbUrl ? "URL tersimpan. Pengumpulan berikutnya akan dikirim ke spreadsheet pusat." : "Belum ada URL tersimpan — aplikasi berjalan dengan penyimpanan lokal."; }
+    urlStatusMsg();
+    $("btnSimpanUrl").addEventListener("click", function(){
+      dbUrl = $("urlInput").value.trim(); lsSet("akur_url", dbUrl); urlStatusMsg(); renderBeranda();
+      toast(dbUrl ? "URL Web App tersimpan." : "URL dikosongkan.");
+    });
+    $("btnSalinKode").addEventListener("click", function(){
+      function done(){ toast("Kode Apps Script tersalin. Tempel di editor Apps Script spreadsheet pusat."); }
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(KODE_APPS).then(done, function(){ toast("Gagal menyalin otomatis — blokir teks kode secara manual."); }); }
+      else toast("Salin manual: blokir teks kode di bawah lalu tekan Ctrl+C.");
+    });
+    $("btnUji").addEventListener("click", function(){
+      if(!dbUrl){ toast("Isi dan simpan URL Web App dulu ya."); return; }
+      toast("Mengirim data uji ke spreadsheet pusat…");
+      kirimPusat({ action:"ping", ts: Date.now() }).then(function(ok){
+        toast(ok ? "Uji kirim berhasil — Web App merespons. Cek juga lewat tombol “Muat Data dari Spreadsheet Pusat” di dasbor." : "Web App tidak merespons. Periksa URL, status deploy (New version), dan izin akses Anyone.");
+      });
+    });
+    function unduhBlob(blob, nama){
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = nama;
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 600);
+    }
+
+    /* ================= generator: state ================= */
+    function genDefault(){
+      return {
+        sekolah: "SMP Negeri 171 Jakarta",
+        mapel: user ? user.mapel : "Matematika", mapelCustom: "",
+        guru: user ? user.nama : "",
+        tingkat: "VIII", semester: "Ganjil", tahun: "2026/2027",
+        materi: "", alokasi: "",
+        elemen: "Bilangan", cp: CP_MAT["Bilangan"],
+        tps: [{ teks: "" }],
+        rpp: {
+          pdAwal: "", pdMinat: "", pdLatar: "", pdButuh: "",
+          mtPengetahuan: "", mtRelevansi: "", mtSulit: "Sedang", mtStruktur: "", mtKarakter: "",
+          dpl: DPL.map(function(){ return false; }),
+          bdCP: "", bdLintas: "", tujuan: [], bdTopik: "",
+          praktik: PRAKTIK[0], praktikCustom: "",
+          bdKemitraan: "", lingFisik: "", lingVirtual: "", lingBudaya: "", bdDigital: "",
+          pengalaman: [],
+          asAwal: "", asProses: "", asAkhir: ""
+        },
+        instrumen: {
+          kisi: [{ tp: "", indikator: "", bentuk: "Pilihan Ganda", nomor: "1" }],
+          soal: [{ soal: "", kunci: "" }],
+          rubrik: [{ aspek: "", kriteria: "", skor: "4" }]
+        }
+      };
+    }
+    var G = lsGet("akur_gen", null);
+    if(!G || typeof G !== "object" || !G.rpp) G = genDefault();
+
+    function saveGen(){ lsSet("akur_gen", G); }
+    function mapelAktif(){ return G.mapel === "__custom" ? (G.mapelCustom || "") : G.mapel; }
+    function kelasAktif(){ return G.tingkat; }
+    function pengalamanBaru(){ return { orientasi:"", apersepsi:"", motivasi:"", memahami:"", mengaplikasi:"", merefleksi:"", penutup:"" }; }
+    function sinkronPengalaman(){
+      var n = Math.max(1, G.tps.length);
+      while(G.rpp.pengalaman.length < n) G.rpp.pengalaman.push(pengalamanBaru());
+      G.rpp.pengalaman.length = n;
+      while(G.rpp.tujuan.length < n) G.rpp.tujuan.push("");
+      G.rpp.tujuan.length = n;
+    }
+
+    /* ---------- langkah 1: identitas ---------- */
+    function initStep1(){
+      $("gSekolah").value = G.sekolah;
+      $("gMapel").innerHTML = mapelOptions(G.mapel, true);
+      $("gMapelCustom").value = G.mapelCustom; $("gMapelCustom").style.display = G.mapel === "__custom" ? "block" : "none";
+      $("gGuru").value = G.guru;
+      $("gTingkat").value = G.tingkat; $("gSemester").value = G.semester;
+      $("gTahun").value = G.tahun; $("gMateri").value = G.materi; $("gAlokasi").value = G.alokasi;
+    }
+    function syncGenFromForm(){
+      G.sekolah = $("gSekolah").value; G.mapel = $("gMapel").value; G.mapelCustom = $("gMapelCustom").value;
+      G.guru = $("gGuru").value; G.tingkat = $("gTingkat").value; G.semester = $("gSemester").value;
+      G.tahun = $("gTahun").value; G.materi = $("gMateri").value; G.alokasi = $("gAlokasi").value;
+    }
+    ["gSekolah","gMapel","gMapelCustom","gGuru","gTingkat","gSemester","gTahun","gMateri","gAlokasi"].forEach(function(id){
+      $(id).addEventListener("input", function(){ syncGenFromForm(); saveGen(); });
+      $(id).addEventListener("change", function(){ syncGenFromForm(); saveGen(); });
+    });
+    $("gMapel").addEventListener("change", function(){
+      $("gMapelCustom").style.display = $("gMapel").value === "__custom" ? "block" : "none";
+      var m = mapelAktif();
+      $("cpPilihWrap").style.display = (m === "Matematika") ? "" : "none";
+    });
+
+    /* ---------- langkah 2: ATP ---------- */
+    function initStep2(){
+      var sel = $("gElemen");
+      sel.innerHTML = Object.keys(CP_MAT).map(function(k){ return '<option value="'+esc(k)+'"'+(k===G.elemen?" selected":"")+">"+esc(k)+"</option>"; }).join("");
+      $("cpPilihWrap").style.display = (mapelAktif() === "Matematika") ? "" : "none";
+      $("gCP").value = G.cp;
+      renderSaran(); renderTps();
+    }
+    $("gElemen").addEventListener("change", function(){
+      G.elemen = $("gElemen").value; G.cp = CP_MAT[G.elemen]; $("gCP").value = G.cp;
+      renderSaran(); saveGen();
+    });
+    $("gCP").addEventListener("input", function(){ G.cp = $("gCP").value; saveGen(); });
+    function renderSaran(){
+      var saran = TP_SARAN[G.elemen] || [];
+      $("tpSaran").innerHTML = saran.map(function(s, i){ return '<button type="button" class="chip" data-saran="'+i+'">+ Saran TP '+(i+1)+": "+esc(s.slice(0, 52))+"…</button>"; }).join("");
+      $("tpSaran").querySelectorAll("[data-saran]").forEach(function(b){
+        b.addEventListener("click", function(){
+          var teks = saran[Number(b.getAttribute("data-saran"))];
+          var kosong = G.tps.findIndex(function(t){ return !t.teks.trim(); });
+          if(kosong >= 0) G.tps[kosong].teks = teks; else G.tps.push({ teks: teks });
+          renderTps(); saveGen();
+        });
+      });
+    }
+    function renderTps(){
+      var box = $("tpList"); box.innerHTML = "";
+      G.tps.forEach(function(tp, i){
+        var d = document.createElement("div"); d.className = "dynrow";
+        d.innerHTML = '<div class="rh"><b>Pertemuan '+(i+1)+'</b>' + (G.tps.length > 1 ? '<button type="button" class="iconbtn" title="Hapus pertemuan ini">×</button>' : "") + '</div>' +
+          '<textarea class="inp sm" placeholder="Tulis tujuan pembelajaran pertemuan '+(i+1)+'…">'+esc(tp.teks)+"</textarea>";
+        d.querySelector("textarea").addEventListener("input", function(ev){ G.tps[i].teks = ev.target.value; saveGen(); });
+        var del = d.querySelector(".iconbtn");
+        if(del) del.addEventListener("click", function(){ G.tps.splice(i, 1); sinkronPengalaman(); renderTps(); saveGen(); });
+        box.appendChild(d);
+      });
+    }
+    $("tpAdd").addEventListener("click", function(){ G.tps.push({ teks: "" }); sinkronPengalaman(); renderTps(); saveGen(); });
+
+    /* ---------- langkah 3: RPP ---------- */
+    function initStep3(){
+      sinkronPengalaman();
+      var R = G.rpp;
+      ["pdAwal","pdMinat","pdLatar","pdButuh"].forEach(function(k){ $("r"+k.replace(/^./, function(c){ return c; })).value = R[k]; });
+      $("rpdAwal").value = R.pdAwal; $("rpdMinat").value = R.pdMinat; $("rpdLatar").value = R.pdLatar; $("rpdButuh").value = R.pdButuh;
+      $("rmtPengetahuan").value = R.mtPengetahuan; $("rmtRelevansi").value = R.mtRelevansi; $("rmtSulit").value = R.mtSulit;
+      $("rmtStruktur").value = R.mtStruktur; $("rmtKarakter").value = R.mtKarakter;
+      var dl = $("dplList"); dl.innerHTML = "";
+      DPL.forEach(function(d, i){
+        var lab = document.createElement("label");
+        lab.innerHTML = '<input type="checkbox" '+(R.dpl[i] ? "checked" : "")+' /> <span>'+esc(d)+"</span>";
+        lab.querySelector("input").addEventListener("change", function(ev){ R.dpl[i] = ev.target.checked; saveGen(); });
+        dl.appendChild(lab);
+      });
+      if(!R.bdCP) R.bdCP = G.cp;
+      $("rbdCP").value = R.bdCP; $("rbdLintas").value = R.bdLintas; $("rbdTopik").value = R.bdTopik || G.materi;
+      var ps = $("rbdPraktik");
+      ps.innerHTML = PRAKTIK.map(function(p){ return '<option value="'+esc(p)+'"'+(p===R.praktik?" selected":"")+">"+esc(p)+"</option>"; }).join("") +
+        '<option value="__custom"'+(R.praktik==="__custom"?" selected":"")+">Lainnya — ketik sendiri…</option>";
+      $("rbdPraktikCustom").value = R.praktikCustom; $("rbdPraktikCustom").style.display = R.praktik === "__custom" ? "block" : "none";
+      $("rbdKemitraan").value = R.bdKemitraan; $("rbdLingFisik").value = R.lingFisik; $("rbdLingVirtual").value = R.lingVirtual;
+      $("rbdLingBudaya").value = R.lingBudaya; $("rbdDigital").value = R.bdDigital;
+      $("rasAwal").value = R.asAwal; $("rasProses").value = R.asProses; $("rasAkhir").value = R.asAkhir;
+      renderRppTujuan(); renderPengalaman();
+    }
+    function bindRpp(id, key){
+      $(id).addEventListener("input", function(){ G.rpp[key] = $(id).value; saveGen(); });
+    }
+    [["rpdAwal","pdAwal"],["rpdMinat","pdMinat"],["rpdLatar","pdLatar"],["rpdButuh","pdButuh"],
+     ["rmtPengetahuan","mtPengetahuan"],["rmtRelevansi","mtRelevansi"],["rmtStruktur","mtStruktur"],["rmtKarakter","mtKarakter"],
+     ["rbdCP","bdCP"],["rbdLintas","bdLintas"],["rbdTopik","bdTopik"],["rbdKemitraan","bdKemitraan"],
+     ["rbdLingFisik","lingFisik"],["rbdLingVirtual","lingVirtual"],["rbdLingBudaya","lingBudaya"],["rbdDigital","bdDigital"],
+     ["rasAwal","asAwal"],["rasProses","asProses"],["rasAkhir","asAkhir"]].forEach(function(p){ bindRpp(p[0], p[1]); });
+    $("rmtSulit").addEventListener("change", function(){ G.rpp.mtSulit = $("rmtSulit").value; saveGen(); });
+    $("rbdPraktik").addEventListener("change", function(){
+      G.rpp.praktik = $("rbdPraktik").value;
+      $("rbdPraktikCustom").style.display = G.rpp.praktik === "__custom" ? "block" : "none"; saveGen();
+    });
+    $("rbdPraktikCustom").addEventListener("input", function(){ G.rpp.praktikCustom = $("rbdPraktikCustom").value; saveGen(); });
+    function renderRppTujuan(){
+      var box = $("rppTpList"); box.innerHTML = "";
+      G.tps.forEach(function(tp, i){
+        if(!G.rpp.tujuan[i]) G.rpp.tujuan[i] = tp.teks;
+        var d = document.createElement("div"); d.className = "dynrow";
+        d.innerHTML = '<div class="rh"><b>Pertemuan '+(i+1)+'</b></div><textarea class="inp sm">'+esc(G.rpp.tujuan[i])+"</textarea>";
+        d.querySelector("textarea").addEventListener("input", function(ev){ G.rpp.tujuan[i] = ev.target.value; saveGen(); });
+        box.appendChild(d);
+      });
+    }
+    var F_PENG = [["orientasi","Awal — Orientasi","Guru membuka pelajaran, menyampaikan tujuan dan gambaran kegiatan…"],
+      ["apersepsi","Awal — Apersepsi","Mengaitkan materi dengan pengalaman dan pengetahuan awal peserta didik…"],
+      ["motivasi","Awal — Motivasi","Membangkitkan rasa ingin tahu dan semangat belajar, mis. lewat pertanyaan pemantik atau cerita kontekstual…"],
+      ["memahami","Inti — Memahami","Peserta didik mengeksplorasi konsep melalui pengamatan, diskusi, dan sumber belajar…"],
+      ["mengaplikasi","Inti — Mengaplikasi","Peserta didik menerapkan konsep untuk menyelesaikan masalah atau menghasilkan karya…"],
+      ["merefleksi","Inti — Merefleksi","Peserta didik meninjau kembali proses dan hasil belajarnya, menyampaikan kesulitan dan pemahamannya…"],
+      ["penutup","Penutup","Merangkum, memberi umpan balik, menyampaikan tindak lanjut, dan menutup dengan doa…"]];
+    function renderPengalaman(){
+      var box = $("pengalamanList"); box.innerHTML = "";
+      G.rpp.pengalaman.forEach(function(p, i){
+        var d = document.createElement("div"); d.className = "pertemuan-blok";
+        var h = "<h4>Pertemuan "+(i+1)+"</h4>";
+        if(G.rpp.tujuan[i]) h += '<p class="sub" style="margin-bottom:8px">Tujuan: '+esc(G.rpp.tujuan[i])+"</p>";
+        F_PENG.forEach(function(f){
+          h += '<label class="f" style="margin-top:10px">'+esc(f[1])+'</label><textarea class="inp sm" data-pi="'+i+'" data-pk="'+f[0]+'" placeholder="'+esc(f[2])+'">'+esc(p[f[0]]||"")+"</textarea>";
+        });
+        d.innerHTML = h; box.appendChild(d);
+      });
+      box.querySelectorAll("textarea[data-pk]").forEach(function(t){
+        t.addEventListener("input", function(){ G.rpp.pengalaman[Number(t.getAttribute("data-pi"))][t.getAttribute("data-pk")] = t.value; saveGen(); });
+      });
+    }
+
+    /* ---------- langkah 4: instrumen ---------- */
+    var BENTUK = ["Pilihan Ganda","Pilihan Ganda Kompleks","Isian Singkat","Uraian","Menjodohkan","Benar–Salah"];
+    function initStep4(){ renderKisi(); renderSoal(); renderRubrik(); }
+    function renderKisi(){
+      var box = $("kisiList"); box.innerHTML = "";
+      G.instrumen.kisi.forEach(function(k, i){
+        var d = document.createElement("div"); d.className = "dynrow";
+        var tpOpts = G.tps.map(function(t, ti){ return '<option value="'+esc(t.teks)+'">Pertemuan '+(ti+1)+": "+esc(t.teks.slice(0, 60))+"…</option>"; }).join("");
+        d.innerHTML = '<div class="rh"><b>Baris '+(i+1)+'</b>' + (G.instrumen.kisi.length > 1 ? '<button type="button" class="iconbtn">×</button>' : "") + '</div>' +
+          '<label class="f">Tujuan Pembelajaran</label><input class="inp" data-k="tp" list="tpListData" value="'+esc(k.tp)+'" placeholder="Pilih dari ATP atau ketik sendiri…" />' +
+          '<label class="f">Indikator Soal</label><input class="inp" data-k="indikator" value="'+esc(k.indikator)+'" placeholder="Mis. Disajikan segitiga siku-siku, peserta didik dapat menentukan panjang hipotenusa…" />' +
+          '<div class="row2"><div><label class="f">Bentuk Soal</label><select class="inp" data-k="bentuk">' +
+            BENTUK.map(function(b){ return '<option'+(b===k.bentuk?" selected":"")+">"+esc(b)+"</option>"; }).join("") + "</select></div>" +
+          '<div><label class="f">Nomor Soal</label><input class="inp" data-k="nomor" value="'+esc(k.nomor)+'" placeholder="1" /></div></div>' +
+          '<datalist id="tpListData">'+tpOpts+"</datalist>";
+        d.querySelectorAll("[data-k]").forEach(function(inp){
+          inp.addEventListener("input", function(){ G.instrumen.kisi[i][inp.getAttribute("data-k")] = inp.value; saveGen(); });
+          inp.addEventListener("change", function(){ G.instrumen.kisi[i][inp.getAttribute("data-k")] = inp.value; saveGen(); });
+        });
+        var del = d.querySelector(".iconbtn");
+        if(del) del.addEventListener("click", function(){ G.instrumen.kisi.splice(i, 1); renderKisi(); saveGen(); });
+        box.appendChild(d);
+      });
+    }
+    $("kisiAdd").addEventListener("click", function(){ G.instrumen.kisi.push({ tp:"", indikator:"", bentuk:"Pilihan Ganda", nomor:String(G.instrumen.kisi.length + 1) }); renderKisi(); saveGen(); });
+    function renderSoal(){
+      var box = $("soalList"); box.innerHTML = "";
+      G.instrumen.soal.forEach(function(s, i){
+        var d = document.createElement("div"); d.className = "dynrow";
+        d.innerHTML = '<div class="rh"><b>Soal '+(i+1)+'</b>' + (G.instrumen.soal.length > 1 ? '<button type="button" class="iconbtn">×</button>' : "") + '</div>' +
+          '<textarea class="inp sm" data-k="soal" placeholder="Tulis bunyi soal (untuk pilihan ganda, sertakan opsi A–D di baris berikutnya)…">'+esc(s.soal)+"</textarea>" +
+          '<label class="f">Kunci Jawaban / Pedoman Jawaban</label><textarea class="inp sm" data-k="kunci" placeholder="Kunci jawaban dan penjelasan singkat…">'+esc(s.kunci)+"</textarea>";
+        d.querySelectorAll("[data-k]").forEach(function(inp){ inp.addEventListener("input", function(){ G.instrumen.soal[i][inp.getAttribute("data-k")] = inp.value; saveGen(); }); });
+        var del = d.querySelector(".iconbtn");
+        if(del) del.addEventListener("click", function(){ G.instrumen.soal.splice(i, 1); renderSoal(); saveGen(); });
+        box.appendChild(d);
+      });
+    }
+    $("soalAdd").addEventListener("click", function(){ G.instrumen.soal.push({ soal:"", kunci:"" }); renderSoal(); saveGen(); });
+    function renderRubrik(){
+      var box = $("rubrikList"); box.innerHTML = "";
+      G.instrumen.rubrik.forEach(function(r, i){
+        var d = document.createElement("div"); d.className = "dynrow";
+        d.innerHTML = '<div class="rh"><b>Aspek '+(i+1)+'</b>' + (G.instrumen.rubrik.length > 1 ? '<button type="button" class="iconbtn">×</button>' : "") + '</div>' +
+          '<label class="f">Aspek yang Dinilai</label><input class="inp" data-k="aspek" value="'+esc(r.aspek)+'" placeholder="Mis. Ketepatan konsep, penalaran, komunikasi…" />' +
+          '<label class="f">Kriteria / Deskripsi Pencapaian</label><textarea class="inp sm" data-k="kriteria" placeholder="Deskripsi kriteria penilaian untuk aspek ini…">'+esc(r.kriteria)+"</textarea>" +
+          '<label class="f">Skor Maksimum</label><input class="inp" data-k="skor" value="'+esc(r.skor)+'" style="max-width:140px" placeholder="4" />';
+        d.querySelectorAll("[data-k]").forEach(function(inp){ inp.addEventListener("input", function(){ G.instrumen.rubrik[i][inp.getAttribute("data-k")] = inp.value; saveGen(); }); });
+        var del = d.querySelector(".iconbtn");
+        if(del) del.addEventListener("click", function(){ G.instrumen.rubrik.splice(i, 1); renderRubrik(); saveGen(); });
+        box.appendChild(d);
+      });
+    }
+    $("rubrikAdd").addEventListener("click", function(){ G.instrumen.rubrik.push({ aspek:"", kriteria:"", skor:"4" }); renderRubrik(); saveGen(); });
+
+    /* ---------- wizard nav ---------- */
+    var curStep = 1;
+    function setStep(n){
+      syncGenFromForm(); sinkronPengalaman(); saveGen();
+      curStep = n;
+      for(var i = 1; i <= 4; i++) $("gs"+i).classList.toggle("on", i === n);
+      document.querySelectorAll("#genSteps button").forEach(function(b){
+        var s = Number(b.getAttribute("data-s"));
+        b.classList.toggle("on", s === n); b.classList.toggle("done", s < n);
+      });
+      if(n === 2) initStep2();
+      if(n === 3) initStep3();
+      if(n === 4) initStep4();
+      $("v-generator").scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+    document.querySelectorAll("#genSteps button").forEach(function(b){ b.addEventListener("click", function(){ setStep(Number(b.getAttribute("data-s"))); }); });
+    document.querySelectorAll("[data-prev]").forEach(function(b){ b.addEventListener("click", function(){ setStep(Number(b.getAttribute("data-prev"))); }); });
+    $("toStep2").addEventListener("click", function(){ setStep(2); });
+    $("toStep3").addEventListener("click", function(){ setStep(3); });
+    $("toStep4").addEventListener("click", function(){ setStep(4); });
+
+    /* ================= model dokumen ================= */
+    function identitasRows(){
+      return [["Sekolah", G.sekolah],["Mata Pelajaran", mapelAktif()],["Kelas / Semester", G.tingkat + " / " + G.semester],
+              ["Materi Pokok", G.materi || "—"],["Alokasi Waktu", G.alokasi || "—"],["Tahun Ajaran", G.tahun],["Nama Guru", G.guru || "—"]];
+    }
+    function tandaTangan(){
+      return { t:"sign", kiri:["Mengetahui,", "Kepala " + (G.sekolah || "Sekolah")], kanan:["Jakarta, …………………", "Guru Mata Pelajaran"], namaKanan: G.guru || "……………………………" };
+    }
+    function buildATP(){
+      var b = [{ t:"kop" }, { t:"title", text:"ALUR TUJUAN PEMBELAJARAN (ATP)" }, { t:"sub", text: mapelAktif() + " · Fase D · Kelas " + G.tingkat },
+        { t:"kv", rows: identitasRows() },
+        { t:"h", text:"Capaian Pembelajaran" }, { t:"p", text: G.cp || "—" },
+        { t:"h", text:"Tujuan Pembelajaran per Pertemuan" },
+        { t:"table", head:["Pertemuan","Tujuan Pembelajaran"], rows: G.tps.map(function(tp, i){ return [String(i+1), tp.teks || "—"]; }), widths:[16, 84] },
+        tandaTangan()];
+      return b;
+    }
+    function praktikAktif(){ return G.rpp.praktik === "__custom" ? (G.rpp.praktikCustom || "—") : G.rpp.praktik; }
+    function buildRPP(){
+      var R = G.rpp;
+      var b = [{ t:"kop" }, { t:"title", text:"RENCANA PELAKSANAAN PEMBELAJARAN (RPP)" }, { t:"sub", text:"Pembelajaran Mendalam · Kurikulum Merdeka" },
+        { t:"kv", rows: identitasRows() },
+        { t:"h", text:"A. IDENTIFIKASI" },
+        { t:"h3", text:"1. Peserta Didik" },
+        { t:"kv", rows:[["Pengetahuan Awal", R.pdAwal || "—"],["Minat", R.pdMinat || "—"],["Latar Belakang", R.pdLatar || "—"],["Kebutuhan Belajar", R.pdButuh || "—"]] },
+        { t:"h3", text:"2. Materi Pelajaran" },
+        { t:"kv", rows:[["Pengetahuan yang Akan Dicapai", R.mtPengetahuan || "—"],["Relevansi dengan Kehidupan Nyata", R.mtRelevansi || "—"],["Tingkat Kesulitan", R.mtSulit || "—"],["Struktur Materi", R.mtStruktur || "—"],["Integrasi Nilai dan Karakter", R.mtKarakter || "—"]] },
+        { t:"h3", text:"3. Dimensi Profil Lulusan" },
+        { t:"p", text: (DPL.filter(function(d, i){ return R.dpl[i]; }).join(", ") || "— (belum dipilih)") },
+        { t:"h", text:"B. DESAIN PEMBELAJARAN" },
+        { t:"kv", rows:[["Capaian Pembelajaran", R.bdCP || G.cp || "—"],["Lintas Disiplin Ilmu", R.bdLintas || "—"],["Topik Pembelajaran", R.bdTopik || "—"],["Praktik Pedagogis", praktikAktif()],["Kemitraan Pembelajaran", R.bdKemitraan || "—"]] },
+        { t:"h3", text:"Tujuan Pembelajaran per Pertemuan" },
+        { t:"table", head:["Pertemuan","Tujuan Pembelajaran"], rows: G.tps.map(function(tp, i){ return [String(i+1), R.tujuan[i] || tp.teks || "—"]; }), widths:[16, 84] },
+        { t:"h3", text:"Lingkungan Pembelajaran" },
+        { t:"kv", rows:[["Ruang Fisik", R.lingFisik || "—"],["Ruang Virtual", R.lingVirtual || "—"],["Budaya Belajar", R.lingBudaya || "—"],["Pemanfaatan Digital", R.bdDigital || "—"]] },
+        { t:"h", text:"C. PENGALAMAN BELAJAR" },
+        { t:"p", text:"Dirancang dengan prinsip berkesadaran, bermakna, dan menggembirakan." }];
+      R.pengalaman.forEach(function(p, i){
+        b.push({ t:"h3", text:"Pertemuan " + (i+1) + (R.tujuan[i] ? " — " + R.tujuan[i] : "") });
+        b.push({ t:"kv", rows:[["Awal — Orientasi", p.orientasi || "—"],["Awal — Apersepsi", p.apersepsi || "—"],["Awal — Motivasi", p.motivasi || "—"],
+          ["Inti — Memahami", p.memahami || "—"],["Inti — Mengaplikasi", p.mengaplikasi || "—"],["Inti — Merefleksi", p.merefleksi || "—"],["Penutup", p.penutup || "—"]] });
+      });
+      b.push({ t:"h", text:"D. ASESMEN PEMBELAJARAN" });
+      b.push({ t:"kv", rows:[["Asesmen Awal (assessment as learning)", R.asAwal || "—"],["Asesmen Proses (assessment for learning)", R.asProses || "—"],["Asesmen Akhir (assessment of learning)", R.asAkhir || "—"]] });
+      b.push(tandaTangan());
+      return b;
+    }
+    function buildIns(){
+      var I = G.instrumen;
+      var b = [{ t:"kop" }, { t:"title", text:"INSTRUMEN ASESMEN" }, { t:"sub", text:"Kisi-Kisi, Soal dan Kunci Jawaban, serta Rubrik Penilaian" },
+        { t:"kv", rows: identitasRows() },
+        { t:"h", text:"A. KISI-KISI SOAL" },
+        { t:"table", head:["No","Tujuan Pembelajaran","Indikator","Bentuk Soal","Nomor Soal"],
+          rows: I.kisi.map(function(k, i){ return [String(i+1), k.tp || "—", k.indikator || "—", k.bentuk || "—", k.nomor || "—"]; }), widths:[7, 30, 35, 15, 13] },
+        { t:"h", text:"B. SOAL DAN KUNCI JAWABAN" }];
+      I.soal.forEach(function(s, i){
+        b.push({ t:"h3", text:"Soal " + (i+1) });
+        b.push({ t:"p", text: s.soal || "—" });
+        b.push({ t:"p", label:"Kunci Jawaban: ", text: s.kunci || "—" });
+      });
+      b.push({ t:"h", text:"C. RUBRIK PENILAIAN" });
+      b.push({ t:"table", head:["No","Aspek yang Dinilai","Kriteria / Deskripsi","Skor Maksimum"],
+        rows: I.rubrik.map(function(r, i){ return [String(i+1), r.aspek || "—", r.kriteria || "—", r.skor || "—"]; }), widths:[7, 26, 52, 15] });
+      b.push(tandaTangan());
+      return b;
+    }
+
+    /* ================= pratinjau HTML ================= */
+    function blocksToHTML(blocks){
+      var h = '<div class="sheet">';
+      blocks.forEach(function(b){
+        if(b.t === "kop") h += '<div class="kop"><div class="sk">'+esc(G.sekolah || "Sekolah")+'</div><div class="ks">Dokumen Perangkat Ajar · Kurikulum Merdeka · Pembelajaran Mendalam</div></div>';
+        else if(b.t === "title") h += '<h1 class="doct">'+esc(b.text)+"</h1>";
+        else if(b.t === "sub") h += '<div class="docsub">'+esc(b.text)+"</div>";
+        else if(b.t === "h") h += '<h2 class="sec">'+esc(b.text)+"</h2>";
+        else if(b.t === "h3") h += '<h3 class="sub2">'+esc(b.text)+"</h3>";
+        else if(b.t === "p") h += "<p>"+(b.label ? '<span class="lbl">'+esc(b.label)+"</span>" : "")+esc(b.text).replace(/\n/g, "<br/>")+"</p>";
+        else if(b.t === "kv") h += '<table class="kv"><tbody>'+b.rows.map(function(r){ return "<tr><td>"+esc(r[0])+"</td><td>"+esc(r[1]).replace(/\n/g, "<br/>")+"</td></tr>"; }).join("")+"</tbody></table>";
+        else if(b.t === "table") h += "<table><thead><tr>"+b.head.map(function(x){ return "<th>"+esc(x)+"</th>"; }).join("")+"</tr></thead><tbody>"+
+          b.rows.map(function(r){ return "<tr>"+r.map(function(c){ return "<td>"+esc(c).replace(/\n/g, "<br/>")+"</td>"; }).join("")+"</tr>"; }).join("")+"</tbody></table>";
+        else if(b.t === "sign") h += '<div class="sign"><div class="col">'+b.kiri.map(function(x){ return "<div>"+esc(x)+"</div>"; }).join("")+'<div class="nm">( ………………………………… )</div><div>NIP. …………………………</div></div>' +
+          '<div class="col">'+b.kanan.map(function(x){ return "<div>"+esc(x)+"</div>"; }).join("")+'<div class="nm">'+esc(b.namaKanan)+'</div><div>NIP. …………………………</div></div></div>';
+      });
+      return h + "</div>";
+    }
+    function showPreview(boxId, blocks){ $(boxId).innerHTML = blocksToHTML(blocks); $(boxId).scrollIntoView({ behavior:"smooth", block:"start" }); }
+
+    /* ================= penulis .docx (OOXML + zip store) ================= */
+    function xesc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+    function runXML(text, o){
+      o = o || {};
+      var rpr = "<rPr>" + (o.b ? "<b/>" : "") + (o.i ? "<i/>" : "") + (o.u ? "<u w:val='single'/>" : "") +
+        (o.sz ? "<sz w:val='"+o.sz+"'/><szCs w:val='"+o.sz+"'/>" : "") +
+        "<rFonts w:ascii='"+(o.font||"Calibri")+"' w:hAnsi='"+(o.font||"Calibri")+"'/></rPr>";
+      return text.split("\n").map(function(line, li){
+        return (li ? "<w:r><w:br/></w:r>" : "") + "<w:r>"+rpr+"<w:t xml:space='preserve'>"+xesc(line)+"</w:t></w:r>";
+      }).join("");
+    }
+    function paraXML(text, o){
+      o = o || {};
+      var ppr = "<w:pPr>" + (o.style ? "<w:pStyle w:val='"+o.style+"'/>" : "") +
+        (o.align ? "<w:jc w:val='"+o.align+"'/>" : "") +
+        (o.spaceAfter != null ? "<w:spacing w:after='"+o.spaceAfter+"'/>" : "<w:spacing w:after='120'/>") +
+        (o.borderBottom ? "<w:pBdr><w:bottom w:val='double' w:sz='12' w:space='4' w:color='1A1A1A'/></w:pBdr>" : "") + "</w:pPr>";
+      return "<w:p>"+ppr+runXML(text, o)+"</w:p>";
+    }
+    function tblXML(head, rows, widths, kv){
+      function cell(txt, w, bold, shade){
+        return "<w:tc><w:tcPr><w:tcW w:w='"+Math.round(w*90)+"' w:type='dxa'/>"+(shade ? "<w:shd w:fill='"+shade+"'/>" : "")+
+          "<w:vAlign w:val='top'/></w:tcPr><w:p><w:pPr><w:spacing w:after='40'/></w:pPr>"+runXML(String(txt), { b: !!bold, sz: 21 })+"</w:p></w:tc>";
+      }
+      var bdr = "<w:tblPr><w:tblW w:w='0' w:type='auto'/><w:tblBorders>" +
+        ["top","left","bottom","right","insideH","insideV"].map(function(s){ return "<w:"+s+" w:val='single' w:sz='6' w:space='0' w:color='555555'/>"; }).join("") + "</w:tblBorders></w:tblPr>";
+      var out = "<w:tbl>"+bdr;
+      if(head) out += "<w:tr>"+head.map(function(hh, i){ return cell(hh, widths[i]||20, true, "ECECEC"); }).join("")+"</w:tr>";
+      rows.forEach(function(r){ out += "<w:tr>"+r.map(function(c, i){ return cell(c, widths[i]||20, kv && i===0, kv && i===0 ? "F5F5F5" : null); }).join("")+"</w:tr>"; });
+      return out + "</w:tbl>" + paraXML("", { spaceAfter: 60 });
+    }
+    function blocksToDocXML(blocks){
+      var x = "";
+      blocks.forEach(function(b){
+        if(b.t === "kop"){
+          x += paraXML(G.sekolah || "Sekolah", { b:true, sz:30, align:"center", font:"Cambria", spaceAfter: 20 });
+          x += paraXML("Dokumen Perangkat Ajar · Kurikulum Merdeka · Pembelajaran Mendalam", { i:true, sz:20, align:"center", borderBottom:true, spaceAfter: 200 });
+        }
+        else if(b.t === "title") x += paraXML(b.text, { style:"Title", align:"center", spaceAfter: 40 });
+        else if(b.t === "sub") x += paraXML(b.text, { align:"center", sz:22, spaceAfter: 240 });
+        else if(b.t === "h") x += paraXML(b.text, { style:"Heading1", spaceAfter: 100 });
+        else if(b.t === "h3") x += paraXML(b.text, { style:"Heading2", spaceAfter: 80 });
+        else if(b.t === "p") x += paraXML((b.label || "") + b.text, { align:"both" });
+        else if(b.t === "kv") x += tblXML(null, b.rows, [31, 69], true);
+        else if(b.t === "table") x += tblXML(b.head, b.rows, b.widths, false);
+        else if(b.t === "sign"){
+          x += paraXML("", { spaceAfter: 200 });
+          x += "<w:tbl><w:tblPr><w:tblW w:w='0' w:type='auto'/></w:tblPr><w:tr>" +
+            "<w:tc><w:tcPr><w:tcW w:w='4500' w:type='dxa'/></w:tcPr>" +
+            b.kiri.map(function(l){ return paraXML(l, { spaceAfter: 40 }); }).join("") +
+            paraXML("( ………………………………… )", { b:true, spaceAfter: 40 }) + paraXML("NIP. …………………………", { spaceAfter: 40 }) + "</w:tc>" +
+            "<w:tc><w:tcPr><w:tcW w:w='4500' w:type='dxa'/></w:tcPr>" +
+            b.kanan.map(function(l){ return paraXML(l, { spaceAfter: 40 }); }).join("") +
+            paraXML(b.namaKanan, { b:true, u:true, spaceAfter: 40 }) + paraXML("NIP. …………………………", { spaceAfter: 40 }) + "</w:tc></w:tr></w:tbl>";
+        }
+      });
+      return x;
+    }
+    var CRC_T = (function(){ var t = []; for(var n = 0; n < 256; n++){ var c = n; for(var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); t[n] = c >>> 0; } return t; })();
+    function crc32(bytes){ var c = 0xFFFFFFFF; for(var i = 0; i < bytes.length; i++) c = CRC_T[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+    function buatZip(files){
+      var enc = new TextEncoder(); var chunks = []; var central = []; var offset = 0;
+      function u16(n){ return new Uint8Array([n & 255, (n >>> 8) & 255]); }
+      function u32(n){ return new Uint8Array([n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255]); }
+      function push(a){ chunks.push(a); offset += a.length; }
+      files.forEach(function(f){
+        var data = typeof f.data === "string" ? enc.encode(f.data) : f.data;
+        var name = enc.encode(f.name); var crc = crc32(data); var start = offset;
+        push(u32(0x04034b50)); push(u16(20)); push(u16(0)); push(u16(0)); push(u16(0)); push(u16(0));
+        push(u32(crc)); push(u32(data.length)); push(u32(data.length)); push(u16(name.length)); push(u16(0));
+        push(name); push(data);
+        central.push({ name:name, crc:crc, size:data.length, start:start });
+      });
+      var cdStart = offset;
+      central.forEach(function(c){
+        push(u32(0x02014b50)); push(u16(20)); push(u16(20)); push(u16(0)); push(u16(0)); push(u16(0)); push(u16(0));
+        push(u32(c.crc)); push(u32(c.size)); push(u32(c.size)); push(u16(c.name.length));
+        push(u16(0)); push(u16(0)); push(u16(0)); push(u16(0)); push(u32(0)); push(u32(c.start)); push(c.name);
+      });
+      var cdSize = offset - cdStart;
+      push(u32(0x06054b50)); push(u16(0)); push(u16(0)); push(u16(central.length)); push(u16(central.length));
+      push(u32(cdSize)); push(u32(cdStart)); push(u16(0));
+      return new Blob(chunks, { type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+    }
+    function buatDocx(blocks){
+      var doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' +
+        blocksToDocXML(blocks) +
+        '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>';
+      var styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
+        '<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/><w:lang w:val="id-ID"/></w:rPr></w:rPrDefault></w:docDefaults>' +
+        '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:pPr><w:spacing w:after="120" w:line="276" w:lineRule="auto"/></w:pPr></w:style>' +
+        '<w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="34"/></w:rPr></w:style>' +
+        '<w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:before="280" w:after="100"/><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="28"/><w:color w:val="0D5C47"/></w:rPr></w:style>' +
+        '<w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:pPr><w:spacing w:before="200" w:after="80"/><w:outlineLvl w:val="1"/></w:pPr><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="24"/></w:rPr></w:style>' +
+        "</w:styles>";
+      var ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+        '<Default Extension="xml" ContentType="application/xml"/>' +
+        '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+        '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>';
+      var rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+      var drels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+      return buatZip([
+        { name:"[Content_Types].xml", data:ct }, { name:"_rels/.rels", data:rels },
+        { name:"word/document.xml", data:doc }, { name:"word/styles.xml", data:styles },
+        { name:"word/_rels/document.xml.rels", data:drels }
+      ]);
+    }
+    function namaFile(prefix){ return prefix + "-" + (mapelAktif()||"mapel").replace(/\s+/g,"-") + "-Kelas-" + G.tingkat + "-" + (G.materi||"materi").replace(/\s+/g,"-") + ".docx"; }
+    function catatGen(jenis){
+      var rec = { ts: Date.now(), nama: G.guru || (user ? user.nama : ""), mapel: mapelAktif(), kelas: G.tingkat, jenis: jenis, materi: G.materi };
+      genLogLocal.push(rec); lsSet("akur_genlog", genLogLocal); renderBeranda();
+      kirimPusat({ action:"genlog", ts: rec.ts, nama: rec.nama, mapel: rec.mapel, kelas: rec.kelas, jenis: rec.jenis, materi: rec.materi });
+    }
+    function unduhDocx(blocks, prefix, jenis){
+      syncGenFromForm(); saveGen();
+      unduhBlob(buatDocx(blocks), namaFile(prefix));
+      catatGen(jenis);
+      toast("Dokumen " + jenis + " (.docx) terunduh" + (dbUrl ? " dan tercatat di database pusat." : "."));
+    }
+    function cetakPdf(blocks, jenis, boxId){
+      $("printArea").innerHTML = blocksToHTML(blocks);
+      showPreview(boxId, blocks);
+      catatGen(jenis);
+      toast("Dokumen siap dicetak: tekan Ctrl+P (atau menu browser → Cetak), lalu pilih “Simpan sebagai PDF”. Hanya dokumen yang akan tercetak.");
+    }
+    $("prevATP").addEventListener("click", function(){ syncGenFromForm(); showPreview("prevATPBox", buildATP()); });
+    $("dlATP").addEventListener("click", function(){ unduhDocx(buildATP(), "ATP", "ATP"); });
+    $("pdfATP").addEventListener("click", function(){ cetakPdf(buildATP(), "ATP", "prevATPBox"); });
+    $("prevRPP").addEventListener("click", function(){ syncGenFromForm(); showPreview("prevRPPBox", buildRPP()); });
+    $("dlRPP").addEventListener("click", function(){ unduhDocx(buildRPP(), "RPP", "RPP"); });
+    $("pdfRPP").addEventListener("click", function(){ cetakPdf(buildRPP(), "RPP", "prevRPPBox"); });
+    $("prevIns").addEventListener("click", function(){ syncGenFromForm(); showPreview("prevInsBox", buildIns()); });
+    $("dlIns").addEventListener("click", function(){ unduhDocx(buildIns(), "Instrumen-Asesmen", "Instrumen Asesmen"); });
+    $("pdfIns").addEventListener("click", function(){ cetakPdf(buildIns(), "Instrumen Asesmen", "prevInsBox"); });
+
+    /* ================= init ================= */
+    (function(){
+      var roster = lsGet("akur_roster", []);
+      if(roster.length) $("rosterInput").value = roster.map(function(r){ return r.nama + (r.mapel ? ", " + r.mapel : ""); }).join("\n");
+      renderUserChip(); renderLogin(); renderBeranda();
+      initStep1(); initStep2();
+    })();
+    </script>
+  </body>
+</html>
