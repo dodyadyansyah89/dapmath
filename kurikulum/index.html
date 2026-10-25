@@ -96,6 +96,30 @@
       .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
       .note{border-radius:10px;padding:12px 14px;font-size:13.5px;background:var(--amber-soft);color:var(--ink);margin:12px 0}
       .note.green{background:var(--accent-soft)}
+      .note ol{margin:6px 0 2px;padding-left:19px}
+      .note ol li{margin-bottom:4px}
+      .ai-status{font-size:13.5px;font-weight:600;margin-top:10px;min-height:20px}
+      .ai-status.err{color:var(--red)}
+      .ai-status.ok{color:var(--ok)}
+      .minibox{border:1.5px dashed var(--accent);border-radius:10px;padding:14px 16px;margin-bottom:16px;background:var(--accent-soft)}
+      .minibox h3{margin-top:0}
+      table.atp-edit{width:100%;border-collapse:collapse;font-size:13.5px}
+      table.atp-edit th,table.atp-edit td{border:1px solid var(--line);padding:7px;vertical-align:top;text-align:left}
+      table.atp-edit th{font-size:12px;letter-spacing:.03em;color:var(--ink2);text-transform:uppercase;background:var(--surface2)}
+      table.atp-edit textarea,table.atp-edit input{width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 8px;background:var(--surface);font-size:13.5px;font-family:inherit;color:var(--ink)}
+      table.atp-edit textarea{min-height:64px;resize:vertical}
+      table.atp-edit .cno{width:38px;text-align:center;font-weight:800;padding-top:14px}
+      table.atp-edit .cal{width:130px}
+      table.atp-edit .ccp{width:24%}
+      table.atp-edit .cact{width:44px;text-align:center}
+      @media(max-width:640px){
+        table.atp-edit thead{display:none}
+        table.atp-edit tr{display:block;border:1px solid var(--line);border-radius:10px;margin-bottom:10px}
+        table.atp-edit td{display:block;border:none;border-bottom:1px solid var(--line)}
+        table.atp-edit td:last-child{border-bottom:none}
+        table.atp-edit td::before{content:attr(data-l);display:block;font-weight:700;font-size:11.5px;color:var(--ink2);text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px}
+        table.atp-edit .cno,table.atp-edit .cal,table.atp-edit .ccp,table.atp-edit .cact{width:auto;text-align:left}
+      }
       .empty{color:var(--ink2);font-size:14px;padding:14px 0;text-align:center}
       code.k{background:var(--surface2);padding:1px 6px;border-radius:5px;font-size:12.5px}
       pre.code{background:#14201b;color:#d9efe4;border-radius:10px;padding:14px;font-size:12px;overflow-x:auto;line-height:1.5;white-space:pre}
@@ -196,8 +220,8 @@
             <p class="sub" style="margin-bottom:8px">Guru masuk dengan nama dan mata pelajaran, lalu mengirimkan tautan Google Drive dokumen ATP, RPP, instrumen asesmen, atau dokumen lainnya per kelas dan semester. Wakil kurikulum memantau rekapnya di dasbor yang terkunci PIN.</p>
           </div>
           <div class="card">
-            <h3>Modul 2 — Generator Perangkat Ajar</h3>
-            <p class="sub" style="margin-bottom:8px">Empat langkah berurutan: Identitas → ATP → RPP Pembelajaran Mendalam → Instrumen Asesmen. Setiap dokumen bisa dipratinjau, lalu diunduh sebagai Word (.docx) atau disimpan sebagai PDF. Semua pilihan selalu punya opsi ketik sendiri.</p>
+            <h3>Modul 2 — Generator Perangkat Ajar (AI)</h3>
+            <p class="sub" style="margin-bottom:8px">Inputnya minimal: untuk ATP guru cukup menentukan <b>materi pokok</b> — capaian pembelajaran, tujuan pembelajaran, kelas, semester, dan alokasi waktu disusun oleh AI (Gemini). Untuk RPP guru cukup mengisi <b>identitas diri, materi, dan kelas</b> — selebihnya di-generate AI, lalu ditinjau dan diedit sebelum diunduh sebagai Word (.docx) atau PDF. Fitur AI memerlukan URL Web App terpasang dan GEMINI_API_KEY di Apps Script (lihat Pengaturan &amp; Panduan).</p>
           </div>
         </div>
         <div class="card" id="dbStatusCard"></div>
@@ -261,17 +285,17 @@
       <!-- ================= GENERATOR ================= -->
       <section class="view" id="v-generator">
         <div class="stepsbar" id="genSteps">
-          <button data-s="1" class="on"><span class="sn">Langkah 1</span>Identitas</button>
-          <button data-s="2"><span class="sn">Langkah 2</span>ATP</button>
-          <button data-s="3"><span class="sn">Langkah 3</span>RPP Pembelajaran Mendalam</button>
+          <button data-s="1" class="on"><span class="sn">Langkah 1</span>Input Minimal</button>
+          <button data-s="2"><span class="sn">Langkah 2 · AI</span>ATP</button>
+          <button data-s="3"><span class="sn">Langkah 3 · AI</span>RPP Pembelajaran Mendalam</button>
           <button data-s="4"><span class="sn">Langkah 4</span>Instrumen Asesmen</button>
         </div>
 
         <!-- STEP 1 -->
         <div class="gstep on" id="gs1">
           <div class="card">
-            <h2>Identitas Perangkat Ajar</h2>
-            <p class="sub">Identitas ini dipakai bersama oleh ATP, RPP, dan instrumen asesmen. Semua isian masih bisa diubah kapan pun sebelum dokumen diunduh.</p>
+            <h2>Input Minimal Perangkat Ajar</h2>
+            <p class="sub">Cukup isi isian di bawah ini. Untuk <b>ATP</b>, satu-satunya penentu isi adalah <b>materi pokok</b> — capaian pembelajaran, tujuan pembelajaran, kelas, semester, dan alokasi waktu akan ditentukan oleh AI. Untuk <b>RPP</b>, yang diisi hanya <b>nama guru, materi, dan kelas</b> — seluruh isi RPP lainnya di-generate oleh AI pada langkah 3, lalu dapat ditinjau dan diedit sebelum diunduh.</p>
             <label class="f" for="gSekolah">Nama Sekolah</label>
             <input class="inp" id="gSekolah" />
             <div class="row2">
@@ -285,24 +309,21 @@
                 <input class="inp" id="gGuru" placeholder="Nama lengkap dan gelar" />
               </div>
             </div>
-            <div class="row2 row3">
+            <div class="row2">
               <div>
                 <label class="f" for="gTingkat">Kelas</label>
                 <select class="inp" id="gTingkat"><option>VII</option><option>VIII</option><option>IX</option></select>
-              </div>
-              <div>
-                <label class="f" for="gSemester">Semester</label>
-                <select class="inp" id="gSemester"><option>Ganjil</option><option>Genap</option></select>
               </div>
               <div>
                 <label class="f" for="gTahun">Tahun Ajaran</label>
                 <input class="inp" id="gTahun" placeholder="2026/2027" />
               </div>
             </div>
-            <label class="f" for="gMateri">Materi Pokok</label>
+            <label class="f" for="gMateri">Materi Pokok <span style="font-weight:400;color:var(--ink2)">(satu-satunya penentu isi ATP)</span></label>
             <input class="inp" id="gMateri" placeholder="Mis. Fungsi Kuadrat" />
-            <label class="f" for="gAlokasi">Alokasi Waktu</label>
-            <input class="inp" id="gAlokasi" placeholder="Mis. 6 × 40 menit (3 pertemuan)" />
+            <input type="hidden" id="gSemester" />
+            <input type="hidden" id="gAlokasi" />
+            <div class="note green" style="margin-bottom:0">Semester dan alokasi waktu tidak perlu diisi di sini: keduanya ditentukan AI pada hasil ATP (langkah 2) dan masih dapat diubah di tabel hasil generate sebelum dokumen diunduh.</div>
             <div class="btnrow">
               <button class="btn" id="toStep2">Lanjut ke ATP →</button>
             </div>
@@ -312,24 +333,46 @@
         <!-- STEP 2 : ATP -->
         <div class="gstep" id="gs2">
           <div class="card">
-            <h2>Alur Tujuan Pembelajaran (ATP)</h2>
-            <p class="sub">ATP adalah dokumen terpisah yang disusun <b>sebelum</b> RPP. Pilih capaian pembelajaran (CP) dari daftar atau ketik sendiri, lalu susun tujuan pembelajaran (TP) per pertemuan. TP ini otomatis ditarik ke RPP pada langkah berikutnya.</p>
-            <div id="cpPilihWrap">
-              <label class="f" for="gElemen">Elemen CP — Matematika Fase D</label>
-              <select class="inp" id="gElemen"></select>
-              <p class="hint">Memilih elemen akan mengisi teks CP resmi di bawah. Untuk mata pelajaran lain, langsung ketik CP pada kolom teks.</p>
+            <h2>Alur Tujuan Pembelajaran (ATP) — Generate AI</h2>
+            <p class="sub">ATP adalah dokumen terpisah yang disusun <b>sebelum</b> RPP. Di sini guru <b>hanya menentukan materi pokok</b>. Capaian pembelajaran, tujuan pembelajaran yang berurutan, kelas, semester, dan alokasi waktu per tujuan ditentukan oleh AI (Gemini). Hasilnya tampil dalam <b>tabel</b> dan dapat ditinjau serta diedit sebelum diunduh. Tujuan pembelajaran dari tabel ini otomatis ditarik ke RPP pada langkah berikutnya.</p>
+            <div class="minibox">
+              <h3>Materi Pokok</h3>
+              <label class="f" for="atpMateri" style="margin-top:0">Materi Pokok</label>
+              <input class="inp" id="atpMateri" placeholder="Mis. Fungsi Kuadrat" />
+              <p class="hint">Mata pelajaran mengikuti isian langkah 1. AI akan menyesuaikan CP dengan fase dan kelas yang sesuai untuk materi ini.</p>
+              <div class="btnrow" style="margin-top:12px">
+                <button class="btn" id="btnGenATP">✦ Generate ATP dengan AI</button>
+              </div>
+              <div class="ai-status" id="atpAiStatus"></div>
+              <div id="atpAiNotice"></div>
             </div>
-            <label class="f" for="gCP">Capaian Pembelajaran (CP)</label>
-            <textarea class="inp" id="gCP" placeholder="Pilih elemen di atas atau ketik CP sendiri di sini…"></textarea>
-            <h3 style="margin-top:20px">Tujuan Pembelajaran per Pertemuan</h3>
-            <p class="sub">Klik saran untuk menambahkan, atau tambah baris kosong lalu ketik sendiri. Semua teks bisa diedit.</p>
-            <div class="chips" id="tpSaran"></div>
-            <div id="tpList"></div>
-            <div class="btnrow">
-              <button class="btn plain" id="tpAdd">+ Tambah Pertemuan</button>
+            <div id="atpHasil" style="display:none">
+              <h3>Hasil ATP — Tinjau &amp; Edit</h3>
+              <div class="row2 row3">
+                <div>
+                  <label class="f" for="atpKelas">Kelas (ditentukan AI)</label>
+                  <select class="inp" id="atpKelas"><option>VII</option><option>VIII</option><option>IX</option></select>
+                </div>
+                <div>
+                  <label class="f" for="atpSemester">Semester (ditentukan AI)</label>
+                  <select class="inp" id="atpSemester"><option>Ganjil</option><option>Genap</option></select>
+                </div>
+                <div>
+                  <label class="f" for="atpAlokasiTotal">Alokasi Waktu Total (ditentukan AI)</label>
+                  <input class="inp" id="atpAlokasiTotal" placeholder="Mis. 6 × 40 menit (3 pertemuan)" />
+                </div>
+              </div>
+              <label class="f" for="gCP">Capaian Pembelajaran (CP) — ditentukan AI, dapat diedit</label>
+              <textarea class="inp" id="gCP" placeholder="CP hasil generate AI akan tampil di sini…"></textarea>
+              <h3 style="margin-top:20px">Tabel Alur Tujuan Pembelajaran</h3>
+              <p class="sub">Setiap baris adalah satu tujuan pembelajaran berurutan beserta alokasi waktunya dan capaian pembelajaran terkait. Semua sel dapat diedit.</p>
+              <div class="tblwrap"><table class="atp-edit" id="atpTable"></table></div>
+              <div class="btnrow">
+                <button class="btn plain" id="atpRowAdd">+ Tambah Baris Tujuan</button>
+              </div>
             </div>
             <div class="btnrow" style="border-top:1px solid var(--line);padding-top:16px">
-              <button class="btn plain" data-prev="1">← Identitas</button>
+              <button class="btn plain" data-prev="1">← Input Minimal</button>
               <button class="btn ghost" id="prevATP">Pratinjau ATP</button>
               <button class="btn" id="dlATP">Unduh Word (.docx)</button>
               <button class="btn plain" id="pdfATP">Cetak / Simpan PDF</button>
@@ -342,8 +385,31 @@
         <!-- STEP 3 : RPP -->
         <div class="gstep" id="gs3">
           <div class="card">
-            <h2>RPP Pembelajaran Mendalam</h2>
-            <p class="sub">Tujuan pembelajaran diambil otomatis dari ATP (langkah 2) dan tetap bisa diedit di sini. Lengkapi bagian A sampai D.</p>
+            <h2>RPP Pembelajaran Mendalam — Generate AI</h2>
+            <p class="sub">Untuk RPP, guru cukup mengisi <b>identitas diri (nama guru), materi, dan kelas</b>. Seluruh isi RPP lainnya — bagian A Identifikasi, B Desain Pembelajaran, C Pengalaman Belajar per pertemuan, dan D Asesmen — di-generate oleh AI (Gemini), lalu ditinjau dan diedit pada formulir di bawah sebelum diunduh. Tujuan pembelajaran diambil otomatis dari ATP (langkah 2).</p>
+            <div class="minibox">
+              <h3>Input RPP</h3>
+              <div class="row2 row3">
+                <div>
+                  <label class="f" for="aiRppGuru" style="margin-top:0">Nama Guru (identitas diri)</label>
+                  <input class="inp" id="aiRppGuru" placeholder="Nama lengkap dan gelar" />
+                </div>
+                <div>
+                  <label class="f" for="aiRppMateri" style="margin-top:0">Materi</label>
+                  <input class="inp" id="aiRppMateri" placeholder="Mis. Fungsi Kuadrat" />
+                </div>
+                <div>
+                  <label class="f" for="aiRppKelas" style="margin-top:0">Kelas</label>
+                  <select class="inp" id="aiRppKelas"><option>VII</option><option>VIII</option><option>IX</option></select>
+                </div>
+              </div>
+              <div class="btnrow" style="margin-top:12px">
+                <button class="btn" id="btnGenRPP">✦ Generate RPP dengan AI</button>
+              </div>
+              <div class="ai-status" id="rppAiStatus"></div>
+              <div id="rppAiNotice"></div>
+            </div>
+            <p class="sub">Hasil generate AI akan mengisi formulir A–D di bawah ini. Periksa dan sesuaikan seperlunya — tidak ada yang terkirim atau terunduh sebelum Bapak/Ibu meninjaunya.</p>
 
             <fieldset><legend>A. Identifikasi — Peserta Didik</legend>
               <label class="f" for="rpdAwal">Pengetahuan Awal</label>
@@ -538,12 +604,22 @@
             <li>Buat <b>Google Spreadsheet</b> baru (mis. “Database Kurikulum SMPN 171”) di akun Google sekolah/guru.</li>
             <li>Di spreadsheet itu, klik menu <b>Extensions → Apps Script</b>.</li>
             <li>Hapus isi editor, lalu tempel seluruh kode di bawah ini. Klik <b>Save</b>.</li>
+            <li><b>Untuk fitur AI:</b> di editor Apps Script, buka <b>Project Settings → Script Properties → Add script property</b>, isi Property = <code class="k">GEMINI_API_KEY</code> dan Value = kunci Gemini pemilik spreadsheet. Kunci ini tersimpan aman di sisi server Apps Script dan <b>tidak pernah</b> tertanam di halaman web ini.</li>
             <li>Klik <b>Deploy → New deployment → Web app</b>. Isi: Execute as = <b>Me</b>, Who has access = <b>Anyone</b>. Klik Deploy, lalu setujui izin akses (Run pertama memerlukan izin “Connect to an external service” — jalankan fungsi <code class="k">ujiIzin</code> sekali dari editor bila diminta).</li>
             <li>Salin <b>Web app URL</b> yang muncul dan tempel pada kolom URL di atas, lalu klik <b>Uji Kirim Data Sekarang</b>.</li>
             <li>Setiap mengubah kode, ulangi Deploy → Manage deployments → Edit → <b>New version</b> agar perubahan aktif.</li>
           </ol>
           <div class="btnrow"><button class="btn plain" id="btnSalinKode">Salin Kode Apps Script</button></div>
           <pre class="code" id="kodeApps"></pre>
+        </div>
+        <div class="card">
+          <h3>Fitur AI — Gemini lewat Apps Script</h3>
+          <p class="sub">Tombol <b>Generate ATP dengan AI</b> dan <b>Generate RPP dengan AI</b> pada generator bekerja dengan memanggil Web App yang sama dengan database pusat. Kode Apps Script di bawah sudah memuat dua aksi baru:</p>
+          <ol class="steps">
+            <li><code class="k">generateATP</code> — input: materi pokok (dan mata pelajaran sebagai konteks). Output JSON: capaian pembelajaran, daftar tujuan pembelajaran berurutan, kelas, semester, dan alokasi waktu per tujuan.</li>
+            <li><code class="k">generateRPP</code> — input: identitas guru, materi, dan kelas. Output JSON: seluruh isi RPP Pembelajaran Mendalam bagian A (Identifikasi), B (Desain Pembelajaran), C (Pengalaman Belajar per pertemuan), dan D (Asesmen).</li>
+          </ol>
+          <p class="sub" style="margin-bottom:0">Bila URL Web App belum dipasang atau <code class="k">GEMINI_API_KEY</code> belum ada di Script Properties, tombol Generate <b>tidak mengarang hasil</b> — aplikasi hanya menampilkan penjelasan dan langkah aktivasinya. Hasil generate selalu ditampilkan dulu untuk ditinjau dan diedit guru sebelum diunduh.</p>
         </div>
         <div class="card">
           <h3>Catatan Penyimpanan</h3>
@@ -623,6 +699,31 @@
       return fetch(dbUrl + (dbUrl.indexOf("?")>=0?"&":"?") + "action=list", { method:"GET" })
         .then(function(r){ return r.json(); })
         .then(function(j){ return (j && j.rows) ? j.rows : []; });
+    }
+
+    /* ================= AI (Gemini via Apps Script) ================= */
+    function panggilAI(payload){
+      if(!dbUrl) return Promise.reject(new Error("no-url"));
+      return fetch(dbUrl, { method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(payload) })
+        .then(function(r){ if(!r.ok) throw new Error("http-" + r.status); return r.json(); });
+    }
+    function aiSetupHTML(){
+      return '<div class="note"><b>Fitur AI belum aktif — hasil tidak akan dikarang.</b> Agar tombol Generate bekerja, diperlukan:' +
+        '<ol><li><b>Deploy Apps Script</b> dari kode siap salin di menu <b>Pengaturan &amp; Panduan</b> (kode tersebut sudah memuat aksi <code class="k">generateATP</code> dan <code class="k">generateRPP</code>).</li>' +
+        '<li><b>Pasang kunci Gemini</b>: di editor Apps Script buka <b>Project Settings → Script Properties</b>, tambahkan property <code class="k">GEMINI_API_KEY</code> berisi kunci Gemini pemilik spreadsheet. Kunci tersimpan di sisi server — tidak pernah tertanam di halaman ini.</li>' +
+        '<li><b>Deploy ulang</b> sebagai Web App (Deploy → Manage deployments → Edit → <b>New version</b>), lalu <b>tempel URL Web App</b> pada kolom URL di menu Pengaturan &amp; Panduan.</li></ol>' +
+        'Setelah URL terpasang, tombol Generate akan meminta AI menyusun hasilnya dan menampilkannya untuk ditinjau dan diedit terlebih dahulu.</div>';
+    }
+    function renderAiState(){
+      var a = $("atpAiNotice"), r = $("rppAiNotice");
+      if(a) a.innerHTML = dbUrl ? '<div class="note green">Terhubung ke Web App pusat. Generate akan meminta Gemini menyusun hasilnya — pastikan <code class="k">GEMINI_API_KEY</code> sudah dipasang di Script Properties Apps Script dan kode terbaru sudah di-deploy (New version).</div>' : aiSetupHTML();
+      if(r) r.innerHTML = dbUrl ? '<div class="note green">Terhubung ke Web App pusat. Generate akan meminta Gemini menyusun seluruh isi RPP — pastikan <code class="k">GEMINI_API_KEY</code> sudah dipasang di Script Properties Apps Script dan kode terbaru sudah di-deploy (New version).</div>' : aiSetupHTML();
+    }
+    function aiErrMsg(e, j){
+      if(j && j.error === "no_key") return "Server Apps Script belum memiliki GEMINI_API_KEY. Pasang kunci Gemini di Project Settings → Script Properties pada Apps Script spreadsheet pusat, lalu deploy New version.";
+      if(j && j.message) return j.message;
+      if(e && e.message === "no-url") return "URL Web App belum dipasang — fitur AI belum aktif.";
+      return "AI belum dapat dihubungi. Periksa URL Web App, pastikan kode Apps Script terbaru (dengan aksi generateATP/generateRPP) sudah di-deploy sebagai New version, dan GEMINI_API_KEY sudah dipasang.";
     }
 
     /* ================= navigasi ================= */
@@ -869,6 +970,12 @@
       "function doPost(e) {",
       "  var d = {};",
       "  try { d = JSON.parse(e.postData.contents); } catch (err) {}",
+      "  if (d.action === 'generateATP') {",
+      "    return ContentService.createTextOutput(JSON.stringify(generateATP_(d))).setMimeType(ContentService.MimeType.JSON);",
+      "  }",
+      "  if (d.action === 'generateRPP') {",
+      "    return ContentService.createTextOutput(JSON.stringify(generateRPP_(d))).setMimeType(ContentService.MimeType.JSON);",
+      "  }",
       "  if (d.action === 'kumpul') {",
       "    dapatSheet_('Pengumpulan').appendRow([d.id, new Date(d.ts || Date.now()), d.nama, d.mapel, d.jenis, d.kelas, d.semester, d.link, d.ket]);",
       "  } else if (d.action === 'genlog') {",
@@ -889,15 +996,76 @@
       "  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);",
       "}",
       "",
+      "// ================= AI: Gemini (kunci di Script Properties) ==================",
+      "// Pasang kunci: Project Settings > Script Properties > GEMINI_API_KEY.",
+      "// Kunci TIDAK PERNAH tertanam di halaman web; pemanggilan dilakukan server Apps Script ini.",
+      "function panggilGemini_(prompt) {",
+      "  var key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');",
+      "  if (!key) return null;",
+      "  var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + key;",
+      "  var payload = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, responseMimeType: 'application/json' } };",
+      "  var resp = UrlFetchApp.fetch(url, { method: 'post', contentType: 'application/json', payload: JSON.stringify(payload), muteHttpExceptions: true });",
+      "  if (resp.getResponseCode() !== 200) return null;",
+      "  var j = JSON.parse(resp.getContentText());",
+      "  if (!j.candidates || !j.candidates.length) return null;",
+      "  var teks = j.candidates[0].content.parts.map(function(p) { return p.text || ''; }).join('');",
+      "  teks = teks.replace(/```json/g, '').replace(/```/g, '').trim();",
+      "  try { return JSON.parse(teks); } catch (err) { try { return JSON.parse(teks.replace(/'/g, '\"')); } catch (err2) { return null; } }",
+      "}",
+      "",
+      "// Aksi generateATP - input: { materi, mapel } - output JSON: cp, kelas, semester, alokasiTotal, rows[{tp, alokasi, cp}]",
+      "function generateATP_(d) {",
+      "  var key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');",
+      "  if (!key) return { ok: false, error: 'no_key', message: 'GEMINI_API_KEY belum dipasang di Script Properties Apps Script.' };",
+      "  var materi = (d.materi || '').toString().trim();",
+      "  if (!materi) return { ok: false, error: 'bad_input', message: 'Materi pokok wajib diisi.' };",
+      "  var prompt = 'Anda adalah perancang kurikulum SMP Indonesia (Kurikulum Merdeka, Pembelajaran Mendalam). ' +",
+      "    'Susun Alur Tujuan Pembelajaran (ATP) untuk mata pelajaran ' + (d.mapel || 'mata pelajaran terkait') + ' dengan materi pokok: ' + materi + '. ' +",
+      "    'Tentukan SENDIRI capaian pembelajaran (CP) resmi pemerintah yang paling relevan dengan materi ini, kelas yang tepat (VII/VIII/IX), semester (Ganjil/Genap), dan alokasi waktu. ' +",
+      "    'Susun tujuan pembelajaran yang BERURUTAN dari sederhana ke kompleks, satu tujuan per pertemuan. ' +",
+      "    'Balas HANYA dengan JSON valid tanpa penjelasan, format persis: ' +",
+      "    '{\\'capaianPembelajaran\\':\\'...\\',\\'kelas\\':\\'VIII\\',\\'semester\\':\\'Ganjil\\',\\'alokasiTotal\\':\\'... (mis. 6 x 40 menit, 3 pertemuan)\\',\\'tujuan\\':[{\\'tujuanPembelajaran\\':\\'...\\',\\'alokasiWaktu\\':\\'2 x 40 menit\\',\\'capaianTerkait\\':\\'ringkasan CP terkait tujuan ini\\'}]}';",
+      "  var h = panggilGemini_(prompt);",
+      "  if (!h) return { ok: false, error: 'ai_fail', message: 'Gemini tidak mengembalikan hasil. Coba lagi sebentar lagi.' };",
+      "  var cp = h.capaianPembelajaran || h.cp || '';",
+      "  var rows = (h.tujuan || h.rows || []).map(function(t) {",
+      "    if (typeof t === 'string') return { tp: t, alokasi: '', cp: cp };",
+      "    return { tp: t.tujuanPembelajaran || t.tujuan || t.tp || '', alokasi: t.alokasiWaktu || t.alokasi || '', cp: t.capaianTerkait || t.cp || cp };",
+      "  });",
+      "  return { ok: true, data: { cp: cp, kelas: h.kelas || '', semester: h.semester || '', alokasiTotal: h.alokasiTotal || h.alokasi || '', rows: rows } };",
+      "}",
+      "",
+      "// Aksi generateRPP - input: { nama/guru, materi, kelas, mapel, tujuan[], cp } - output JSON: seluruh isi RPP bagian A-D",
+      "function generateRPP_(d) {",
+      "  var key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');",
+      "  if (!key) return { ok: false, error: 'no_key', message: 'GEMINI_API_KEY belum dipasang di Script Properties Apps Script.' };",
+      "  var materi = (d.materi || '').toString().trim();",
+      "  var kelas = (d.kelas || '').toString().trim();",
+      "  if (!materi || !kelas) return { ok: false, error: 'bad_input', message: 'Materi dan kelas wajib diisi.' };",
+      "  var tpTeks = (d.tujuan && d.tujuan.length) ? (' Tujuan pembelajaran dari ATP: ' + d.tujuan.join(' | ') + '. Jumlah pertemuan mengikuti jumlah tujuan tersebut.') : ' Susun 3 pertemuan.';",
+      "  var prompt = 'Anda adalah perancang RPP Pembelajaran Mendalam (Kurikulum Merdeka) untuk SMP di Indonesia. ' +",
+      "    'Susun RPP lengkap untuk guru ' + (d.nama || d.guru || '') + ', mata pelajaran ' + (d.mapel || '') + ', materi: ' + materi + ', kelas ' + kelas + '.' + tpTeks +",
+      "    (d.cp ? (' Capaian pembelajaran: ' + d.cp + '.') : '') +",
+      "    ' Gunakan prinsip berkesadaran, bermakna, dan menggembirakan. Dimensi Profil Lulusan pilih dari: Keimanan dan Ketakwaan terhadap Tuhan YME, Kewargaan, Penalaran Kritis, Kreativitas, Kolaborasi, Kemandirian, Kesehatan, Komunikasi. ' +",
+      "    'Balas HANYA dengan JSON valid tanpa penjelasan, format persis: ' +",
+      "    '{\\'identifikasi\\':{\\'pengetahuanAwal\\':\\'...\\',\\'minat\\':\\'...\\',\\'latarBelakang\\':\\'...\\',\\'kebutuhanBelajar\\':\\'...\\',\\'pengetahuanDicapai\\':\\'...\\',\\'relevansi\\':\\'...\\',\\'tingkatKesulitan\\':\\'Sedang\\',\\'strukturMateri\\':\\'...\\',\\'karakter\\':\\'...\\',\\'dimensiProfilLulusan\\':[\\'...\\']},' +",
+      "    '\\'desain\\':{\\'capaianPembelajaran\\':\\'...\\',\\'lintasDisiplin\\':\\'...\\',\\'tujuan\\':[\\'...\\'],\\'topik\\':\\'...\\',\\'praktikPedagogis\\':\\'Discovery Learning\\',\\'kemitraan\\':\\'...\\',\\'lingkunganFisik\\':\\'...\\',\\'lingkunganVirtual\\':\\'...\\',\\'budayaBelajar\\':\\'...\\',\\'pemanfaatanDigital\\':\\'...\\'},' +",
+      "    '\\'pengalaman\\':[{\\'orientasi\\':\\'...\\',\\'apersepsi\\':\\'...\\',\\'motivasi\\':\\'...\\',\\'memahami\\':\\'...\\',\\'mengaplikasi\\':\\'...\\',\\'merefleksi\\':\\'...\\',\\'penutup\\':\\'...\\'}],' +",
+      "    '\\'asesmen\\':{\\'awal\\':\\'...\\',\\'proses\\':\\'...\\',\\'akhir\\':\\'...\\'}}';",
+      "  var h = panggilGemini_(prompt);",
+      "  if (!h) return { ok: false, error: 'ai_fail', message: 'Gemini tidak mengembalikan hasil. Coba lagi sebentar lagi.' };",
+      "  return { ok: true, data: h };",
+      "}",
+      "",
       "// Jalankan fungsi ini satu kali dari editor bila izin akses eksternal diminta.",
-      "function ujiIzin() { Logger.log('Siap. Sheet Pengumpulan: ' + dapatSheet_('Pengumpulan').getName()); }"
+      "function ujiIzin() { Logger.log('Siap. Sheet Pengumpulan: ' + dapatSheet_('Pengumpulan').getName() + ' | GEMINI_API_KEY terpasang: ' + (!!PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY'))); }"
     ].join("\n");
     $("kodeApps").textContent = KODE_APPS;
     $("urlInput").value = dbUrl;
     function urlStatusMsg(){ $("urlStatus").textContent = dbUrl ? "URL tersimpan. Pengumpulan berikutnya akan dikirim ke spreadsheet pusat." : "Belum ada URL tersimpan — aplikasi berjalan dengan penyimpanan lokal."; }
     urlStatusMsg();
     $("btnSimpanUrl").addEventListener("click", function(){
-      dbUrl = $("urlInput").value.trim(); lsSet("akur_url", dbUrl); urlStatusMsg(); renderBeranda();
+      dbUrl = $("urlInput").value.trim(); lsSet("akur_url", dbUrl); urlStatusMsg(); renderBeranda(); renderAiState();
       toast(dbUrl ? "URL Web App tersimpan." : "URL dikosongkan.");
     });
     $("btnSalinKode").addEventListener("click", function(){
@@ -929,6 +1097,7 @@
         materi: "", alokasi: "",
         elemen: "Bilangan", cp: CP_MAT["Bilangan"],
         tps: [{ teks: "" }],
+        atp: { cp: "", kelas: "VIII", semester: "Ganjil", alokasiTotal: "", rows: [] },
         rpp: {
           pdAwal: "", pdMinat: "", pdLatar: "", pdButuh: "",
           mtPengetahuan: "", mtRelevansi: "", mtSulit: "Sedang", mtStruktur: "", mtKarakter: "",
@@ -981,52 +1150,129 @@
     });
     $("gMapel").addEventListener("change", function(){
       $("gMapelCustom").style.display = $("gMapel").value === "__custom" ? "block" : "none";
-      var m = mapelAktif();
-      $("cpPilihWrap").style.display = (m === "Matematika") ? "" : "none";
     });
 
-    /* ---------- langkah 2: ATP ---------- */
-    function initStep2(){
-      var sel = $("gElemen");
-      sel.innerHTML = Object.keys(CP_MAT).map(function(k){ return '<option value="'+esc(k)+'"'+(k===G.elemen?" selected":"")+">"+esc(k)+"</option>"; }).join("");
-      $("cpPilihWrap").style.display = (mapelAktif() === "Matematika") ? "" : "none";
-      $("gCP").value = G.cp;
-      renderSaran(); renderTps();
+    /* ---------- langkah 2: ATP (AI) ---------- */
+    function ensureAtp(){
+      if(!G.atp || typeof G.atp !== "object") G.atp = { cp: "", kelas: G.tingkat || "VIII", semester: G.semester || "Ganjil", alokasiTotal: G.alokasi || "", rows: [] };
+      if(!Array.isArray(G.atp.rows)) G.atp.rows = [];
+      if(!G.atp.rows.length && G.tps && G.tps.length && G.tps.some(function(t){ return (t.teks||"").trim(); })){
+        G.atp.cp = G.atp.cp || G.cp || "";
+        G.atp.rows = G.tps.filter(function(t){ return (t.teks||"").trim(); }).map(function(t){ return { tp: t.teks, alokasi: "", cp: G.atp.cp }; });
+      }
+      if(!G.atp.cp) G.atp.cp = G.cp && G.atp.rows.length ? G.cp : (G.atp.cp || "");
     }
-    $("gElemen").addEventListener("change", function(){
-      G.elemen = $("gElemen").value; G.cp = CP_MAT[G.elemen]; $("gCP").value = G.cp;
-      renderSaran(); saveGen();
-    });
-    $("gCP").addEventListener("input", function(){ G.cp = $("gCP").value; saveGen(); });
-    function renderSaran(){
-      var saran = TP_SARAN[G.elemen] || [];
-      $("tpSaran").innerHTML = saran.map(function(s, i){ return '<button type="button" class="chip" data-saran="'+i+'">+ Saran TP '+(i+1)+": "+esc(s.slice(0, 52))+"…</button>"; }).join("");
-      $("tpSaran").querySelectorAll("[data-saran]").forEach(function(b){
+    function syncAtpToLegacy(){
+      ensureAtp();
+      G.cp = G.atp.cp || G.cp || "";
+      if(G.atp.rows.length) G.tps = G.atp.rows.map(function(r){ return { teks: r.tp || "" }; });
+      if(G.atp.kelas) G.tingkat = G.atp.kelas;
+      if(G.atp.semester) G.semester = G.atp.semester;
+      G.alokasi = G.atp.alokasiTotal || G.alokasi || "";
+      var hs = $("gSemester"), ha = $("gAlokasi"), ht = $("gTingkat");
+      if(hs) hs.value = G.semester; if(ha) ha.value = G.alokasi; if(ht) ht.value = G.tingkat;
+      sinkronPengalaman();
+    }
+    function initStep2(){
+      ensureAtp(); renderAiState();
+      syncGenFromForm();
+      $("atpMateri").value = G.materi || "";
+      var punya = G.atp.rows.length > 0;
+      $("atpHasil").style.display = punya ? "" : "none";
+      if(punya) renderAtpHasil();
+    }
+    function renderAtpHasil(){
+      ensureAtp();
+      $("atpHasil").style.display = "";
+      $("atpKelas").value = G.atp.kelas || G.tingkat || "VIII";
+      $("atpSemester").value = G.atp.semester || "Ganjil";
+      $("atpAlokasiTotal").value = G.atp.alokasiTotal || "";
+      $("gCP").value = G.atp.cp || "";
+      renderAtpTable();
+    }
+    function renderAtpTable(){
+      var tbl = $("atpTable");
+      var h = "<thead><tr><th>No</th><th>Tujuan Pembelajaran</th><th>Alokasi Waktu</th><th>Capaian Pembelajaran Terkait</th><th></th></tr></thead><tbody>";
+      G.atp.rows.forEach(function(r, i){
+        h += "<tr><td class='cno' data-l='No'>"+(i+1)+"</td>" +
+          "<td data-l='Tujuan Pembelajaran'><textarea data-ai='"+i+"' data-ak='tp' placeholder='Tujuan pembelajaran…'>"+esc(r.tp||"")+"</textarea></td>" +
+          "<td class='cal' data-l='Alokasi Waktu'><input data-ai='"+i+"' data-ak='alokasi' value='"+esc(r.alokasi||"")+"' placeholder='Mis. 2 × 40 menit' /></td>" +
+          "<td class='ccp' data-l='CP Terkait'><textarea data-ai='"+i+"' data-ak='cp' placeholder='CP terkait…'>"+esc(r.cp||"")+"</textarea></td>" +
+          "<td class='cact' data-l=''><button type='button' class='iconbtn' data-adel='"+i+"' title='Hapus baris ini'>×</button></td></tr>";
+      });
+      tbl.innerHTML = h + "</tbody>";
+      tbl.querySelectorAll("[data-ak]").forEach(function(inp){
+        inp.addEventListener("input", function(){
+          var i = Number(inp.getAttribute("data-ai"));
+          G.atp.rows[i][inp.getAttribute("data-ak")] = inp.value;
+          syncAtpToLegacy(); saveGen();
+        });
+      });
+      tbl.querySelectorAll("[data-adel]").forEach(function(b){
         b.addEventListener("click", function(){
-          var teks = saran[Number(b.getAttribute("data-saran"))];
-          var kosong = G.tps.findIndex(function(t){ return !t.teks.trim(); });
-          if(kosong >= 0) G.tps[kosong].teks = teks; else G.tps.push({ teks: teks });
-          renderTps(); saveGen();
+          G.atp.rows.splice(Number(b.getAttribute("data-adel")), 1);
+          syncAtpToLegacy(); renderAtpTable(); saveGen();
         });
       });
     }
-    function renderTps(){
-      var box = $("tpList"); box.innerHTML = "";
-      G.tps.forEach(function(tp, i){
-        var d = document.createElement("div"); d.className = "dynrow";
-        d.innerHTML = '<div class="rh"><b>Pertemuan '+(i+1)+'</b>' + (G.tps.length > 1 ? '<button type="button" class="iconbtn" title="Hapus pertemuan ini">×</button>' : "") + '</div>' +
-          '<textarea class="inp sm" placeholder="Tulis tujuan pembelajaran pertemuan '+(i+1)+'…">'+esc(tp.teks)+"</textarea>";
-        d.querySelector("textarea").addEventListener("input", function(ev){ G.tps[i].teks = ev.target.value; saveGen(); });
-        var del = d.querySelector(".iconbtn");
-        if(del) del.addEventListener("click", function(){ G.tps.splice(i, 1); sinkronPengalaman(); renderTps(); saveGen(); });
-        box.appendChild(d);
-      });
-    }
-    $("tpAdd").addEventListener("click", function(){ G.tps.push({ teks: "" }); sinkronPengalaman(); renderTps(); saveGen(); });
+    $("atpMateri").addEventListener("input", function(){ G.materi = $("atpMateri").value; var gm = $("gMateri"); if(gm) gm.value = G.materi; saveGen(); });
+    $("atpKelas").addEventListener("change", function(){ G.atp.kelas = $("atpKelas").value; syncAtpToLegacy(); saveGen(); });
+    $("atpSemester").addEventListener("change", function(){ G.atp.semester = $("atpSemester").value; syncAtpToLegacy(); saveGen(); });
+    $("atpAlokasiTotal").addEventListener("input", function(){ G.atp.alokasiTotal = $("atpAlokasiTotal").value; syncAtpToLegacy(); saveGen(); });
+    $("gCP").addEventListener("input", function(){ G.cp = $("gCP").value; G.atp.cp = G.cp; saveGen(); });
+    $("atpRowAdd").addEventListener("click", function(){
+      ensureAtp();
+      G.atp.rows.push({ tp: "", alokasi: "", cp: G.atp.cp || "" });
+      $("atpHasil").style.display = "";
+      syncAtpToLegacy(); renderAtpTable(); saveGen();
+    });
+    $("btnGenATP").addEventListener("click", function(){
+      syncGenFromForm();
+      var materi = ($("atpMateri").value || G.materi || "").trim();
+      var st = $("atpAiStatus");
+      st.className = "ai-status"; st.textContent = "";
+      if(!materi){ st.className = "ai-status err"; st.textContent = "Isi materi pokok terlebih dahulu — itu satu-satunya input yang diperlukan untuk ATP."; $("atpMateri").focus(); return; }
+      G.materi = materi;
+      if(!dbUrl){
+        renderAiState();
+        st.className = "ai-status err";
+        st.textContent = "URL Web App belum dipasang, jadi AI belum dapat dipanggil. Ikuti penjelasan aktivasi di bawah ini — tidak ada hasil yang dibuat tanpa AI.";
+        $("atpAiNotice").scrollIntoView({ behavior:"smooth", block:"center" });
+        return;
+      }
+      var btn = $("btnGenATP"); btn.disabled = true;
+      st.textContent = "AI (Gemini) sedang menyusun CP, tujuan pembelajaran, kelas, semester, dan alokasi waktu untuk materi “" + materi + "”… (biasanya 10–30 detik)";
+      panggilAI({ action:"generateATP", materi: materi, mapel: mapelAktif() })
+        .then(function(j){
+          btn.disabled = false;
+          if(!j || j.ok === false){ st.className = "ai-status err"; st.textContent = aiErrMsg(null, j); return; }
+          var d = j.data || j;
+          var cp = d.cp || d.capaianPembelajaran || "";
+          var raw = d.rows || d.tujuan || d.tujuanPembelajaran || [];
+          var rows = raw.map(function(r){
+            if(typeof r === "string") return { tp: r, alokasi: "", cp: cp };
+            return { tp: r.tp || r.tujuanPembelajaran || r.tujuan || "", alokasi: r.alokasi || r.alokasiWaktu || "", cp: r.cp || r.capaianTerkait || r.capaianPembelajaranTerkait || cp };
+          }).filter(function(r){ return r.tp.trim(); });
+          if(!rows.length){ st.className = "ai-status err"; st.textContent = "AI tidak mengembalikan tujuan pembelajaran. Coba tekan Generate sekali lagi."; return; }
+          G.atp = { cp: cp, kelas: d.kelas || G.tingkat || "VIII", semester: d.semester || "Ganjil", alokasiTotal: d.alokasiTotal || d.alokasi || "", rows: rows };
+          syncAtpToLegacy(); renderAtpHasil(); saveGen();
+          st.className = "ai-status ok";
+          st.textContent = "ATP berhasil di-generate AI: " + rows.length + " tujuan pembelajaran. Tinjau dan edit tabel di bawah, lalu unduh atau lanjut ke RPP.";
+          toast("ATP berhasil di-generate AI.");
+        })
+        .catch(function(e){
+          btn.disabled = false;
+          st.className = "ai-status err"; st.textContent = aiErrMsg(e, null);
+        });
+    });
 
     /* ---------- langkah 3: RPP ---------- */
     function initStep3(){
       sinkronPengalaman();
+      renderAiState();
+      $("aiRppGuru").value = G.guru || (user ? user.nama : "");
+      $("aiRppMateri").value = G.materi || "";
+      $("aiRppKelas").value = G.tingkat || "VIII";
       var R = G.rpp;
       ["pdAwal","pdMinat","pdLatar","pdButuh"].forEach(function(k){ $("r"+k.replace(/^./, function(c){ return c; })).value = R[k]; });
       $("rpdAwal").value = R.pdAwal; $("rpdMinat").value = R.pdMinat; $("rpdLatar").value = R.pdLatar; $("rpdButuh").value = R.pdButuh;
@@ -1096,6 +1342,112 @@
         t.addEventListener("input", function(){ G.rpp.pengalaman[Number(t.getAttribute("data-pi"))][t.getAttribute("data-pk")] = t.value; saveGen(); });
       });
     }
+
+    /* ---------- RPP: generate AI ---------- */
+    ["aiRppGuru","aiRppMateri","aiRppKelas"].forEach(function(id){
+      $(id).addEventListener("input", function(){
+        G.guru = $("aiRppGuru").value; G.materi = $("aiRppMateri").value; G.tingkat = $("aiRppKelas").value;
+        var gg = $("gGuru"), gm = $("gMateri"), gt = $("gTingkat");
+        if(gg) gg.value = G.guru; if(gm) gm.value = G.materi; if(gt) gt.value = G.tingkat;
+        saveGen();
+      });
+      $(id).addEventListener("change", function(){
+        G.guru = $("aiRppGuru").value; G.materi = $("aiRppMateri").value; G.tingkat = $("aiRppKelas").value;
+        saveGen();
+      });
+    });
+    function terapkanRppAI(d){
+      var R = G.rpp;
+      var idf = d.identifikasi || {};
+      R.pdAwal = idf.pengetahuanAwal || R.pdAwal;
+      R.pdMinat = idf.minat || R.pdMinat;
+      R.pdLatar = idf.latarBelakang || R.pdLatar;
+      R.pdButuh = idf.kebutuhanBelajar || R.pdButuh;
+      R.mtPengetahuan = idf.pengetahuanDicapai || idf.pengetahuanYangAkanDicapai || R.mtPengetahuan;
+      R.mtRelevansi = idf.relevansi || idf.relevansiKehidupanNyata || R.mtRelevansi;
+      if(idf.tingkatKesulitan) R.mtSulit = idf.tingkatKesulitan;
+      R.mtStruktur = idf.strukturMateri || R.mtStruktur;
+      R.mtKarakter = idf.karakter || idf.integrasiNilaiKarakter || R.mtKarakter;
+      var dplAi = idf.dimensiProfilLulusan || d.dimensiProfilLulusan || [];
+      if(Array.isArray(dplAi) && dplAi.length){
+        R.dpl = DPL.map(function(nama){
+          return dplAi.some(function(x){ return String(x).toLowerCase().indexOf(nama.toLowerCase().slice(0, 12)) >= 0 || nama.toLowerCase().indexOf(String(x).toLowerCase().slice(0, 12)) >= 0; });
+        });
+      }
+      var ds = d.desain || d.desainPembelajaran || {};
+      R.bdCP = ds.capaianPembelajaran || d.capaianPembelajaran || G.cp || R.bdCP;
+      R.bdLintas = ds.lintasDisiplin || ds.lintasDisiplinIlmu || R.bdLintas;
+      if(Array.isArray(ds.tujuan) && ds.tujuan.length){
+        sinkronPengalaman();
+        ds.tujuan.forEach(function(t, i){ if(i < G.rpp.tujuan.length) G.rpp.tujuan[i] = typeof t === "string" ? t : (t.tujuanPembelajaran || t.tujuan || ""); });
+      }
+      R.bdTopik = ds.topik || ds.topikPembelajaran || R.bdTopik;
+      var pr = ds.praktikPedagogis || ds.praktik || "";
+      if(pr){
+        if(PRAKTIK.indexOf(pr) >= 0){ R.praktik = pr; }
+        else { R.praktik = "__custom"; R.praktikCustom = pr; }
+      }
+      R.bdKemitraan = ds.kemitraan || ds.kemitraanPembelajaran || R.bdKemitraan;
+      R.lingFisik = ds.lingkunganFisik || ds.ruangFisik || R.lingFisik;
+      R.lingVirtual = ds.lingkunganVirtual || ds.ruangVirtual || R.lingVirtual;
+      R.lingBudaya = ds.budayaBelajar || ds.budaya || R.lingBudaya;
+      R.bdDigital = ds.pemanfaatanDigital || ds.digital || R.bdDigital;
+      var pg = d.pengalaman || d.pengalamanBelajar || [];
+      if(Array.isArray(pg) && pg.length){
+        while(G.rpp.pengalaman.length < pg.length) G.rpp.pengalaman.push(pengalamanBaru());
+        pg.forEach(function(p, i){
+          if(!p || typeof p !== "object") return;
+          var t = G.rpp.pengalaman[i];
+          ["orientasi","apersepsi","motivasi","memahami","mengaplikasi","merefleksi","penutup"].forEach(function(k){ if(p[k]) t[k] = p[k]; });
+        });
+      }
+      var as = d.asesmen || {};
+      R.asAwal = as.awal || as.asesmenAwal || R.asAwal;
+      R.asProses = as.proses || as.asesmenProses || R.asProses;
+      R.asAkhir = as.akhir || as.asesmenAkhir || R.asAkhir;
+    }
+    $("btnGenRPP").addEventListener("click", function(){
+      syncGenFromForm();
+      G.guru = $("aiRppGuru").value.trim() || G.guru;
+      G.materi = $("aiRppMateri").value.trim() || G.materi;
+      G.tingkat = $("aiRppKelas").value || G.tingkat;
+      var st = $("rppAiStatus");
+      st.className = "ai-status"; st.textContent = "";
+      if(!G.guru || !G.materi || !G.tingkat){
+        st.className = "ai-status err";
+        st.textContent = "Lengkapi dulu tiga input RPP: nama guru (identitas diri), materi, dan kelas.";
+        return;
+      }
+      saveGen();
+      if(!dbUrl){
+        renderAiState();
+        st.className = "ai-status err";
+        st.textContent = "URL Web App belum dipasang, jadi AI belum dapat dipanggil. Ikuti penjelasan aktivasi di bawah ini — tidak ada isi RPP yang dibuat tanpa AI.";
+        $("rppAiNotice").scrollIntoView({ behavior:"smooth", block:"center" });
+        return;
+      }
+      var btn = $("btnGenRPP"); btn.disabled = true;
+      st.textContent = "AI (Gemini) sedang menyusun seluruh isi RPP Pembelajaran Mendalam (bagian A–D) untuk materi “" + G.materi + "”… (biasanya 20–60 detik)";
+      panggilAI({ action:"generateRPP", nama: G.guru, guru: G.guru, mapel: mapelAktif(), materi: G.materi, kelas: G.tingkat,
+        tujuan: G.tps.map(function(t){ return t.teks; }).filter(Boolean), cp: G.cp || "" })
+        .then(function(j){
+          btn.disabled = false;
+          if(!j || j.ok === false){ st.className = "ai-status err"; st.textContent = aiErrMsg(null, j); return; }
+          var d = j.data || j.rpp || j;
+          if(!d || typeof d !== "object" || (!d.identifikasi && !d.desain && !d.pengalaman && !d.asesmen)){
+            st.className = "ai-status err"; st.textContent = "AI tidak mengembalikan isi RPP yang lengkap. Coba tekan Generate sekali lagi."; return;
+          }
+          terapkanRppAI(d);
+          saveGen(); initStep3();
+          st.className = "ai-status ok";
+          st.textContent = "RPP berhasil di-generate AI dan terisi pada formulir A–D di bawah. Tinjau dan edit seperlunya, lalu pratinjau atau unduh dokumennya.";
+          toast("RPP berhasil di-generate AI.");
+        })
+        .catch(function(e){
+          btn.disabled = false;
+          st.className = "ai-status err"; st.textContent = aiErrMsg(e, null);
+        });
+    });
 
     /* ---------- langkah 4: instrumen ---------- */
     var BENTUK = ["Pilihan Ganda","Pilihan Ganda Kompleks","Isian Singkat","Uraian","Menjodohkan","Benar–Salah"];
@@ -1182,11 +1534,14 @@
       return { t:"sign", kiri:["Mengetahui,", "Kepala " + (G.sekolah || "Sekolah")], kanan:["Jakarta, …………………", "Guru Mata Pelajaran"], namaKanan: G.guru || "……………………………" };
     }
     function buildATP(){
-      var b = [{ t:"kop" }, { t:"title", text:"ALUR TUJUAN PEMBELAJARAN (ATP)" }, { t:"sub", text: mapelAktif() + " · Fase D · Kelas " + G.tingkat },
+      ensureAtp(); syncAtpToLegacy();
+      var rows = G.atp.rows.length ? G.atp.rows.map(function(r, i){ return [String(i+1), r.tp || "—", r.alokasi || "—", r.cp || G.atp.cp || "—"]; })
+        : G.tps.map(function(tp, i){ return [String(i+1), tp.teks || "—", "—", G.cp || "—"]; });
+      var b = [{ t:"kop" }, { t:"title", text:"ALUR TUJUAN PEMBELAJARAN (ATP)" }, { t:"sub", text: mapelAktif() + " · Kelas " + G.tingkat + " · Semester " + G.semester },
         { t:"kv", rows: identitasRows() },
-        { t:"h", text:"Capaian Pembelajaran" }, { t:"p", text: G.cp || "—" },
-        { t:"h", text:"Tujuan Pembelajaran per Pertemuan" },
-        { t:"table", head:["Pertemuan","Tujuan Pembelajaran"], rows: G.tps.map(function(tp, i){ return [String(i+1), tp.teks || "—"]; }), widths:[16, 84] },
+        { t:"h", text:"Capaian Pembelajaran" }, { t:"p", text: G.atp.cp || G.cp || "—" },
+        { t:"h", text:"Alur Tujuan Pembelajaran" },
+        { t:"table", head:["No","Tujuan Pembelajaran","Alokasi Waktu","Capaian Pembelajaran Terkait"], rows: rows, widths:[7, 46, 17, 30] },
         tandaTangan()];
       return b;
     }
@@ -1408,7 +1763,8 @@
       var roster = lsGet("akur_roster", []);
       if(roster.length) $("rosterInput").value = roster.map(function(r){ return r.nama + (r.mapel ? ", " + r.mapel : ""); }).join("\n");
       renderUserChip(); renderLogin(); renderBeranda();
-      initStep1(); initStep2();
+      ensureAtp();
+      initStep1(); initStep2(); renderAiState();
     })();
     </script>
   </body>
