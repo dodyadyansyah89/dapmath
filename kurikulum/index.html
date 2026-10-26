@@ -180,18 +180,29 @@
         #printArea{display:block !important}
         #printArea .sheet{box-shadow:none;border-radius:0;padding:6mm 4mm}
       }
+
+      /* ---------- nilai & raport (tahap 2) ---------- */
+      .npanel{display:none}
+      .npanel.on{display:block}
+      .pk0{background:#f9e6e3;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .pk1{background:#faf0da;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .pk2{background:#e2f2ec;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .pk3{background:#dbe9f6;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .raport-page{page-break-after:always;break-after:page}
+      .raport-page:last-child{page-break-after:auto;break-after:auto}
     </style>
   </head>
   <body>
     <header class="topbar">
       <div class="topbar-in">
-        <div class="brand"><span class="mark">K</span><span>Administrasi Kurikulum<small>SMP Negeri 171 Jakarta · Tahap 1</small></span></div>
+        <div class="brand"><span class="mark">K</span><span>Administrasi Kurikulum<small>SMP Negeri 171 Jakarta</small></span></div>
         <div class="userchip" id="userChip"></div>
       </div>
       <nav class="nav" id="mainNav">
         <button data-v="beranda" class="on">Beranda</button>
         <button data-v="kumpul">Pengumpulan Perangkat</button>
         <button data-v="generator">Generator Perangkat Ajar</button>
+        <button data-v="nilai">Nilai &amp; Raport</button>
         <button data-v="dasbor">Dasbor Wakil Kurikulum</button>
         <button data-v="pengaturan">Pengaturan &amp; Panduan</button>
       </nav>
@@ -222,6 +233,11 @@
           <div class="card">
             <h3>Modul 2 — Generator Perangkat Ajar (AI)</h3>
             <p class="sub" style="margin-bottom:8px">Inputnya minimal: untuk ATP guru cukup menentukan <b>materi pokok</b> — capaian pembelajaran, tujuan pembelajaran, kelas, semester, dan alokasi waktu disusun oleh AI (Gemini). Untuk RPP guru cukup mengisi <b>identitas diri, materi, dan kelas</b> — selebihnya di-generate AI, lalu ditinjau dan diedit sebelum diunduh sebagai Word (.docx) atau PDF. Fitur AI memerlukan URL Web App terpasang dan GEMINI_API_KEY di Apps Script (lihat Pengaturan &amp; Panduan).</p>
+          </div>
+          <div class="card">
+            <h3>Modul 3 — Nilai &amp; Raport</h3>
+            <p class="sub" style="margin-bottom:8px">Kelola data siswa, rentang predikat, input nilai per mapel, catatan wali dan absensi, lalu cetak kartu laporan hasil belajar per kelas dan rekap leger nilai. Data nilai tersimpan di perangkat ini dan dapat dibagikan lewat ekspor/impor CSV.</p>
+            <div class="btnrow" style="margin-top:0"><button class="btn plain" data-go="nilai">Buka Nilai &amp; Raport</button></div>
           </div>
         </div>
         <div class="card" id="dbStatusCard"></div>
@@ -512,6 +528,132 @@
         </div>
       </section>
 
+      <!-- ================= NILAI & RAPORT (TAHAP 2) ================= -->
+      <section class="view" id="v-nilai">
+        <div class="card">
+          <h2>Nilai &amp; Raport</h2>
+          <p class="sub">Modul ini mengelola nilai dan laporan hasil belajar: data siswa, rentang predikat, input nilai per mapel, catatan wali dan absensi, kartu laporan per kelas, serta leger nilai.</p>
+          <div class="note">Data nilai tersimpan di perangkat ini; gunakan ekspor/impor CSV untuk berbagi atau menggabungkan. Sinkron spreadsheet pusat untuk nilai menyusul.</div>
+          <div class="stepsbar" id="nilaiTabs">
+            <button data-np="siswa" class="on"><span class="sn">Panel</span>Data Siswa</button>
+            <button data-np="rentang"><span class="sn">Panel</span>Rentang Nilai</button>
+            <button data-np="input"><span class="sn">Panel</span>Input Nilai</button>
+            <button data-np="catatan"><span class="sn">Panel</span>Catatan Wali</button>
+            <button data-np="cetak"><span class="sn">Panel</span>Cetak per Kelas</button>
+            <button data-np="leger"><span class="sn">Panel</span>Leger Nilai</button>
+          </div>
+        </div>
+
+        <div class="card npanel on" id="np-siswa">
+          <h3>Data Siswa</h3>
+          <p class="sub">Data siswa tersimpan di perangkat ini. Isi hanya data yang Bapak/Ibu masukkan sendiri — aplikasi tidak membawa data siswa bawaan.</p>
+          <div class="row2 row3">
+            <div><label class="f" for="swNis">NIS</label><input class="inp" id="swNis" placeholder="Mis. 12345" /></div>
+            <div><label class="f" for="swNama">Nama Siswa</label><input class="inp" id="swNama" placeholder="Nama lengkap" /></div>
+            <div><label class="f" for="swKelas">Kelas</label><input class="inp" id="swKelas" placeholder="Mis. 7.1" /></div>
+          </div>
+          <div class="row2">
+            <div><label class="f" for="swJk">Jenis Kelamin</label><select class="inp" id="swJk"><option>Laki-laki</option><option>Perempuan</option></select></div>
+            <div><label class="f" for="swAgama">Agama</label><input class="inp" id="swAgama" placeholder="Mis. Islam" /></div>
+          </div>
+          <div class="btnrow">
+            <button class="btn" id="swTambah">Tambah Siswa</button>
+            <button class="btn plain" id="swContoh">Muat contoh</button>
+            <button class="btn plain" id="swTemplate">Unduh Template CSV</button>
+            <button class="btn plain" id="swImporBtn">Impor CSV</button>
+            <input type="file" id="swFile" accept=".csv,text/csv" style="display:none" />
+          </div>
+          <p class="hint">Format CSV: nis,nama,kelas,jk,agama (baris pertama adalah judul kolom). Tombol “Muat contoh” menambahkan 5 siswa yang berlabel jelas sebagai contoh (NIS CONTOH01–CONTOH05) agar fitur cetak dan leger bisa dicoba.</p>
+          <div id="swTable" style="margin-top:14px"></div>
+        </div>
+
+        <div class="card npanel" id="np-rentang">
+          <h3>Rentang Nilai &amp; Predikat</h3>
+          <p class="sub">Predikat dihitung otomatis dari rentang ini pada Cetak per Kelas dan Leger Nilai. Rentang tidak boleh tumpang tindih.</p>
+          <div id="rentangRows"></div>
+          <div class="btnrow"><button class="btn" id="rgSimpan">Simpan Rentang</button></div>
+          <div class="row2" style="margin-top:16px">
+            <div><label class="f" for="rgCoba">Coba predikat (rentang tersimpan)</label><input class="inp" id="rgCoba" type="number" min="0" max="100" placeholder="Mis. 85" /></div>
+            <div><label class="f">Hasil</label><p style="margin:9px 0;font-weight:800" id="rgCobaHasil">—</p></div>
+          </div>
+        </div>
+
+        <div class="card npanel" id="np-input">
+          <h3>Input Nilai</h3>
+          <p class="sub">Pilih kelas, mata pelajaran, semester, dan tahun ajaran, lalu muat daftar siswa. Kolom nilai yang dikosongkan dilewati — nilai lama tidak berubah.</p>
+          <div class="row2 row3">
+            <div><label class="f" for="niKelas">Kelas</label><select class="inp" id="niKelas"></select></div>
+            <div><label class="f" for="niMapel">Mata Pelajaran</label><select class="inp" id="niMapel"></select></div>
+            <div><label class="f" for="niSemester">Semester</label><select class="inp" id="niSemester"><option>Ganjil</option><option>Genap</option></select></div>
+          </div>
+          <div class="row2">
+            <div><label class="f" for="niTahun">Tahun Ajaran</label><input class="inp" id="niTahun" value="2026/2027" /></div>
+            <div><label class="f" for="niMapelBaru">Tambah Mata Pelajaran</label><input class="inp" id="niMapelBaru" placeholder="Nama mata pelajaran baru…" /></div>
+          </div>
+          <div class="btnrow">
+            <button class="btn" id="niMuat">Muat Daftar Siswa</button>
+            <button class="btn plain" id="niMapelTambah">Tambah Mapel</button>
+            <button class="btn plain" id="niMapelHapus">Hapus Mapel Terpilih</button>
+            <button class="btn plain" id="niTemplate">Unduh Template CSV</button>
+            <button class="btn plain" id="niRekap">Unduh Rekap CSV</button>
+            <button class="btn plain" id="niImporBtn">Impor CSV</button>
+            <input type="file" id="niFile" accept=".csv,text/csv" style="display:none" />
+          </div>
+          <p class="hint">Format CSV: nis,nama,nilai. Saat impor, NIS yang tidak dikenal dan nilai di luar 0–100 dilewati dan jumlahnya dilaporkan.</p>
+          <div id="niTable" style="margin-top:14px"></div>
+        </div>
+
+        <div class="card npanel" id="np-catatan">
+          <h3>Catatan Wali &amp; Absensi</h3>
+          <p class="sub">Catatan wali kelas dan rekap absensi (Sakit/Izin/Alpa) per siswa. Kelas bawaan mengikuti wali kelas pada profil login bila sudah diisi.</p>
+          <div class="row2 row3">
+            <div><label class="f" for="ctKelas">Kelas</label><select class="inp" id="ctKelas"></select></div>
+            <div><label class="f" for="ctSemester">Semester</label><select class="inp" id="ctSemester"><option>Ganjil</option><option>Genap</option></select></div>
+            <div><label class="f" for="ctTahun">Tahun Ajaran</label><input class="inp" id="ctTahun" value="2026/2027" /></div>
+          </div>
+          <div class="btnrow">
+            <button class="btn" id="ctMuat">Muat Daftar Siswa</button>
+            <button class="btn plain" id="ctTemplate">Unduh Template CSV</button>
+            <button class="btn plain" id="ctRekap">Unduh Rekap CSV</button>
+            <button class="btn plain" id="ctImporBtn">Impor CSV</button>
+            <input type="file" id="ctFile" accept=".csv,text/csv" style="display:none" />
+          </div>
+          <p class="hint">Format CSV: nis,nama,catatan_wali,sakit,izin,alpa. Pencocokan berdasarkan NIS; NIS yang tidak dikenal dilewati dan dilaporkan.</p>
+          <div id="ctTable" style="margin-top:14px"></div>
+        </div>
+
+        <div class="card npanel" id="np-cetak">
+          <h3>Cetak per Kelas</h3>
+          <p class="sub">Pratinjau kartu laporan hasil belajar untuk satu kelas, satu siswa satu halaman. Nilai yang belum diisi tampil sebagai “—”.</p>
+          <div class="row2 row3">
+            <div><label class="f" for="ckKelas">Kelas</label><select class="inp" id="ckKelas"></select></div>
+            <div><label class="f" for="ckSemester">Semester</label><select class="inp" id="ckSemester"><option>Ganjil</option><option>Genap</option></select></div>
+            <div><label class="f" for="ckTahun">Tahun Ajaran</label><input class="inp" id="ckTahun" value="2026/2027" /></div>
+          </div>
+          <div class="btnrow">
+            <button class="btn" id="ckMuat">Tampilkan Pratinjau</button>
+            <button class="btn plain" id="ckCetak">Cetak / Simpan PDF</button>
+          </div>
+          <div id="ckPreview" style="margin-top:14px"></div>
+        </div>
+
+        <div class="card npanel" id="np-leger">
+          <h3>Leger Nilai</h3>
+          <p class="sub">Rekap nilai satu kelas: baris siswa, kolom mata pelajaran, warna sel mengikuti predikat, rata-rata nilai yang ada, dan peringkat kelas.</p>
+          <div class="row2 row3">
+            <div><label class="f" for="lgKelas">Kelas</label><select class="inp" id="lgKelas"></select></div>
+            <div><label class="f" for="lgSemester">Semester</label><select class="inp" id="lgSemester"><option>Ganjil</option><option>Genap</option></select></div>
+            <div><label class="f" for="lgTahun">Tahun Ajaran</label><input class="inp" id="lgTahun" value="2026/2027" /></div>
+          </div>
+          <div class="btnrow">
+            <button class="btn" id="lgMuat">Tampilkan Leger</button>
+            <button class="btn plain" id="lgEkspor">Ekspor CSV</button>
+            <button class="btn plain" id="lgCetak">Cetak</button>
+          </div>
+          <div id="lgTable" style="margin-top:14px"></div>
+        </div>
+      </section>
+
       <!-- ================= DASBOR ================= -->
       <section class="view" id="v-dasbor">
         <div class="card" id="pinCard">
@@ -547,6 +689,15 @@
               <button class="btn ghost" id="btnMuatPusat">Muat Data dari Spreadsheet Pusat</button>
               <button class="btn plain" id="btnCsv">Unduh CSV Rekap</button>
               <button class="btn plain" id="btnKunci">Kunci Dasbor</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Nilai &amp; Raport (perangkat ini)</h3>
+            <p class="sub">Ringkasan modul Nilai &amp; Raport pada perangkat ini. Detailnya ada di menu Nilai &amp; Raport.</p>
+            <div class="grid c2">
+              <div class="stat"><div class="n" id="dSiswa">0</div><div class="l">Siswa tercatat</div></div>
+              <div class="stat"><div class="n" id="dNilai">0</div><div class="l">Nilai tersimpan</div></div>
             </div>
           </div>
 
@@ -759,6 +910,10 @@
           '<input class="inp" id="lgNama" required placeholder="Nama lengkap dan gelar" /></div>' +
           '<div><label class="f" for="lgMapel">Mata Pelajaran</label><select class="inp" id="lgMapel">'+ mapelOptions("Matematika", true) +'</select>' +
           '<input class="inp" id="lgMapelCustom" placeholder="Ketik mata pelajaran…" style="display:none;margin-top:8px" /></div></div>' +
+          '<div class="row2"><div><label class="f" for="lgKelasAjar">Kelas yang Diajar <span style="font-weight:400;color:var(--ink2)">(opsional, pisahkan dengan koma)</span></label>' +
+          '<input class="inp" id="lgKelasAjar" placeholder="Mis. 7.1, 7.2" /></div>' +
+          '<div><label class="f" for="lgWali">Wali Kelas <span style="font-weight:400;color:var(--ink2)">(opsional, satu kelas)</span></label>' +
+          '<input class="inp" id="lgWali" placeholder="Mis. 7.3" /></div></div>' +
           '<div class="btnrow"><button class="btn" type="submit">Masuk</button></div></form>';
         var sel = $("lgMapel");
         sel.addEventListener("change", function(){ $("lgMapelCustom").style.display = sel.value==="__custom" ? "block" : "none"; });
@@ -766,7 +921,7 @@
           ev.preventDefault();
           var m = sel.value==="__custom" ? $("lgMapelCustom").value.trim() : sel.value;
           if(!m){ toast("Isi mata pelajaran dulu ya."); return; }
-          user = { nama: $("lgNama").value.trim(), mapel: m };
+          user = { nama: $("lgNama").value.trim(), mapel: m, kelasAjar: $("lgKelasAjar").value.trim(), waliKelas: $("lgWali").value.trim() };
           lsSet("akur_user", user);
           renderUserChip(); renderLogin(); renderBeranda();
           if(!$("gGuru").value) $("gGuru").value = user.nama;
@@ -776,7 +931,10 @@
         $("formCard").style.display = "none"; $("riwayatCard").style.display = "none";
       } else {
         card.innerHTML = "<h2>Halo, "+esc(user.nama)+"</h2>" +
-          '<p class="sub">Mata pelajaran: <b>'+esc(user.mapel)+'</b>. Silakan isi formulir pengumpulan di bawah, atau buka Generator Perangkat Ajar untuk menyusun dokumen baru.</p>' +
+          '<p class="sub">Mata pelajaran: <b>'+esc(user.mapel)+'</b>' +
+          (user.kelasAjar ? ' · Kelas yang diajar: <b>'+esc(user.kelasAjar)+'</b>' : '') +
+          (user.waliKelas ? ' · Wali kelas: <b>'+esc(user.waliKelas)+'</b>' : '') +
+          '. Silakan isi formulir pengumpulan di bawah, atau buka Generator Perangkat Ajar untuk menyusun dokumen baru.</p>' +
           '<div class="btnrow"><button class="btn plain" id="btnGantiUser">Ganti Pengguna</button><button class="btn ghost" data-go2="generator">Ke Generator</button></div>';
         $("btnGantiUser").addEventListener("click", function(){ user = null; lsSet("akur_user", null); renderUserChip(); renderLogin(); renderBeranda(); });
         card.querySelector("[data-go2]").addEventListener("click", function(){ go("generator"); });
@@ -867,6 +1025,8 @@
       });
     }
     function renderDasbor(){
+      $("dSiswa").textContent = lsGet("akur_siswa", []).length;
+      $("dNilai").textContent = lsGet("akur_nilai", []).length;
       var rows = subsTerfilter();
       $("dasborSrc").textContent = "Sumber data: " + (subsPusat ? "spreadsheet pusat + perangkat ini" : "perangkat ini saja") +
         (dbUrl ? "" : " — URL Web App belum dipasang, data lintas perangkat belum bisa dimuat.") ;
@@ -1757,6 +1917,445 @@
     $("prevIns").addEventListener("click", function(){ syncGenFromForm(); showPreview("prevInsBox", buildIns()); });
     $("dlIns").addEventListener("click", function(){ unduhDocx(buildIns(), "Instrumen-Asesmen", "Instrumen Asesmen"); });
     $("pdfIns").addEventListener("click", function(){ cetakPdf(buildIns(), "Instrumen Asesmen", "prevInsBox"); });
+
+    /* ================= TAHAP 2 — Nilai & Raport ================= */
+    var SEKOLAH_NILAI = "SMP Negeri 171 Jakarta";
+    var MAPEL_DEFAULT = ["Pendidikan Agama dan Budi Pekerti","Pendidikan Pancasila","Bahasa Indonesia","Matematika","Ilmu Pengetahuan Alam","Ilmu Pengetahuan Sosial","Bahasa Inggris","Informatika","Pendidikan Jasmani Olahraga dan Kesehatan","Prakarya","Seni Budaya","Muatan Lokal"];
+    var RENTANG_DEFAULT = [{min:0,maks:69,label:"Kurang"},{min:70,maks:79,label:"Cukup"},{min:80,maks:89,label:"Baik"},{min:90,maks:100,label:"Amat Baik"}];
+    function escA(s){ return esc(s).replace(/'/g, "&#39;"); }
+    function getSiswa(){ return lsGet("akur_siswa", []); }
+    function setSiswa(a){ lsSet("akur_siswa", a); }
+    function getRentang(){
+      var r = lsGet("akur_rentang", null);
+      if(!Array.isArray(r) || !r.length) return RENTANG_DEFAULT.map(function(x){ return { min:x.min, maks:x.maks, label:x.label }; });
+      return r.slice().sort(function(a,b){ return a.min - b.min; });
+    }
+    function getMapelNilai(){ var m = lsGet("akur_mapel", null); if(!Array.isArray(m) || !m.length) return MAPEL_DEFAULT.slice(); return m; }
+    function setMapelNilai(m){ lsSet("akur_mapel", m); }
+    function getNilai(){ return lsGet("akur_nilai", []); }
+    function setNilai(a){ lsSet("akur_nilai", a); }
+    function getCatatan(){ return lsGet("akur_catatan", []); }
+    function setCatatan(a){ lsSet("akur_catatan", a); }
+    function predikat(nilai){
+      if(nilai === null || nilai === undefined || nilai === "" || isNaN(Number(nilai))) return "—";
+      var n = Number(nilai), rs = getRentang();
+      for(var i = 0; i < rs.length; i++){ if(n >= rs[i].min && n <= rs[i].maks) return rs[i].label; }
+      return "—";
+    }
+    function predikatIdx(nilai){
+      if(nilai === null || nilai === undefined || nilai === "" || isNaN(Number(nilai))) return -1;
+      var n = Number(nilai), rs = getRentang();
+      for(var i = 0; i < rs.length; i++){ if(n >= rs[i].min && n <= rs[i].maks) return i; }
+      return -1;
+    }
+    function kelasDariSiswa(){
+      var seen = {}, list = [];
+      getSiswa().forEach(function(s){ var k = (s.kelas || "").trim(); if(k && !seen[k]){ seen[k] = 1; list.push(k); } });
+      return list.sort();
+    }
+    function opsiKelas(selId, def){
+      var sel = $(selId); var ks = kelasDariSiswa(); var cur = sel.value;
+      if(!ks.length){ sel.innerHTML = '<option value="">(belum ada data siswa)</option>'; return; }
+      sel.innerHTML = ks.map(function(k){ return '<option value="'+esc(k)+'">'+esc(k)+"</option>"; }).join("");
+      if(def && ks.indexOf(def) >= 0) sel.value = def;
+      else if(cur && ks.indexOf(cur) >= 0) sel.value = cur;
+    }
+    function refreshKelasSelects(){
+      opsiKelas("niKelas", null); opsiKelas("ctKelas", user ? user.waliKelas : null);
+      opsiKelas("ckKelas", null); opsiKelas("lgKelas", null);
+    }
+    function refreshMapelSelect(){
+      var sel = $("niMapel"); var cur = sel.value; var ms = getMapelNilai();
+      sel.innerHTML = ms.map(function(m){ return '<option value="'+esc(m)+'">'+esc(m)+"</option>"; }).join("");
+      if(cur && ms.indexOf(cur) >= 0) sel.value = cur;
+    }
+    function siswaKelas(kelas){
+      return getSiswa().filter(function(s){ return s.kelas === kelas; }).sort(function(a,b){ return (a.nama || "").localeCompare(b.nama || ""); });
+    }
+    function cariNilai(nis, mapel, sem, th){
+      var a = getNilai();
+      for(var i = 0; i < a.length; i++){ var r = a[i]; if(String(r.nis) === String(nis) && r.mapel === mapel && r.semester === sem && r.tahun === th) return r.nilai; }
+      return "";
+    }
+    function cariCatatan(nis, sem, th){
+      var a = getCatatan();
+      for(var i = 0; i < a.length; i++){ var r = a[i]; if(String(r.nis) === String(nis) && r.semester === sem && r.tahun === th) return r; }
+      return null;
+    }
+
+    /* ---------- CSV (impor/ekspor) ---------- */
+    function parseCSV(teks){
+      teks = String(teks).replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+      var rows = [], row = [], cur = "", dalam = false;
+      for(var i = 0; i < teks.length; i++){
+        var c = teks[i];
+        if(dalam){
+          if(c === '"'){ if(teks[i+1] === '"'){ cur += '"'; i++; } else dalam = false; }
+          else cur += c;
+        } else if(c === '"') dalam = true;
+        else if(c === ","){ row.push(cur); cur = ""; }
+        else if(c === "\n"){ row.push(cur); rows.push(row); row = []; cur = ""; }
+        else cur += c;
+      }
+      if(cur !== "" || row.length){ row.push(cur); rows.push(row); }
+      return rows.filter(function(r){ return !(r.length === 1 && r[0].trim() === ""); });
+    }
+    function selCSV(v){
+      v = String(v == null ? "" : v);
+      return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+    }
+    function unduhCSV(nama, header, rows){
+      var csv = "\ufeff" + header.map(selCSV).join(",") + "\n" + rows.map(function(r){ return r.map(selCSV).join(","); }).join("\n");
+      unduhBlob(new Blob([csv], { type:"text/csv;charset=utf-8" }), nama);
+    }
+    function bacaFileCSV(input, cb){
+      var f = input.files && input.files[0];
+      if(!f){ toast("Pilih file CSV dulu ya."); return; }
+      var rd = new FileReader();
+      rd.onload = function(){ cb(rd.result); input.value = ""; };
+      rd.readAsText(f);
+    }
+
+    /* ---------- sub-tab Nilai & Raport ---------- */
+    function showNilaiPanel(n){
+      document.querySelectorAll("#nilaiTabs button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-np") === n); });
+      document.querySelectorAll(".npanel").forEach(function(p){ p.classList.toggle("on", p.id === "np-" + n); });
+      if(n === "siswa") renderSiswa();
+      if(n === "rentang") renderRentang();
+      if(n === "input"){ refreshKelasSelects(); refreshMapelSelect(); }
+      if(n === "catatan" || n === "cetak" || n === "leger") refreshKelasSelects();
+    }
+    document.querySelectorAll("#nilaiTabs button").forEach(function(b){ b.addEventListener("click", function(){ showNilaiPanel(b.getAttribute("data-np")); }); });
+
+    /* ---------- Data Siswa ---------- */
+    function renderSiswa(){
+      var data = getSiswa().slice().sort(function(a,b){
+        return (a.kelas || "").localeCompare(b.kelas || "") || (a.nama || "").localeCompare(b.nama || "");
+      });
+      var box = $("swTable");
+      if(!data.length){ box.innerHTML = '<p class="empty">Belum ada data siswa. Tambah manual, impor CSV, atau muat contoh.</p>'; return; }
+      var h = '<div class="tblwrap"><table class="data stack"><thead><tr><th>NIS</th><th>Nama</th><th>Kelas</th><th>Jenis Kelamin</th><th>Agama</th><th></th></tr></thead><tbody>';
+      data.forEach(function(s){
+        h += "<tr><td data-l='NIS'>"+esc(s.nis)+"</td><td data-l='Nama'><b>"+esc(s.nama)+"</b></td><td data-l='Kelas'>"+esc(s.kelas)+"</td><td data-l='Jenis Kelamin'>"+esc(s.jk || "—")+"</td><td data-l='Agama'>"+esc(s.agama || "—")+"</td><td data-l='' class='ctr'><button type='button' class='iconbtn' data-hapus-nis='"+escA(s.nis)+"' title='Hapus siswa ini'>×</button></td></tr>";
+      });
+      box.innerHTML = h + "</tbody></table></div><p class='hint'>Total: " + data.length + " siswa.</p>";
+      box.querySelectorAll("[data-hapus-nis]").forEach(function(b){
+        b.addEventListener("click", function(){
+          var nis = b.getAttribute("data-hapus-nis");
+          setSiswa(getSiswa().filter(function(s){ return String(s.nis) !== nis; }));
+          renderSiswa(); toast("Siswa dengan NIS " + nis + " dihapus.");
+        });
+      });
+    }
+    $("swTambah").addEventListener("click", function(){
+      var nis = $("swNis").value.trim(), nama = $("swNama").value.trim(), kelas = $("swKelas").value.trim();
+      if(!nis || !nama || !kelas){ toast("Isi NIS, nama, dan kelas dulu ya."); return; }
+      var data = getSiswa();
+      if(data.some(function(s){ return String(s.nis) === nis; })){ toast("NIS " + nis + " sudah ada — hapus dulu bila ingin menggantinya."); return; }
+      data.push({ nis:nis, nama:nama, kelas:kelas, jk:$("swJk").value, agama:$("swAgama").value.trim() });
+      setSiswa(data);
+      ["swNis","swNama","swKelas","swAgama"].forEach(function(id){ $(id).value = ""; });
+      renderSiswa(); toast("Siswa " + nama + " ditambahkan.");
+    });
+    $("swContoh").addEventListener("click", function(){
+      var data = getSiswa(); var tambah = 0;
+      for(var i = 1; i <= 5; i++){
+        var nis = "CONTOH0" + i;
+        if(!data.some(function(s){ return String(s.nis) === nis; })){
+          data.push({ nis:nis, nama:"Siswa Contoh " + i, kelas:"7.1", jk:(i % 2 ? "Laki-laki" : "Perempuan"), agama:"—" });
+          tambah++;
+        }
+      }
+      setSiswa(data); renderSiswa();
+      toast(tambah ? tambah + " siswa contoh ditambahkan (kelas 7.1, berlabel jelas sebagai contoh)." : "5 siswa contoh sudah ada — tidak ada yang ditambahkan.");
+    });
+    $("swTemplate").addEventListener("click", function(){ unduhCSV("template-data-siswa.csv", ["nis","nama","kelas","jk","agama"], []); toast("Template CSV data siswa terunduh."); });
+    $("swImporBtn").addEventListener("click", function(){ $("swFile").click(); });
+    $("swFile").addEventListener("change", function(){
+      bacaFileCSV(this, function(teks){
+        var rows = parseCSV(teks);
+        if(rows.length && String(rows[0][0]).trim().toLowerCase() === "nis") rows.shift();
+        var data = getSiswa(); var baru = 0, upd = 0;
+        rows.forEach(function(r){
+          var nis = (r[0] || "").trim(), nama = (r[1] || "").trim(), kelas = (r[2] || "").trim();
+          if(!nis || !nama || !kelas) return;
+          var ada = null;
+          for(var i = 0; i < data.length; i++){ if(String(data[i].nis) === nis){ ada = data[i]; break; } }
+          if(ada){ ada.nama = nama; ada.kelas = kelas; ada.jk = (r[3] || "").trim(); ada.agama = (r[4] || "").trim(); upd++; }
+          else { data.push({ nis:nis, nama:nama, kelas:kelas, jk:(r[3] || "").trim(), agama:(r[4] || "").trim() }); baru++; }
+        });
+        setSiswa(data); renderSiswa();
+        toast("Impor selesai: " + baru + " siswa baru, " + upd + " diperbarui.");
+      });
+    });
+
+    /* ---------- Rentang Nilai ---------- */
+    function renderRentang(){
+      var rs = getRentang(); var h = "";
+      rs.forEach(function(r, i){
+        h += '<div class="row2 row3"><div><label class="f" for="rgMin'+i+'">Nilai Minimum</label><input class="inp" type="number" id="rgMin'+i+'" value="'+r.min+'" min="0" max="100" /></div>' +
+          '<div><label class="f" for="rgMaks'+i+'">Nilai Maksimum</label><input class="inp" type="number" id="rgMaks'+i+'" value="'+r.maks+'" min="0" max="100" /></div>' +
+          '<div><label class="f" for="rgLabel'+i+'">Predikat</label><input class="inp" id="rgLabel'+i+'" value="'+esc(r.label)+'" /></div></div>';
+      });
+      $("rentangRows").innerHTML = h;
+    }
+    $("rgSimpan").addEventListener("click", function(){
+      var rs = [];
+      for(var i = 0; i < 4; i++){
+        var mn = Number($("rgMin"+i).value), mk = Number($("rgMaks"+i).value), lb = $("rgLabel"+i).value.trim();
+        if(isNaN(mn) || isNaN(mk) || !lb){ toast("Lengkapi semua baris rentang (min, maks, predikat)."); return; }
+        if(mn > mk){ toast("Baris " + (i+1) + ": nilai minimum tidak boleh melebihi maksimum."); return; }
+        rs.push({ min:mn, maks:mk, label:lb });
+      }
+      rs.sort(function(a,b){ return a.min - b.min; });
+      for(var j = 1; j < rs.length; j++){
+        if(rs[j].min <= rs[j-1].maks){ toast("Rentang tumpang tindih: " + rs[j-1].label + " dan " + rs[j].label + ". Perbaiki dulu ya."); return; }
+      }
+      lsSet("akur_rentang", rs); renderRentang(); toast("Rentang nilai tersimpan. Predikat di Cetak dan Leger mengikuti rentang ini.");
+    });
+    $("rgCoba").addEventListener("input", function(){
+      var v = $("rgCoba").value;
+      $("rgCobaHasil").textContent = (v === "" ? "—" : predikat(v));
+    });
+
+    /* ---------- Input Nilai ---------- */
+    $("niMapelTambah").addEventListener("click", function(){
+      var m = $("niMapelBaru").value.trim();
+      if(!m){ toast("Ketik nama mata pelajaran dulu ya."); return; }
+      var ms = getMapelNilai();
+      if(ms.indexOf(m) >= 0){ toast("Mata pelajaran itu sudah ada."); return; }
+      ms.push(m); setMapelNilai(ms); $("niMapelBaru").value = ""; refreshMapelSelect(); $("niMapel").value = m;
+      toast("Mata pelajaran " + m + " ditambahkan.");
+    });
+    $("niMapelHapus").addEventListener("click", function(){
+      var m = $("niMapel").value; if(!m) return;
+      setMapelNilai(getMapelNilai().filter(function(x){ return x !== m; }));
+      refreshMapelSelect(); toast("Mata pelajaran " + m + " dihapus dari daftar (nilai yang sudah tersimpan tidak ikut terhapus).");
+    });
+    function muatInputNilai(){
+      var kelas = $("niKelas").value, mapel = $("niMapel").value, sem = $("niSemester").value, th = $("niTahun").value.trim();
+      if(!kelas){ toast("Belum ada data siswa untuk kelas mana pun. Tambah data siswa dulu ya."); return; }
+      if(!mapel){ toast("Pilih mata pelajaran dulu ya."); return; }
+      var siswa = siswaKelas(kelas); var box = $("niTable");
+      if(!siswa.length){ box.innerHTML = '<p class="empty">Belum ada siswa di kelas ' + esc(kelas) + '.</p>'; return; }
+      var h = '<p class="hint">Kelas ' + esc(kelas) + ' · ' + esc(mapel) + ' · Semester ' + esc(sem) + ' · ' + esc(th) + '</p>' +
+        '<div class="tblwrap"><table class="data stack"><thead><tr><th>No</th><th>NIS</th><th>Nama</th><th>Nilai (0–100)</th></tr></thead><tbody>';
+      siswa.forEach(function(s, i){
+        var nv = cariNilai(s.nis, mapel, sem, th);
+        h += "<tr><td data-l='No'>" + (i+1) + "</td><td data-l='NIS'>" + esc(s.nis) + "</td><td data-l='Nama'><b>" + esc(s.nama) + "</b></td>" +
+          "<td data-l='Nilai'><input class='inp' type='number' min='0' max='100' step='1' data-nis='" + escA(s.nis) + "' value='" + esc(nv) + "' style='max-width:110px' /></td></tr>";
+      });
+      box.innerHTML = h + "</tbody></table></div><div class='btnrow'><button class='btn' id='niSimpan'>Simpan Nilai</button></div>";
+      $("niSimpan").addEventListener("click", function(){
+        var semua = getNilai(); var simpan = 0, lewati = 0;
+        box.querySelectorAll("[data-nis]").forEach(function(inp){
+          var nis = inp.getAttribute("data-nis"); var v = inp.value.trim();
+          if(v === "") return;
+          var n = Number(v);
+          if(isNaN(n) || n < 0 || n > 100){ lewati++; return; }
+          var ada = null;
+          for(var i = 0; i < semua.length; i++){ var r = semua[i]; if(String(r.nis) === nis && r.mapel === mapel && r.semester === sem && r.tahun === th){ ada = r; break; } }
+          if(ada) ada.nilai = n; else semua.push({ nis:nis, mapel:mapel, semester:sem, tahun:th, nilai:n });
+          simpan++;
+        });
+        setNilai(semua);
+        toast("Tersimpan: " + simpan + " nilai." + (lewati ? " Dilewati: " + lewati + " (di luar 0–100)." : ""));
+      });
+    }
+    $("niMuat").addEventListener("click", muatInputNilai);
+    $("niTemplate").addEventListener("click", function(){ unduhCSV("template-input-nilai.csv", ["nis","nama","nilai"], []); toast("Template CSV input nilai terunduh."); });
+    $("niRekap").addEventListener("click", function(){
+      var kelas = $("niKelas").value, mapel = $("niMapel").value, sem = $("niSemester").value, th = $("niTahun").value.trim();
+      if(!kelas || !mapel){ toast("Pilih kelas dan mata pelajaran dulu ya."); return; }
+      var rows = siswaKelas(kelas).map(function(s){ return [s.nis, s.nama, cariNilai(s.nis, mapel, sem, th)]; });
+      unduhCSV("rekap-nilai-" + kelas + "-" + mapel.replace(/\s+/g, "-") + ".csv", ["nis","nama","nilai"], rows);
+      toast("Rekap nilai terunduh.");
+    });
+    $("niImporBtn").addEventListener("click", function(){ $("niFile").click(); });
+    $("niFile").addEventListener("change", function(){
+      var mapel = $("niMapel").value, sem = $("niSemester").value, th = $("niTahun").value.trim();
+      if(!mapel){ toast("Pilih mata pelajaran dulu ya."); return; }
+      bacaFileCSV(this, function(teks){
+        var rows = parseCSV(teks);
+        if(rows.length && String(rows[0][0]).trim().toLowerCase() === "nis") rows.shift();
+        var dikenal = {}; getSiswa().forEach(function(s){ dikenal[String(s.nis)] = 1; });
+        var semua = getNilai(); var imp = 0, lew = 0;
+        rows.forEach(function(r){
+          var nis = (r[0] || "").trim();
+          var nilaiTxt = (r[2] !== undefined && r[2] !== "") ? r[2] : r[1];
+          var n = Number(String(nilaiTxt || "").trim());
+          if(!nis || !dikenal[nis] || isNaN(n) || n < 0 || n > 100){ lew++; return; }
+          var ada = null;
+          for(var i = 0; i < semua.length; i++){ var x = semua[i]; if(String(x.nis) === nis && x.mapel === mapel && x.semester === sem && x.tahun === th){ ada = x; break; } }
+          if(ada) ada.nilai = n; else semua.push({ nis:nis, mapel:mapel, semester:sem, tahun:th, nilai:n });
+          imp++;
+        });
+        setNilai(semua);
+        toast("Impor selesai: " + imp + " nilai masuk, " + lew + " baris dilewati (NIS tidak dikenal atau nilai tidak valid).");
+        if($("niTable").innerHTML) muatInputNilai();
+      });
+    });
+
+    /* ---------- Catatan Wali ---------- */
+    function muatCatatan(){
+      var kelas = $("ctKelas").value, sem = $("ctSemester").value, th = $("ctTahun").value.trim();
+      if(!kelas){ toast("Belum ada data siswa untuk kelas mana pun."); return; }
+      var siswa = siswaKelas(kelas); var box = $("ctTable");
+      if(!siswa.length){ box.innerHTML = '<p class="empty">Belum ada siswa di kelas ' + esc(kelas) + '.</p>'; return; }
+      var h = '<p class="hint">Kelas ' + esc(kelas) + ' · Semester ' + esc(sem) + ' · ' + esc(th) + '</p>' +
+        '<div class="tblwrap"><table class="data stack"><thead><tr><th>No</th><th>NIS</th><th>Nama</th><th>Catatan Wali</th><th>S</th><th>I</th><th>A</th></tr></thead><tbody>';
+      siswa.forEach(function(s, i){
+        var ct = cariCatatan(s.nis, sem, th) || { catatan:"", sakit:0, izin:0, alpa:0 };
+        h += "<tr><td data-l='No'>" + (i+1) + "</td><td data-l='NIS'>" + esc(s.nis) + "</td><td data-l='Nama'><b>" + esc(s.nama) + "</b></td>" +
+          "<td data-l='Catatan Wali'><textarea class='inp sm' data-nis='" + escA(s.nis) + "' data-k='catatan' placeholder='Catatan wali kelas…'>" + esc(ct.catatan || "") + "</textarea></td>" +
+          "<td data-l='Sakit'><input class='inp' type='number' min='0' step='1' data-nis='" + escA(s.nis) + "' data-k='sakit' value='" + esc(ct.sakit || 0) + "' style='max-width:70px' /></td>" +
+          "<td data-l='Izin'><input class='inp' type='number' min='0' step='1' data-nis='" + escA(s.nis) + "' data-k='izin' value='" + esc(ct.izin || 0) + "' style='max-width:70px' /></td>" +
+          "<td data-l='Alpa'><input class='inp' type='number' min='0' step='1' data-nis='" + escA(s.nis) + "' data-k='alpa' value='" + esc(ct.alpa || 0) + "' style='max-width:70px' /></td></tr>";
+      });
+      box.innerHTML = h + "</tbody></table></div><div class='btnrow'><button class='btn' id='ctSimpan'>Simpan Catatan</button></div>";
+      $("ctSimpan").addEventListener("click", function(){
+        var semua = getCatatan(); var simpan = 0; var perSiswa = {};
+        box.querySelectorAll("[data-nis][data-k]").forEach(function(inp){
+          var nis = inp.getAttribute("data-nis"); var k = inp.getAttribute("data-k");
+          if(!perSiswa[nis]) perSiswa[nis] = { catatan:"", sakit:0, izin:0, alpa:0 };
+          if(k === "catatan") perSiswa[nis].catatan = inp.value;
+          else perSiswa[nis][k] = Math.max(0, Math.round(Number(inp.value) || 0));
+        });
+        Object.keys(perSiswa).forEach(function(nis){
+          var v = perSiswa[nis]; var ada = null;
+          for(var i = 0; i < semua.length; i++){ var r = semua[i]; if(String(r.nis) === nis && r.semester === sem && r.tahun === th){ ada = r; break; } }
+          if(ada){ ada.catatan = v.catatan; ada.sakit = v.sakit; ada.izin = v.izin; ada.alpa = v.alpa; }
+          else semua.push({ nis:nis, semester:sem, tahun:th, catatan:v.catatan, sakit:v.sakit, izin:v.izin, alpa:v.alpa });
+          simpan++;
+        });
+        setCatatan(semua);
+        toast("Tersimpan: catatan dan absensi " + simpan + " siswa.");
+      });
+    }
+    $("ctMuat").addEventListener("click", muatCatatan);
+    $("ctTemplate").addEventListener("click", function(){ unduhCSV("template-catatan-wali.csv", ["nis","nama","catatan_wali","sakit","izin","alpa"], []); toast("Template CSV catatan wali terunduh."); });
+    $("ctRekap").addEventListener("click", function(){
+      var kelas = $("ctKelas").value, sem = $("ctSemester").value, th = $("ctTahun").value.trim();
+      if(!kelas){ toast("Pilih kelas dulu ya."); return; }
+      var rows = siswaKelas(kelas).map(function(s){
+        var ct = cariCatatan(s.nis, sem, th) || { catatan:"", sakit:0, izin:0, alpa:0 };
+        return [s.nis, s.nama, ct.catatan || "", ct.sakit || 0, ct.izin || 0, ct.alpa || 0];
+      });
+      unduhCSV("rekap-catatan-wali-" + kelas + ".csv", ["nis","nama","catatan_wali","sakit","izin","alpa"], rows);
+      toast("Rekap catatan wali terunduh.");
+    });
+    $("ctImporBtn").addEventListener("click", function(){ $("ctFile").click(); });
+    $("ctFile").addEventListener("change", function(){
+      var sem = $("ctSemester").value, th = $("ctTahun").value.trim();
+      bacaFileCSV(this, function(teks){
+        var rows = parseCSV(teks);
+        if(rows.length && String(rows[0][0]).trim().toLowerCase() === "nis") rows.shift();
+        var dikenal = {}; getSiswa().forEach(function(s){ dikenal[String(s.nis)] = 1; });
+        var semua = getCatatan(); var imp = 0, lew = 0;
+        rows.forEach(function(r){
+          var nis = (r[0] || "").trim();
+          if(!nis || !dikenal[nis]){ lew++; return; }
+          var rec = { nis:nis, semester:sem, tahun:th, catatan:(r[2] || "").trim(),
+            sakit:Math.max(0, Math.round(Number(r[3]) || 0)), izin:Math.max(0, Math.round(Number(r[4]) || 0)), alpa:Math.max(0, Math.round(Number(r[5]) || 0)) };
+          var ada = null;
+          for(var i = 0; i < semua.length; i++){ var x = semua[i]; if(String(x.nis) === nis && x.semester === sem && x.tahun === th){ ada = x; break; } }
+          if(ada){ ada.catatan = rec.catatan; ada.sakit = rec.sakit; ada.izin = rec.izin; ada.alpa = rec.alpa; }
+          else semua.push(rec);
+          imp++;
+        });
+        setCatatan(semua);
+        toast("Impor selesai: " + imp + " catatan masuk, " + lew + " baris dilewati (NIS tidak dikenal).");
+        if($("ctTable").innerHTML) muatCatatan();
+      });
+    });
+
+    /* ---------- Cetak per Kelas ---------- */
+    var ckPreviewHTML = "";
+    function muatCetak(){
+      var kelas = $("ckKelas").value, sem = $("ckSemester").value, th = $("ckTahun").value.trim();
+      if(!kelas){ toast("Belum ada data siswa untuk kelas mana pun."); return; }
+      var siswa = siswaKelas(kelas);
+      if(!siswa.length){ $("ckPreview").innerHTML = '<p class="empty">Belum ada siswa di kelas ' + esc(kelas) + '.</p>'; ckPreviewHTML = ""; return; }
+      var tgl = new Date().toLocaleDateString("id-ID", { day:"numeric", month:"long", year:"numeric" });
+      var ms = getMapelNilai(); var h = "";
+      siswa.forEach(function(s){
+        var ct = cariCatatan(s.nis, sem, th) || { catatan:"", sakit:0, izin:0, alpa:0 };
+        h += '<div class="sheet raport-page">';
+        h += '<div class="kop"><div class="sk">' + esc(SEKOLAH_NILAI) + '</div><div class="ks">Laporan Hasil Belajar · Kurikulum Merdeka</div></div>';
+        h += '<h1 class="doct">LAPORAN HASIL BELAJAR</h1><div class="docsub">Asesmen Sumatif Tengah Semester</div>';
+        h += '<table class="kv"><tbody>' + [["Nama", s.nama], ["Kelas", s.kelas], ["NIS", s.nis], ["Semester", sem], ["Tahun Ajaran", th], ["Jenis Kelamin", s.jk || "—"], ["Agama", s.agama || "—"]].map(function(r){ return "<tr><td>" + esc(r[0]) + "</td><td>" + esc(r[1]) + "</td></tr>"; }).join("") + "</tbody></table>";
+        h += '<h2 class="sec">Nilai Mata Pelajaran</h2><table><thead><tr><th>Mata Pelajaran</th><th>Nilai</th><th>Predikat</th></tr></thead><tbody>';
+        ms.forEach(function(m){
+          var nv = cariNilai(s.nis, m, sem, th);
+          h += "<tr><td>" + esc(m) + "</td><td>" + (nv === "" ? "—" : esc(nv)) + "</td><td>" + (nv === "" ? "—" : esc(predikat(nv))) + "</td></tr>";
+        });
+        h += "</tbody></table>";
+        h += '<h2 class="sec">Catatan Wali Kelas</h2><p>' + esc(ct.catatan || "—").replace(/\n/g, "<br/>") + "</p>";
+        h += '<h2 class="sec">Rekap Absensi</h2><p>Sakit: <b>' + esc(ct.sakit || 0) + "</b> · Izin: <b>" + esc(ct.izin || 0) + "</b> · Alpa: <b>" + esc(ct.alpa || 0) + "</b></p>";
+        h += '<p style="text-align:right;margin-top:24px">Jakarta, ' + esc(tgl) + "</p>";
+        h += '<div class="sign">' +
+          '<div class="col"><div>Orang Tua/Wali</div><div class="nm">( ………………………………… )</div></div>' +
+          '<div class="col"><div>Wali Kelas</div><div class="nm">( ………………………………… )</div></div>' +
+          '<div class="col"><div>Kepala Sekolah</div><div class="nm">( ………………………………… )</div></div></div>';
+        h += "</div>";
+      });
+      $("ckPreview").innerHTML = h; ckPreviewHTML = h;
+      toast(siswa.length + " kartu laporan ditampilkan untuk kelas " + kelas + ".");
+    }
+    $("ckMuat").addEventListener("click", muatCetak);
+    $("ckCetak").addEventListener("click", function(){
+      if(!ckPreviewHTML){ toast("Tampilkan pratinjau dulu ya."); return; }
+      $("printArea").innerHTML = ckPreviewHTML; window.print();
+    });
+
+    /* ---------- Leger Nilai ---------- */
+    var legerTerakhir = null;
+    function muatLeger(){
+      var kelas = $("lgKelas").value, sem = $("lgSemester").value, th = $("lgTahun").value.trim();
+      if(!kelas){ toast("Belum ada data siswa untuk kelas mana pun."); return; }
+      var siswa = siswaKelas(kelas); var ms = getMapelNilai(); var box = $("lgTable");
+      if(!siswa.length){ box.innerHTML = '<p class="empty">Belum ada siswa di kelas ' + esc(kelas) + '.</p>'; legerTerakhir = null; return; }
+      var baris = siswa.map(function(s){
+        var sel = {}; var nilais = [];
+        ms.forEach(function(m){ var nv = cariNilai(s.nis, m, sem, th); sel[m] = nv; if(nv !== "") nilais.push(Number(nv)); });
+        var rata = nilais.length ? (nilais.reduce(function(a,b){ return a + b; }, 0) / nilais.length) : null;
+        return { s:s, sel:sel, rata:rata };
+      });
+      var urut = baris.filter(function(b){ return b.rata !== null; }).slice().sort(function(a,b){ return b.rata - a.rata; });
+      var rankMap = {}; var rank = 0, prev = null;
+      urut.forEach(function(b, i){ if(prev === null || b.rata < prev){ rank = i + 1; prev = b.rata; } rankMap[String(b.s.nis)] = rank; });
+      var h = '<p class="hint">Kelas ' + esc(kelas) + ' · Semester ' + esc(sem) + ' · ' + esc(th) + ' · ' + siswa.length + ' siswa × ' + ms.length + ' mapel</p>' +
+        '<div class="tblwrap"><table class="data"><thead><tr><th>NIS</th><th>Nama</th>' + ms.map(function(m){ return "<th>" + esc(m) + "</th>"; }).join("") + "<th>Rata2</th><th>Peringkat</th></tr></thead><tbody>";
+      baris.forEach(function(b){
+        h += "<tr><td>" + esc(b.s.nis) + "</td><td><b>" + esc(b.s.nama) + "</b></td>";
+        ms.forEach(function(m){
+          var nv = b.sel[m]; var idx = predikatIdx(nv);
+          h += "<td" + (idx >= 0 ? ' class="pk' + idx + '"' : "") + ">" + (nv === "" ? "—" : esc(nv)) + "</td>";
+        });
+        h += "<td><b>" + (b.rata === null ? "—" : b.rata.toFixed(1)) + "</b></td>";
+        h += "<td>" + (b.rata === null ? "—" : rankMap[String(b.s.nis)]) + "</td></tr>";
+      });
+      box.innerHTML = h + "</tbody></table></div>";
+      legerTerakhir = { kelas:kelas, sem:sem, th:th, ms:ms, baris:baris, rankMap:rankMap };
+      toast("Leger kelas " + kelas + " ditampilkan.");
+    }
+    $("lgMuat").addEventListener("click", muatLeger);
+    $("lgEkspor").addEventListener("click", function(){
+      if(!legerTerakhir){ toast("Tampilkan leger dulu ya."); return; }
+      var L = legerTerakhir;
+      var rows = L.baris.map(function(b){
+        return [b.s.nis, b.s.nama].concat(L.ms.map(function(m){ return b.sel[m]; }), [b.rata === null ? "" : b.rata.toFixed(1), b.rata === null ? "" : L.rankMap[String(b.s.nis)]]);
+      });
+      unduhCSV("leger-" + L.kelas + ".csv", ["NIS","Nama"].concat(L.ms, ["Rata2","Peringkat"]), rows);
+      toast("Leger CSV terunduh.");
+    });
+    $("lgCetak").addEventListener("click", function(){
+      if(!$("lgTable").innerHTML){ toast("Tampilkan leger dulu ya."); return; }
+      $("printArea").innerHTML = $("lgTable").innerHTML; window.print();
+    });
+
+    /* ---------- init Nilai & Raport ---------- */
+    renderSiswa(); renderRentang(); refreshKelasSelects(); refreshMapelSelect();
 
     /* ================= init ================= */
     (function(){
