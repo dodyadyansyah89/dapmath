@@ -516,6 +516,10 @@
               <tr><td>&minus;90&deg; (searah jarum jam)</td><td class="num">(y, &minus;x)</td></tr>
             </table>
             <p><b>Contoh:</b> C(4, 1) dirotasi 90&deg; terhadap O &rarr; C&prime;(&minus;1, 4).</p>
+            <p><b>Rotasi pusat P(a, b) sudut &theta;:</b></p>
+            <div class="formula">x&prime; = a + (x &minus; a)&middot;cos &theta; &minus; (y &minus; b)&middot;sin &theta; &nbsp;&nbsp;•&nbsp;&nbsp; y&prime; = b + (x &minus; a)&middot;sin &theta; + (y &minus; b)&middot;cos &theta;</div>
+            <p>Cara memahaminya dalam 3 langkah: (1) <b>geser</b> titik mendekati O: (x &minus; a, y &minus; b); (2) <b>putar</b> dengan matriks rotasi; (3) <b>geser kembali</b>: tambah (a, b). Pusat O(0, 0) hanyalah kasus khusus dari pusat P(a, b), yaitu saat a = 0 dan b = 0.</p>
+            <p><b>Contoh:</b> C(4, 1) dirotasi 90&deg; terhadap P(2, 1) &rarr; x&prime; = 2 + (4 &minus; 2)&middot;0 &minus; (1 &minus; 1)&middot;1 = <b>2</b>, y&prime; = 1 + (4 &minus; 2)&middot;1 + (1 &minus; 1)&middot;0 = <b>3</b>, jadi C&prime;(<b>2, 3</b>). Untuk 180&deg; rumusnya menjadi lebih singkat: (x, y) &rarr; (2a &minus; x, 2b &minus; y).</p>
           </article>
 
           <article class="card">
@@ -619,7 +623,12 @@
                 <button class="seg-btn" type="button" data-angle="270">270&deg;</button>
                 <button class="seg-btn" type="button" data-angle="-90">&minus;90&deg;</button>
               </div>
-              <p style="margin-top:12px">Sudut positif = berlawanan arah jarum jam. Seret <b>titik kuning</b> di bidang untuk memindahkan pusat putaran dari O(0, 0).</p>
+              <p style="margin-top:12px"><b>Pusat putaran P(a, b):</b></p>
+              <div style="display:flex; gap:10px">
+                <label style="flex:1">a = <input type="number" id="inpPusatA" min="-9.5" max="9.5" step="0.5" value="0" style="width:100%" /></label>
+                <label style="flex:1">b = <input type="number" id="inpPusatB" min="-9.5" max="9.5" step="0.5" value="0" style="width:100%" /></label>
+              </div>
+              <p style="margin-top:12px">Sudut positif = berlawanan arah jarum jam. Seret <b>titik kuning</b> di bidang untuk memindahkan pusat putaran, atau isi langsung nilai a dan b di atas. Pusat O(0, 0) hanyalah kasus khusus dari pusat P(a, b).</p>
             </div>
 
             <div class="card" id="ctl-dilatasi" hidden>
@@ -1320,6 +1329,7 @@
         var rad = params.angle * Math.PI / 180;
         var c = Math.cos(rad), s = Math.sin(rad);
         return 'Rotasi pusat P' + fmtCoord(centerPt.x, centerPt.y) + ', sudut ' + params.angle + '&deg;' +
+          '<br>x&prime; = a + (x &minus; a)&middot;cos &theta; &minus; (y &minus; b)&middot;sin &theta; &nbsp;•&nbsp; y&prime; = b + (x &minus; a)&middot;sin &theta; + (y &minus; b)&middot;cos &theta;' +
           '<br>Matriks rotasi: <span class="matrix"><span>cos ' + params.angle + '&deg;</span><span>−sin ' + params.angle + '&deg;</span><span>sin ' + params.angle + '&deg;</span><span>cos ' + params.angle + '&deg;</span></span>' +
           ' = <span class="matrix"><span>' + fmt(c) + '</span><span>' + fmt(-s) + '</span><span>' + fmt(s) + '</span><span>' + fmt(c) + '</span></span>';
       }
@@ -1375,6 +1385,26 @@
       requestDraw();
     }
     $('rngSudut').addEventListener('input', function(){ params.angle = +this.value; $('outSudut').innerHTML = this.value + '&deg;'; requestDraw(); });
+    function syncPusatInput(){
+      $('inpPusatA').value = centerPt.x;
+      $('inpPusatB').value = centerPt.y;
+    }
+    $('inpPusatA').addEventListener('input', function(){
+      var v = parseFloat(this.value);
+      if(isNaN(v)) return;
+      var c = clampRange(v);
+      centerPt.x = c;
+      if(c !== v) this.value = c;
+      requestDraw();
+    });
+    $('inpPusatB').addEventListener('input', function(){
+      var v = parseFloat(this.value);
+      if(isNaN(v)) return;
+      var c = clampRange(v);
+      centerPt.y = c;
+      if(c !== v) this.value = c;
+      requestDraw();
+    });
     document.querySelectorAll('[data-angle]').forEach(function(b){
       b.addEventListener('click', function(){ setAngle(+b.getAttribute('data-angle')); });
     });
@@ -1456,6 +1486,7 @@
         shapePts[dragTarget.idx] = { x: clampRange(snap(mp.x)), y: clampRange(snap(mp.y)) };
       }else if(dragTarget.kind === 'center'){
         centerPt = { x: clampRange(snap(mp.x)), y: clampRange(snap(mp.y)) };
+        syncPusatInput();
       }else if(dragTarget.kind === 'image'){
         var nx = Math.round(mp.x - dragOffset.x - shapePts[0].x);
         var ny = Math.round(mp.y - dragOffset.y - shapePts[0].y);
