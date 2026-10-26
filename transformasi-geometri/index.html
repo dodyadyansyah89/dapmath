@@ -482,18 +482,19 @@
               </div>
               <h3>2. Refleksi (Pencerminan)</h3>
             </div>
-            <p>Refleksi membalik bangun terhadap suatu <b>garis cermin</b>. Bayangan berjarak sama dari garis cermin, tetapi posisinya terbalik seperti bayangan di cermin.</p>
+            <p>Refleksi membalik bangun terhadap suatu <b>garis cermin</b> — atau terhadap suatu <b>titik cermin</b>. Bayangan berjarak sama dari cermin, tetapi posisinya terbalik seperti bayangan di cermin. Refleksi terhadap titik sama dengan memutar bangun 180&deg; terhadap titik itu.</p>
             <table class="mini">
               <tr><th>Garis cermin</th><th class="num">(x, y) &rarr;</th><th>Matriks</th></tr>
               <tr><td>Sumbu X</td><td class="num">(x, &minus;y)</td><td><span class="matrix"><span>1</span><span>0</span><span>0</span><span>&minus;1</span></span></td></tr>
               <tr><td>Sumbu Y</td><td class="num">(&minus;x, y)</td><td><span class="matrix"><span>&minus;1</span><span>0</span><span>0</span><span>1</span></span></td></tr>
               <tr><td>Titik asal O(0,0)</td><td class="num">(&minus;x, &minus;y)</td><td><span class="matrix"><span>&minus;1</span><span>0</span><span>0</span><span>&minus;1</span></span></td></tr>
+              <tr><td>Titik P(a, b)</td><td class="num">(2a &minus; x, 2b &minus; y)</td><td>—</td></tr>
               <tr><td>Garis y = x</td><td class="num">(y, x)</td><td><span class="matrix"><span>0</span><span>1</span><span>1</span><span>0</span></span></td></tr>
               <tr><td>Garis y = &minus;x</td><td class="num">(&minus;y, &minus;x)</td><td><span class="matrix"><span>0</span><span>&minus;1</span><span>&minus;1</span><span>0</span></span></td></tr>
               <tr><td>Garis x = h</td><td class="num">(2h &minus; x, y)</td><td>—</td></tr>
               <tr><td>Garis y = k</td><td class="num">(x, 2k &minus; y)</td><td>—</td></tr>
             </table>
-            <p><b>Contoh:</b> B(3, &minus;2) dicerminkan terhadap sumbu X &rarr; <b>B&prime;(3, 2)</b>.</p>
+            <p><b>Contoh:</b> B(3, &minus;2) dicerminkan terhadap sumbu X &rarr; <b>B&prime;(3, 2)</b>. K(&minus;4, 2) dicerminkan terhadap titik asal O &rarr; <b>K&prime;(4, &minus;2)</b>. A(3, 1) dicerminkan terhadap titik P(1, 2) &rarr; A&prime;(2&middot;1 &minus; 3, 2&middot;2 &minus; 1) = <b>A&prime;(&minus;1, 3)</b> — periksa: titik tengah A dan A&prime; tepat berada di P(1, 2).</p>
           </article>
 
           <article class="card">
@@ -567,7 +568,7 @@
               <span><i class="swatch" style="background:#ff6b4a"></i> Bayangan</span>
               <span><i class="swatch" style="background:#ffb020"></i> Pusat (seret)</span>
             </div>
-            <p class="hint">Tips: <b>seret titik sudut bangun biru</b> untuk mengubah bentuknya. Pada mode Rotasi dan Dilatasi, <b>seret titik kuning</b> untuk memindahkan titik pusatnya.</p>
+            <p class="hint">Tips: <b>seret titik sudut bangun biru</b> untuk mengubah bentuknya. Pada mode Rotasi, Dilatasi, dan Refleksi titik, <b>seret titik kuning</b> untuk memindahkan titik pusat/cerminnya.</p>
             <div class="seg-row" style="margin-top:12px">
               <button class="seg-btn active" type="button" data-shape="segitiga">Segitiga</button>
               <button class="seg-btn" type="button" data-shape="persegi">Persegi</button>
@@ -591,7 +592,7 @@
             </div>
 
             <div class="card" id="ctl-refleksi" hidden>
-              <h3>Pilih Garis Cermin</h3>
+              <h3>Pilih Cermin (Garis atau Titik)</h3>
               <div class="seg-row" id="mirrorRow">
                 <button class="seg-btn active" type="button" data-mirror="sbx">Sumbu X</button>
                 <button class="seg-btn" type="button" data-mirror="sby">Sumbu Y</button>
@@ -599,6 +600,8 @@
                 <button class="seg-btn" type="button" data-mirror="yminx">y = &minus;x</button>
                 <button class="seg-btn" type="button" data-mirror="xh">x = h</button>
                 <button class="seg-btn" type="button" data-mirror="yk">y = k</button>
+                <button class="seg-btn" type="button" data-mirror="titikO">Titik O</button>
+                <button class="seg-btn" type="button" data-mirror="titikP">Titik P(a, b)</button>
               </div>
               <div class="ctl" id="ctlH" hidden>
                 <label for="rngH">Posisi garis x = h <output id="outH">2</output></label>
@@ -608,7 +611,14 @@
                 <label for="rngK">Posisi garis y = k <output id="outK">1</output></label>
                 <input type="range" id="rngK" min="-6" max="6" step="1" value="1" />
               </div>
-              <p>Garis cermin digambar <b>putus-putus ungu</b>. Perhatikan: bayangan selalu berjarak sama dari garis cermin.</p>
+              <div class="ctl" id="ctlTitikP" hidden>
+                <label>Titik cermin P(a, b)</label>
+                <div style="display:flex; gap:10px">
+                  <label style="flex:1">a = <input type="number" id="inpCerminA" min="-9.5" max="9.5" step="0.5" value="0" style="width:100%" /></label>
+                  <label style="flex:1">b = <input type="number" id="inpCerminB" min="-9.5" max="9.5" step="0.5" value="0" style="width:100%" /></label>
+                </div>
+              </div>
+              <p>Garis cermin digambar <b>putus-putus ungu</b>. Perhatikan: bayangan selalu berjarak sama dari cermin. Untuk cermin titik, <b>titik kuning</b> menandai titik cerminnya — seret titik kuning atau isi nilai a dan b di atas.</p>
             </div>
 
             <div class="card" id="ctl-rotasi" hidden>
@@ -1130,6 +1140,8 @@
           case 'yminx': return { x: -y, y: -x };
           case 'xh':  return { x: 2 * params.h - x, y: y };
           case 'yk':  return { x: x, y: 2 * params.k - y };
+          case 'titikO': return { x: -x, y: -y };
+          case 'titikP': return { x: 2 * c.x - x, y: 2 * c.y - y };
         }
       }
       if(labMode === 'rotasi'){
@@ -1178,6 +1190,7 @@
     }
     function drawMirrorLine(w){
       if(labMode !== 'refleksi') return;
+      if(params.mirror === 'titikO' || params.mirror === 'titikP') return;
       var a, b;
       switch(params.mirror){
         case 'sbx': a = {x:-RANGE,y:0}; b = {x:RANGE,y:0}; break;
@@ -1226,8 +1239,11 @@
       });
     }
     function drawCenter(w){
-      if(labMode !== 'rotasi' && labMode !== 'dilatasi') return;
-      var q = toPx(centerPt, w);
+      var isTitikO = (labMode === 'refleksi' && params.mirror === 'titikO');
+      var isTitikP = (labMode === 'refleksi' && params.mirror === 'titikP');
+      if(labMode !== 'rotasi' && labMode !== 'dilatasi' && !isTitikO && !isTitikP) return;
+      var pt = isTitikO ? { x: 0, y: 0 } : centerPt;
+      var q = toPx(pt, w);
       lctx.fillStyle = '#ffb020';
       lctx.strokeStyle = '#fff';
       lctx.lineWidth = 3;
@@ -1235,7 +1251,7 @@
       lctx.fillStyle = '#7a5200';
       lctx.font = '800 11px "Baloo 2", sans-serif';
       lctx.textAlign = 'center';
-      lctx.fillText('P', q.x, q.y + 4);
+      lctx.fillText(isTitikO ? 'O' : 'P', q.x, q.y + 4);
       // garis bantu dari pusat ke titik bayangan (dilatasi)
       if(labMode === 'dilatasi' && imgDisp){
         lctx.strokeStyle = 'rgba(255,176,32,.55)';
@@ -1314,14 +1330,16 @@
           '<span class="matrix col"><span>' + params.a + '</span><span>' + params.b + '</span></span>';
       }
       if(labMode === 'refleksi'){
-        var names = { sbx:'Sumbu X', sby:'Sumbu Y', yx:'Garis y = x', yminx:'Garis y = −x', xh:'Garis x = ' + params.h, yk:'Garis y = ' + params.k };
+        var names = { sbx:'Sumbu X', sby:'Sumbu Y', yx:'Garis y = x', yminx:'Garis y = −x', xh:'Garis x = ' + params.h, yk:'Garis y = ' + params.k, titikO:'Titik asal O(0, 0)', titikP:'Titik P' + fmtCoord(centerPt.x, centerPt.y) };
         var rules = {
           sbx:'(x, y) &rarr; (x, −y) &nbsp;•&nbsp; matriks <span class="matrix"><span>1</span><span>0</span><span>0</span><span>−1</span></span>',
           sby:'(x, y) &rarr; (−x, y) &nbsp;•&nbsp; matriks <span class="matrix"><span>−1</span><span>0</span><span>0</span><span>1</span></span>',
           yx:'(x, y) &rarr; (y, x) &nbsp;•&nbsp; matriks <span class="matrix"><span>0</span><span>1</span><span>1</span><span>0</span></span>',
           yminx:'(x, y) &rarr; (−y, −x) &nbsp;•&nbsp; matriks <span class="matrix"><span>0</span><span>−1</span><span>−1</span><span>0</span></span>',
           xh:'(x, y) &rarr; (2·' + params.h + ' − x, y) = (' + (2*params.h) + ' − x, y)',
-          yk:'(x, y) &rarr; (x, 2·' + params.k + ' − y) = (x, ' + (2*params.k) + ' − y)'
+          yk:'(x, y) &rarr; (x, 2·' + params.k + ' − y) = (x, ' + (2*params.k) + ' − y)',
+          titikO:'(x, y) &rarr; (−x, −y) &nbsp;•&nbsp; matriks <span class="matrix"><span>−1</span><span>0</span><span>0</span><span>−1</span></span>',
+          titikP:'(x, y) &rarr; (2a − x, 2b − y) = (' + fmt(2*centerPt.x) + ' − x, ' + fmt(2*centerPt.y) + ' − y)'
         };
         return 'Cermin: <b>' + names[params.mirror] + '</b><br>' + rules[params.mirror];
       }
@@ -1360,6 +1378,8 @@
       ['translasi','refleksi','rotasi','dilatasi'].forEach(function(m){
         $('ctl-' + m).hidden = (m !== mode);
       });
+      syncPusatInput();
+      syncCerminInput();
       requestDraw();
     }
     document.querySelectorAll('.mode-btn').forEach(function(b){
@@ -1373,11 +1393,35 @@
         document.querySelectorAll('#mirrorRow .seg-btn').forEach(function(x){ x.classList.toggle('active', x === b); });
         $('ctlH').hidden = params.mirror !== 'xh';
         $('ctlK').hidden = params.mirror !== 'yk';
+        $('ctlTitikP').hidden = params.mirror !== 'titikP';
+        if(params.mirror === 'titikP') syncCerminInput();
         requestDraw();
       });
     });
     $('rngH').addEventListener('input', function(){ params.h = +this.value; $('outH').textContent = this.value; requestDraw(); });
     $('rngK').addEventListener('input', function(){ params.k = +this.value; $('outK').textContent = this.value; requestDraw(); });
+    function syncCerminInput(){
+      $('inpCerminA').value = centerPt.x;
+      $('inpCerminB').value = centerPt.y;
+    }
+    $('inpCerminA').addEventListener('input', function(){
+      var v = parseFloat(this.value);
+      if(isNaN(v)) return;
+      var c = clampRange(v);
+      centerPt.x = c;
+      if(c !== v) this.value = c;
+      syncPusatInput();
+      requestDraw();
+    });
+    $('inpCerminB').addEventListener('input', function(){
+      var v = parseFloat(this.value);
+      if(isNaN(v)) return;
+      var c = clampRange(v);
+      centerPt.y = c;
+      if(c !== v) this.value = c;
+      syncPusatInput();
+      requestDraw();
+    });
     function setAngle(v){
       params.angle = v;
       $('rngSudut').value = Math.max(-180, Math.min(180, v));
@@ -1395,6 +1439,7 @@
       var c = clampRange(v);
       centerPt.x = c;
       if(c !== v) this.value = c;
+      syncCerminInput();
       requestDraw();
     });
     $('inpPusatB').addEventListener('input', function(){
@@ -1403,6 +1448,7 @@
       var c = clampRange(v);
       centerPt.y = c;
       if(c !== v) this.value = c;
+      syncCerminInput();
       requestDraw();
     });
     document.querySelectorAll('[data-angle]').forEach(function(b){
@@ -1449,7 +1495,7 @@
     function hitTest(pos){
       var w = pos.w;
       var threshold = 22;
-      if(labMode === 'rotasi' || labMode === 'dilatasi'){
+      if(labMode === 'rotasi' || labMode === 'dilatasi' || (labMode === 'refleksi' && params.mirror === 'titikP')){
         var cp = toPx(centerPt, w);
         if(Math.hypot(pos.x - cp.x, pos.y - cp.y) < threshold) return { kind: 'center' };
       }
@@ -1487,6 +1533,7 @@
       }else if(dragTarget.kind === 'center'){
         centerPt = { x: clampRange(snap(mp.x)), y: clampRange(snap(mp.y)) };
         syncPusatInput();
+        syncCerminInput();
       }else if(dragTarget.kind === 'image'){
         var nx = Math.round(mp.x - dragOffset.x - shapePts[0].x);
         var ny = Math.round(mp.y - dragOffset.y - shapePts[0].y);
