@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>MPI Prompter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f4f6f5;
+        --surface: #ffffff;
+        --surface-2: #eef3f1;
+        --ink: #14201d;
+        --ink-2: #43534e;
+        --muted: #6b7a75;
+        --line: #d8e0dc;
+        --brand: #0b6e63;
+        --brand-strong: #084f47;
+        --brand-soft: #e0f0ec;
+        --accent: #d97706;
+        --accent-soft: #fdf0dd;
+        --danger: #b3261e;
+        --code-bg: #10201c;
+        --code-ink: #dcebe5;
+        --shadow: 0 1px 2px rgba(16, 40, 34, 0.06), 0 8px 24px rgba(16, 40, 34, 0.07);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1512;
+          --surface: #16211d;
+          --surface-2: #1c2a25;
+          --ink: #e8f0ec;
+          --ink-2: #b7c6c0;
+          --muted: #8ba198;
+          --line: #2b3d36;
+          --brand: #2fbfa9;
+          --brand-strong: #7fe0cd;
+          --brand-soft: #17332c;
+          --accent: #f2a93b;
+          --accent-soft: #3a2c12;
+          --danger: #ff8a80;
+          --code-bg: #081210;
+          --code-ink: #d7e9e1;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 1240px; margin: 0 auto; padding: 28px 20px 64px; }
+
+      /* ---------- Intro ---------- */
+      .intro { max-width: 760px; margin-bottom: 26px; }
+      .intro h1 {
+        font-size: clamp(1.55rem, 3.4vw, 2.3rem);
+        line-height: 1.18;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin: 0 0 10px;
+      }
+      .intro h1 em { font-style: normal; color: var(--brand); }
+      .intro p { margin: 0; color: var(--ink-2); font-size: 1.02rem; }
+      .steps {
+        display: flex; flex-wrap: wrap; gap: 8px 22px;
+        margin: 18px 0 0; padding: 0; list-style: none;
+        font-size: 0.92rem; font-weight: 600; color: var(--ink-2);
+      }
+      .steps li { display: flex; align-items: center; gap: 8px; }
+      .steps .n {
+        display: inline-grid; place-items: center;
+        width: 24px; height: 24px; border-radius: 50%;
+        background: var(--brand); color: #fff; font-size: 0.8rem; font-weight: 800;
+        flex: none;
+      }
+      @media (prefers-color-scheme: dark) { .steps .n { color: #08130f; } }
+
+      /* ---------- Layout ---------- */
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 460px;
+        gap: 22px;
+        align-items: start;
+      }
+      @media (max-width: 1020px) {
+        .layout { grid-template-columns: minmax(0, 1fr); }
+      }
+
+      /* ---------- Form sections ---------- */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 22px 22px 8px;
+        margin-bottom: 18px;
+      }
+      .card-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 6px; }
+      .card-head .num {
+        flex: none; width: 34px; height: 34px; border-radius: 10px;
+        background: var(--brand-soft); color: var(--brand);
+        display: grid; place-items: center; font-weight: 800; font-size: 1rem;
+      }
+      .card-head h2 { margin: 2px 0 2px; font-size: 1.13rem; font-weight: 800; letter-spacing: -0.01em; }
+      .card-head p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+      @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+      .field { margin-bottom: 16px; }
+      .field label, .field .flabel {
+        display: block; font-weight: 700; font-size: 0.9rem; margin-bottom: 6px;
+      }
+      .field .hint { font-weight: 400; color: var(--muted); font-size: 0.82rem; margin-top: 4px; }
+      .req { color: var(--accent); font-weight: 800; }
+      input[type="text"], select, textarea {
+        width: 100%; font: inherit; font-size: 0.97rem;
+        padding: 10px 12px;
+        border: 1.5px solid var(--line); border-radius: 10px;
+        background: var(--surface); color: var(--ink);
+      }
+      textarea { resize: vertical; min-height: 84px; }
+      input[type="text"]:focus, select:focus, textarea:focus {
+        outline: none; border-color: var(--brand);
+        box-shadow: 0 0 0 3px var(--brand-soft);
+      }
+      .field.missing input, .field.missing textarea {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      /* chips (radio) */
+      .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+      .chips label {
+        position: relative;
+        margin: 0; font-weight: 600; font-size: 0.9rem;
+        border: 1.5px solid var(--line); border-radius: 999px;
+        padding: 7px 14px; cursor: pointer; background: var(--surface);
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .chips input {
+        position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+        overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+        white-space: nowrap; border: 0;
+      }
+      .chips label:has(input:checked) {
+        background: var(--brand); border-color: var(--brand); color: #fff;
+      }
+      @media (prefers-color-scheme: dark) {
+        .chips label:has(input:checked) { color: #08130f; }
+      }
+      .chips label:has(input:focus-visible) { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+      /* checkboxes */
+      .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+      @media (max-width: 560px) { .checks { grid-template-columns: 1fr; } }
+      .checks label {
+        display: flex; gap: 9px; align-items: flex-start;
+        font-size: 0.93rem; font-weight: 500; cursor: pointer;
+        padding: 8px 10px; border-radius: 10px; border: 1px solid transparent;
+      }
+      .checks label:hover { background: var(--surface-2); }
+      .checks input[type="checkbox"] {
+        width: 18px; height: 18px; margin-top: 2px; flex: none;
+        accent-color: var(--brand); cursor: pointer;
+      }
+      .checks label:has(input:checked) { border-color: var(--line); background: var(--surface-2); }
+
+      .form-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 2px 0 20px; }
+
+      /* ---------- Buttons ---------- */
+      .btn {
+        font: inherit; font-weight: 700; font-size: 0.95rem;
+        border-radius: 10px; padding: 11px 18px; cursor: pointer;
+        border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+        display: inline-flex; align-items: center; gap: 8px;
+        transition: transform 0.1s, background 0.15s, border-color 0.15s;
+        text-decoration: none;
+      }
+      .btn:hover { border-color: var(--brand); }
+      .btn:active { transform: translateY(1px); }
+      .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+      @media (prefers-color-scheme: dark) { .btn.primary { color: #08130f; } }
+      .btn.primary:hover { background: var(--brand-strong); border-color: var(--brand-strong); }
+      @media (prefers-color-scheme: dark) { .btn.primary:hover { color: #08130f; } }
+      .btn.accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .btn.small { padding: 7px 12px; font-size: 0.86rem; border-radius: 8px; }
+      .btn svg { width: 17px; height: 17px; flex: none; }
+
+      /* ---------- Output panel ---------- */
+      .output {
+        position: sticky; top: 18px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      @media (max-width: 1020px) { .output { position: static; } }
+      .output-head {
+        padding: 16px 20px 12px;
+        display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+      }
+      .output-head h2 { margin: 0; font-size: 1.1rem; font-weight: 800; }
+      .charcount { color: var(--muted); font-size: 0.82rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .completeness { padding: 0 20px 12px; }
+      .bar { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+      .bar > div { height: 100%; background: var(--brand); border-radius: 99px; transition: width 0.25s ease; }
+      .completeness p { margin: 6px 0 0; font-size: 0.82rem; color: var(--muted); }
+      .completeness p.warn { color: var(--accent); font-weight: 600; }
+      .promptbox {
+        background: var(--code-bg); color: var(--code-ink);
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.82rem; line-height: 1.6;
+        padding: 16px 18px;
+        max-height: 430px; overflow-y: auto;
+        white-space: pre-wrap; word-break: break-word;
+        border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+        margin: 0;
+      }
+      .output-actions { padding: 14px 20px 6px; display: flex; flex-wrap: wrap; gap: 9px; }
+      .send-label { padding: 8px 20px 0; font-size: 0.85rem; font-weight: 700; color: var(--ink-2); }
+      .send-row { padding: 8px 20px 18px; display: flex; flex-wrap: wrap; gap: 9px; }
+
+      /* ---------- Library ---------- */
+      .library { margin-top: 30px; }
+      .library-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+      .library-head h2 { font-size: 1.25rem; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+      .library-head p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+      .lib-empty {
+        border: 1.5px dashed var(--line); border-radius: var(--radius);
+        padding: 26px 20px; text-align: center; color: var(--muted);
+        margin-top: 14px; font-size: 0.95rem; background: var(--surface);
+      }
+      .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-top: 14px; }
+      .lib-card {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow);
+      }
+      .lib-card h3 { margin: 0 0 4px; font-size: 1rem; font-weight: 800; }
+      .lib-card .meta { color: var(--muted); font-size: 0.82rem; margin-bottom: 8px; }
+      .lib-card .excerpt {
+        font-size: 0.85rem; color: var(--ink-2);
+        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+        margin: 0 0 12px;
+      }
+      .lib-card .row { display: flex; flex-wrap: wrap; gap: 7px; }
+
+      footer {
+        margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--line);
+        color: var(--muted); font-size: 0.88rem;
+        display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;
+      }
+
+      /* ---------- Toast ---------- */
+      .toast {
+        position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 20px);
+        background: var(--ink); color: var(--bg);
+        padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 0.93rem;
+        opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s;
+        z-index: 50; max-width: calc(100vw - 32px); text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      }
+      .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .toast, .bar > div, .btn { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="intro">
+        <h1>Isi formulir, dapatkan <em>prompt siap pakai</em> untuk membuat media pembelajaran interaktif</h1>
+        <p>
+          Jawaban Anda dirangkai menjadi satu prompt lengkap — berisi identitas pembelajaran, bentuk media,
+          arahan cerita dan visual, sampai ketentuan teknisnya. Salin prompt-nya, lalu tempel ke AI favorit
+          Anda (misalnya Gemini) untuk dibuatkan medianya.
+        </p>
+        <ol class="steps">
+          <li><span class="n">1</span> Isi 4 bagian formulir</li>
+          <li><span class="n">2</span> Periksa hasil prompt</li>
+          <li><span class="n">3</span> Salin &amp; kirim ke AI</li>
+        </ol>
+      </header>
+
+      <div class="layout">
+        <!-- ================= FORM ================= -->
+        <form id="mpiForm" autocomplete="off">
+          <!-- Bagian 1 -->
+          <section class="card" aria-labelledby="h1">
+            <div class="card-head">
+              <span class="num">1</span>
+              <div>
+                <h2 id="h1">Identitas Pembelajaran</h2>
+                <p>Siapa yang belajar, mata pelajaran apa, dan apa tujuannya.</p>
+              </div>
+            </div>
+
+            <div class="grid2">
+              <div class="field">
+                <label for="jenjang">Jenjang</label>
+                <select id="jenjang">
+                  <option value="SD">SD / MI</option>
+                  <option value="SMP" selected>SMP / MTs</option>
+                  <option value="SMA">SMA / MA</option>
+                  <option value="SMK">SMK</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="kelas">Kelas</label>
+                <select id="kelas"></select>
+              </div>
+            </div>
+            <div class="grid2">
+              <div class="field">
+                <label for="fase">Fase</label>
+                <select id="fase">
+                  <option value="A">Fase A (kelas 1–2)</option>
+                  <option value="B">Fase B (kelas 3–4)</option>
+                  <option value="C">Fase C (kelas 5–6)</option>
+                  <option value="D" selected>Fase D (kelas 7–9)</option>
+                  <option value="E">Fase E (kelas 10)</option>
+                  <option value="F">Fase F (kelas 11–12)</option>
+                </select>
+                <p class="hint">Terisi otomatis mengikuti kelas, silakan ubah bila perlu.</p>
+              </div>
+              <div class="field" id="fieldMapel">
+                <label for="mapel">Mata Pelajaran <span class="req">*</span></label>
+                <input type="text" id="mapel" list="mapelList" placeholder="cth. Matematika" />
+                <datalist id="mapelList">
+                  <option value="Matematika"></option>
+                  <option value="Bahasa Indonesia"></option>
+                  <option value="Bahasa Inggris"></option>
+                  <option value="IPA"></option>
+                  <option value="IPS"></option>
+                  <option value="Informatika"></option>
+                  <option value="Pendidikan Pancasila"></option>
+                  <option value="Pendidikan Agama dan Budi Pekerti"></option>
+                  <option value="PJOK"></option>
+                  <option value="Seni Budaya"></option>
+                  <option value="Bahasa Daerah"></option>
+                  <option value="IPAS"></option>
+                  <option value="Biologi"></option>
+                  <option value="Fisika"></option>
+                  <option value="Kimia"></option>
+                  <option value="Ekonomi"></option>
+                  <option value="Geografi"></option>
+                  <option value="Sejarah"></option>
+                  <option value="Sosiologi"></option>
+                </datalist>
+              </div>
+            </div>
+            <div class="field" id="fieldMateri">
+              <label for="materi">Materi Pokok <span class="req">*</span></label>
+              <input type="text" id="materi" placeholder="cth. Teorema Pythagoras" />
+            </div>
+            <div class="field">
+              <label for="topik">Topik / Submateri <span style="font-weight:400;color:var(--muted)">(opsional)</span></label>
+              <input type="text" id="topik" placeholder="cth. Menemukan rumus dan triple Pythagoras" />
+            </div>
+            <div class="field" id="fieldTp">
+              <label for="tp">Tujuan Pembelajaran (TP) <span class="req">*</span></label>
+              <textarea id="tp" placeholder="cth. Peserta didik dapat menentukan panjang sisi segitiga siku-siku menggunakan teorema Pythagoras dan menerapkannya dalam masalah sehari-hari."></textarea>
+              <p class="hint">Salin dari ATP / perangkat ajar Anda — jangan mengarang TP, karena seluruh isi media akan diturunkan dari sini.</p>
+            </div>
+            <div class="field">
+              <span class="flabel">Dimensi Profil Lulusan yang dikembangkan</span>
+              <div class="checks" id="dplChecks">
+                <label><input type="checkbox" value="Keimanan dan Ketakwaan terhadap Tuhan Yang Maha Esa" /> Keimanan &amp; Ketakwaan</label>
+                <label><input type="checkbox" value="Kewargaan" /> Kewargaan</label>
+                <label><input type="checkbox" value="Penalaran Kritis" checked /> Penalaran Kritis</label>
+                <label><input type="checkbox" value="Kreativitas" /> Kreativitas</label>
+                <label><input type="checkbox" value="Kolaborasi" /> Kolaborasi</label>
+                <label><input type="checkbox" value="Kemandirian" checked /> Kemandirian</label>
+                <label><input type="checkbox" value="Kesehatan" /> Kesehatan</label>
+                <label><input type="checkbox" value="Komunikasi" /> Komunikasi</label>
+              </div>
+            </div>
+          </section>
+
+          <!-- Bagian 2 -->
+          <section class="card" aria-labelledby="h2">
+            <div class="card-head">
+              <span class="num">2</span>
+              <div>
+                <h2 id="h2">Jenis, Bentuk &amp; Model Media</h2>
+                <p>Media seperti apa yang akan dimainkan dan dipelajari siswa.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">Jenis media</span>
+              <div class="chips" id="jenisChips">
+                <label><input type="radio" name="jenis" value="Game petualangan berbasis misi" checked /> Game Petualangan</label>
+                <label><input type="radio" name="jenis" value="Game kuis interaktif" /> Game Kuis</label>
+                <label><input type="radio" name="jenis" value="Simulasi interaktif yang dapat dimanipulasi siswa" /> Simulasi Interaktif</label>
+                <label><input type="radio" name="jenis" value="Kuis interaktif dengan umpan balik langsung" /> Kuis Interaktif</label>
+                <label><input type="radio" name="jenis" value="Cerita interaktif bercabang (pilih jalan ceritamu)" /> Cerita Interaktif</label>
+                <label><input type="radio" name="jenis" value="Komik interaktif dengan panel dan balon percakapan" /> Komik Interaktif</label>
+                <label><input type="radio" name="jenis" value="Eksplorasi virtual (menjelajahi tempat/objek secara virtual)" /> Eksplorasi Virtual</label>
+                <label><input type="radio" name="jenis" value="Latihan interaktif bertahap (drill & practice)" /> Latihan Bertahap</label>
+                <label><input type="radio" name="jenis" value="Campuran: eksplorasi materi, aktivitas interaktif, dan kuis dalam satu media" /> Campuran</label>
+              </div>
+            </div>
+
+            <div class="grid2">
+              <div class="field">
+                <label for="model">Model pembelajaran</label>
+                <select id="model">
+                  <option value="Discovery Learning (siswa menemukan konsep lewat aktivitas)" selected>Discovery Learning</option>
+                  <option value="Problem Based Learning (berbasis masalah nyata)">Problem Based Learning</option>
+                  <option value="Project Based Learning (berbasis proyek)">Project Based Learning</option>
+                  <option value="Inkuiri Terbimbing">Inkuiri Terbimbing</option>
+                  <option value="Gamifikasi (misi, poin, dan tantangan)">Gamifikasi</option>
+                  <option value="Pembelajaran Langsung (penjelasan bertahap lalu latihan)">Pembelajaran Langsung</option>
+                  <option value="Tanpa model khusus — fokus pada eksplorasi bebas dan latihan">Tanpa model khusus</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="jumlahSoal">Jumlah soal evaluasi</label>
+                <select id="jumlahSoal">
+                  <option value="5">5 soal</option>
+                  <option value="10" selected>10 soal</option>
+                  <option value="15">15 soal</option>
+                  <option value="20">20 soal</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">Fitur interaktif di dalam media</span>
+              <div class="checks" id="fiturChecks">
+                <label><input type="checkbox" value="Skor, poin, dan lencana penghargaan" checked /> Skor, poin &amp; lencana</label>
+                <label><input type="checkbox" value="Level atau misi yang terbuka bertahap" checked /> Level / misi bertahap</label>
+                <label><input type="checkbox" value="Umpan balik langsung berisi penjelasan setiap jawaban" checked /> Umpan balik + penjelasan</label>
+                <label><input type="checkbox" value="Tombol petunjuk (hint) yang dapat dipakai siswa saat kesulitan" /> Tombol petunjuk (hint)</label>
+                <label><input type="checkbox" value="Timer / batas waktu pada bagian tantangan" /> Timer tantangan</label>
+                <label><input type="checkbox" value="Soal dan pilihan jawaban diacak setiap kali dimainkan" /> Soal diacak</label>
+                <label><input type="checkbox" value="Elemen seret dan letakkan (drag and drop)" /> Seret &amp; letakkan</label>
+                <label><input type="checkbox" value="Efek suara sederhana untuk jawaban benar/salah dan keberhasilan misi" /> Efek suara sederhana</label>
+              </div>
+            </div>
+          </section>
+
+          <!-- Bagian 3 -->
+          <section class="card" aria-labelledby="h3">
+            <div class="card-head">
+              <span class="num">3</span>
+              <div>
+                <h2 id="h3">Cerita &amp; Visual</h2>
+                <p>Bungkus cerita dan tampilan yang membuat siswa betah belajar.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="tema">Tema / alur cerita</label>
+              <input type="text" id="tema" placeholder="cth. Petualangan menyelamatkan desa dari banjir" />
+              <p class="hint">Kosongkan bila media tidak memerlukan cerita.</p>
+            </div>
+            <div class="grid2">
+              <div class="field">
+                <label for="maskot">Maskot / tokoh pemandu</label>
+                <input type="text" id="maskot" placeholder="cth. Bibo, robot kecil penjelajah" />
+              </div>
+              <div class="field">
+                <label for="konteks">Konteks lokal / keseharian</label>
+                <input type="text" id="konteks" placeholder="cth. Pasar tradisional dan kehidupan kota Jakarta" />
+              </div>
+            </div>
+            <div class="field">
+              <span class="flabel">Gaya visual</span>
+              <div class="chips" id="gayaChips">
+                <label><input type="radio" name="gaya" value="Ceria dan penuh warna, ramah anak" checked /> Ceria &amp; Penuh Warna</label>
+                <label><input type="radio" name="gaya" value="Ilustrasi flat modern yang bersih" /> Flat Modern</label>
+                <label><input type="radio" name="gaya" value="Kartun bergaya komik anak" /> Kartun / Komik</label>
+                <label><input type="radio" name="gaya" value="Ilustrasi buku cerita (storybook)" /> Buku Cerita</label>
+                <label><input type="radio" name="gaya" value="Minimalis dan bersih, fokus pada isi" /> Minimalis</label>
+                <label><input type="radio" name="gaya" value="Futuristik bertema luar angkasa dan teknologi" /> Futuristik</label>
+              </div>
+            </div>
+            <div class="field">
+              <label for="palet">Palet warna utama</label>
+              <select id="palet">
+                <option value="Cerah ceria (kuning, oranye, hijau muda)" selected>Cerah ceria — kuning, oranye, hijau muda</option>
+                <option value="Hijau toska dan kuning kunyit (nuansa segar khas Indonesia)">Hijau toska &amp; kuning kunyit</option>
+                <option value="Biru laut dan putih (tenang dan fokus)">Biru laut &amp; putih</option>
+                <option value="Hijau alam dan cokelat tanah (nuansa alam)">Hijau alam &amp; cokelat tanah</option>
+                <option value="Merah muda dan ungu lembut (nuansa ceria feminin)">Merah muda &amp; ungu lembut</option>
+                <option value="Monokrom dengan satu warna aksen (tampilan elegan)">Monokrom + satu aksen</option>
+                <option value="Bebas — sesuaikan dengan tema cerita">Bebas, sesuaikan tema</option>
+              </select>
+            </div>
+          </section>
+
+          <!-- Bagian 4 -->
+          <section class="card" aria-labelledby="h4">
+            <div class="card-head">
+              <span class="num">4</span>
+              <div>
+                <h2 id="h4">Akses &amp; Ketentuan Teknis</h2>
+                <p>Syarat wajib agar media benar-benar bisa dipakai di kelas Anda.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="perangkat">Perangkat utama siswa</label>
+              <select id="perangkat">
+                <option value="HP Android siswa" selected>HP Android siswa</option>
+                <option value="HP dan tablet siswa">HP &amp; tablet siswa</option>
+                <option value="Laptop / Chromebook sekolah">Laptop / Chromebook</option>
+                <option value="Layar besar kelas: PID / IFP / TV 52 inci yang disentuh dan dikendalikan guru">Layar PID / IFP / TV kelas</option>
+                <option value="Campuran: HP siswa dan layar besar kelas">Campuran HP &amp; layar kelas</option>
+              </select>
+            </div>
+            <div class="field">
+              <span class="flabel">Ketentuan yang wajib dipenuhi media</span>
+              <div class="checks" id="teknisChecks">
+                <label><input type="checkbox" value="Seluruh media berada dalam SATU file HTML mandiri (semua CSS dan JavaScript tertanam di dalam file)" checked /> Satu file HTML mandiri</label>
+                <label><input type="checkbox" value="Dapat berjalan OFFLINE tanpa internet: tanpa CDN, tanpa font eksternal, tanpa gambar dari internet (gambar dibuat dengan CSS/SVG/emoji di dalam file)" checked /> Bisa offline, tanpa CDN</label>
+                <label><input type="checkbox" value="Tanpa instalasi dan tanpa login/daftar — cukup buka file di browser" checked /> Tanpa install &amp; tanpa login</label>
+                <label><input type="checkbox" value="Responsif dan nyaman disentuh di layar HP maupun tablet (tombol besar, minimal 44px)" checked /> Responsif HP &amp; tablet</label>
+                <label><input type="checkbox" value="Nyaman dipakai di laptop/desktop dengan mouse dan keyboard" /> Optimal di laptop</label>
+                <label><input type="checkbox" value="Mode layar besar untuk PID/IFP/TV: huruf ekstra besar, kontras tinggi, terbaca dari bangku paling belakang" /> Mode layar besar PID/IFP/TV</label>
+                <label><input type="checkbox" value="Diferensiasi: tersedia jalur/rintangan dengan tingkat kesulitan mudah, sedang, dan sulit agar semua siswa dapat mengikuti" /> Diferensiasi 3 tingkat kesulitan</label>
+                <label><input type="checkbox" value="Progres dan skor siswa tersimpan otomatis di perangkat (localStorage) sehingga dapat dilanjutkan lain waktu" /> Progres tersimpan di perangkat</label>
+                <label><input type="checkbox" value="Halaman hasil akhir dapat dicetak / disimpan PDF sebagai bukti belajar siswa" /> Hasil akhir bisa dicetak</label>
+                <label><input type="checkbox" value="Seluruh teks, petunjuk, dan umpan balik menggunakan Bahasa Indonesia yang baik dan sesuai usia siswa" checked /> Bahasa Indonesia penuh</label>
+              </div>
+            </div>
+            <div class="field">
+              <label for="tambahan">Permintaan tambahan <span style="font-weight:400;color:var(--muted)">(opsional)</span></label>
+              <textarea id="tambahan" style="min-height:64px" placeholder="cth. Tambahkan satu halaman refleksi di akhir dan mode berlatih tanpa skor."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn" id="btnContoh">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                Isi Contoh
+              </button>
+              <button type="button" class="btn" id="btnReset">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                Kosongkan Formulir
+              </button>
+            </div>
+          </section>
+        </form>
+
+        <!-- ================= OUTPUT ================= -->
+        <aside class="output" id="outputPanel" aria-labelledby="hOut">
+          <div class="output-head">
+            <h2 id="hOut">Hasil Prompt</h2>
+            <span class="charcount" id="charCount">0 karakter</span>
+          </div>
+          <div class="completeness">
+            <div class="bar"><div id="barFill" style="width:0%"></div></div>
+            <p id="barNote">Isi formulir untuk melengkapi prompt.</p>
+          </div>
+          <pre class="promptbox" id="promptBox">Prompt akan muncul di sini…</pre>
+          <div class="output-actions">
+            <button type="button" class="btn primary" id="btnCopy">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Salin Prompt
+            </button>
+            <button type="button" class="btn" id="btnDownload">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+              Unduh .txt
+            </button>
+            <button type="button" class="btn" id="btnSave">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              Simpan ke Pustaka
+            </button>
+          </div>
+          <p class="send-label">Kirim langsung ke AI (prompt tersalin otomatis, lalu tempel di sana):</p>
+          <div class="send-row">
+            <button type="button" class="btn" data-ai="https://muse.ai/" data-name="Muse">Muse</button>
+            <button type="button" class="btn" data-ai="https://chatgpt.com/" data-name="ChatGPT">ChatGPT</button>
+            <button type="button" class="btn" data-ai="https://claude.ai/" data-name="Claude">Claude</button>
+            <button type="button" class="btn accent" data-ai="https://gemini.google.com/" data-name="Gemini">Gemini</button>
+            <button type="button" class="btn" data-ai="https://chat.deepseek.com/" data-name="DeepSeek">DeepSeek</button>
+            <button type="button" class="btn" data-ai="https://grok.com/" data-name="Grok">Grok</button>
+            <button type="button" class="btn" data-ai="https://copilot.com/" data-name="Copilot">Copilot</button>
+            <button type="button" class="btn" data-ai="https://chat.qwen.ai/" data-name="Qwen">Qwen</button>
+            <button type="button" class="btn" data-ai="https://chat.mistral.ai/chat" data-name="Le Chat">Le Chat</button>
+            <button type="button" class="btn" data-ai="https://www.perplexity.ai/" data-name="Perplexity">Perplexity</button>
+            <button type="button" class="btn" data-ai="https://www.canva.com/" data-name="Canva">Canva</button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- ================= LIBRARY ================= -->
+      <section class="library" aria-labelledby="hLib">
+        <div class="library-head">
+          <h2 id="hLib">Pustaka Prompt Saya</h2>
+          <p>Prompt yang Anda simpan tersimpan permanen di perangkat ini dan tetap ada saat halaman dibuka kembali. Unduh sebagai .txt bila ingin cadangan di luar perangkat.</p>
+        </div>
+        <div class="lib-empty" id="libEmpty">Belum ada prompt tersimpan. Rangkai prompt pertama Anda, lalu klik “Simpan ke Pustaka”.</div>
+        <div class="lib-grid" id="libGrid"></div>
+      </section>
+
+      <footer>
+        <span>MPI Prompter — perangkai prompt media pembelajaran interaktif untuk guru.</span>
+        <span>Dibangun oleh Dody Adyansyah</span>
+      </footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      (function () {
+        "use strict";
+        var $ = function (id) { return document.getElementById(id); };
+        var form = $("mpiForm");
+
+        var KELAS_PER_JENJANG = {
+          SD: ["1", "2", "3", "4", "5", "6"],
+          SMP: ["7", "8", "9"],
+          SMA: ["10", "11", "12"],
+          SMK: ["10", "11", "12"]
+        };
+        var FASE_PER_KELAS = {
+          "1": "A", "2": "A", "3": "B", "4": "B", "5": "C", "6": "C",
+          "7": "D", "8": "D", "9": "D", "10": "E", "11": "F", "12": "F"
+        };
+        var JENJANG_LABEL = { SD: "SD/MI", SMP: "SMP/MTs", SMA: "SMA/MA", SMK: "SMK" };
+
+        function fillKelas() {
+          var jenjang = $("jenjang").value;
+          var sel = $("kelas");
+          var prev = sel.value;
+          sel.innerHTML = "";
+          KELAS_PER_JENJANG[jenjang].forEach(function (k) {
+            var opt = document.createElement("option");
+            opt.value = k; opt.textContent = "Kelas " + k;
+            sel.appendChild(opt);
+          });
+          if (KELAS_PER_JENJANG[jenjang].indexOf(prev) >= 0) sel.value = prev;
+          syncFase();
+        }
+        function syncFase() {
+          var f = FASE_PER_KELAS[$("kelas").value];
+          if (f) $("fase").value = f;
+        }
+        $("jenjang").addEventListener("change", fillKelas);
+        $("kelas").addEventListener("change", function () { syncFase(); update(); });
+
+        function checkedValues(containerId) {
+          var out = [];
+          var boxes = $(containerId).querySelectorAll('input[type="checkbox"]:checked');
+          for (var i = 0; i < boxes.length; i++) out.push(boxes[i].value);
+          return out;
+        }
+        function radioValue(name) {
+          var r = form.querySelector('input[name="' + name + '"]:checked');
+          return r ? r.value : "";
+        }
+        function val(id) { return $(id).value.trim(); }
+
+        function buildPrompt() {
+          var jenjang = JENJANG_LABEL[$("jenjang").value] || $("jenjang").value;
+          var kelas = $("kelas").value;
+          var fase = $("fase").value;
+          var mapel = val("mapel");
+          var materi = val("materi");
+          var topik = val("topik");
+          var tp = val("tp");
+          var dpl = checkedValues("dplChecks");
+          var jenis = radioValue("jenis");
+          var model = $("model").value;
+          var jumlahSoal = $("jumlahSoal").value;
+          var fitur = checkedValues("fiturChecks");
+          var tema = val("tema");
+          var maskot = val("maskot");
+          var konteks = val("konteks");
+          var gaya = radioValue("gaya");
+          var palet = $("palet").value;
+          var perangkat = $("perangkat").value;
+          var teknis = checkedValues("teknisChecks");
+          var tambahan = val("tambahan");
+
+          var L = [];
+          L.push("Bertindaklah sebagai pengembang media pembelajaran interaktif sekaligus desainer pembelajaran yang berpengalaman. Buatkan saya sebuah media pembelajaran interaktif (MPI) berbasis web yang utuh, menarik, dan langsung dapat dimainkan siswa sesuai spesifikasi berikut.");
+          L.push("");
+          L.push("=== 1. IDENTITAS PEMBELAJARAN ===");
+          L.push("- Jenjang: " + jenjang);
+          L.push("- Kelas: " + kelas + " (Fase " + fase + ", Kurikulum Merdeka)");
+          L.push("- Mata Pelajaran: " + (mapel || "…"));
+          L.push("- Materi Pokok: " + (materi || "…"));
+          if (topik) L.push("- Topik / Submateri: " + topik);
+          L.push("- Tujuan Pembelajaran (TP): " + (tp || "…"));
+          L.push("  Seluruh isi media — materi, aktivitas, contoh, dan soal — WAJIB diturunkan dari TP di atas. Jangan menambahkan materi di luar TP.");
+          if (dpl.length) L.push("- Dimensi Profil Lulusan yang dikembangkan: " + dpl.join("; ") + ". Tunjukkan dimensi ini lewat aktivitas dan pilihan yang dilakukan siswa di dalam media.");
+          L.push("");
+          L.push("=== 2. BENTUK MEDIA ===");
+          L.push("- Jenis media: " + jenis);
+          L.push("- Model pembelajaran: " + model + ". Susun alur aktivitas mengikuti sintaks model tersebut.");
+          L.push("- Perangkat utama siswa: " + perangkat);
+          if (fitur.length) {
+            L.push("- Fitur interaktif yang wajib ada:");
+            fitur.forEach(function (f) { L.push("  • " + f); });
+          }
+          L.push("- Evaluasi akhir berisi " + jumlahSoal + " soal yang selaras dengan TP, lengkap dengan kunci jawaban dan pembahasan singkat untuk setiap soal.");
+          L.push("");
+          L.push("=== 3. CERITA & VISUAL ===");
+          if (tema) L.push("- Tema / alur cerita: " + tema + ". Jadikan cerita sebagai pengantar masalah dan pengikat antaraktivitas, bukan sekadar hiasan.");
+          if (maskot) L.push("- Maskot / tokoh pemandu: " + maskot + ". Maskot menyapa siswa, memberi petunjuk, dan merayakan keberhasilan siswa.");
+          if (konteks) L.push("- Konteks yang digunakan pada contoh dan soal: " + konteks + " — dekat dengan kehidupan sehari-hari siswa.");
+          L.push("- Gaya visual: " + gaya);
+          L.push("- Palet warna: " + palet);
+          L.push("");
+          L.push("=== 4. STRUKTUR MEDIA (ikuti urutan ini) ===");
+          L.push("1. Layar pembuka: judul media, identitas mata pelajaran & materi, kolom nama siswa, dan tombol Mulai.");
+          L.push("2. Petunjuk penggunaan yang singkat dan jelas.");
+          L.push("3. Tujuan pembelajaran ditampilkan dengan bahasa yang dipahami siswa.");
+          L.push("4. Apersepsi / pemantik: pertanyaan atau situasi pembuka yang mengaitkan materi dengan kehidupan siswa.");
+          L.push("5. Aktivitas inti sesuai model pembelajaran dan jenis media yang dipilih, dengan materi ringkas disisipkan di antara aktivitas (bukan halaman teks panjang).");
+          L.push("6. Evaluasi: " + jumlahSoal + " soal dengan skor otomatis dan umpan balik per soal.");
+          L.push("7. Layar hasil: skor akhir, pesan apresiasi sesuai capaian, tombol main lagi, dan satu pertanyaan refleksi singkat.");
+          L.push("");
+          L.push("=== 5. KETENTUAN TEKNIS (WAJIB) ===");
+          if (teknis.length) {
+            teknis.forEach(function (t) { L.push("- " + t); });
+          } else {
+            L.push("- (Tidak ada ketentuan teknis khusus.)");
+          }
+          if (tambahan) {
+            L.push("");
+            L.push("=== 6. PERMINTAAN TAMBAHAN ===");
+            L.push(tambahan);
+          }
+          L.push("");
+          L.push("=== CARA MENJAWAB ===");
+          L.push("- Berikan HANYA kode HTML lengkapnya dalam satu blok kode, tanpa penjelasan panjang sebelum atau sesudah kode.");
+          L.push("- Kode harus utuh dan berfungsi penuh saat disimpan sebagai file .html lalu dibuka di browser — bukan potongan, bukan kerangka, dan tanpa bagian yang diserahkan ke saya untuk dilengkapi.");
+          L.push("- Semua soal harus benar secara materi, kunci jawaban akurat, dan seluruh tombol serta navigasi berfungsi.");
+          L.push("- Gunakan Bahasa Indonesia untuk seluruh teks di dalam media.");
+          return L.join("\n");
+        }
+
+        var currentPrompt = "";
+        function update() {
+          currentPrompt = buildPrompt();
+          $("promptBox").textContent = currentPrompt;
+          $("charCount").textContent = currentPrompt.length.toLocaleString("id-ID") + " karakter";
+
+          var checks = [
+            { ok: !!val("mapel"), field: "fieldMapel", label: "mata pelajaran" },
+            { ok: !!val("materi"), field: "fieldMateri", label: "materi pokok" },
+            { ok: !!val("tp"), field: "fieldTp", label: "tujuan pembelajaran" }
+          ];
+          var done = 0; var missing = [];
+          checks.forEach(function (c) {
+            $(c.field).classList.toggle("missing", !c.ok);
+            if (c.ok) done++; else missing.push(c.label);
+          });
+          // completeness across broader set
+          var total = 8, filled = done;
+          if (val("topik")) filled++;
+          if (checkedValues("dplChecks").length) filled++;
+          if (checkedValues("fiturChecks").length) filled++;
+          if (val("tema") || val("maskot") || val("konteks")) filled++;
+          if (checkedValues("teknisChecks").length) filled++;
+          var pct = Math.round((filled / total) * 100);
+          $("barFill").style.width = pct + "%";
+          var note = $("barNote");
+          if (missing.length) {
+            note.textContent = "Masih kosong: " + missing.join(", ") + ". Lengkapi agar prompt akurat.";
+            note.classList.add("warn");
+          } else {
+            note.textContent = "Bidang inti lengkap (" + pct + "% formulir terisi). Prompt siap disalin.";
+            note.classList.remove("warn");
+          }
+        }
+
+        form.addEventListener("input", update);
+        form.addEventListener("change", update);
+
+        /* ---------- clipboard ---------- */
+        function copyText(text, doneMsg) {
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); showToast(doneMsg); }
+            catch (e) { showToast("Gagal menyalin — salin manual dari kotak hasil prompt."); }
+            document.body.removeChild(ta);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () { showToast(doneMsg); }, fallback);
+          } else { fallback(); }
+        }
+
+        var toastTimer = null;
+        function showToast(msg) {
+          var t = $("toast");
+          t.textContent = msg;
+          t.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2800);
+        }
+
+        $("btnCopy").addEventListener("click", function () { copyText(currentPrompt, "Prompt tersalin. Tempel di AI pilihan Anda."); });
+
+        /* ---------- download ---------- */
+        function slugify(s) {
+          return (s || "prompt-mpi").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "prompt-mpi";
+        }
+        function downloadPrompt(text, name) {
+          var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = slugify(name) + ".txt";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 800);
+        }
+        $("btnDownload").addEventListener("click", function () {
+          downloadPrompt(currentPrompt, "prompt-mpi-" + (val("materi") || val("mapel") || "media"));
+          showToast("Berkas prompt diunduh.");
+        });
+
+        /* ---------- send to AI ---------- */
+        var aiButtons = document.querySelectorAll("[data-ai]");
+        for (var i = 0; i < aiButtons.length; i++) {
+          aiButtons[i].addEventListener("click", function () {
+            var url = this.getAttribute("data-ai");
+            var name = this.getAttribute("data-name");
+            copyText(currentPrompt, "Prompt tersalin — tempel (Ctrl+V) di " + name + " yang terbuka di tab baru.");
+            window.open(url, "_blank", "noopener");
+          });
+        }
+
+        /* ---------- library (permanent, saved on this device) ---------- */
+        var LIB_KEY = "mpiPrompterLibrary.v1";
+        var library = loadLibrary();
+        function loadLibrary() {
+          try {
+            var raw = window.localStorage.getItem(LIB_KEY);
+            if (!raw) return [];
+            var parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) return [];
+            return parsed.filter(function (it) {
+              return it && typeof it.title === "string" && typeof it.text === "string";
+            }).map(function (it) {
+              return {
+                title: it.title,
+                meta: typeof it.meta === "string" ? it.meta : "",
+                text: it.text,
+                when: it.when ? new Date(it.when) : new Date()
+              };
+            });
+          } catch (e) { return []; }
+        }
+        function persistLibrary() {
+          try {
+            window.localStorage.setItem(LIB_KEY, JSON.stringify(library.map(function (it) {
+              return { title: it.title, meta: it.meta, text: it.text, when: it.when.toISOString() };
+            })));
+            return true;
+          } catch (e) { return false; }
+        }
+        $("btnSave").addEventListener("click", function () {
+          var title = val("materi") || val("mapel") || "Prompt tanpa judul";
+          var meta = (val("mapel") || "-") + " • Kelas " + $("kelas").value + " • Fase " + $("fase").value;
+          library.unshift({ title: title, meta: meta, text: currentPrompt, when: new Date() });
+          if (persistLibrary()) {
+            showToast("Prompt “" + title + "” disimpan permanen di perangkat ini.");
+          } else {
+            showToast("Prompt tampil di pustaka, tetapi penyimpanan perangkat tidak tersedia — unduh sebagai .txt agar tidak hilang.");
+          }
+          renderLibrary();
+        });
+        function renderLibrary() {
+          var grid = $("libGrid");
+          grid.innerHTML = "";
+          $("libEmpty").style.display = library.length ? "none" : "block";
+          library.forEach(function (item, idx) {
+            var card = document.createElement("article");
+            card.className = "lib-card";
+            var h = document.createElement("h3"); h.textContent = item.title;
+            var m = document.createElement("div"); m.className = "meta";
+            m.textContent = item.meta + " • " + item.when.toLocaleString("id-ID", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+            var ex = document.createElement("p"); ex.className = "excerpt"; ex.textContent = item.text;
+            var row = document.createElement("div"); row.className = "row";
+            var bView = document.createElement("button"); bView.type = "button"; bView.className = "btn small"; bView.textContent = "Lihat";
+            bView.addEventListener("click", function () {
+              currentPrompt = item.text;
+              $("promptBox").textContent = item.text;
+              $("charCount").textContent = item.text.length.toLocaleString("id-ID") + " karakter";
+              document.getElementById("outputPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+            var bCopy = document.createElement("button"); bCopy.type = "button"; bCopy.className = "btn small primary"; bCopy.textContent = "Salin";
+            bCopy.addEventListener("click", function () { copyText(item.text, "Prompt tersalin dari pustaka."); });
+            var bDl = document.createElement("button"); bDl.type = "button"; bDl.className = "btn small"; bDl.textContent = "Unduh .txt";
+            bDl.addEventListener("click", function () { downloadPrompt(item.text, "prompt-mpi-" + item.title); });
+            var bDel = document.createElement("button"); bDel.type = "button"; bDel.className = "btn small"; bDel.textContent = "Hapus";
+            bDel.addEventListener("click", function () { library.splice(idx, 1); persistLibrary(); renderLibrary(); showToast("Prompt dihapus dari pustaka."); });
+            row.appendChild(bView); row.appendChild(bCopy); row.appendChild(bDl); row.appendChild(bDel);
+            card.appendChild(h); card.appendChild(m); card.appendChild(ex); card.appendChild(row);
+            grid.appendChild(card);
+          });
+        }
+
+        /* ---------- contoh & reset ---------- */
+        function setChecked(containerId, valuesWanted) {
+          var boxes = $(containerId).querySelectorAll('input[type="checkbox"]');
+          for (var i = 0; i < boxes.length; i++) boxes[i].checked = valuesWanted.indexOf(boxes[i].value) >= 0;
+        }
+        function setRadio(name, valueWanted) {
+          var radios = form.querySelectorAll('input[name="' + name + '"]');
+          for (var i = 0; i < radios.length; i++) radios[i].checked = radios[i].value === valueWanted;
+        }
+        $("btnContoh").addEventListener("click", function () {
+          $("jenjang").value = "SMP"; fillKelas(); $("kelas").value = "8"; syncFase();
+          $("mapel").value = "Matematika";
+          $("materi").value = "Teorema Pythagoras";
+          $("topik").value = "Menemukan rumus Pythagoras dan triple Pythagoras";
+          $("tp").value = "Peserta didik dapat membuktikan teorema Pythagoras, menentukan panjang sisi segitiga siku-siku, dan menerapkannya untuk menyelesaikan masalah sehari-hari.";
+          setChecked("dplChecks", ["Penalaran Kritis", "Kemandirian", "Kolaborasi"]);
+          setRadio("jenis", "Campuran: eksplorasi materi, aktivitas interaktif, dan kuis dalam satu media");
+          $("model").value = "Discovery Learning (siswa menemukan konsep lewat aktivitas)";
+          $("jumlahSoal").value = "10";
+          setChecked("fiturChecks", [
+            "Skor, poin, dan lencana penghargaan",
+            "Level atau misi yang terbuka bertahap",
+            "Umpan balik langsung berisi penjelasan setiap jawaban",
+            "Tombol petunjuk (hint) yang dapat dipakai siswa saat kesulitan",
+            "Soal dan pilihan jawaban diacak setiap kali dimainkan"
+          ]);
+          $("tema").value = "Membantu tukang kayu memastikan sudut siku pada rangka atap rumah";
+          $("maskot").value = "Siku, segitiga siku-siku yang ceria";
+          $("konteks").value = "Pekerjaan tukang dan denah rumah di lingkungan sekitar siswa";
+          setRadio("gaya", "Ceria dan penuh warna, ramah anak");
+          $("palet").value = "Cerah ceria (kuning, oranye, hijau muda)";
+          $("perangkat").value = "HP Android siswa";
+          setChecked("teknisChecks", [
+            "Seluruh media berada dalam SATU file HTML mandiri (semua CSS dan JavaScript tertanam di dalam file)",
+            "Dapat berjalan OFFLINE tanpa internet: tanpa CDN, tanpa font eksternal, tanpa gambar dari internet (gambar dibuat dengan CSS/SVG/emoji di dalam file)",
+            "Tanpa instalasi dan tanpa login/daftar — cukup buka file di browser",
+            "Responsif dan nyaman disentuh di layar HP maupun tablet (tombol besar, minimal 44px)",
+            "Diferensiasi: tersedia jalur/rintangan dengan tingkat kesulitan mudah, sedang, dan sulit agar semua siswa dapat mengikuti",
+            "Seluruh teks, petunjuk, dan umpan balik menggunakan Bahasa Indonesia yang baik dan sesuai usia siswa"
+          ]);
+          $("tambahan").value = "";
+          update();
+          showToast("Contoh terisi (Matematika — Teorema Pythagoras). Silakan ubah sesuai kebutuhan.");
+          document.getElementById("outputPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        $("btnReset").addEventListener("click", function () {
+          form.reset();
+          $("jenjang").value = "SMP"; fillKelas(); $("kelas").value = "7"; syncFase();
+          update();
+          showToast("Formulir dikosongkan.");
+        });
+
+        /* ---------- init ---------- */
+        fillKelas();
+        $("kelas").value = "8";
+        syncFase();
+        update();
+        renderLibrary();
+      })();
+    </script>
+  </body>
+</html>
