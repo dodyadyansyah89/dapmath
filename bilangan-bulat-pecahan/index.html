@@ -430,6 +430,9 @@
       .bibo-row .speech { flex: 1 1 auto; }
       #confettiCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 90; }
       #nlPoint { cursor: grab; touch-action: none; }
+      .pz-slice { cursor: grab; touch-action: none; }
+      .pz-slice.dragging { cursor: grabbing; }
+      #pzDragStage { user-select: none; -webkit-user-select: none; }
       #nlPoint:active { cursor: grabbing; }
 
       /* ---------- Data Guru ---------- */
@@ -806,6 +809,21 @@
                 <button type="button" class="preset" data-pair="5,6,7,8">⅚ vs ⅞</button>
               </div>
               <div class="note" style="margin-bottom:0"><b>Pecahan senilai</b> tampak berbeda tapi nilainya sama, misalnya ½ = 2/4 = 3/6. Triknya: kalikan atau bagi pembilang dan penyebut dengan bilangan yang sama.</div>
+            </div>
+            <div class="card">
+              <h3>Potong &amp; Geser Pizza 🍕</h3>
+              <p>Atur jumlah potongan pizzanya, lalu <b>seret potongan pizza</b> ke piring untuk mengambilnya. Pecahannya langsung berubah mengikuti potongan yang kamu ambil!</p>
+              <div class="stepper"><button type="button" id="pzCutMinus" aria-label="Jumlah potongan kurang">−</button><span class="val" id="pzCutVal">8</span><button type="button" id="pzCutPlus" aria-label="Jumlah potongan tambah">+</button></div>
+              <div class="muted" style="font-weight:700; font-size:0.85rem">JUMLAH POTONGAN (PENYEBUT)</div>
+              <div id="pzDragStage"></div>
+              <div class="result-line" id="pzDragRead"></div>
+              <p id="pzDragText" style="text-align:center; font-weight:700; margin-top:10px"></p>
+              <div class="preset-row" style="justify-content:center">
+                <button type="button" class="preset" id="pzTakeOne">＋ Ambil 1 potong</button>
+                <button type="button" class="preset" id="pzGiveOne">− Kembalikan 1 potong</button>
+                <button type="button" class="preset" id="pzReset">Kembalikan semua potongan</button>
+              </div>
+              <div class="note" style="margin-bottom:0"><b>Cara main:</b> seret potongan dari pizza ke piring untuk mengambilnya, seret kembali ke pizza untuk mengembalikannya. Ketuk satu potongan untuk mengambil/mengembalikannya tanpa menggeser. Mengubah jumlah potongan akan mengembalikan semua potongan ke pizza.</div>
             </div>
           </div>
 
@@ -1516,6 +1534,116 @@
         renderFracLab();
       }));
       renderFracLab();
+
+      /* ================= Potong & Geser Pizza ================= */
+      const PZ = { d: 8, taken: [] }; // taken: indeks potongan yang sedang di piring
+      const PZ_CX = 170, PZ_CY = 170, PZ_R = 125; // pizza
+      const PL_CX = 540, PL_CY = 170, PL_R = 105; // piring
+      function pzWedgePath(r, a0, a1) {
+        const x0 = r * Math.cos(a0), y0 = r * Math.sin(a0);
+        const x1 = r * Math.cos(a1), y1 = r * Math.sin(a1);
+        const large = (a1 - a0) > Math.PI ? 1 : 0;
+        return "M 0 0 L " + x0.toFixed(1) + " " + y0.toFixed(1) + " A " + r + " " + r + " 0 " + large + " 1 " + x1.toFixed(1) + " " + y1.toFixed(1) + " Z";
+      }
+      function pzSliceInner(i, d) {
+        const gap = 0.028; // celah antar potongan supaya terlihat terpisah
+        const a0 = (i / d) * Math.PI * 2 - Math.PI / 2 + gap;
+        const a1 = ((i + 1) / d) * Math.PI * 2 - Math.PI / 2 - gap;
+        const mid = (a0 + a1) / 2, rr = PZ_R - 6;
+        let s = '<path d="' + pzWedgePath(rr, a0, a1) + '" fill="#ffc93c" stroke="#e8a33d" stroke-width="3"/>';
+        const cx0 = rr * Math.cos(a0), cy0 = rr * Math.sin(a0);
+        const cx1 = rr * Math.cos(a1), cy1 = rr * Math.sin(a1);
+        const large = (a1 - a0) > Math.PI ? 1 : 0;
+        s += '<path d="M ' + cx0.toFixed(1) + " " + cy0.toFixed(1) + " A " + rr + " " + rr + " 0 " + large + " 1 " + cx1.toFixed(1) + " " + cy1.toFixed(1) + '" fill="none" stroke="#e89b4c" stroke-width="12" stroke-linecap="round"/>';
+        [-0.18, 0.18].forEach((da, k) => {
+          const aa = mid + da, rad = rr * (k === 0 ? 0.55 : 0.8);
+          s += '<circle cx="' + (rad * Math.cos(aa)).toFixed(1) + '" cy="' + (rad * Math.sin(aa)).toFixed(1) + '" r="9" fill="#d63d20" opacity="0.85"/>';
+        });
+        return s;
+      }
+      function pzPlateTransform(k, n) {
+        const fan = (k - (n - 1) / 2) * 12; // kipas kecil supaya tumpukan terlihat
+        return "translate(" + PL_CX + "," + PL_CY + ") rotate(" + fan.toFixed(1) + ") scale(0.6)";
+      }
+      function pzSvgPoint(e) {
+        const svg = $("#pzDragSvg");
+        const r = svg.getBoundingClientRect();
+        return { x: (e.clientX - r.left) / r.width * 720, y: (e.clientY - r.top) / r.height * 340 };
+      }
+      function renderPzDrag() {
+        const d = PZ.d, n = PZ.taken.length;
+        $("#pzCutVal").textContent = d;
+        let s = '<svg id="pzDragSvg" viewBox="0 0 720 340" class="viz" role="img" aria-label="Pizza ' + d + " potong, " + n + ' potong sudah diambil ke piring">';
+        s += '<circle cx="' + PZ_CX + '" cy="' + PZ_CY + '" r="132" fill="var(--surface-2)" stroke="#e8a33d" stroke-width="7"/>';
+        s += '<circle cx="' + PL_CX + '" cy="' + PL_CY + '" r="' + PL_R + '" fill="#ffffff" stroke="var(--line)" stroke-width="2"/>';
+        s += '<circle cx="' + PL_CX + '" cy="' + PL_CY + '" r="78" fill="none" stroke="var(--line)" stroke-width="1.5" opacity="0.6"/>';
+        for (let i = 0; i < d; i++) {
+          const ti = PZ.taken.indexOf(i);
+          const tr = ti >= 0 ? pzPlateTransform(ti, n) : "translate(" + PZ_CX + "," + PZ_CY + ")";
+          s += '<g class="pz-slice" data-i="' + i + '" transform="' + tr + '">' + pzSliceInner(i, d) + "</g>";
+        }
+        s += '<text x="' + PZ_CX + '" y="318" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor" opacity="0.7">PIZZA (' + (d - n) + " potong tersisa)</text>";
+        s += '<text x="' + PL_CX + '" y="318" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor" opacity="0.7">PIRING (' + n + " potong)</text>";
+        s += "</svg>";
+        $("#pzDragStage").innerHTML = s;
+        const r = reduceFrac(n, d), v = n / d;
+        $("#pzDragRead").innerHTML = "Kamu mengambil <b>" + n + "</b> dari <b>" + d + "</b> potong = " + fracHTML(n, d) + " = " + decText(v, 4) + " = " + decText(v * 100, 2) + "%";
+        let t = "";
+        if (n === 0) t = "Belum ada potongan di piring. Seret satu potong pizza ke piring, yuk!";
+        else if (n === d) t = "Semua " + d + " potong sudah di piring — itu sama dengan 1 pizza penuh!";
+        else {
+          t = "Di piring ada " + n + " potong. ";
+          t += (r[1] !== d) ? "Bentuk paling sederhananya adalah <b>" + r[0] + "/" + r[1] + "</b>." : "Pecahan ini sudah paling sederhana.";
+        }
+        $("#pzDragText").innerHTML = t;
+        // geser potongan (mouse & sentuhan)
+        $$("#pzDragStage .pz-slice").forEach((g) => {
+          let dragging = false, ox = 0, oy = 0, moved = 0, sx = 0, sy = 0;
+          g.addEventListener("pointerdown", (e) => {
+            const p = pzSvgPoint(e);
+            const idx = +g.dataset.i, ti = PZ.taken.indexOf(idx);
+            dragging = true; moved = 0; sx = p.x; sy = p.y;
+            ox = p.x - (ti >= 0 ? PL_CX : PZ_CX);
+            oy = p.y - (ti >= 0 ? PL_CY : PZ_CY);
+            try { g.setPointerCapture(e.pointerId); } catch (err) { /* abaikan */ }
+            g.classList.add("dragging");
+            g.parentNode.appendChild(g); // angkat ke lapisan atas
+            e.preventDefault();
+          });
+          g.addEventListener("pointermove", (e) => {
+            if (!dragging) return;
+            const p = pzSvgPoint(e);
+            moved = Math.max(moved, Math.abs(p.x - sx) + Math.abs(p.y - sy));
+            g.setAttribute("transform", "translate(" + (p.x - ox).toFixed(1) + "," + (p.y - oy).toFixed(1) + ")");
+          });
+          const end = (e) => {
+            if (!dragging) return;
+            dragging = false;
+            g.classList.remove("dragging");
+            const idx = +g.dataset.i, ti = PZ.taken.indexOf(idx);
+            if (moved < 6) { // ketuk: tukar posisi tanpa menggeser
+              if (ti >= 0) PZ.taken.splice(ti, 1); else PZ.taken.push(idx);
+            } else {
+              const p = pzSvgPoint(e);
+              const onPlate = Math.hypot(p.x - PL_CX, p.y - PL_CY) < PL_R + 15;
+              if (onPlate && ti < 0) PZ.taken.push(idx);
+              if (!onPlate && ti >= 0) PZ.taken.splice(ti, 1);
+            }
+            renderPzDrag();
+          };
+          g.addEventListener("pointerup", end);
+          g.addEventListener("pointercancel", end);
+        });
+      }
+      $("#pzCutMinus").addEventListener("click", () => { PZ.d = Math.max(2, PZ.d - 1); PZ.taken = []; renderPzDrag(); });
+      $("#pzCutPlus").addEventListener("click", () => { PZ.d = Math.min(12, PZ.d + 1); PZ.taken = []; renderPzDrag(); });
+      $("#pzTakeOne").addEventListener("click", () => {
+        for (let i = 0; i < PZ.d; i++) { if (PZ.taken.indexOf(i) < 0) { PZ.taken.push(i); break; } }
+        renderPzDrag();
+      });
+      $("#pzGiveOne").addEventListener("click", () => { PZ.taken.pop(); renderPzDrag(); });
+      $("#pzReset").addEventListener("click", () => { PZ.taken = []; renderPzDrag(); });
+      renderPzDrag();
 
       /* ================= Operasi Pecahan (visual) ================= */
       function runFracOp() {
