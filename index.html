@@ -197,6 +197,7 @@
       <a href="#matematika">Tentang Matematika</a>
       <a href="#karya">Karya</a>
       <a href="#galeri">Galeri Karya</a>
+      <a href="#prompter">Prompter</a>
       <a href="#tentang">Tentang Saya</a>
       <a href="#kontak">Kontak</a>
     </div>
@@ -417,6 +418,24 @@
   </div>
 </section>
 
+<!-- ================= 4c. PROMPTER ================= -->
+<section id="prompter">
+  <div class="wrap">
+    <span class="eyebrow reveal">Untuk Guru</span>
+    <h2 class="sec-title reveal">Prompter</h2>
+    <p class="sec-sub reveal">Perangkat bantu guru merangkai prompt AI untuk membuat media pembelajaran — isi formulir, dapatkan prompt siap pakai.</p>
+    <div class="karya-grid">
+      <article class="karya-card reveal">
+        <span class="doc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-5-6-5M12 19h8"/></svg></span>
+        <h3>MPI Prompter</h3>
+        <p>Perangkai prompt media pembelajaran interaktif untuk guru: isi formulir (identitas, tujuan pembelajaran, jenis media, cerita &amp; visual, fitur wajib), dapatkan prompt siap salin, kirim ke 11 AI — termasuk Gemini, ChatGPT, dan Claude — dan simpan ke pustaka pribadi.</p>
+        <span class="file-meta">Web App · Gratis</span>
+        <a class="dl-btn" href="mpi-prompter/">Buka MPI Prompter →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 5. TENTANG SAYA ================= -->
 <section id="tentang">
   <div class="wrap">
@@ -584,7 +603,7 @@
 
   /* Status aktif pada navigasi */
   var navLinks = document.querySelectorAll("#navLinks a");
-  var sections = ["beranda","aplikasi","matematika","karya","galeri","tentang","kontak"].map(function(id){return document.getElementById(id);});
+  var sections = ["beranda","aplikasi","matematika","karya","galeri","prompter","tentang","kontak"].map(function(id){return document.getElementById(id);});
   if ("IntersectionObserver" in window){
     var nio = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
