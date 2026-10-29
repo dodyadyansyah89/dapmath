@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bimtek STEM — dari Observasi hingga Pembinaan</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:#f1f5f9;color:#1e293b;line-height:1.6}
+header.hero{background:linear-gradient(135deg,#1e3a8a,#0d9488);color:#fff;padding:28px 20px 24px;text-align:center}
+header.hero h1{margin:0 0 6px;font-size:1.7em;line-height:1.25}
+header.hero p{margin:4px 0;opacity:.95}
+nav.bar{position:sticky;top:0;z-index:20;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.1);display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:8px}
+nav.bar a{color:#0f766e;font-weight:700;text-decoration:none;padding:6px 14px;border-radius:999px}
+nav.bar a:hover{background:#ccfbf1}
+main{max-width:960px;margin:0 auto;padding:20px 16px 60px}
+h2{color:#1e3a8a;border-bottom:3px solid #0d9488;padding-bottom:6px;margin-top:36px}
+h3{color:#0f766e;margin-top:24px}
+.card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin:16px 0}
+.note{background:#fef9c3;border-left:5px solid #eab308;padding:12px 16px;border-radius:8px;margin:14px 0}
+.tip{background:#ecfdf5;border-left:5px solid #0d9488;padding:12px 16px;border-radius:8px;margin:14px 0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.95em}
+th{background:#1e3a8a;color:#fff;padding:9px;text-align:left}
+td{border-bottom:1px solid #e2e8f0;padding:8px;vertical-align:top}
+tr:nth-child(even) td{background:#f8fafc}
+button,.btn{cursor:pointer;border:0;border-radius:999px;padding:10px 20px;font-weight:700;font-size:1em}
+.btn-primary{background:#0d9488;color:#fff}
+.btn-dark{background:#1e3a8a;color:#fff}
+.btn-ghost{background:#e2e8f0;color:#1e293b}
+.btn-sm{padding:6px 14px;font-size:.9em}
+.slide{display:none}
+.slide.active{display:block}
+.slide h3{font-size:1.35em;color:#1e3a8a;margin-top:0}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0;flex-wrap:wrap}
+.pager span{font-weight:700}
+.slide-menu{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.slide-menu button{background:#e0f2fe;color:#1e3a8a;padding:5px 11px;font-size:.85em}
+.slide-menu button.on{background:#1e3a8a;color:#fff}
+.poll-opt{display:block;width:100%;text-align:left;background:#f0fdfa;border:2px solid #99f6e4;border-radius:12px;padding:14px;margin:10px 0;font-size:1.05em}
+.poll-opt:hover{border-color:#0d9488}
+.poll-result{display:none;background:#ecfdf5;border:2px solid #0d9488;border-radius:12px;padding:16px;margin:12px 0}
+.tag{display:inline-block;background:#ccfbf1;color:#0f766e;border-radius:999px;padding:2px 12px;font-size:.85em;font-weight:700;margin:2px}
+.proj{display:none}
+.proj.show{display:block}
+.prompt-box{background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:14px;white-space:pre-wrap;font-size:.95em;margin:10px 0}
+textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:12px;font-family:inherit;font-size:1em}
+.reveal{background:#fef3c7;border:1px dashed #d97706;border-radius:10px;padding:12px;margin:10px 0}
+.reveal .isi{display:none;margin-top:8px}
+footer{text-align:center;color:#64748b;padding:30px 16px;font-size:.95em}
+@media(max-width:600px){header.hero h1{font-size:1.35em}th,td{font-size:.9em}}
+</style>
+</head>
+<body>
+<header class="hero">
+<h1>🔬 Pembelajaran STEM: dari Observasi hingga Pembinaan</h1>
+<p>Bimtek daring 3 jam lewat Zoom — untuk pengawas, kepala sekolah, dan guru</p>
+<p><b>Narasumber: Dody Adyansyah</b> &nbsp;•&nbsp; 180 menit &nbsp;•&nbsp; Satu alur: memahami, merancang, menilai, membina</p>
+</header>
+<nav class="bar">
+<a href="#paparan">📊 Paparan</a>
+<a href="#bahan">📁 Bahan</a>
+<a href="#praktik">🛠️ Praktik</a>
+<a href="#fasilitator">🧭 Fasilitator</a>
+</nav>
+<main>
+
+<!-- ============ PAPARAN ============ -->
+<section id="paparan">
+<h2>📊 Paparan Interaktif (22 Slide)</h2>
+<p>Gunakan tombol <b>Sebelumnya / Berikutnya</b>, tombol nomor slide, atau tombol panah di keyboard (← →) untuk berpindah slide. Slide polling bisa langsung diklik peserta.</p>
+<div class="card">
+<div class="pager">
+<button class="btn btn-ghost" onclick="geser(-1)">← Sebelumnya</button>
+<span id="nomorSlide">Slide 1 dari 22</span>
+<button class="btn btn-primary" onclick="geser(1)">Berikutnya →</button>
+</div>
+<div class="slide-menu" id="menuSlide"></div>
+<hr>
+
+<!-- Slide 1 -->
+<div class="slide active">
+<h3>1. Pembelajaran STEM: dari Observasi hingga Pembinaan</h3>
+<p>Bimtek daring 3 jam untuk pengawas, kepala sekolah, dan guru.</p>
+<p>Karena peserta malam ini didominasi pengawas, fokus kita: <b>apa yang diamati, bagaimana membina, dan apa tindak lanjutnya</b>. Dua peran lain hadir agar rantai dukungannya utuh.</p>
+</div>
+<!-- Slide 2 -->
+<div class="slide">
+<h3>2. Tiga Jam, Satu Alur</h3>
+<p><b>180 menit</b> daring lewat Zoom • <b>6 sesi</b> dari polling sampai komitmen • <b>1 produk praktik</b> per kelompok campuran.</p>
+<ul>
+<li><b>0–45 — Polling dan fondasi.</b> Uji “STEM atau bukan?”, ciri, 5M, dan tiga jalur.</li>
+<li><b>45–90 — Merancang STEM.</b> Empat langkah, proyek kompos, dan jalan tertanam.</li>
+<li><b>90–165 — Asesmen formatif dan supervisi.</b> Ide formatif, instrumen observasi, simulasi pembinaan.</li>
+<li><b>165–180 — Praktik gabungan dan komitmen.</b> Satu langkah untuk minggu depan.</li>
+</ul>
+</div>
+<!-- Slide 3 : POLLING INTERAKTIF -->
+<div class="slide">
+<h3>3. Polling Pembuka: Mana yang STEM?</h3>
+<p>Klik satu jawaban, lalu lihat pembahasannya. <i>Yang penting alasannya, bukan sekadar pilihannya.</i></p>
+<button class="poll-opt" onclick="jawabPoll('A')">A — Tempat pensil dari botol bekas mengikuti contoh guru</button>
+<button class="poll-opt" onclick="jawabPoll('B')">B — Tanam kacang hijau di dua pot, terang dan gelap, lalu disimpulkan</button>
+<button class="poll-opt" onclick="jawabPoll('C')">C — Perahu penyelamat banjir yang dirancang, diuji muatannya, lalu diperbaiki</button>
+<div class="poll-result" id="hasilPoll"></div>
+</div>
+<!-- Slide 4 -->
+<div class="slide">
+<h3>4. C yang STEM — dan A pun Bisa Dinaikkan, Bukan Diganti</h3>
+<ul>
+<li><b>A itu prakarya:</b> tidak ada masalah yang diselesaikan, murid tidak merancang sendiri, hasilnya tidak diuji.</li>
+<li><b>B itu eksperimen sains:</b> menjawab “mengapa ini terjadi” (tanaman butuh cahaya) — belum menjawab “bagaimana kita menyelesaikan masalah ini”.</li>
+<li><b>C itu STEM:</b> masalah evakuasi, kriteria terukur (tidak tenggelam 30 detik, muat koin sebanyak mungkin), dan batasan bahan yang jelas.</li>
+</ul>
+<div class="tip"><b>Naikkan A:</b> beri masalah alat tulis yang hilang dan berserakan, kriteria muat minimal 12 alat tulis dan tidak mudah terguling, batasan hanya bahan bekas dalam 2 jam pelajaran — lalu murid merancang, menguji, dan memperbaiki.</div>
+</div>
+<!-- Slide 5 -->
+<div class="slide">
+<h3>5. STEM Bukan Mapel Baru, dan Bukan Sekadar Kumpulan Mapel</h3>
+<ul>
+<li><b>Bukan mapel baru:</b> tidak menambah jam pelajaran. Yang berubah adalah cara mengajak murid berpikir: dari masalah nyata menuju solusi yang diuji.</li>
+<li><b>Bukan tempelan mapel:</b> bukan IPA ditambah matematika di satu kegiatan, melainkan satu masalah yang memang membutuhkan beberapa disiplin sekaligus.</li>
+<li><b>Berpikir terpadu:</b> sains menjelaskan, matematika mengukur, teknologi dan rekayasa mewujudkan, lalu hasilnya diuji dan diperbaiki.</li>
+</ul>
+<div class="note"><b>Pegangan praktis dari Panduan (hlm. 46):</b> bila guru sudah menyusun perencanaan STEM, ia tidak perlu membuat perencanaan terpisah lagi untuk mapel yang sudah dipakai di dalamnya. Merancang STEM tidak menambah administrasi ganda.<br><i>Sumber: Panduan Pembelajaran STEM, BSKAP Kemendikdasmen 2025.</i></div>
+</div>
+<!-- Slide 6 -->
+<div class="slide">
+<h3>6. Mulai dari yang Paling Memungkinkan: STEM 5M dan Tiga Jalur</h3>
+<p><b>STEM 5M:</b> <span class="tag">Mudah</span> bisa dimulai dari kelas sendiri • <span class="tag">Murah</span> kardus, botol, kertas, karet gelang, bahan bekas yang aman • <span class="tag">Berkesadaran</span> peduli masalah di sekitar • <span class="tag">Bermakna</span> terhubung kehidupan murid • <span class="tag">Menggembirakan</span> murid mencoba, bukan hanya mendengar.</p>
+<p><b>Tiga jalur masuk:</b> Intrakurikuler (di dalam jam mapel) • Kokurikuler (proyek lintas mapel terjadwal) • Ekstrakurikuler (klub sains atau karya ilmiah remaja). Istilahnya boleh diperluas sesuai karakter sekolah: STEAM dengan seni, STREAM dengan agama, hingga STEAMMI.</p>
+</div>
+<!-- Slide 7 -->
+<div class="slide">
+<h3>7. Tiga Ciri STEM yang Bisa Diamati</h3>
+<p>Sebuah pembelajaran layak disebut STEM bila tiga ciri ini terlihat — dan ketiganya bisa diamati pengawas:</p>
+<ol>
+<li><b>Masalah nyata:</b> berangkat dari persoalan atau potensi di sekitar sekolah, bukan dari bab buku.</li>
+<li><b>Praktik saintifik-enjinering:</b> murid merancang, membuat, menguji, dan mendesain ulang — bukan hanya mengamati.</li>
+<li><b>Integrasi disiplin:</b> beberapa disiplin bekerja untuk satu solusi, masing-masing dengan tujuan belajarnya.</li>
+</ol>
+</div>
+<!-- Slide 8 -->
+<div class="slide">
+<h3>8. Tiga Peran, Satu Tujuan — Pengawas sebagai Pembina</h3>
+<ul>
+<li><b>Pengawas: membina.</b> Mengamati tiga ciri STEM, memberi umpan balik berbasis bukti, dan menindaklanjuti. Posisinya rekan berbagi praktik, bukan pemeriksa yang mencari kesalahan.</li>
+<li><b>Kepala sekolah: memfasilitasi.</b> Menjaga jadwal kolaborasi, bahan sederhana, dan ruang guru untuk mencoba — termasuk melindungi guru dari administrasi ganda.</li>
+<li><b>Guru: merancang dan menilai.</b> Merancang proyek dari masalah nyata dan menilai tujuan pembelajarannya sendiri, di jam pelajarannya sendiri.</li>
+</ul>
+</div>
+<!-- Slide 9 -->
+<div class="slide">
+<h3>9. Empat Langkah Merancang STEM Intrakurikuler</h3>
+<ol>
+<li><b>Tentukan topik dari masalah sekitar.</b> Tetapkan kriteria (standar keberhasilan) dan batasan: bahan, biaya, dan waktu.</li>
+<li><b>Analisis capaian pembelajaran dan integrasi.</b> Dari sini terlihat guru siapa saja yang terlibat, atau cukup satu mapel dengan pendekatan tertanam.</li>
+<li><b>Tentukan praktik saintifik dan enjinering.</b> Mengidentifikasi masalah, memahami kebutuhan pengguna, bertukar pikiran, mendesain, membuat, menguji, mendesain ulang, mengomunikasikan — boleh berulang.</li>
+<li><b>Susun perencanaan dan asesmen.</b> Penilaian tiap tahap terhubung ke mapel yang relevan, di jam masing-masing.</li>
+</ol>
+</div>
+<!-- Slide 10 -->
+<div class="slide">
+<h3>10. Satu Proyek Kompos, Banyak Guru, Satu Masalah Nyata</h3>
+<p>Masalahnya: tumpukan sampah organik sekolah. Solusinya dikerjakan bersama, penilaiannya tetap per mapel.</p>
+<ul>
+<li><b>IPA</b> — eksperimen pengomposan dan analisis data</li>
+<li><b>Matematika</b> — hitung, ukur, grafik volume sampah</li>
+<li><b>IPS</b> — kaitan sosial-ekonomi-lingkungan setempat</li>
+<li><b>Bahasa Indonesia</b> — laporan dan presentasi</li>
+<li><b>Seni dan PAI</b> — poster kampanye; refleksi amanah lingkungan</li>
+</ul>
+</div>
+<!-- Slide 11 -->
+<div class="slide">
+<h3>11. Belum Bisa Kolaborasi? Mulai Sendiri lewat Pendekatan Tertanam</h3>
+<p>Satu mapel utama menyisipkan unsur disiplin lain — terutama proses merancang dan menguji — untuk mencapai tujuan mapel itu sendiri.</p>
+<ul>
+<li><b>PAUD:</b> menara balok — membangun menara setinggi mungkin yang tidak roboh: mencoba, jatuh, menyusun ulang.</li>
+<li><b>SD:</b> perahu penyelamat — perahu dari kertas dan plastik untuk evakuasi banjir, diuji dengan muatan koin.</li>
+<li><b>SMP:</b> modul pertanian — fotosintesis, grafik pertumbuhan, dan alat pemantau kelembapan tanah sederhana.</li>
+</ul>
+<div class="tip"><b>Pesan untuk dibina ke guru:</b> jangan menunggu tim lengkap. Satu guru yang mulai tertanam hari ini lebih berharga daripada rencana kolaborasi yang tidak pernah jalan.</div>
+</div>
+<!-- Slide 12 -->
+<div class="slide">
+<h3>12. Kurangi Sumatif, Perbanyak Formatif</h3>
+<p><b>Asesmen formatif:</b> integral dalam proses, bukan penilaian yang berdiri sendiri; memonitor perkembangan dan memberi umpan balik cepat; dasar penyesuaian dan diferensiasi; <b>tidak untuk nilai rapor, kelulusan, atau promosi</b>.</p>
+<p><b>Asesmen sumatif:</b> mengevaluasi hasil setelah satu periode selesai; fokus pada hasil akhir, bukan proses; tetap perlu — tetapi terlambat untuk membantu murid yang kesulitan di tengah jalan.</p>
+<div class="note">Analogi buku ini: jangan baru tahu anak kesulitan naik sepeda setelah ia jatuh di akhir.<br><i>Sumber: 100 Ide Asesmen Formatif, Rizqy Rahmat Hani.</i></div>
+</div>
+<!-- Slide 13 -->
+<div class="slide">
+<h3>13. Tiga Guru, Tiga Cara Menilai</h3>
+<ul>
+<li><b>Guru A: satu arah.</b> Murid merangkum minimal satu folio; usulan rangkuman bergambar ditolak. Hanya penilaian akhir, tanpa ruang refleksi dan penyesuaian.</li>
+<li><b>Guru B: seru, belum tuntas.</b> Lagu dan gerak, kuis aplikasi, hadiah untuk tiga besar — tetapi hasilnya tidak ditindaklanjuti, langsung pindah materi.</li>
+<li><b>Guru C: model formatif.</b> Asesmen awal dulu, diskusi kelompok kecil, umpan balik antarkelompok, dan sumatif berbasis kinerja berupa simulasi drama.</li>
+</ul>
+<div class="tip">Pengakuan jujur dari banyak sesi refleksi guru: kebanyakan masih berada di posisi A dan B. Tugas pembinaan adalah menggeser ke C, satu kebiasaan kecil setiap kali — bukan menghakimi posisi awalnya.</div>
+</div>
+<!-- Slide 14 -->
+<div class="slide">
+<h3>14. Lima Teknik Formatif menjadi Payung 100 Ide</h3>
+<ul>
+<li><b>Bahasa lisan</b> — diskusi dan tanya jawab yang menggali alasan, bukan hanya jawaban.</li>
+<li><b>Pertanyaan</b> — pertanyaan pemicu yang membuat miskonsepsi terlihat di kelas.</li>
+<li><b>Tes singkat</b> — kuis pendek di tengah proses, hasilnya langsung dipakai hari itu juga.</li>
+<li><b>Proyek dan performa</b> — murid menunjukkan pemahaman lewat karya dan unjuk kerja.</li>
+<li><b>Menulis</b> — jurnal, refleksi, dan ringkasan singkat sebagai cermin pemahaman.</li>
+</ul>
+<p>Di proyek STEM, lima teknik ini membuat guru bisa memotret pemahaman di tengah proyek — tanpa menambah satu tes sumatif baru.</p>
+</div>
+<!-- Slide 15 -->
+<div class="slide">
+<h3>15. Lima Ide yang Bisa Langsung Dipakai Besok Pagi</h3>
+<ul>
+<li><b>Blob Tree</b> — murid memilih sosok di pohon yang menggambarkan perasaan dan pemahamannya, lalu menjelaskan alasannya.</li>
+<li><b>Garis Manusia</b> — berdiri di garis setuju — ragu — tidak setuju atas satu pernyataan, lalu mempertahankan posisinya.</li>
+<li><b>Refleksi S.I.P.</b> — Sudah diketahui, Ingin diketahui, dan sudah diPelajari — dibandingkan dari awal sampai akhir.</li>
+<li><b>Lampu Lalu Lintas</b> — merah belum mengerti, kuning belum yakin, hijau bisa mengajari teman. Yang merah dan kuning menulis apa yang masih menantang.</li>
+<li><b>Bus stop</b> — kelompok yang berkunjung menulis dua hal di karya kelompok lain: “hal yang sudah baik” dan “umpan balik” untuk perbaikan.</li>
+</ul>
+</div>
+<!-- Slide 16 -->
+<div class="slide">
+<h3>16. Instrumen Observasi: Lihat Perangkatnya, lalu Lihat Kelasnya</h3>
+<p><b>Di perangkat ajar:</b> ada masalah nyata dari sekitar sekolah? • kriteria dan batasan tertulis jelas? • integrasi capaian pembelajaran masuk akal, bukan tempelan? • asesmen formatif direncanakan di tengah proses?</p>
+<p><b>Di kelas:</b> murid merancang dan menguji, atau hanya mendengar? • guru memotret pemahaman di tengah kegiatan? • ada desain ulang setelah pengujian gagal? • murid mengomunikasikan hasil dan alasannya?</p>
+<div class="tip">Catat bukti konkret — kalimat murid, foto purwarupa, hasil uji — bukan kesan umum. Bukti itulah bahan umpan balik di slide berikutnya. Instrumen lengkap 13 indikator ada di bagian Bahan di bawah.</div>
+</div>
+<!-- Slide 17 -->
+<div class="slide">
+<h3>17. Simulasi Supervisi: Berlatih Membina, Bukan Memeriksa</h3>
+<ul>
+<li><b>Baca perangkat bersama (10 menit).</b> Kelompok campuran menelaah satu rancangan STEM dengan instrumen observasi.</li>
+<li><b>Role-play umpan balik (15 menit).</b> Satu orang berperan pengawas, satu guru, sisanya pengamat berbekal bukti.</li>
+<li><b>Tukar peran (10 menit).</b> Guru kini yang memberi umpan balik — merasakan dua sisi percakapan.</li>
+<li><b>Refleksi (10 menit).</b> Kalimat mana yang membuka guru, kalimat mana yang menutupnya?</li>
+</ul>
+<p>Di Zoom: gunakan breakout room, satu kelompok berisi pengawas, dan bila ada, kepala sekolah serta guru.</p>
+</div>
+<!-- Slide 18 -->
+<div class="slide">
+<h3>18. Umpan Balik Pembinaan yang Menggerakkan</h3>
+<p><b>Pola:</b> apresiasi berbasis bukti → satu pertanyaan menggali → satu rekomendasi → satu kesepakatan.</p>
+<div class="tip"><b>Contoh:</b> “Purwarupa kelompok 3 diuji tiga kali dan muatannya naik dari 8 ke 14 koin — itu bukti desain ulang bekerja. Apa yang akan Bapak ubah agar murid mencatat hasil ujinya? Minggu depan kita coba lembar catat uji satu halaman, dan saya datang melihatnya.”</div>
+<p>Hindari daftar kekurangan yang panjang. Satu fokus yang disepakati jauh lebih mungkin benar-benar berubah.</p>
+</div>
+<!-- Slide 19 -->
+<div class="slide">
+<h3>19. Praktik Gabungan: Satu Rancangan, Dinilai dari Tiga Sudut</h3>
+<ul>
+<li><b>Susun (20 menit).</b> Kelompok campuran memilih satu masalah nyata di sekolah binaan dan merancang STEM-nya: topik, kriteria, batasan, integrasi.</li>
+<li><b>Sisipkan formatifnya (10 menit).</b> Pilih dua ide formatif untuk memotret pemahaman di tengah proyek.</li>
+<li><b>Simulasikan binaannya (10 menit).</b> Pengawas di kelompok memberi umpan balik dengan pola apresiasi — pertanyaan — rekomendasi — kesepakatan.</li>
+<li><b>Presentasikan (5 menit).</b> Dua kelompok berbagi; kelompok lain menanggapi dengan pola bus stop: hal yang sudah baik dan umpan balik.</li>
+</ul>
+</div>
+<!-- Slide 20 -->
+<div class="slide">
+<h3>20. Tindak Lanjut: Kecil, Terjadwal, dan Terlihat</h3>
+<p><b>Dalam 7 hari:</b></p>
+<ul>
+<li>Pengawas memilih satu sekolah binaan untuk percobaan pertama</li>
+<li>Guru memilih satu kelas dan satu masalah nyata</li>
+<li>Kepala sekolah memastikan jadwal kolaborasi atau jam tertanam tersedia</li>
+</ul>
+<p><b>Dalam 30 hari:</b></p>
+<ul>
+<li>Satu siklus STEM selesai: rancang, uji, desain ulang, komunikasikan</li>
+<li>Pengawas melakukan satu kunjungan pembinaan berbekal instrumen observasi</li>
+<li>Hasilnya dibahas bersama: bukti murid, bukan sekadar laporan kegiatan</li>
+</ul>
+</div>
+<!-- Slide 21 -->
+<div class="slide">
+<h3>21. AI Boleh Membantu Merancang — Telaah Ulang Tetap Wajib</h3>
+<ul>
+<li><b>Cari inspirasi topik:</b> AI membantu memetakan masalah di sekitar sekolah menjadi kandidat topik proyek yang layak diuji.</li>
+<li><b>Analisis integrasi:</b> AI membantu menyandingkan capaian pembelajaran beberapa mapel untuk melihat titik temu integrasinya.</li>
+<li><b>Rancang aktivitas:</b> AI membantu menyusun draf tahapan, pertanyaan pemicu, dan ide asesmen formatif.</li>
+</ul>
+<div class="note"><b>Syaratnya satu, sesuai Panduan:</b> hasil AI wajib ditelaah ulang dan disesuaikan dengan konteks lokal — murid, bahan, dan budaya sekolah Bapak dan Ibu sendiri. Kumpulan 14 prompt siap salin ada di bagian Bahan di bawah.</div>
+</div>
+<!-- Slide 22 -->
+<div class="slide">
+<h3>22. Mulai dari Satu Masalah Nyata, Satu Kelas, Satu Siklus — Minggu Ini</h3>
+<p>Tuliskan komitmen Bapak dan Ibu di kolom chat: <b>sekolahnya, masalahnya, dan tanggal kunjungan atau kelas pertamanya</b>. Itulah bahan tindak lanjut kita bersama.</p>
+<p>Terima kasih — sampai bertemu di kelas-kelas binaan.</p>
+<div class="tip">Gunakan formulir komitmen di bagian Praktik di bawah untuk menyusun kalimat komitmen, lalu salin ke kolom chat Zoom.</div>
+</div>
+
+<div class="pager">
+<button class="btn btn-ghost" onclick="geser(-1)">← Sebelumnya</button>
+<span id="nomorSlide2">Slide 1 dari 22</span>
+<button class="btn btn-primary" onclick="geser(1)">Berikutnya →</button>
+</div>
+</div>
+</section>
+
+<!-- ============ BAHAN ============ -->
+<section id="bahan">
+<h2>📁 Bahan Pendamping</h2>
+<p>Semua bahan di bawah ini juga tersedia sebagai dokumen Word yang bisa diunduh di akhir halaman.</p>
+
+<h3>1. Instrumen Observasi Pembelajaran STEM (13 Indikator)</h3>
+<div class="card">
+<p><i>Amati bukti, bukan kesan. Tulis apa yang benar-benar terlihat dan terdengar di kelas. Satu indikator boleh “Belum Terlihat” tanpa menyalahkan guru — itu justru bahan diskusi pembinaan. Centang kolom di bawah saat berlatih.</i></p>
+<table>
+<tr><th>No</th><th>Indikator</th><th>Terlihat</th><th>Belum Terlihat</th></tr>
+<tr><td colspan="4"><b>A. Perencanaan</b></td></tr>
+<tr><td>1</td><td>Tujuan pembelajaran mengintegrasikan minimal dua bidang STEM (Sains, Teknologi, Rekayasa, Matematika).</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>2</td><td>Masalah yang diangkat kontekstual dan nyata bagi siswa.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>3</td><td>Tahapan Engineering Design Process (Proses Desain Rekayasa) dirancang jelas.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>4</td><td>Rencana asesmen mencakup proses dan produk.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td colspan="4"><b>B. Pelaksanaan</b></td></tr>
+<tr><td>5</td><td>Siswa mengidentifikasi masalah dan mengajukan pertanyaan.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>6</td><td>Siswa merancang, membuat, dan menguji — bukan hanya mendengarkan penjelasan.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>7</td><td>Guru memfasilitasi, bukan mendominasi pembelajaran.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>8</td><td>Kerja sama kelompok berjalan dengan pembagian peran.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>9</td><td>Teknologi digunakan untuk menyelidiki atau memodelkan, bukan sekadar tayangan.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>10</td><td>Matematika dan sains dipakai sebagai alat untuk mengambil keputusan desain.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td colspan="4"><b>C. Asesmen dan Refleksi</b></td></tr>
+<tr><td>11</td><td>Penilaian mencakup proses (observasi / diskusi) dan produk.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>12</td><td>Siswa merefleksi dan memperbaiki desainnya.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>13</td><td>Ada tindak lanjut atau pengayaan yang jelas.</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+</table>
+<p><b>Kesimpulan observasi</b> (tulis berdasarkan bukti): 2–3 kekuatan yang didukung bukti • 2–3 area pengembangan beserta buktinya • rekomendasi konkret yang dapat ditindaklanjuti guru.</p>
+</div>
+
+<h3>2. Studi Kasus: Jembatan Stik Es Krim (Kelas 8B)</h3>
+<div class="card">
+<p><b>Konteks:</b> SMP negeri perkotaan, kelas 8B (32 siswa, 8 kelompok), 2 pertemuan × 80 menit, guru IPA (nama samaran: Ibu Ratna). Tujuan: menjelaskan pengaruh bentuk dan struktur terhadap kekuatan jembatan; merancang dan membuat jembatan dari stik es krim yang menahan beban seberat mungkin; mengukur dengan tepat; bekerja sama dan menyampaikan alasan desain.</p>
+<p><b>Pertemuan 1:</b> dibuka dengan foto jembatan runtuh, lalu penjelasan guru sekitar 25 menit tentang jenis jembatan, gaya tekan dan tarik, serta mengapa segitiga lebih kaku — lengkap dengan contoh susunan yang menurut guru paling kuat. Siswa mendengarkan dan mencatat; hanya dua siswa mengangkat tangan. Pertanyaan “apakah boleh membuat dua lapis lantai?” dijawab: “Boleh, tapi ikuti dulu contoh di papan agar tidak salah.” Setelah itu tidak ada lagi yang bertanya. Kelas menonton video 7 menit tentang jembatan terkuat di dunia, lalu menerima lembar kerja berisi langkah pembuatan dan gambar contoh desain yang harus diikuti. 30 menit terakhir kelompok membuat sketsa dan merakit; sebagian besar meniru pola contoh. Alasan seorang siswa: “Karena contoh dari Ibu kelihatannya paling kuat, jadi kami ikuti saja.”</p>
+<p><b>Pertemuan 2:</b> 40 menit merakit; Kelompok 5 mencoba lantai dua lapis dan diagonal lebih rapat di tengah, kelompok lain bertahan pada desain awal. Kelompok 3 menambah penopang saat lantainya melengkung. Siswa baru berhitung di akhir: beban maksimum dibagi jumlah stik (“kekuatan per stik”), ditulis di papan sebagai perbandingan — tanpa dipakai lagi untuk mengubah desain karena waktu perakitan sudah habis. Uji beban bergantian di depan kelas; Kelompok 5 menang dengan 2.850 gram. Nilai akhir hanya dari kekuatan jembatan, kerapian, dan ketepatan waktu. Tidak ada tugas lanjutan setelah uji beban.</p>
+<table>
+<tr><th>Kelompok</th><th>Beban maksimum</th><th>Catatan hasil uji</th></tr>
+<tr><td>Kelompok 5</td><td>2.850 gram</td><td>Tahan paling lama; lantai dua lapis, diagonal rapat di tengah.</td></tr>
+<tr><td>Kelompok 2</td><td>2.400 gram</td><td>Cukup kuat; patah pada sambungan ujung setelah beban ditambah cepat.</td></tr>
+<tr><td>Kelompok 3</td><td>1.750 gram</td><td>Lantai melengkung sejak awal uji; penopang tambahan membantu sebagian.</td></tr>
+<tr><td>Kelompok 7</td><td>1.200 gram</td><td>Patah di tengah pada uji kedua; sambungan lem belum kering sempurna.</td></tr>
+<tr><td>Kelompok lain (4 kelompok)</td><td>1.400–2.100 gram</td><td>Hasil beragam; umumnya mengikuti pola contoh dengan variasi kecil.</td></tr>
+</table>
+<p><b>Pertanyaan diskusi:</b> (a) Di mana bukti S, T, E, M dalam pembelajaran ini, dan seberapa kuat? (b) Apa kekuatan pembelajaran ini? (c) Apa kekurangannya, beserta buktinya? (d) Umpan balik pembinaan seperti apa yang akan Anda sampaikan, dengan urutan apresiasi — perbaikan — saran konkret?</p>
+<div class="reveal"><b>🔍 Tebak dulu, lalu klik untuk membuka: 4 kelemahan yang terselip dalam kasus ini</b>
+<button class="btn btn-sm btn-dark" onclick="bukaTutup(this)">Buka</button>
+<div class="isi">
+<ol>
+<li><b>Guru mendominasi satu tahap:</b> penjelasan 25 menit + contoh jawaban yang harus diikuti membuat siswa meniru, bukan merancang.</li>
+<li><b>Teknologi hanya tayangan video:</b> video 7 menit ditonton dan dicatat kesannya, tanpa dipakai untuk menyelidiki atau memodelkan.</li>
+<li><b>Matematika tidak dipakai untuk keputusan desain:</b> hitungan “kekuatan per stik” baru muncul di akhir dan tidak dipakai mengubah desain.</li>
+<li><b>Asesmen hanya produk:</b> nilai akhir dari kekuatan, kerapian, dan ketepatan waktu — proses, refleksi, dan perbaikan tidak dinilai.</li>
+</ol>
+</div></div>
+<p><i>Kasus ini fiktif dan disusun untuk keperluan diskusi dan pembinaan.</i></p>
+</div>
+
+<h3>3. Template Rekomendasi Pembinaan</h3>
+<div class="card">
+<p>Diisi pengawas setelah observasi kelas, berdasarkan bukti yang teramati. Satu salinan untuk guru, satu salinan untuk pengawas.</p>
+<ul>
+<li><b>Identitas:</b> nama guru, sekolah, kelas/fase, materi/proyek STEM, tanggal observasi, nama pengawas, waktu/jam ke-.</li>
+<li><b>Ringkasan hasil observasi:</b> 3–5 kalimat — tujuan dan alur, tahap proses desain rekayasa yang berjalan, keterlibatan siswa.</li>
+<li><b>Kekuatan (2–3):</b> masing-masing wajib disertai bukti singkat.</li>
+<li><b>Area pengembangan (2–3):</b> dirumuskan dari bukti, bukan dari kekurangan yang tidak teramati.</li>
+<li><b>Rekomendasi konkret:</b> satu rekomendasi = satu tindakan spesifik, dapat dilaksanakan, dan dapat diverifikasi pada kunjungan berikutnya, lengkap dengan pendamping/penanggung jawab dan tenggat waktu.</li>
+<li><b>Rencana pembinaan lanjutan:</b> pendampingan/observasi berikutnya, komunitas belajar, lesson study STEM, bentuk dukungan lain.</li>
+<li><b>Kesepakatan dan tanda tangan</b> pengawas dan guru.</li>
+</ul>
+<table>
+<tr><th>Rekomendasi KONKRET — tiru pola ini</th><th>Rekomendasi KABUR — hindari</th></tr>
+<tr><td>“Guru memberi waktu 10 menit di awal agar siswa merumuskan pertanyaan penyelidikan sendiri sebelum membuat desain.”</td><td>“Tingkatkan pembelajaran STEM.”</td></tr>
+<tr><td>“Pada tahap menguji, guru meminta setiap kelompok mencatat hasil uji pertama dan satu perbaikan desain pada lembar kerja, mulai pertemuan berikutnya.”</td><td>“Pembelajaran harus lebih berpusat pada siswa.”</td></tr>
+<tr><td>“Guru menambahkan satu soal perhitungan beban (matematika) pada lembar kerja proyek jembatan, dan membahasnya sebelum siswa mulai membuat.”</td><td>“Perbanyak integrasi antar-mata pelajaran.”</td></tr>
+</table>
+<p><b>Kuncinya:</b> rekomendasi konkret menjawab “siapa melakukan apa, kapan, dan bagaimana terlihat hasilnya”. Jika tidak dapat diperiksa pada kunjungan berikutnya, rumuskan ulang.</p>
+</div>
+
+<h3>4. Template Rancangan Proyek STEM</h3>
+<div class="card">
+<p>Satu lembar rancangan untuk satu proyek. Bagian-bagiannya:</p>
+<ul>
+<li><b>Identitas:</b> nama guru, sekolah, jenjang/kelas, mata pelajaran/tema, judul proyek, alokasi waktu.</li>
+<li><b>Masalah kontekstual:</b> masalah nyata dalam satu–dua kalimat, diawali pertanyaan pemicu (“Bagaimana cara kita …?”).</li>
+<li><b>Tujuan pembelajaran dan muatan STEM:</b> kolom S — T — E — M, diisi singkat satu–dua frasa per kolom; tidak semua proyek harus memaksakan keempatnya sama besar.</li>
+<li><b>Tahapan Engineering Design Process:</b> Tanya, Bayangkan, Rencanakan, Buat, Uji, Perbaiki — masing-masing dengan aktivitas siswa dan peran guru. Tahap Uji dan Perbaiki boleh berulang.</li>
+<li><b>Alat dan bahan:</b> utamakan bahan sederhana, murah, dan mudah didapat, termasuk bahan bekas yang aman; tandai jumlah per kelompok dan catatan keamanan.</li>
+<li><b>Pembagian peran:</b> ketua, pencatat, pengelola bahan, penguji, penyaji — putar peran pada proyek berikutnya.</li>
+<li><b>Asesmen:</b> proses (observasi + catatan kelompok), produk (uji produk + rubrik), refleksi (jurnal + presentasi); kriteria keberhasilan produk disepakati bersama siswa sebelum membuat.</li>
+<li><b>Diferensiasi per jenjang:</b> TK bermain-bertanya-bercerita • SD mengamati dan mencoba • SMP merancang dan menguji • SMA/SMK memecahkan masalah nyata dan berkarya.</li>
+</ul>
+<div class="tip"><b>Contoh terisi — SD “Filter Air Sederhana” (IPAS, kelas 5, 3 × 70 menit):</b> masalahnya air keruh setelah hujan di sekitar sekolah. Siswa merancang susunan lapisan filter (kapas, arang, kerikil, pasir) dalam botol bekas, mengukur volume dan waktu penyaringan, membandingkan kejernihan sebelum–sesudah. Catatan keamanan: air hasil saringan hanya diamati, TIDAK untuk diminum. Versi TK: bermain menyaring dengan dua bahan dan bercerita. Versi SMP: tambah pengukuran kejernihan dan perbandingan antar-desain. Versi SMA/SMK: kembangkan menjadi solusi nyata bagi pengguna lengkap dengan perhitungan biaya.</div>
+</div>
+
+<h3>5. Bank Contoh Proyek STEM (12 Proyek)</h3>
+<div class="card">
+<p>Pilih jenjang untuk menyaring. Semua proyek memakai alat dan bahan sederhana, murah, dan mudah ditemukan di sekitar sekolah dan rumah. Siklusnya sama di semua jenjang: bertanya dan membayangkan, merencanakan, membuat, menguji, lalu memperbaiki.</p>
+<div style="margin:10px 0">
+<button class="btn btn-sm btn-dark" onclick="filterProj('semua',this)">Semua</button>
+<button class="btn btn-sm btn-ghost" onclick="filterProj('TK',this)">TK</button>
+<button class="btn btn-sm btn-ghost" onclick="filterProj('SD',this)">SD</button>
+<button class="btn btn-sm btn-ghost" onclick="filterProj('SMP',this)">SMP</button>
+<button class="btn btn-sm btn-ghost" onclick="filterProj('SMA',this)">SMA/SMK</button>
+</div>
+
+<div class="proj show" data-j="TK"><b>TK 1 — Menara Balok Tertinggi.</b> Masalah: menara balok selalu roboh sebelum tinggi. Anak menyusun balok, mengamati siapa yang roboh dan mengapa, lalu mencoba lagi dengan alas lebih lebar. <i>S:</i> keseimbangan, alas lebar dan bawah berat lebih sulit roboh. <i>T:</i> balok kayu dan kamera guru untuk dokumentasi. <i>E:</i> menyusun ulang sampai menara berdiri lebih tinggi dan stabil. <i>M:</i> menghitung balok dan membandingkan tinggi dengan jengkal. Produk: menara tertinggi yang berdiri minimal 10 detik, beserta cerita anak.</div>
+<div class="proj show" data-j="TK"><b>TK 2 — Perahu Daun yang Tidak Tenggelam.</b> Daun di air lama-lama tenggelam, apalagi diberi beban. Anak melipat daun menjadi mangkuk/perahu, menguji dengan kancing atau kerikil satu per satu sampai tenggelam, lalu mencoba bentuk lain. <i>S:</i> mengapung–tenggelam dan pengaruh bentuk terhadap daya apung. <i>M:</i> menghitung beban yang dibawa sebelum tenggelam. Produk: perahu daun pembawa beban terbanyak versi anak.</div>
+<div class="proj show" data-j="TK"><b>TK 3 — Bayangan dan Cahaya.</b> Bayangan kadang besar, kadang kecil. Anak bermain senter dan benda di depan dinding: mendekat–jauhkan benda, menebak bayangan berikutnya, ditutup pertunjukan bayangan tangan/boneka kertas. <i>S:</i> cahaya merambat lurus dan terhalang benda. <i>M:</i> membandingkan ukuran benda asli dengan bayangannya. Temuan bersama: bayangan membesar saat benda dekat dengan senter.</div>
+
+<div class="proj show" data-j="SD"><b>SD 1 — Filter Air Sederhana.</b> Air keruh tidak layak dipakai langsung. Siswa menyusun lapisan kerikil, pasir, arang, dan kapas di botol bekas, menuang air keruh, membandingkan kejernihan sebelum–sesudah, lalu mengubah susunan lapisan dan menguji lagi. <i>M:</i> volume air yang disaring dan waktu tetesan. Catatan: hasil saringan belum tentu aman diminum.</div>
+<div class="proj show" data-j="SD"><b>SD 2 — Kincir Angin dari Kertas.</b> Angin tak terlihat tetapi dapat menggerakkan benda. Siswa membuat kincir dengan jumlah dan bentuk bilah berbeda, menguji di depan kipas angin, membandingkan putaran, memperbaiki, dan menguji kembali. <i>M:</i> jumlah putaran dalam 30 detik dalam tabel sederhana.</div>
+<div class="proj show" data-j="SD"><b>SD 3 — Jembatan Kertas Terkuat.</b> Selembar kertas lemas dan mudah menekuk. Siswa menguji kertas datar di antara dua tumpukan buku dengan koin, lalu mencoba lipatan akordeon, gulungan, atau lipatan tepi, dan menguji ulang. <i>S:</i> bentuk dan struktur memengaruhi kekuatan, bukan hanya jenis bahan. Produk: jembatan kertas terkuat beserta tabel hasil uji.</div>
+
+<div class="proj show" data-j="SMP"><b>SMP 1 — Jembatan Stik Es Krim.</b> Jembatan mini menyeberangi “sungai” 30 cm dan menahan beban seberat mungkin hanya dari stik es krim dan lem. Kelompok menggambar desain (datar, lengkung, rangka segitiga), membangun, menguji beban bertahap sampai patah, menganalisis titik patah, dan menyampaikan perbaikan. <i>M:</i> rasio kekuatan = beban maksimum dibagi jumlah stik. Inilah proyek studi kasus di atas.</div>
+<div class="proj show" data-j="SMP"><b>SMP 2 — Roket Air.</b> Botol plastik bekas diterbangkan setinggi mungkin hanya dengan air dan udara bertekanan. Kelompok menentukan volume air, bentuk sirip, dan kerucut hidung; meluncurkan dengan pompa; mengubah satu variabel dan membandingkan. <i>M:</i> ketinggian/waktu terbang pada berbagai volume air. Keselamatan: peluncuran hanya di area terbuka dan diawasi guru.</div>
+<div class="proj show" data-j="SMP"><b>SMP 3 — Model Rumah Hemat Energi.</b> Rumah yang panas membuat penghuni boros listrik. Kelompok merancang maket rumah kardus dengan arah matahari, jendela, ventilasi silang, dan bahan atap; menguji dengan lampu sebagai matahari dan termometer; memperbaiki desain dan menguji lagi. <i>M:</i> suhu sebelum–sesudah perbaikan dan perbandingan luas jendela terhadap luas lantai.</div>
+
+<div class="proj show" data-j="SMA"><b>SMA/SMK 1 — Irigasi Tetes Mini.</b> Tanaman kekeringan saat libur, menyiram dengan selang membuang banyak air. Kelompok mensurvei kebutuhan air, merancang jaringan irigasi tetes dari botol bekas dan selang kecil, mengukur debit tetesan dan kelembapan tanah, mengatur ulang sampai aliran merata. <i>M:</i> debit per titik tetes, volume air yang dihemat, biaya bahan per bedeng.</div>
+<div class="proj show" data-j="SMA"><b>SMA/SMK 2 — Produk Sabun Alami (Kewirausahaan).</b> Sabun bermerek mahal, padahal minyak kelapa dan sereh berlimpah. Kelompok meriset resep dan keamanan, membuat sabun dengan pengawasan ketat guru, menguji busa dan kelembutan, merancang kemasan dan label, menghitung harga pokok dan harga jual untuk bazar sekolah. <i>S:</i> reaksi saponifikasi. Keselamatan: soda api hanya ditangani guru, dengan sarung tangan dan pelindung mata. <i>M:</i> harga pokok, margin, harga jual, titik impas sederhana.</div>
+<div class="proj show" data-j="SMA"><b>SMA/SMK 3 — Pengering Tenaga Surya Sederhana.</b> Hasil panen mudah busuk saat musim hujan. Kelompok merancang kotak pengering berdinding plastik transparan/kaca bekas, berrak tingkat dan berlubang sirkulasi udara, mengukur suhu dan menimbang bahan sebelum–sesudah selama beberapa hari. <i>M:</i> persentase penurunan bobot per hari, perbandingan dengan penjemuran terbuka, biaya pembuatan alat.</div>
+</div>
+
+<h3>6. Rubrik Asesmen Proyek STEM (4 Aspek × 4 Tingkat)</h3>
+<div class="card">
+<p>Satu rubrik untuk semua jenjang — yang berubah adalah harapan dan cara mengumpulkan buktinya, bukan aspek yang dinilai. Nilai selama proyek, bukan hanya di akhir. Bobot: Pemahaman Konsep 20% • Proses Desain Rekayasa 35% • Kerja Sama &amp; Komunikasi 20% • Produk &amp; Refleksi 25%. Skor level: Mulai Berkembang = 1, Berkembang = 2, Cakap = 3, Mahir = 4. Nilai Aspek = (Skor ÷ 4) × 100. Predikat: 85–100 Mahir, 70–84 Cakap, 55–69 Berkembang, di bawah 55 Mulai Berkembang.</p>
+<table>
+<tr><th>Aspek</th><th>Mulai Berkembang</th><th>Berkembang</th><th>Cakap</th><th>Mahir</th></tr>
+<tr><td><b>1. Pemahaman Konsep (Sains &amp; Matematika)</b></td><td>Menyebut benda/kejadian tanpa menjelaskan konsepnya; pengukuran dan hitungan belum dipakai atau banyak keliru.</td><td>Menjelaskan sebagian konsep dengan bahasa sendiri; mulai mengukur dan menghitung, tetapi belum konsisten atau belum tepat satuan.</td><td>Menjelaskan konsep sains dan matematika yang dipakai dengan benar dan menghubungkannya dengan produk; pengukuran dan hitungan tepat.</td><td>Menjelaskan konsep secara runtut, memakai data ukur/hitung untuk mengambil keputusan, dan dapat menjelaskan mengapa konsep itu bekerja.</td></tr>
+<tr><td><b>2. Proses Desain Rekayasa</b></td><td>Langsung membuat tanpa pertanyaan atau rancangan; berhenti atau mengulang dari awal ketika hasil tidak sesuai.</td><td>Mengajukan pertanyaan dan membuat rancangan sederhana; menguji produk, tetapi perbaikan dilakukan tanpa mengacu pada hasil uji.</td><td>Merancang sebelum membuat, menguji dengan cara yang jelas, mencatat hasil uji, dan memperbaiki produk berdasarkan hasil tersebut.</td><td>Melakukan lebih dari satu kali uji–perbaiki; membandingkan hasil antaruji, memilih perbaikan paling efektif, dan menjelaskan alasannya.</td></tr>
+<tr><td><b>3. Kerja Sama &amp; Komunikasi</b></td><td>Bekerja sendiri-sendiri atau didominasi satu orang; gagasan jarang disampaikan dan peran belum terbagi.</td><td>Peran mulai terbagi, tetapi belum dijalankan konsisten; menyampaikan gagasan bila ditanya dan mendengarkan sebagian masukan teman.</td><td>Menjalankan peran masing-masing, aktif menyampaikan gagasan, mendengarkan, dan menanggapi masukan untuk keputusan kelompok.</td><td>Mengatur kerja kelompok secara mandiri, memastikan semua anggota berkontribusi, menyelesaikan perbedaan pendapat dengan alasan, dan mempresentasikan hasil secara meyakinkan.</td></tr>
+<tr><td><b>4. Produk &amp; Refleksi</b></td><td>Produk belum selesai atau belum berfungsi sesuai tujuan; belum dapat menjelaskan apa yang dibuat dan mengapa.</td><td>Produk selesai dan sebagian berfungsi; dapat menjelaskan hasil akhir, tetapi belum menyebutkan kelemahan dan cara memperbaikinya.</td><td>Produk berfungsi sesuai kriteria; menjelaskan kelebihan dan kelemahan produk serta satu perbaikan yang sudah atau akan dilakukan.</td><td>Produk berfungsi dengan baik dan efisien sesuai kriteria; refleksi mendalam — menjelaskan perubahan selama proses, bukti keberhasilannya, dan gagasan pengembangan berikutnya.</td></tr>
+</table>
+<p><b>Penyesuaian per jenjang:</b> TK — observasi dan cerita anak, tanpa tes tulis; “Cakap” berarti anak dapat menceritakan dengan kata-katanya sendiri apa yang dibuat dan apa yang terjadi saat dicoba. SD — observasi, sketsa, catatan uji sederhana, presentasi lisan. SMP — sketsa tertulis, data ukur, catatan uji–perbaiki, refleksi tertulis singkat. SMA/SMK — dokumentasi lengkap, analisis data, justifikasi desain, presentasi/defense; SMK tambah kriteria dunia kerja (keselamatan, efisiensi bahan, kesesuaian spesifikasi).</p>
+<div class="tip"><b>Contoh terisi — SMP “Jembatan Stik Es Krim” (nilai akhir 84, predikat Cakap):</b> Pemahaman Konsep Cakap (75 × 20% = 15,00) • Proses Desain Rekayasa Mahir (100 × 35% = 35,00; uji pertama patah pada 800 gram, dicatat titik patahnya, ditambah penyangga diagonal, uji kedua bertahan hingga 1.400 gram) • Kerja Sama &amp; Komunikasi Cakap (75 × 20% = 15,00) • Produk &amp; Refleksi Cakap (75 × 25% = 18,75). Total 83,75 dibulatkan 84. Pesan rubrik ini: nilai tertinggi justru pada proses, bukan pada produk — hargai cara berpikir dan memperbaikinya, maka kualitas produk akan mengikuti.</div>
+</div>
+
+<h3>7. Peta Teknologi Digital per Peran</h3>
+<div class="card">
+<p>Teknologi dipilih untuk melayani tujuan STEM — mengamati, merancang, menguji, dan memecahkan masalah — bukan sekadar menjadi tayangan. Utamakan yang gratis, berjalan di HP, dan hemat kuota.</p>
+<p><b>Guru — mengajar STEM:</b></p>
+<table>
+<tr><th>Teknologi</th><th>Fungsi dalam STEM</th><th>Catatan</th></tr>
+<tr><td>PhET</td><td>Simulasi sains dan matematika untuk mengamati fenomena dan mencoba-coba sebelum praktik nyata.</td><td>Gratis; ada Bahasa Indonesia; dapat dipakai offline.</td></tr>
+<tr><td>GeoGebra</td><td>Grafik, geometri, dan pemodelan 3D untuk matematika dan tahap perancangan.</td><td>Gratis; berjalan di HP dan browser.</td></tr>
+<tr><td>Tinkercad</td><td>Desain 3D dan simulasi rangkaian listrik untuk tahap rekayasa.</td><td>Gratis di browser; cocok untuk SMP/SMA.</td></tr>
+<tr><td>Scratch</td><td>Pemrograman blok untuk melatih logika dan membuat karya digital.</td><td>Untuk SD/SMP; lanjut ke Micro:bit atau Arduino bila sekolah memiliki perangkatnya.</td></tr>
+<tr><td>Canva</td><td>Membuat produk siswa: poster, presentasi, infografis, dan video hasil proyek.</td><td>Hasil karya mudah dibagikan dan dipresentasikan.</td></tr>
+<tr><td>AI (Gemini / ChatGPT)</td><td>Membantu merancang ide proyek, diferensiasi tugas, dan rubrik penilaian.</td><td>Hasil AI wajib dicek kebenarannya; MPI Prompter membantu guru menulis prompt yang bagus.</td></tr>
+<tr><td>Rumah Belajar</td><td>Simulasi, video, dan bahan belajar lokal dari Kemendikbudristek.</td><td>Gratis; konten sesuai konteks Indonesia.</td></tr>
+<tr><td>DapMath</td><td>Aplikasi matematika interaktif untuk eksplorasi konsep dan latihan.</td><td>Contoh teknologi pembelajaran khusus matematika.</td></tr>
+</table>
+<p><b>Kepala sekolah — mengelola program STEM:</b></p>
+<table>
+<tr><th>Teknologi</th><th>Fungsi dalam STEM</th><th>Catatan</th></tr>
+<tr><td>Google Sheets + Looker Studio</td><td>Dasbor sederhana program STEM: perangkat ajar terkumpul, proyek yang berjalan, dan rekap nilai.</td><td>Gratis; cukup diperbarui dari satu berkas bersama.</td></tr>
+<tr><td>Google Classroom / WhatsApp</td><td>Koordinasi guru, pengumuman program, dan komunikasi dengan orang tua.</td><td>Gunakan kanal resmi sekolah agar terdokumentasi.</td></tr>
+<tr><td>PMM dan e-Kinerja</td><td>Pengelolaan kinerja guru secara resmi, termasuk target dan bukti dukung terkait STEM.</td><td>Sesuai ketentuan pengelolaan kinerja yang berlaku.</td></tr>
+<tr><td>Dapodik</td><td>Data pokok sekolah sebagai dasar perencanaan program dan sarana STEM.</td><td>Pastikan data mutakhir sebelum dipakai untuk keputusan.</td></tr>
+<tr><td>Aplikasi kurikulum</td><td>Menghimpun perangkat ajar dari banyak guru dalam satu tempat yang terpantau.</td><td>Contoh: aplikasi penghimpun perangkat ajar untuk puluhan guru.</td></tr>
+<tr><td>Canva</td><td>Publikasi sekolah: poster kegiatan, laporan visual, dan dokumentasi pameran karya STEM.</td><td>Gunakan templat yang konsisten dengan identitas sekolah.</td></tr>
+</table>
+<p><b>Pengawas sekolah — mensupervisi STEM:</b></p>
+<table>
+<tr><th>Teknologi</th><th>Fungsi dalam STEM</th><th>Catatan</th></tr>
+<tr><td>Google Forms + Sheets</td><td>Instrumen observasi pembelajaran STEM versi digital.</td><td>Hasil observasi otomatis terkumpul dan mudah direkap.</td></tr>
+<tr><td>Google Drive</td><td>Portofolio bukti supervisi per sekolah binaan: instrumen, foto, dan catatan.</td><td>Susun folder per sekolah dan per periode supervisi.</td></tr>
+<tr><td>Looker Studio</td><td>Rekap hasil supervisi lintas sekolah: tren capaian dan sekolah yang paling perlu dibina.</td><td>Membantu menentukan prioritas pembinaan berikutnya.</td></tr>
+<tr><td>PMM / e-Kinerja</td><td>Memantau kinerja dan rencana kerja guru binaan yang terkait STEM.</td><td>Padukan dengan hasil observasi langsung di kelas.</td></tr>
+<tr><td>Zoom / Meet + dokumen kolaboratif</td><td>Pembinaan jarak jauh dan komunitas belajar pengawas.</td><td>Dokumen bersama memudahkan tindak lanjut yang tertulis dan terukur.</td></tr>
+</table>
+<p><b>Prinsip memilih teknologi:</b> gratis, berjalan di HP, hemat kuota atau bisa offline, dan benar-benar melayani tujuan STEM (mengamati, merancang, menguji). <b>Catatan khusus TK:</b> teknologi lebih banyak berada di tangan guru — untuk perencanaan dan dokumentasi foto/video permainan anak — daripada di tangan anak itu sendiri.</p>
+</div>
+
+<h3>8. Kumpulan Prompt AI untuk Merancang STEM (14 Prompt Siap Salin)</h3>
+<div class="card">
+<p><b>Cara memakai:</b> (1) Salin prompt apa adanya. (2) Ganti bagian dalam tanda kurung siku — contoh: [jenjang], [materi], [masalah nyata], [alokasi waktu] — jangan biarkan kurung siku tersisa. (3) Jika hasil pertama terlalu umum, lanjutkan: “Buat dalam bentuk tabel”, “Persingkat untuk 2 pertemuan”, atau “Beri contoh untuk kelas saya”. (4) <b>Telaah ulang sebelum dipakai — wajib.</b> AI bisa salah konsep, salah hitung, atau mengusulkan bahan yang tidak aman. Guru tetap perancang utama; pengawas tetap penilai profesional.</p>
+<p><b>Prinsip aman:</b> jangan memasukkan nama siswa, nilai pribadi, atau data pribadi ke AI publik. Untuk dokumen guru binaan, anonimkan nama guru dan sekolah terlebih dahulu.</p>
+
+<p><b>A. Ide proyek dari masalah nyata</b></p>
+<p><b>Prompt 1 — Menemukan masalah nyata di sekitar sekolah.</b> <i>Tujuan: mengubah pengamatan lingkungan sekolah menjadi daftar masalah yang layak dijadikan proyek.</i></p>
+<div class="prompt-box" id="p1">Bertindaklah sebagai perancang pembelajaran STEM. Saya guru [jenjang dan kelas] di [lokasi sekolah]. Buatkan daftar 10 masalah nyata di lingkungan sekolah dan sekitarnya yang berkaitan dengan [tema/materi]. Untuk setiap masalah, tuliskan siapa yang terdampak, penyebab yang bisa diamati siswa, dan data sederhana yang bisa dikumpulkan siswa dalam [alokasi waktu]. Urutkan dari yang paling mudah diamati siswa.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p1')">📋 Salin Prompt 1</button>
+<p><b>Prompt 2 — Mengubah masalah menjadi ide proyek.</b> <i>Tujuan: menyaring satu masalah menjadi ide proyek yang terukur dan selesai tepat waktu.</i></p>
+<div class="prompt-box" id="p2">Masalah nyata yang dipilih adalah [masalah nyata]. Untuk jenjang [jenjang] dan materi [materi], ubah masalah ini menjadi 3 alternatif ide proyek STEM. Untuk setiap ide, tuliskan pertanyaan pemandu, produk akhir yang dibuat siswa, batasan bahan dan biaya, serta cara menguji apakah produknya berhasil. Tandai ide yang paling realistis dikerjakan dalam [jumlah pertemuan] pertemuan.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p2')">📋 Salin Prompt 2</button>
+
+<p><b>B. Merancang tahapan Engineering Design Process</b></p>
+<p><b>Prompt 3 — Menyusun aktivitas lengkap EDP.</b> <i>Tujuan: menyusun aktivitas siswa dan peran guru untuk keenam tahap EDP dalam satu proyek.</i></p>
+<div class="prompt-box" id="p3">Susun rancangan aktivitas siswa untuk proyek STEM [nama proyek] bagi [jenjang] dalam [jumlah pertemuan] pertemuan, masing-masing [durasi] menit. Gunakan tahapan Engineering Design Process: tanya, bayangkan, rencanakan, buat, uji, dan perbaiki. Untuk setiap tahap, tuliskan tujuan tahap, aktivitas siswa, peran guru, pertanyaan pemandu, dan bukti belajar yang dihasilkan siswa. Sajikan dalam bentuk tabel.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p3')">📋 Salin Prompt 3</button>
+<p><b>Prompt 4 — Memperdalam tahap uji dan perbaiki.</b> <i>Tujuan: mencegah siswa menganggap produknya langsung berhasil tanpa bukti pengujian.</i></p>
+<div class="prompt-box" id="p4">Proyek kami adalah [nama proyek] untuk [jenjang]. Tahap membuat sudah selesai, tetapi siswa cenderung langsung menganggap produknya berhasil. Rancang secara rinci tahap uji dan perbaiki: buat tabel pengujian yang harus diisi siswa, kriteria berhasil/gagal yang terukur, cara mencatat kegagalan, dan 5 pertanyaan refleksi yang mendorong siswa memperbaiki desain berdasarkan bukti, bukan tebakan.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p4')">📋 Salin Prompt 4</button>
+
+<p><b>C. Mengintegrasikan S–T–E–M</b></p>
+<p><b>Prompt 5 — Memetakan muatan S, T, E, dan M dalam satu proyek.</b> <i>Tujuan: memeriksa dengan bukti apakah integrasi keempat unsur sudah nyata di aktivitas siswa.</i></p>
+<div class="prompt-box" id="p5">Analisis proyek STEM berikut: [deskripsi singkat proyek]. Buat tabel empat kolom — Sains, Teknologi, Rekayasa, dan Matematika. Untuk setiap kolom, tuliskan konsep yang benar-benar dipelajari siswa, aktivitas yang membuktikannya, dan pertanyaan yang bisa diajukan guru untuk mengecek pemahaman. Jika ada unsur yang masih tempelan atau dipaksakan, tandai dan beri saran perbaikannya.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p5')">📋 Salin Prompt 5</button>
+<p><b>Prompt 6 — Memperkuat unsur yang paling lemah.</b> <i>Tujuan: memperdalam satu unsur STEM tanpa alat mahal dan tanpa mengubah produk akhir.</i></p>
+<div class="prompt-box" id="p6">Dalam proyek [nama proyek] untuk [jenjang] dan materi [materi], unsur [unsur yang lemah, misalnya Matematika] masih terasa tempelan. Beri 5 cara memperkuat unsur tersebut tanpa menambah alat mahal dan tanpa mengubah produk akhir. Untuk setiap cara, tuliskan aktivitas siswa, data atau hitungan yang mereka hasilkan, dan bagaimana guru menilai pemahaman mereka.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p6')">📋 Salin Prompt 6</button>
+
+<p><b>D. Diferensiasi per jenjang</b></p>
+<p><b>Prompt 7 — Menyesuaikan satu proyek untuk empat jenjang.</b> <i>Tujuan: mengadaptasi proyek yang sama untuk TK, SD, SMP, dan SMA/SMK secara bertingkat.</i></p>
+<div class="prompt-box" id="p7">Proyek STEM dasarnya adalah [nama dan deskripsi proyek]. Sesuaikan proyek yang sama untuk empat jenjang: TK, SD, SMP, dan SMA/SMK. Untuk setiap jenjang, tuliskan fokus masalah yang sesuai usia, tingkat kesulitan desain, peran guru, produk akhir, dan cara menilai yang sesuai tahap perkembangan siswa. Jaga agar inti masalahnya sama, tetapi tuntutan berpikirnya bertingkat.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p7')">📋 Salin Prompt 7</button>
+<p><b>Prompt 8 — Membuat versi bertingkat dalam satu kelas.</b> <i>Tujuan: menyediakan tantangan dasar, menengah, dan lanjutan untuk kemampuan siswa yang beragam.</i></p>
+<div class="prompt-box" id="p8">Di kelas [jenjang dan kelas] saya, kemampuan siswa sangat beragam untuk proyek [nama proyek]. Buat tiga tingkat tantangan dalam proyek yang sama: dasar, menengah, dan lanjutan. Untuk setiap tingkat, tuliskan batasan desain, bantuan (scaffolding) dari guru, dan produk atau bukti yang diharapkan. Pastikan semua tingkat tetap mengerjakan masalah yang sama dan bisa mempresentasikan hasilnya bersama.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p8')">📋 Salin Prompt 8</button>
+
+<p><b>E. Asesmen formatif dan rubrik</b></p>
+<p><b>Prompt 9 — Menyusun asesmen formatif selama proyek.</b> <i>Tujuan: merencanakan teknik cek pemahaman di setiap tahap, beserta tindak lanjutnya.</i></p>
+<div class="prompt-box" id="p9">Untuk proyek STEM [nama proyek] di [jenjang] selama [jumlah pertemuan] pertemuan, susun rencana asesmen formatif per tahap Engineering Design Process. Untuk setiap tahap, tuliskan teknik asesmennya (observasi, pertanyaan lisan, cek daftar, tiket keluar, atau jurnal singkat), contoh pertanyaan atau instruksinya, dan tindak lanjut guru jika ditemukan miskonsepsi atau kelompok yang tertinggal. Sajikan dalam bentuk tabel.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p9')">📋 Salin Prompt 9</button>
+<p><b>Prompt 10 — Membuat rubrik proses, produk, dan refleksi.</b> <i>Tujuan: menyusun rubrik dengan deskriptor yang dapat diamati, bukan kata sifat umum.</i></p>
+<div class="prompt-box" id="p10">Buatkan rubrik penilaian proyek STEM [nama proyek] untuk [jenjang] dengan tiga aspek: (1) proses — kerja sama dan pemecahan masalah, (2) produk — kualitas produk dan pengujiannya, (3) refleksi — kejujuran menilai kegagalan dan rencana perbaikan. Gunakan empat tingkat: Perlu Bimbingan, Berkembang, Mahir, dan Teladan. Tuliskan deskriptor yang dapat diamati untuk setiap aspek dan tingkat, bukan kata sifat umum seperti “baik” atau “kurang”.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p10')">📋 Salin Prompt 10</button>
+<p><b>Prompt 11 — Menyusun pertanyaan refleksi siswa.</b> <i>Tujuan: membantu siswa menilai prosesnya sendiri dengan bahasa sesuai usianya.</i></p>
+<div class="prompt-box" id="p11">Buatkan 10 pertanyaan refleksi untuk siswa [jenjang] setelah menyelesaikan proyek STEM [nama proyek]. Kelompokkan menjadi tiga bagian: apa yang berhasil, apa yang gagal dan apa buktinya, serta apa yang akan diubah jika mengulang proyek. Gunakan bahasa sederhana sesuai usia siswa dan hindari pertanyaan yang hanya bisa dijawab “ya” atau “tidak”. Tambahkan satu kalimat pembuka jurnal untuk siswa yang kesulitan memulai menulis.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p11')">📋 Salin Prompt 11</button>
+
+<p><b>F. Bahan murah dan keselamatan</b></p>
+<p><b>Prompt 12 — Mencari bahan murah, bekas, dan aman.</b> <i>Tujuan: menemukan alternatif bahan dari barang bekas lengkap dengan catatan keselamatannya.</i></p>
+<div class="prompt-box" id="p12">Untuk proyek STEM [nama proyek] bagi [jenjang] dengan [jumlah siswa] siswa dalam [jumlah kelompok] kelompok, buatkan daftar bahan pengganti yang murah dan mudah ditemukan dari barang bekas di sekolah atau di rumah. Untuk setiap bahan, tuliskan fungsi aslinya dalam proyek, alternatif bekasnya, perkiraan biaya, dan catatan keselamatannya. Tandai bahan yang tidak boleh digunakan siswa tanpa pendampingan guru.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p12')">📋 Salin Prompt 12</button>
+
+<p><b>G. Untuk pengawas: analisis dan pembinaan</b></p>
+<p><b>Prompt 13 — Menganalisis perangkat ajar STEM.</b> <i>Tujuan: menemukan bukti integrasi STEM dan kelemahan perangkat ajar guru binaan secara sistematis.</i></p>
+<div class="prompt-box" id="p13">Bertindaklah sebagai mitra analisis supervisi. Berikut perangkat ajar STEM dari guru binaan: [tempel ringkasan tujuan, aktivitas, dan asesmen — tanpa nama guru dan sekolah]. Analisis dengan bukti: di mana integrasi Sains, Teknologi, Rekayasa, dan Matematika terlihat kuat, di mana yang masih tempelan, dan apakah tahapan Engineering Design Process berjalan lengkap. Untuk setiap temuan, kutip bagian perangkat yang menjadi buktinya dan beri tingkat prioritas perbaikannya.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p13')">📋 Salin Prompt 13</button>
+<p><b>Prompt 14 — Menyusun umpan balik pembinaan yang konkret.</b> <i>Tujuan: mengubah catatan observasi menjadi umpan balik berbasis bukti dengan langkah tindak lanjut yang jelas.</i></p>
+<div class="prompt-box" id="p14">Berdasarkan hasil observasi berikut: [tempel catatan observasi dan bukti kelas]. Bantu saya menyusun umpan balik pembinaan untuk guru. Gunakan urutan: kekuatan yang terbukti, satu fokus perbaikan utama, contoh kalimat umpan balik yang bisa saya ucapkan, langkah perbaikan konkret untuk pertemuan berikutnya, dan cara memantau tindak lanjutnya dalam [jangka waktu]. Hindari saran umum seperti “tingkatkan kreativitas” tanpa bukti dan langkah nyata.</div>
+<button class="btn btn-sm btn-dark" onclick="salin('p14')">📋 Salin Prompt 14</button>
+
+<div class="tip"><b>Rumus prompt yang baik — sebutkan lima hal:</b> (1) Jenjang dan kelas, (2) materi atau capaian yang dituju, (3) masalah nyata, (4) alokasi waktu dan batasan (pertemuan, durasi, kelompok, bahan, biaya), (5) bentuk hasil yang diinginkan (tabel, rubrik, daftar pertanyaan, langkah per tahap). Semakin spesifik perintahnya, semakin berguna hasilnya.</div>
+</div>
+
+<h3>📥 Unduh Dokumen Asli (Word)</h3>
+<div class="card">
+<ul>
+<li><a href="bahan/instrumen-observasi-stem.docx">Instrumen Observasi Pembelajaran STEM (.docx)</a></li>
+<li><a href="bahan/studi-kasus-stem-jembatan.docx">Studi Kasus: Jembatan Stik Es Krim (.docx)</a></li>
+<li><a href="bahan/template-rekomendasi-pembinaan-stem.docx">Template Rekomendasi Pembinaan (.docx)</a></li>
+<li><a href="bahan/template-rancangan-proyek-stem.docx">Template Rancangan Proyek STEM (.docx)</a></li>
+<li><a href="bahan/bank-contoh-proyek-stem-jenjang.docx">Bank Contoh Proyek STEM per Jenjang (.docx)</a></li>
+<li><a href="bahan/rubrik-asesmen-proyek-stem.docx">Rubrik Asesmen Proyek STEM (.docx)</a></li>
+<li><a href="bahan/peta-teknologi-stem-per-peran.docx">Peta Teknologi Digital untuk Implementasi Pembelajaran STEM (.docx)</a></li>
+<li><a href="bahan/prompt-ai-merancang-stem.docx">Kumpulan Prompt AI untuk Merancang Pembelajaran STEM (.docx)</a></li>
+</ul>
+</div>
+</section>
+
+<!-- ============ PRAKTIK ============ -->
+<section id="praktik">
+<h2>🛠️ Praktik Gabungan</h2>
+<div class="card">
+<h3>Satu Rancangan, Dinilai dari Tiga Sudut</h3>
+<ul>
+<li><b>Susun (20 menit).</b> Kelompok campuran memilih satu masalah nyata di sekolah binaan dan merancang STEM-nya: topik, kriteria, batasan, integrasi.</li>
+<li><b>Sisipkan formatifnya (10 menit).</b> Pilih dua ide formatif untuk memotret pemahaman di tengah proyek.</li>
+<li><b>Simulasikan binaannya (10 menit).</b> Pengawas di kelompok memberi umpan balik dengan pola: apresiasi → pertanyaan → rekomendasi → kesepakatan.</li>
+<li><b>Presentasikan (5 menit).</b> Dua kelompok berbagi; kelompok lain menanggapi dengan pola bus stop: hal yang sudah baik dan umpan balik.</li>
+</ul>
+<p><b>Tiga lensa dalam satu kelompok:</b> pengawas menilai dengan instrumen observasi (apakah tiga ciri STEM terlihat?); guru menilai keterlaksanaan di kelasnya (apakah langkahnya realistis dalam jam pelajarannya?); kepala sekolah menilai dukungan yang dibutuhkan (jadwal kolaborasi, bahan, perlindungan dari administrasi ganda).</p>
+</div>
+<div class="card">
+<h3>✍️ Susun Kalimat Komitmen, lalu Salin ke Chat Zoom</h3>
+<label>Sekolah / sekolah binaan<br><input id="kSekolah" type="text" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px" placeholder="contoh: SMP Negeri 171 Jakarta"></label><br><br>
+<label>Masalah nyata yang akan dikerjakan<br><input id="kMasalah" type="text" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px" placeholder="contoh: tumpukan sampah organik sekolah"></label><br><br>
+<label>Tanggal kunjungan / kelas pertama<br><input id="kTanggal" type="text" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px" placeholder="contoh: Senin, 3 November 2026"></label><br><br>
+<button class="btn btn-primary" onclick="buatKomitmen()">Susun Kalimat Komitmen</button>
+<div class="prompt-box" id="hasilKomitmen" style="display:none"></div>
+<button class="btn btn-sm btn-dark" id="btnSalinKomitmen" style="display:none" onclick="salin('hasilKomitmen')">📋 Salin Komitmen</button>
+</div>
+</section>
+
+<!-- ============ FASILITATOR ============ -->
+<section id="fasilitator">
+<h2>🧭 Run-Sheet Fasilitator (180 Menit, Waktu Relatif)</h2>
+<div class="card">
+<table>
+<tr><th>Menit</th><th>Segmen</th><th>Isi dan Catatan Fasilitator</th></tr>
+<tr><td>0–15</td><td>Polling “STEM atau bukan?”</td><td>Putuskan sebelum menit 0: polling Zoom atau vote chat. Tekankan: yang penting alasannya, bukan sekadar pilihannya.</td></tr>
+<tr><td>15–45</td><td>Fondasi BSKAP</td><td>Tiga ciri STEM yang bisa diamati, STEM 5M, tiga jalur, tiga peran. Jika molor, pangkas fondasi — bukan praktik.</td></tr>
+<tr><td>45–90</td><td>Merancang STEM</td><td>Empat langkah, proyek kompos, jalan tertanam. Pesan: jangan menunggu tim lengkap.</td></tr>
+<tr><td>90–120</td><td>Asesmen formatif</td><td>Formatif vs sumatif, tiga guru (A–B–C), lima teknik, lima ide siap pakai besok pagi.</td></tr>
+<tr><td>120–165</td><td>Praktik</td><td>Simulasi supervisi (baca perangkat, role-play, tukar peran, refleksi) + praktik gabungan tiga lensa. Breakout campuran: jangan pisahkan 1–2 guru/kepsek sendiri; tiga lensa menilai perangkat yang sama.</td></tr>
+<tr><td>165–180</td><td>Komitmen</td><td>Peserta menulis sekolah, masalah, dan tanggal kunjungan/kelas pertama di chat. Pakai ulang handout Peta Teknologi seusai sesi, tanpa handout baru.</td></tr>
+</table>
+<div class="note"><b>Catatan waktu:</b> jam mulai belum ditentukan, sehingga run-sheet memakai menit relatif. Tindak lanjut 7 hari dan 30 hari mengikuti pola slide 20.</div>
+</div>
+</section>
+</main>
+<footer>
+<p><b>Disusun oleh Dody Adyansyah</b> — Bimbingan Teknis Pembelajaran STEM</p>
+<p>Paparan interaktif ini memuat seluruh kebutuhan bimtek: 22 slide paparan, instrumen observasi, studi kasus, template rekomendasi dan rancangan, bank 12 proyek, rubrik, peta teknologi, dan 14 prompt AI, beserta run-sheet fasilitator.</p>
+</footer>
+<script>
+var slides = document.querySelectorAll('.slide');
+var idx = 0;
+var menu = document.getElementById('menuSlide');
+slides.forEach(function(s, i){
+  var b = document.createElement('button');
+  b.textContent = (i+1);
+  b.onclick = function(){ tampil(i); };
+  menu.appendChild(b);
+});
+function tampil(i){
+  idx = (i + slides.length) % slides.length;
+  slides.forEach(function(s, j){ s.classList.toggle('active', j === idx); });
+  var btns = menu.querySelectorAll('button');
+  btns.forEach(function(b, j){ b.classList.toggle('on', j === idx); });
+  var label = 'Slide ' + (idx+1) + ' dari ' + slides.length;
+  document.getElementById('nomorSlide').textContent = label;
+  document.getElementById('nomorSlide2').textContent = label;
+  window.scrollTo({top: document.getElementById('paparan').offsetTop - 60, behavior: 'smooth'});
+}
+function geser(d){ tampil(idx + d); }
+document.addEventListener('keydown', function(e){
+  if(e.key === 'ArrowRight') geser(1);
+  if(e.key === 'ArrowLeft') geser(-1);
+});
+function jawabPoll(p){
+  var el = document.getElementById('hasilPoll');
+  var teks = {
+    'A': '<b>Jawaban A — tempat pensil mengikuti contoh guru.</b> Ini <b>prakarya</b>: tidak ada masalah yang diselesaikan, murid tidak merancang sendiri, hasilnya tidak diuji. Tapi A bisa <b>dinaikkan</b> menjadi STEM: beri masalah alat tulis yang hilang dan berserakan, kriteria muat minimal 12 alat tulis dan tidak mudah terguling, batasan hanya bahan bekas dalam 2 jam pelajaran — lalu murid merancang, menguji, dan memperbaiki.',
+    'B': '<b>Jawaban B — tanam kacang hijau di dua pot.</b> Ini <b>eksperimen sains</b>: menjawab “mengapa ini terjadi” (tanaman butuh cahaya) — belum menjawab “bagaimana kita menyelesaikan masalah ini”. Bagus sebagai sains, tetapi belum STEM karena tidak ada masalah yang diselesaikan lewat rancangan.',
+    'C': '<b>Jawaban C — perahu penyelamat banjir. Benar, ini STEM!</b> Ada masalah evakuasi, kriteria terukur (tidak tenggelam 30 detik, muat koin sebanyak mungkin), batasan bahan yang jelas, dan murid merancang, menguji, lalu memperbaiki.'
+  };
+  el.innerHTML = teks[p];
+  el.style.display = 'block';
+}
+function bukaTutup(btn){
+  var isi = btn.parentElement.querySelector('.isi');
+  var buka = isi.style.display !== 'block';
+  isi.style.display = buka ? 'block' : 'none';
+  btn.textContent = buka ? 'Tutup' : 'Buka';
+}
+function filterProj(j, btn){
+  document.querySelectorAll('.proj').forEach(function(p){
+    p.classList.toggle('show', j === 'semua' || p.getAttribute('data-j') === j);
+  });
+  var wrap = btn.parentElement;
+  wrap.querySelectorAll('button').forEach(function(b){ b.className = 'btn btn-sm btn-ghost'; });
+  btn.className = 'btn btn-sm btn-dark';
+}
+function salin(id){
+  var el = document.getElementById(id);
+  var txt = el.innerText;
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt); }
+  else{
+    var ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  }
+  alert('Tersalin! Silakan tempel di AI atau di chat.');
+}
+function buatKomitmen(){
+  var s = document.getElementById('kSekolah').value.trim();
+  var m = document.getElementById('kMasalah').value.trim();
+  var t = document.getElementById('kTanggal').value.trim();
+  if(!s || !m || !t){ alert('Isi dulu ketiga kolom: sekolah, masalah, dan tanggal.'); return; }
+  var out = document.getElementById('hasilKomitmen');
+  out.textContent = 'Komitmen saya: ' + s + ' — mengerjakan masalah "' + m + '", kelas/kunjungan pertama pada ' + t + '.';
+  out.style.display = 'block';
+  document.getElementById('btnSalinKomitmen').style.display = 'inline-block';
+}
+tampil(0);
+</script>
+</body>
+</html>
