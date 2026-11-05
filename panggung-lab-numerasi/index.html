@@ -1,0 +1,1604 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Panggung Lab Numerasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#f4f6f5; --surface:#ffffff; --surface2:#e9efec; --ink:#122b33; --ink2:#3d5a63;
+  --line:#cfdcd6; --teal:#0b6e5d; --teal-d:#084f43; --amber:#e8930c; --amber-soft:#fdeeda;
+  --red:#c0392b; --good:#0b6e5d; --bad:#c0392b;
+  --radius:14px; --shadow:0 6px 24px rgba(18,43,51,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0d1a1e; --surface:#15262b; --surface2:#1c3138; --ink:#e8f1ee; --ink2:#a9c2ba;
+    --line:#2c454c; --teal:#2bb49a; --teal-d:#7fd8c6; --amber:#f5a623; --amber-soft:#3a2c10;
+    --red:#e5735f; --good:#2bb49a; --bad:#e5735f; --shadow:0 6px 24px rgba(0,0,0,.35); }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;line-height:1.15;margin:0}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+
+/* ---------- toolbar ---------- */
+.toolbar{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:2px solid var(--line);display:flex;align-items:center;gap:8px;padding:8px 12px;flex-wrap:wrap}
+.mode-btn{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:12px 20px;font-size:16px;font-weight:700;min-height:52px}
+.mode-btn[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+.tool-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.ghost-btn{border:2px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:10px;padding:12px 16px;font-size:15px;font-weight:700;min-height:52px}
+.timer-chip{font-variant-numeric:tabular-nums;font-weight:800;background:var(--amber-soft);border:2px solid var(--amber);color:var(--ink);border-radius:10px;padding:10px 14px;font-size:16px;min-height:52px;display:flex;align-items:center}
+
+main{max-width:1180px;margin:0 auto;padding:20px 16px 80px}
+.view{display:none}
+.view.active{display:block}
+
+/* ---------- stage / slides ---------- */
+.stage-wrap{background:var(--surface);border:2px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.stage{padding:38px 40px 30px;min-height:480px;display:flex;flex-direction:column;justify-content:center}
+.slide{display:none}
+.slide.active{display:block;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){.slide.active{animation:none} html{scroll-behavior:auto}}
+.slide .kicker{font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:14px;color:var(--teal);margin-bottom:12px}
+.slide h2{font-size:clamp(30px,4.6vw,52px);font-weight:900;margin-bottom:16px}
+.slide p.lead{font-size:clamp(19px,2.4vw,26px);color:var(--ink2);max-width:56ch}
+.slide p{font-size:clamp(17px,2vw,21px)}
+.stage-nav{display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:2px solid var(--line);background:var(--surface2);flex-wrap:wrap}
+.nav-btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:14px 26px;font-size:18px;font-weight:800;min-height:56px}
+.nav-btn:disabled{opacity:.35;cursor:default}
+.nav-btn.alt{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+.progress{flex:1;min-width:120px;height:12px;background:var(--surface);border:2px solid var(--line);border-radius:99px;overflow:hidden}
+.progress > div{height:100%;background:var(--amber);transition:width .3s}
+.slide-count{font-weight:800;font-variant-numeric:tabular-nums}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dots button{width:16px;height:16px;border-radius:50%;border:2px solid var(--teal);background:transparent;padding:0}
+.dots button.on{background:var(--amber);border-color:var(--amber)}
+
+.big-stat{display:flex;gap:18px;flex-wrap:wrap;margin:22px 0}
+.stat-card{flex:1;min-width:210px;background:var(--surface2);border-radius:var(--radius);padding:20px;border-top:6px solid var(--teal)}
+.stat-card.warn{border-top-color:var(--red)}
+.stat-card .num{font-family:"Fraunces",serif;font-size:52px;font-weight:900;line-height:1}
+.stat-card .lbl{color:var(--ink2);font-size:16px;margin-top:6px}
+.bar-row{display:grid;grid-template-columns:170px 1fr 70px;align-items:center;gap:12px;margin:10px 0;font-size:18px}
+.bar-track{background:var(--surface2);border-radius:8px;height:34px;overflow:hidden}
+.bar-fill{height:100%;background:var(--teal)}
+.bar-fill.red{background:var(--red)}
+.bar-val{font-weight:800;font-variant-numeric:tabular-nums}
+
+.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0}
+.choice-btn{background:var(--surface);border:3px solid var(--line);border-radius:var(--radius);padding:20px;font-size:19px;font-weight:700;text-align:left;min-height:76px;color:var(--ink)}
+.choice-btn:hover{border-color:var(--teal)}
+.choice-btn.picked{border-color:var(--amber);background:var(--amber-soft)}
+.choice-btn.right{border-color:var(--good);background:var(--surface2)}
+.choice-btn.wrong{border-color:var(--bad)}
+.feedback{display:none;border-radius:var(--radius);padding:18px 20px;font-size:19px;margin-top:8px}
+.feedback.show{display:block}
+.feedback.ok{background:var(--surface2);border-left:8px solid var(--good)}
+.feedback.no{background:var(--amber-soft);border-left:8px solid var(--bad)}
+
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:18px}
+.principle{background:var(--surface2);border-radius:var(--radius);padding:18px 20px}
+.principle h3{font-size:22px;margin-bottom:6px}
+.principle h3 .n{display:inline-flex;width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;align-items:center;justify-content:center;font-family:"Plus Jakarta Sans",sans-serif;font-size:17px;font-weight:800;margin-right:8px;vertical-align:middle}
+.principle p{font-size:16.5px !important;color:var(--ink2);margin:0}
+.checklist{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.checklist li{background:var(--surface2);border-radius:var(--radius);padding:16px 18px;font-size:19px;display:flex;gap:14px;align-items:flex-start}
+.checklist .box{flex:none;width:30px;height:30px;border:3px solid var(--teal);border-radius:8px;margin-top:2px}
+table.tools{width:100%;border-collapse:collapse;font-size:16.5px;margin-top:14px}
+table.tools th,table.tools td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+table.tools th{background:var(--surface2);font-size:15px}
+.tag{display:inline-block;background:var(--amber-soft);border:1.5px solid var(--amber);border-radius:99px;padding:2px 10px;font-size:13.5px;font-weight:700;margin:2px 2px 2px 0}
+.note{font-size:15px;color:var(--ink2)}
+.src{font-size:14.5px;color:var(--ink2);border-top:1px dashed var(--line);margin-top:18px;padding-top:10px}
+
+/* ---------- lab ---------- */
+.lab-head h2{font-size:clamp(28px,4vw,42px);font-weight:900}
+.lab-head p{font-size:19px;color:var(--ink2);max-width:70ch}
+.demo-picker{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:20px 0}
+.demo-pick{border:3px solid var(--line);background:var(--surface);border-radius:var(--radius);padding:18px;text-align:left;color:var(--ink);min-height:96px}
+.demo-pick .t{font-weight:800;font-size:19px;display:block;margin-bottom:4px}
+.demo-pick .d{font-size:15px;color:var(--ink2)}
+.demo-pick[aria-pressed="true"]{border-color:var(--teal);background:var(--surface2);box-shadow:inset 0 0 0 2px var(--teal)}
+.demo-card{background:var(--surface);border:2px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:26px;display:none}
+.demo-card.active{display:block}
+.demo-card h3{font-size:clamp(24px,3.4vw,34px);font-weight:900;margin-bottom:6px}
+.ctx-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.ctx-row .lbl{font-weight:800;font-size:15px}
+.ctx-btn{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:10px 18px;font-size:16px;font-weight:700;min-height:48px}
+.ctx-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.layer-tabs{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}
+.layer-btn{flex:1;min-width:130px;border:2px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:12px;padding:14px;font-size:17px;font-weight:800;min-height:56px}
+.layer-btn[aria-pressed="true"]{background:var(--amber);border-color:var(--amber);color:#1d1503}
+.layer{display:none}
+.layer.active{display:block}
+.story{background:var(--amber-soft);border:2px solid var(--amber);border-radius:var(--radius);padding:16px 20px;font-size:19px;margin-bottom:16px}
+.big-btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:16px 28px;font-size:19px;font-weight:800;min-height:60px}
+.big-btn.amber{background:var(--amber);color:#1d1503}
+.big-btn.line{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+.big-btn:disabled{opacity:.4}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+input[type=range]{width:100%;accent-color:var(--teal);height:44px}
+.frac-ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:14px 0}
+.frac-ctl .ctl{background:var(--surface2);border-radius:var(--radius);padding:16px}
+.frac-ctl label{font-weight:800;font-size:17px;display:block;margin-bottom:4px}
+.frac-ctl .val{font-family:"Fraunces",serif;font-size:30px;font-weight:900}
+.frac-bars{display:grid;gap:14px;margin:16px 0}
+.frac-bar-wrap .cap{font-weight:800;font-size:17px;margin-bottom:6px}
+.frac-bar{display:flex;height:56px;border:3px solid var(--ink);border-radius:10px;overflow:hidden}
+.frac-bar .seg{flex:1;border-right:2px solid var(--ink)}
+.frac-bar .seg:last-child{border-right:none}
+.frac-bar .seg.on-a{background:var(--teal)}
+.frac-bar .seg.on-b{background:var(--amber)}
+.result-line{font-size:21px;font-weight:700;background:var(--surface2);border-radius:var(--radius);padding:16px 20px;display:none}
+.result-line.show{display:block}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0}
+.prod{border:3px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--surface);text-align:left;color:var(--ink);min-height:150px;width:100%}
+.prod .pname{font-weight:800;font-size:20px}
+.prod .pvol{font-size:17px;color:var(--ink2)}
+.prod .pprice{font-family:"Fraunces",serif;font-size:30px;font-weight:900;margin-top:6px}
+.prod.picked{border-color:var(--amber);background:var(--amber-soft)}
+.prod.best{border-color:var(--good);box-shadow:inset 0 0 0 2px var(--good)}
+.calc-table{width:100%;border-collapse:collapse;font-size:17px;margin-top:10px}
+.calc-table th,.calc-table td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left}
+.calc-table td.n,.calc-table th.n{text-align:right;font-variant-numeric:tabular-nums}
+.vote-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.vote-btn{border:3px solid var(--line);background:var(--surface);border-radius:var(--radius);padding:20px 14px;font-size:19px;font-weight:800;color:var(--ink);min-height:84px}
+.vote-btn:active{border-color:var(--amber);background:var(--amber-soft)}
+.vote-btn .cnt{display:block;font-family:"Fraunces",serif;font-size:30px;margin-top:4px}
+.sim-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+.sim-out .cell{background:var(--surface2);border-radius:var(--radius);padding:14px;text-align:center}
+.sim-out .cell .v{font-family:"Fraunces",serif;font-size:36px;font-weight:900}
+.sim-out .cell .l{font-size:14.5px;color:var(--ink2)}
+svg text{font-family:"Plus Jakarta Sans",sans-serif}
+.bongkar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.bongkar-grid .b{background:var(--surface2);border-radius:var(--radius);padding:16px 18px}
+.bongkar-grid .b h4{margin:0 0 6px;font-size:17px;color:var(--teal)}
+.bongkar-grid .b p{margin:0;font-size:16.5px}
+ol.tiru{font-size:18px;padding-left:24px;display:grid;gap:8px}
+.axis-toggle{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+
+/* ---------- buat ---------- */
+.form-card{background:var(--surface);border:2px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:26px;margin-bottom:22px}
+.form-card h3{font-size:26px;font-weight:900;margin-bottom:6px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:16px 0}
+.field label{display:block;font-weight:800;font-size:15.5px;margin-bottom:6px}
+.field select,.field input,.field textarea{width:100%;border:2px solid var(--line);border-radius:10px;padding:13px;font-size:17px;background:var(--surface);color:var(--ink);min-height:54px;font-family:inherit}
+.field textarea{min-height:96px;resize:vertical}
+.reco{display:none;background:var(--surface2);border-radius:var(--radius);padding:20px;margin-top:14px}
+.reco.show{display:block}
+.reco h4{margin:0 0 8px;font-size:20px}
+.blueprint{display:none;background:var(--surface2);border:2px dashed var(--teal);border-radius:var(--radius);padding:20px;margin-top:14px;white-space:pre-wrap;font-size:16.5px;line-height:1.6}
+.blueprint.show{display:block}
+.commit-card{display:none;background:var(--amber-soft);border:3px solid var(--amber);border-radius:var(--radius);padding:22px;margin-top:14px;text-align:center}
+.commit-card.show{display:block}
+.commit-card .who{font-family:"Fraunces",serif;font-size:26px;font-weight:900}
+.commit-card .what{font-size:20px;margin-top:6px}
+
+/* ---------- bangun sendiri ---------- */
+.bs-checks{display:grid;gap:10px;margin:14px 0}
+.bs-check{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;background:var(--surface2);border:2px solid transparent;border-radius:var(--radius);padding:16px 18px;font-size:18px;color:var(--ink);min-height:60px;line-height:1.5}
+.bs-check .box{flex:none;width:30px;height:30px;border:3px solid var(--teal);border-radius:8px;margin-top:1px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:19px}
+.bs-check[aria-pressed="true"]{border-color:var(--teal)}
+.bs-check[aria-pressed="true"] .box{background:var(--teal)}
+.bs-timer{background:var(--surface2);border-radius:var(--radius);padding:22px;text-align:center;margin:16px 0}
+.bs-clock{font-family:"Fraunces",serif;font-size:clamp(54px,9vw,86px);font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.bs-clock.over{color:var(--bad)}
+.bs-stepname{font-weight:800;font-size:19px;margin-top:8px}
+.bs-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:16px}
+.bs-step{background:var(--surface2);border-radius:var(--radius);padding:18px 20px}
+.bs-step h4{margin:0 0 6px;font-size:19px}
+.bs-step h4 .n{display:inline-flex;width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;align-items:center;justify-content:center;font-family:"Plus Jakarta Sans",sans-serif;font-size:17px;font-weight:800;margin-right:8px;vertical-align:middle}
+.bs-step .dur{display:inline-block;background:var(--amber-soft);border:1.5px solid var(--amber);border-radius:99px;padding:2px 10px;font-size:13.5px;font-weight:800}
+.bs-step .pos{display:inline-block;background:var(--surface);border:1.5px solid var(--teal);color:var(--teal);border-radius:99px;padding:2px 10px;font-size:13.5px;font-weight:800;margin-left:4px}
+.bs-step p{font-size:16px;color:var(--ink2);margin:8px 0 12px}
+.pola-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:16px}
+.pola{background:var(--surface2);border-radius:var(--radius);padding:20px}
+.pola h4{margin:0 0 4px;font-size:21px}
+.pola .cocok{font-size:15px;color:var(--teal);font-weight:800}
+.pola ul{margin:10px 0;padding-left:20px;font-size:16px;display:grid;gap:5px}
+.pola .contoh{font-size:15.5px;border-top:1px dashed var(--line);padding-top:10px;margin-top:10px;display:grid;gap:6px}
+.gal-item{display:flex;gap:12px;align-items:center;background:var(--surface2);border-radius:var(--radius);padding:14px 18px;margin-top:10px;flex-wrap:wrap}
+.gal-item .gi-main{flex:1;min-width:220px}
+.gal-item .gi-title{font-weight:800;font-size:18px}
+.gal-open{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-weight:800;text-decoration:none;min-height:48px;display:inline-flex;align-items:center;font-size:16px}
+.gal-del{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:12px 14px;font-weight:700;min-height:48px;font-size:15px}
+
+/* ---------- rundown ---------- */
+.timeline{display:grid;gap:0;margin-top:18px}
+.tl-row{display:grid;grid-template-columns:110px 1fr auto;gap:16px;padding:16px 10px;border-bottom:2px solid var(--line);align-items:center}
+.tl-row .time{font-weight:800;font-variant-numeric:tabular-nums;color:var(--teal);font-size:17px}
+.tl-row .what b{font-size:19px}
+.tl-row .what p{margin:2px 0 0;color:var(--ink2);font-size:15.5px}
+.tl-row button{border:2px solid var(--teal);background:var(--surface);color:var(--teal);border-radius:10px;padding:10px 16px;font-weight:800;min-height:48px;font-size:15px}
+
+footer{max-width:1180px;margin:0 auto;padding:0 16px 40px;color:var(--ink2);font-size:15px}
+footer .sig{font-weight:700;color:var(--ink)}
+
+@media (max-width:640px){
+  .stage{padding:24px 18px;min-height:420px}
+  .bar-row{grid-template-columns:110px 1fr 56px;font-size:15px}
+  .tl-row{grid-template-columns:86px 1fr}
+  .tl-row button{grid-column:2}
+  main{padding:14px 10px 60px}
+}
+@media print{
+  .toolbar,.stage-nav,.no-print{display:none !important}
+  .view{display:none !important}
+  #view-buat{display:block !important}
+  .blueprint,.reco,.commit-card{display:block}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar" role="navigation" aria-label="Mode pelatihan">
+  <button class="mode-btn" data-view="panggung" aria-pressed="true">🎤 Panggung</button>
+  <button class="mode-btn" data-view="lab" aria-pressed="false">🧪 Lab Demo</button>
+  <button class="mode-btn" data-view="buat" aria-pressed="false">🛠️ Buat Sendiri</button>
+  <button class="mode-btn" data-view="bangun" aria-pressed="false">🔨 Bangun Sendiri</button>
+  <button class="mode-btn" data-view="rundown" aria-pressed="false">🕐 Rundown 120′</button>
+  <div class="tool-right">
+    <span class="timer-chip" id="timerChip" title="Penghitung waktu sesi">⏱ 00:00</span>
+    <button class="ghost-btn" id="timerBtn">Mulai Timer</button>
+    <button class="ghost-btn" id="fsBtn">⛶ Layar Penuh</button>
+  </div>
+</div>
+
+<main>
+<!-- ================= PANGGUNG ================= -->
+<section class="view active" id="view-panggung">
+  <div class="stage-wrap">
+    <div class="stage" id="stage">
+
+      <div class="slide active">
+        <div class="kicker">Pelatihan Guru SMP · Media Pembelajaran Digital Interaktif</div>
+        <h2>Numerasi Bukan Milik Guru Matematika</h2>
+        <p class="lead">Selama dua jam ke depan, Bapak/Ibu tidak hanya mendengar tentang media interaktif — Bapak/Ibu akan <b>merasakan</b> menjadi murid, <b>membongkar</b> cara kerja medianya, lalu <b>merancang</b> media numerasi dari mata pelajaran masing-masing.</p>
+        <div class="big-stat">
+          <div class="stat-card"><div class="num">5</div><div class="lbl">demo hidup yang bisa disentuh langsung di IFP ini</div></div>
+          <div class="stat-card"><div class="num">1</div><div class="lbl">blueprint media dari mapel Anda sendiri, dibawa pulang hari ini</div></div>
+          <div class="stat-card"><div class="num">4</div><div class="lbl">konteks mapel untuk setiap demo: Matematika · IPA · IPS · Bahasa Indonesia</div></div>
+        </div>
+        <p class="note">Navigasi: tombol ‹ › di bawah, tombol panah keyboard, atau titik penanda slide. Semua demo berjalan di halaman ini — tanpa login, tanpa memasang aplikasi.</p>
+      </div>
+
+      <div class="slide">
+        <div class="kicker">Pemantik · 0–10 menit · Sentuh jawabannya di IFP</div>
+        <h2>Satu Soal, Dua Cara Berpikir</h2>
+        <p>Di warung dekat sekolah, tersedia tiga kemasan sabun cuci cair:</p>
+        <div class="choice-grid" id="hookChoices">
+          <button class="choice-btn" data-hook="a">A · 450 ml — Rp13.500</button>
+          <button class="choice-btn" data-hook="b">B · 800 ml — Rp22.400</button>
+          <button class="choice-btn" data-hook="c">C · 1.000 ml — Rp29.000</button>
+        </div>
+        <p><b>Pertanyaan murid kelas 8:</b> kemasan mana yang paling hemat? Minta satu peserta maju dan menyentuh jawabannya.</p>
+        <div class="feedback" id="hookFb"></div>
+      </div>
+
+      <div class="slide">
+        <div class="kicker">Mengapa ini mendesak</div>
+        <h2>Angka yang Tidak Bisa Kita Abaikan</h2>
+        <div class="bar-row"><span>Skor matematika Indonesia (PISA 2022)</span><div class="bar-track"><div class="bar-fill red" style="width:52%"></div></div><span class="bar-val">366</span></div>
+        <div class="bar-row"><span>Rata-rata OECD</span><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><span class="bar-val">472</span></div>
+        <div class="bar-row"><span>Target RPJMN 2029 (GNN)</span><div class="bar-track"><div class="bar-fill" style="width:59%"></div></div><span class="bar-val">419</span></div>
+        <div class="big-stat">
+          <div class="stat-card warn"><div class="num">18%</div><div class="lbl">siswa Indonesia mencapai Level 2 PISA atau lebih — berbanding 69% rata-rata OECD</div></div>
+          <div class="stat-card"><div class="num">379 → 366</div><div class="lbl">skor matematika Indonesia turun dari PISA 2018 ke PISA 2022</div></div>
+          <div class="stat-card"><div class="num">19 Agu 2025</div><div class="lbl">Gerakan Numerasi Nasional diluncurkan Kemendikdasmen: “Mahir Numerasi, Majukan Negeri”</div></div>
+        </div>
+        <p class="lead">PISA mengukur anak usia 15 tahun — anak-anak yang <b>sekarang duduk di kelas Bapak/Ibu</b>. Numerasi adalah agenda nasional, dan semua guru adalah guru numerasi.</p>
+        <p class="src">Sumber: OECD, PISA 2022 Results — Country Notes: Indonesia; Kemendikdasmen, Gerakan Numerasi Nasional &amp; target RPJMN 2025–2029.</p>
+      </div>
+
+      <div class="slide">
+        <div class="kicker">Konsep kunci</div>
+        <h2>Numerasi ≠ Berhitung</h2>
+        <p class="lead">“Numerasi adalah kemampuan berpikir menggunakan konsep, prosedur, fakta, dan alat matematika untuk menyelesaikan masalah sehari-hari pada berbagai jenis konteks yang relevan.” <span class="note">(Definisi Asesmen Nasional / AKM)</span></p>
+        <div class="principles">
+          <div class="principle"><h3>Konten AKM</h3><p>Bilangan · Pengukuran &amp; Geometri · Data &amp; Ketidakpastian · Aljabar. Keempatnya muncul di semua mapel: IPA membaca grafik percobaan, IPS membaca data penduduk, Bahasa Indonesia membaca infografik berita.</p></div>
+          <div class="principle"><h3>Level Kognitif</h3><p>Pemahaman → Penerapan → <b>Penalaran</b>. Kuis “7 × 8 = ?” berhenti di pemahaman. Soal numerasi bertanya: “Mana lebih hemat, dan kapan jawabanmu berubah?”</p></div>
+          <div class="principle"><h3>Konteks</h3><p>Personal, sosial budaya, saintifik. Murid bisa lancar berhitung di buku, tetapi gagal memeriksa kembalian warung atau membaca grafik curah hujan — di situlah numerasi diuji.</p></div>
+        </div>
+        <p style="margin-top:16px">Media yang baik bukan yang paling canggih, melainkan yang membuat murid <b>memanipulasi, memprediksi, mencoba, salah dengan aman, mendapat umpan balik, dan menjelaskan alasannya</b>. UNESCO (GEM Report 2023) mengingatkan: perangkat tanpa pedagogi tidak memperbaiki hasil belajar — contohnya pembagian lebih dari 1 juta laptop di Peru tanpa integrasi pembelajaran.</p>
+      </div>
+
+      <div class="slide">
+        <div class="kicker">Prinsip kilat · 10–25 menit</div>
+        <h2>6 Prinsip Media Numerasi yang Efektif</h2>
+        <div class="principles">
+          <div class="principle"><h3><span class="n">1</span>Kontekstual</h3><p>Berangkat dari dunia murid: uang saku, harga kantin, jadwal bus, data kelas sendiri. Tes cepat: ganti angka dengan data sekolah Anda — masih bermakna?</p></div>
+          <div class="principle"><h3><span class="n">2</span>Visual</h3><p>Yang abstrak dibuat terlihat, dan <i>dinamis</i>: nilai diubah, gambar ikut berubah. Satu layar, satu pertanyaan, warna yang bermakna.</p></div>
+          <div class="principle"><h3><span class="n">3</span>Manipulatif</h3><p>Murid yang menggerakkan, bukan menonton — selalu awali dengan <b>prediksi sebelum mencoba</b>. Prediksi mengubah menonton menjadi berpikir.</p></div>
+          <div class="principle"><h3><span class="n">4</span>Umpan Balik Spesifik</h3><p>Bukan “salah, coba lagi”, melainkan “potonganmu belum sama besar — bagi dulu menjadi 4 bagian yang sama”. Cepat, spesifik, bisa diperbaiki.</p></div>
+          <div class="principle"><h3><span class="n">5</span>Diferensiasi</h3><p>Satu aktivitas, banyak jalur: level dasar–menengah–lanjut, mode kecepatan sendiri, poin untuk proses dan penjelasan — bukan hanya kecepatan.</p></div>
+          <div class="principle"><h3><span class="n">6</span>Gamifikasi Beramalan</h3><p>Kompetisi <b>tim</b> lebih aman daripada individu. Permainan tanpa refleksi hanyalah hiburan — selalu tutup dengan “strategi apa yang berhasil, kapan ia gagal?”</p></div>
+        </div>
+        <p class="note" style="margin-top:14px">Setiap prinsip ini akan Bapak/Ibu <b>rasakan langsung</b> di Lab Demo setelah ini — bukan sekadar dibaca.</p>
+      </div>
+
+      <div class="slide">
+        <div class="kicker">Alat nilai 2 menit</div>
+        <h2>Checklist Sebelum Memakai Media Apa Pun</h2>
+        <ul class="checklist">
+          <li><span class="box"></span><span>Apakah murid <b>memanipulasi</b> sesuatu, bukan hanya menonton atau mengklik “Next”?</span></li>
+          <li><span class="box"></span><span>Apakah umpan baliknya menjelaskan <b>mengapa</b>, bukan hanya benar/salah?</span></li>
+          <li><span class="box"></span><span>Apakah konteksnya <b>dikenali murid</b> saya?</span></li>
+          <li><span class="box"></span><span>Apakah ada <b>jalur mudah dan jalur menantang</b> dalam satu aktivitas?</span></li>
+          <li><span class="box"></span><span>Apakah saya mendapat <b>data untuk tindak lanjut</b> besok pagi?</span></li>
+          <li><span class="box"></span><span>Apakah media ini <b>jalan dengan perangkat &amp; kuota</b> yang benar-benar ada di kelas saya — dan apa rencana B-nya?</span></li>
+        </ul>
+        <p class="lead">Satu jawaban “tidak” bukan alasan membuang media — itu petunjuk apa yang harus ditambahkan. Cetak daftar ini; tempel di meja guru.</p>
+      </div>
+
+      <div class="slide">
+        <div class="kicker">Peta peralatan</div>
+        <h2>Kenali Kategorinya, Bukan Sekadar Namanya</h2>
+        <table class="tools">
+          <tr><th style="width:26%">Kategori</th><th style="width:30%">Contoh</th><th>Kapan dipakai</th></tr>
+          <tr><td><b>Manipulatif virtual &amp; simulasi</b></td><td>GeoGebra, PhET, Polypad (Mathigon), Desmos</td><td>Konsep abstrak yang perlu dilihat &amp; digeser: pecahan, grafik fungsi, peluang, bangun ruang</td></tr>
+          <tr><td><b>Game &amp; kuis interaktif</b></td><td>Wordwall, Wayground (dulu Quizizz), Kahoot!</td><td>Asesmen formatif cepat &amp; review — <i>setelah</i> konsep dipahami, selalu bahas soal yang paling banyak salah</td></tr>
+          <tr><td><b>Video interaktif</b></td><td>Edpuzzle, Nearpod, video buatan guru (Canva/CapCut)</td><td>Flipped classroom &amp; remedial mandiri. Boros kuota — versi kelas: putar sekali di IFP + jeda diskusi</td></tr>
+          <tr><td><b>Spreadsheet &amp; data nyata</b></td><td>Google Sheets, Excel, LibreOffice Calc</td><td>Rantai data lengkap: kumpulkan → olah → grafikkan → tafsirkan. Paling sering diremehkan, padahal inti konten Data AKM</td></tr>
+          <tr><td><b>AI tutor &amp; asisten guru</b></td><td>Chatbot AI umum, Khanmigo, fitur AI di kuis</td><td>Guru: membuat variasi soal &amp; petunjuk bertingkat. Murid: hanya dengan aturan “petunjuk boleh, jawaban akhir tidak” (UNESCO: batas usia 13 tahun, jangan unggah data pribadi murid)</td></tr>
+          <tr><td><b>Low-tech tanpa internet</b></td><td>Kartu pecahan, pasar kelas, papan permainan, kartu jawaban A–D</td><td>Bukan “cadangan kelas dua” — melatih kompetensi yang sama saat perangkat/kuota tidak ada</td></tr>
+        </table>
+        <p class="src">Catatan jujur: harga &amp; batas paket gratis tools berubah cepat dan sumber resmi pun kadang bertentangan (mis. Wordwall gratis disebut 3 aktivitas di halaman terbaru, 5 di halaman bantuan lama; Kahoot 10 vs 40 pemain menurut jenis akun). Selalu cek halaman resmi sebelum pelatihan. Paparan lengkap per tool ada di mode Buat Sendiri → Pemilih Media.</p>
+      </div>
+
+      <div class="slide">
+        <div class="kicker">Sekarang giliran Bapak/Ibu</div>
+        <h2>Masuk ke Lab: Rasakan Dulu, Bongkar Kemudian</h2>
+        <p class="lead">Lima demo menanti di mode <b>🧪 Lab Demo</b>. Setiap demo punya tiga lapisan:</p>
+        <div class="principles">
+          <div class="principle"><h3>▶ Coba — sebagai murid</h3><p>Sentuh, tebak, salah, coba lagi. Tanpa lapisan ini, peserta hanya menonton — persis kesalahan yang kita kritik pada media yang buruk.</p></div>
+          <div class="principle"><h3>🔍 Bongkar — sebagai guru</h3><p>Tujuan, interaksi inti, umpan balik, dan asesmen di balik demo itu. Inilah “dapur” yang membuat media bekerja.</p></div>
+          <div class="principle"><h3>🛠 Tiru — sebagai perancang</h3><p>Langkah konkret membuat versi Anda sendiri, lengkap dengan pilihan tool dan versi low-tech-nya.</p></div>
+        </div>
+        <p style="margin-top:16px">Setiap demo juga punya tombol <b>ganti konteks</b> — satu mesin demo yang sama tampil sebagai Matematika, IPA, IPS, atau Bahasa Indonesia. Numerasi memang hidup di semua mapel.</p>
+        <p><button class="big-btn amber" data-goto-lab>Masuk ke Lab Demo →</button></p>
+      </div>
+
+      <div class="slide">
+        <div class="kicker">Bukti bahwa guru bisa</div>
+        <h2>Ini Bukan Teori: Guru di Sekolah Ini Sudah Membuatnya</h2>
+        <p class="lead">DapMath — 24 aplikasi interaktif matematika kelas 7, 8, dan 9 — dibangun oleh guru, dipakai murid sungguhan di kelas: segitiga Pythagoras yang bisa digeser, pembuktian visual, kalkulator, kuis bergamifikasi, sampai tutor AI “Kang Dody” di setiap aplikasi.</p>
+        <div class="big-stat">
+          <div class="stat-card"><div class="num">24</div><div class="lbl">aplikasi materi matematika SMP, live dan gratis diakses murid</div></div>
+          <div class="stat-card"><div class="num">1 guru</div><div class="lbl">yang merancang, membangun, dan memeliharanya — tanpa tim pengembang</div></div>
+          <div class="stat-card"><div class="num">0</div><div class="lbl">alasan untuk menunggu: studi-studi kecil di Indonesia menunjukkan kombinasi media + model aktif menaikkan hasil &amp; minat (sampel kecil, satu sekolah — menjanjikan, bukan jaminan)</div></div>
+        </div>
+        <p>Pesan dari studi kasusnya: yang bekerja bukan aplikasinya saja, melainkan <b>kombinasi</b> — model pembelajaran aktif + media yang tepat + konteks yang dikenal murid. Itulah yang akan Bapak/Ibu rancang di sesi berikutnya.</p>
+        <p class="src">Studi rujukan: TGT berbantuan Wordwall &amp; Quizizz untuk pecahan (SDN 17 Singkawang, 2025); PhET untuk pecahan (SDN Belitung Selatan 7, 2024); Polypad jaring-jaring bangun ruang, pretest 56,4 → posttest 73,2 (UPTD SDN Socah 1, 2025); Edpuzzle Pythagoras, 29 dari 31 siswa mencapai kriteria numerasi 75 (SMPN 1 Depok Yogyakarta, 2024).</p>
+      </div>
+
+      <div class="slide">
+        <div class="kicker">Penutup · 100–120 menit</div>
+        <h2>Satu Media. Satu Materi. Satu Komitmen.</h2>
+        <p class="lead">Inovasi yang bertahan bukan yang paling spektakuler hari ini, melainkan yang masih dipakai tiga bulan lagi — karena hemat waktu, hemat kuota, dan terbukti membantu murid yang paling kesulitan.</p>
+        <p>Mulailah dari: <b>satu materi yang paling sulit bagi murid Anda + satu media yang Anda kuasai + satu bukti belajar yang Anda baca besok pagi.</b></p>
+        <p>Buka mode <b>🛠️ Buat Sendiri</b>: pilih media dengan Pemilih Media, susun blueprint satu halaman per kelompok mapel, presentasikan di IFP, lalu tulis komitmen Anda.</p>
+        <p><button class="big-btn amber" data-goto-buat>Mulai Merancang →</button></p>
+      </div>
+
+    </div>
+    <div class="stage-nav">
+      <button class="nav-btn" id="prevSlide">‹ Sebelumnya</button>
+      <div class="progress"><div id="progFill" style="width:10%"></div></div>
+      <span class="slide-count" id="slideCount">1 / 10</span>
+      <div class="dots" id="slideDots"></div>
+      <button class="nav-btn" id="nextSlide">Berikutnya ›</button>
+    </div>
+  </div>
+  <p class="note" style="margin-top:12px">Mode IFP: gunakan tombol ⛶ Layar Penuh di kanan atas. Timer sesi berjalan dari tombol “Mulai Timer”.</p>
+</section>
+
+<!-- ================= LAB ================= -->
+<section class="view" id="view-lab">
+  <div class="lab-head">
+    <h2>Lab Demo — Sentuh, Tebak, Bongkar</h2>
+    <p>Jalankan setiap demo dalam tiga lapisan: <b>Coba</b> sebagai murid (±4 menit), <b>Bongkar</b> sebagai guru (±3 menit), <b>Tiru</b> sebagai perancang (±3 menit). Ganti konteks mapel untuk membuktikan numerasi hidup di semua mata pelajaran. Cocok dioperasikan langsung di IFP — undang peserta maju bergantian.</p>
+  </div>
+  <div class="demo-picker" id="demoPicker">
+    <button class="demo-pick" data-demo="pecahan" aria-pressed="true"><span class="t">🍕 1 · Pecahan Visual</span><span class="d">Bandingkan pecahan dengan batang yang bisa diatur</span></button>
+    <button class="demo-pick" data-demo="hemat" aria-pressed="false"><span class="t">🛒 2 · Mana Lebih Hemat?</span><span class="d">Harga satuan &amp; kapan kesimpulan berubah</span></button>
+    <button class="demo-pick" data-demo="peluang" aria-pressed="false"><span class="t">🎲 3 · Peluang 1.000 Kali</span><span class="d">Simulasi dadu: jangka pendek vs jangka panjang</span></button>
+    <button class="demo-pick" data-demo="data" aria-pressed="false"><span class="t">📊 4 · Data Kelas Langsung</span><span class="d">Polling sentuh → diagram batang &amp; lingkaran</span></button>
+    <button class="demo-pick" data-demo="grafik" aria-pressed="false"><span class="t">📈 5 · Grafik Menyesatkan</span><span class="d">Sumbu yang dipotong mengubah kesimpulan</span></button>
+  </div>
+
+  <!-- DEMO 1: PECAHAN -->
+  <article class="demo-card active" id="demo-pecahan">
+    <h3>Pecahan Visual — Besar Mana?</h3>
+    <div class="ctx-row"><span class="lbl">Konteks:</span>
+      <button class="ctx-btn" data-ctx="mat" aria-pressed="true">Matematika</button>
+      <button class="ctx-btn" data-ctx="ipa" aria-pressed="false">IPA</button>
+      <button class="ctx-btn" data-ctx="ips" aria-pressed="false">IPS</button>
+      <button class="ctx-btn" data-ctx="indo" aria-pressed="false">Bahasa Indonesia</button>
+    </div>
+    <div class="layer-tabs">
+      <button class="layer-btn" data-layer="coba" aria-pressed="true">▶ Coba</button>
+      <button class="layer-btn" data-layer="bongkar" aria-pressed="false">🔍 Bongkar</button>
+      <button class="layer-btn" data-layer="tiru" aria-pressed="false">🛠 Tiru</button>
+    </div>
+    <div class="layer active" data-layer="coba">
+      <div class="story" data-story></div>
+      <p><b>Langkah 1 — Prediksi dulu:</b> menurut Anda, pecahan mana yang lebih besar?</p>
+      <div class="btn-row" id="fracPredict">
+        <button class="big-btn line" data-pred="a">Pecahan A lebih besar</button>
+        <button class="big-btn line" data-pred="sama">Sama besar</button>
+        <button class="big-btn line" data-pred="b">Pecahan B lebih besar</button>
+      </div>
+      <p><b>Langkah 2 — Atur &amp; buktikan:</b> geser pembilang dan penyebut, batang berubah seketika.</p>
+      <div class="frac-ctl">
+        <div class="ctl"><label>Pecahan A — pembilang <span class="val" id="numAVal">2</span></label><input type="range" id="numA" min="0" max="12" value="2">
+        <label>penyebut <span class="val" id="denAVal">3</span></label><input type="range" id="denA" min="1" max="12" value="3"></div>
+        <div class="ctl"><label>Pecahan B — pembilang <span class="val" id="numBVal">3</span></label><input type="range" id="numB" min="0" max="12" value="3">
+        <label>penyebut <span class="val" id="denBVal">4</span></label><input type="range" id="denB" min="1" max="12" value="4"></div>
+      </div>
+      <div class="frac-bars">
+        <div class="frac-bar-wrap"><div class="cap" id="capA">A = 2/3</div><div class="frac-bar" id="barA"></div></div>
+        <div class="frac-bar-wrap"><div class="cap" id="capB">B = 3/4</div><div class="frac-bar" id="barB"></div></div>
+      </div>
+      <div class="btn-row"><button class="big-btn amber" id="fracCheck">Periksa Prediksiku</button>
+      <button class="big-btn line" id="fracChallenge">Tantangan: buat pecahan senilai 1/2</button></div>
+      <div class="result-line" id="fracResult"></div>
+    </div>
+    <div class="layer" data-layer="bongkar">
+      <div class="bongkar-grid">
+        <div class="b"><h4>Tujuan</h4><p>Membandingkan pecahan dan menemukan pecahan senilai — menyerang miskonsepsi “penyebut lebih besar = pecahan lebih besar”.</p></div>
+        <div class="b"><h4>Interaksi inti</h4><p>Slider mengubah pembilang/penyebut; representasi batang berubah <i>seketika</i> dan proporsional. Murid melihat mengapa 1/2 = 2/4, bukan menghafalnya.</p></div>
+        <div class="b"><h4>Umpan balik</h4><p>Visual itu sendiri adalah umpan balik: batang yang lebih panjang menang. Tombol “Periksa” menilai <i>prediksi</i>, bukan sekadar jawaban — murid berani menebak dulu.</p></div>
+        <div class="b"><h4>Asesmen formatif</h4><p>Tantangan “buat pecahan senilai 1/2 dengan penyebut berbeda” — guru cukup berkeliling melihat layar/papan, tanpa mengoreksi satu per satu.</p></div>
+        <div class="b"><h4>Lintas mapel</h4><p>IPA: takaran gelas ukur. IPS: bagian lahan/panen. Bahasa Indonesia: membaca resep &amp; petunjuk dalam teks prosedur.</p></div>
+        <div class="b"><h4>Dimensi Profil Lulusan</h4><p>Penalaran kritis (membuktikan dengan representasi), kemandirian (memeriksa prediksi sendiri), komunikasi (menjelaskan “bagaimana kamu tahu potonganmu sama besar?”).</p></div>
+      </div>
+    </div>
+    <div class="layer" data-layer="tiru">
+      <ol class="tiru">
+        <li>Buka <b>PhET “Fractions: Intro”</b> (gratis, bisa diunduh untuk offline) atau <b>Polypad</b> batang pecahan — tanpa akun murid.</li>
+        <li>Tulis satu pertanyaan prediksi di papan sebelum murid menyentuh apa pun: “Mana lebih besar, 2/3 atau 3/4? Tulis tebakan + alasanmu.”</li>
+        <li>Siapkan tantangan berjenjang: bandingkan → urutkan → buat 3 pecahan senilai → pecahan pada garis bilangan (pengayaan).</li>
+        <li><b>Versi low-tech:</b> kartu pecahan dari kertas/kardus yang dipotong fisik, atau gelas ukur + air di IPA. Kompetensinya sama, layarnya yang hilang.</li>
+        <li>Tutup dengan exit ticket 1 soal uraian: “Jelaskan dengan gambarmu mengapa 2/4 = 1/2.”</li>
+      </ol>
+    </div>
+  </article>
+
+  <!-- DEMO 2: HEMAT -->
+  <article class="demo-card" id="demo-hemat">
+    <h3>Mana Lebih Hemat? — Harga Satuan Berbicara</h3>
+    <div class="ctx-row"><span class="lbl">Konteks:</span>
+      <button class="ctx-btn" data-ctx="mat" aria-pressed="true">Matematika</button>
+      <button class="ctx-btn" data-ctx="ipa" aria-pressed="false">IPA</button>
+      <button class="ctx-btn" data-ctx="ips" aria-pressed="false">IPS</button>
+      <button class="ctx-btn" data-ctx="indo" aria-pressed="false">Bahasa Indonesia</button>
+    </div>
+    <div class="layer-tabs">
+      <button class="layer-btn" data-layer="coba" aria-pressed="true">▶ Coba</button>
+      <button class="layer-btn" data-layer="bongkar" aria-pressed="false">🔍 Bongkar</button>
+      <button class="layer-btn" data-layer="tiru" aria-pressed="false">🛠 Tiru</button>
+    </div>
+    <div class="layer active" data-layer="coba">
+      <div class="story" data-story></div>
+      <p><b>Sentuh kemasan yang menurut Anda paling hemat</b> — jangan menghitung dulu, pakai insting belanja Anda:</p>
+      <div class="prod-grid" id="prodGrid"></div>
+      <div class="btn-row"><button class="big-btn amber" id="hematReveal" disabled>Hitung Harga per Satuan</button></div>
+      <div id="hematCalc"></div>
+      <div class="result-line" id="hematResult"></div>
+    </div>
+    <div class="layer" data-layer="bongkar">
+      <div class="bongkar-grid">
+        <div class="b"><h4>Tujuan</h4><p>Rasio &amp; harga satuan (konten Bilangan/Aljabar AKM, level penalaran): keputusan tidak bisa diambil dari harga tempel saja.</p></div>
+        <div class="b"><h4>Interaksi inti</h4><p>Komitmen dulu (menyentuh pilihan), baru perhitungan dibuka. Urutan ini penting: murid merasakan sendiri instingnya diuji angka.</p></div>
+        <div class="b"><h4>Umpan balik</h4><p>Tabel harga per 100 ml menunjukkan <i>cara</i> membandingkan, bukan hanya pemenangnya — dan pertanyaan lanjutan “kapan jawaban berubah?” (diskon, kebutuhan, tanggal kedaluwarsa) mencegah jawaban hafalan.</p></div>
+        <div class="b"><h4>Asesmen formatif</h4><p>Minta setiap kelompok menulis satu kalimat: “Kemasan X paling hemat <i>karena</i> … tetapi jika … maka …”. Kalimat bersyarat itu bukti penalaran.</p></div>
+        <div class="b"><h4>Lintas mapel</h4><p>IPS: kebutuhan vs keinginan &amp; anggaran. IPA: konsentrasi larutan per volume. Bahasa Indonesia: bahasa iklan “LEBIH BESAR, LEBIH HEMAT!” — benarkah?</p></div>
+        <div class="b"><h4>Dimensi Profil Lulusan</h4><p>Penalaran kritis, kewargaan (konsumen cerdas), komunikasi berbasis bukti angka.</p></div>
+      </div>
+    </div>
+    <div class="layer" data-layer="tiru">
+      <ol class="tiru">
+        <li>Fotret 3 kemasan nyata dari warung/koperasi sekolah (sabun, minyak, beras) — foto Anda sendiri selalu lebih dipercaya murid daripada gambar internet.</li>
+        <li>Susun jadi kuis di <b>Wayground</b> (mode kecepatan sendiri) atau tampilkan di IFP dan murid menjawab dengan kartu A/B/C.</li>
+        <li>Pindahkan perhitungan ke <b>Google Sheets</b>: murid membuat rumus harga per satuan sendiri — satu spreadsheet ini bisa dipakai ulang untuk persen, diskon, dan anggaran proyek.</li>
+        <li><b>Versi low-tech:</b> permainan peran pasar kelas dengan uang mainan dan label harga asli. Nilai penalarannya dengan rubrik, bukan kecepatannya.</li>
+      </ol>
+    </div>
+  </article>
+
+  <!-- DEMO 3: PELUANG -->
+  <article class="demo-card" id="demo-peluang">
+    <h3>Peluang 1.000 Kali — Hukum Bilangan Besar</h3>
+    <div class="ctx-row"><span class="lbl">Konteks:</span>
+      <button class="ctx-btn" data-ctx="mat" aria-pressed="true">Matematika</button>
+      <button class="ctx-btn" data-ctx="ipa" aria-pressed="false">IPA</button>
+      <button class="ctx-btn" data-ctx="ips" aria-pressed="false">IPS</button>
+      <button class="ctx-btn" data-ctx="indo" aria-pressed="false">Bahasa Indonesia</button>
+    </div>
+    <div class="layer-tabs">
+      <button class="layer-btn" data-layer="coba" aria-pressed="true">▶ Coba</button>
+      <button class="layer-btn" data-layer="bongkar" aria-pressed="false">🔍 Bongkar</button>
+      <button class="layer-btn" data-layer="tiru" aria-pressed="false">🛠 Tiru</button>
+    </div>
+    <div class="layer active" data-layer="coba">
+      <div class="story" data-story></div>
+      <p><b>Prediksi:</b> jika dadu dilempar 1.000 kali, apakah setiap mata dadu akan muncul hampir sama banyak? Diskusikan 30 detik, lalu buktikan:</p>
+      <div class="btn-row">
+        <button class="big-btn line" data-roll="10">Lempar 10×</button>
+        <button class="big-btn line" data-roll="100">Lempar 100×</button>
+        <button class="big-btn amber" data-roll="1000">Lempar 1.000×</button>
+        <button class="big-btn line" id="rollReset">Ulangi dari Nol</button>
+      </div>
+      <div class="sim-out">
+        <div class="cell"><div class="v" id="rollTotal">0</div><div class="l">total lemparan</div></div>
+        <div class="cell"><div class="v" id="rollSpread">—</div><div class="l">selisih terbanyak–tersedikit</div></div>
+        <div class="cell"><div class="v" id="rollPct">—</div><div class="l">rentang % tiap mata (teori: 16,7%)</div></div>
+      </div>
+      <div id="rollChart"></div>
+      <div class="result-line" id="rollResult"></div>
+    </div>
+    <div class="layer" data-layer="bongkar">
+      <div class="bongkar-grid">
+        <div class="b"><h4>Tujuan</h4><p>Konten Data &amp; Ketidakpastian AKM: membedakan hasil jangka pendek yang acak dari pola jangka panjang — fondasi berpikir statistik dan melawan miskonsepsi “dadu yang lama tidak keluar pasti akan keluar”.</p></div>
+        <div class="b"><h4>Interaksi inti</h4><p>Mengulang percobaan 1.000 kali dalam hitungan detik — hal yang <i>mustahil</i> dilakukan manual dalam satu jam pelajaran. Inilah nilai tambah digital yang sesungguhnya.</p></div>
+        <div class="b"><h4>Umpan balik</h4><p>Diagram batang + indikator selisih: murid melihat sendiri selisih <i>relatif</i> mengecil saat lemparan bertambah, meski selisih mutlak bisa membesar.</p></div>
+        <div class="b"><h4>Asesmen formatif</h4><p>“Lemparan 10 kali tadi mata 6 hanya muncul 0 kali. Apakah dadu ini curang? Tulis argumenmu.” Tidak ada jawaban satu kata — yang dinilai argumennya.</p></div>
+        <div class="b"><h4>Lintas mapel</h4><p>IPA: keandalan data percobaan berulang. IPS: mengapa survei kecil bisa meleset (sampel). Bahasa Indonesia: membaca klaim “9 dari 10 orang…” di iklan/berita.</p></div>
+        <div class="b"><h4>Dimensi Profil Lulusan</h4><p>Penalaran kritis terhadap klaim berbasis data; kolaborasi saat mengumpulkan data kelas.</p></div>
+      </div>
+    </div>
+    <div class="layer" data-layer="tiru">
+      <ol class="tiru">
+        <li>Gunakan <b>PhET “Plinko Probability”</b> atau dadu/spinner di <b>Polypad</b> — gratis, tanpa akun murid.</li>
+        <li>Selalu mulai dari 10 lemparan manual (dadu sungguhan per kelompok), catat di papan — baru tunjukkan kekuatan simulasi untuk 1.000 kali. Kontrasnya adalah pelajarannya.</li>
+        <li>Rekap hasil semua kelompok ke satu <b>Google Sheets</b> kelas: data gabungan 30 kelompok × 20 lemparan = 600 data nyata untuk didiskusikan.</li>
+        <li><b>Versi low-tech:</b> koin dan tally di kertas; gabungkan tally seluruh kelas di papan. Lebih lambat, tetapi hukum bilangan besarnya tetap terlihat.</li>
+      </ol>
+    </div>
+  </article>
+
+  <!-- DEMO 4: DATA KELAS -->
+  <article class="demo-card" id="demo-data">
+    <h3>Data Kelas Langsung — Dari Sentuhan Menjadi Grafik</h3>
+    <div class="ctx-row"><span class="lbl">Konteks:</span>
+      <button class="ctx-btn" data-ctx="mat" aria-pressed="true">Matematika</button>
+      <button class="ctx-btn" data-ctx="ipa" aria-pressed="false">IPA</button>
+      <button class="ctx-btn" data-ctx="ips" aria-pressed="false">IPS</button>
+      <button class="ctx-btn" data-ctx="indo" aria-pressed="false">Bahasa Indonesia</button>
+    </div>
+    <div class="layer-tabs">
+      <button class="layer-btn" data-layer="coba" aria-pressed="true">▶ Coba</button>
+      <button class="layer-btn" data-layer="bongkar" aria-pressed="false">🔍 Bongkar</button>
+      <button class="layer-btn" data-layer="tiru" aria-pressed="false">🛠 Tiru</button>
+    </div>
+    <div class="layer active" data-layer="coba">
+      <div class="story" data-story></div>
+      <p>Undang peserta maju satu per satu dan <b>sentuh pilihan mereka</b> di IFP. Grafik berubah seketika — inilah data yang benar-benar milik ruangan ini:</p>
+      <div class="vote-grid" id="voteGrid"></div>
+      <div class="btn-row"><button class="big-btn line" id="voteReset">Nolkan Suara</button></div>
+      <div id="voteChart"></div>
+      <div class="result-line" id="voteResult"></div>
+    </div>
+    <div class="layer" data-layer="bongkar">
+      <div class="bongkar-grid">
+        <div class="b"><h4>Tujuan</h4><p>Rantai lengkap konten Data AKM: mengumpulkan → mengolah → memvisualisasikan → <b>menafsirkan dan mempertanyakan</b> (“siapa yang tidak terwakili dalam data ini?”).</p></div>
+        <div class="b"><h4>Interaksi inti</h4><p>Setiap sentuhan adalah satu data. Murid <i>adalah</i> datanya — keterlibatan emosionalnya jauh di atas soal cerita tentang orang asing.</p></div>
+        <div class="b"><h4>Umpan balik</h4><p>Diagram batang dan persentase diperbarui seketika; fasilitator bisa bertanya di tengah jalan: “Baru 8 suara — sudah boleh menyimpulkan?”</p></div>
+        <div class="b"><h4>Asesmen formatif</h4><p>Minta murid menulis satu kesimpulan yang <i>didukung</i> data dan satu yang <i>tidak didukung</i>. Bedanya adalah inti literasi data.</p></div>
+        <div class="b"><h4>Lintas mapel</h4><p>IPA: data kelas untuk praktikum. IPS: sensus mini kelas. Bahasa Indonesia: survei untuk bahan teks laporan/berita.</p></div>
+        <div class="b"><h4>Dimensi Profil Lulusan</h4><p>Kolaborasi, komunikasi data, kewargaan (data untuk keputusan bersama, mis. menu kantin).</p></div>
+      </div>
+    </div>
+    <div class="layer" data-layer="tiru">
+      <ol class="tiru">
+        <li>Di kelas tanpa perangkat murid: putar polling di IFP/proyektor, murid menjawab dengan <b>kartu jawaban</b> atau perwakilan kelompok menyentuh layar — persis seperti demo ini.</li>
+        <li>Untuk data yang lebih kaya, pindahkan ke <b>Google Sheets</b>: murid memasukkan data survei kelas, membuat diagram batang &amp; lingkaran, lalu mempresentasikan “apa yang bisa dan tidak bisa disimpulkan”.</li>
+        <li>Mode kertas <b>Wayground (Paper Mode)</b> memberi rekap otomatis tanpa satu pun HP murid menyala.</li>
+        <li><b>Versi low-tech:</b> tally di papan + diagram batang dari kertas tempel. Jangan remehkan: datanya tetap nyata, diskusinya tetap sama.</li>
+      </ol>
+    </div>
+  </article>
+
+  <!-- DEMO 5: GRAFIK MENYESATKAN -->
+  <article class="demo-card" id="demo-grafik">
+    <h3>Grafik yang Menyesatkan — Periksa Sumbunya!</h3>
+    <div class="ctx-row"><span class="lbl">Konteks:</span>
+      <button class="ctx-btn" data-ctx="mat" aria-pressed="true">Matematika</button>
+      <button class="ctx-btn" data-ctx="ipa" aria-pressed="false">IPA</button>
+      <button class="ctx-btn" data-ctx="ips" aria-pressed="false">IPS</button>
+      <button class="ctx-btn" data-ctx="indo" aria-pressed="false">Bahasa Indonesia</button>
+    </div>
+    <div class="layer-tabs">
+      <button class="layer-btn" data-layer="coba" aria-pressed="true">▶ Coba</button>
+      <button class="layer-btn" data-layer="bongkar" aria-pressed="false">🔍 Bongkar</button>
+      <button class="layer-btn" data-layer="tiru" aria-pressed="false">🛠 Tiru</button>
+    </div>
+    <div class="layer active" data-layer="coba">
+      <div class="story" data-story></div>
+      <div class="axis-toggle">
+        <button class="big-btn amber" id="axisCut">Versi “Heboh” — sumbu mulai dari <span id="axisCutVal">80</span></button>
+        <button class="big-btn line" id="axisFull">Versi Jujur — sumbu mulai dari 0</button>
+      </div>
+      <label for="axisSlider" style="font-weight:800">Geser titik awal sumbu: <span id="axisVal">80</span></label>
+      <input type="range" id="axisSlider" min="0" max="90" value="80" step="5">
+      <div id="axisChart"></div>
+      <div class="result-line show" id="axisResult">Bandingkan kedua versi: datanya <b>sama persis</b>. Yang berubah hanyalah kesan yang ditangkap mata dalam 3 detik pertama.</div>
+    </div>
+    <div class="layer" data-layer="bongkar">
+      <div class="bongkar-grid">
+        <div class="b"><h4>Tujuan</h4><p>Literasi data kritis (Data &amp; Ketidakpastian, level penalaran): mengenali manipulasi visual — sumbu terpotong, skala tidak konsisten, diagram lingkaran tanpa total.</p></div>
+        <div class="b"><h4>Interaksi inti</h4><p>Satu slider mengubah satu variabel saja (titik awal sumbu) sementara data diam. Murid mengisolasi penyebab kesan “naik drastis” itu.</p></div>
+        <div class="b"><h4>Umpan balik</h4><p>Mata murid sendiri yang tertipu adalah umpan baliknya — pengalaman “saya saja bisa tertipu” jauh lebih melekat daripada ceramah.</p></div>
+        <div class="b"><h4>Asesmen formatif</h4><p>Tantangan terbalik: “Buat grafik paling heboh dari data ini, lalu buat versi jujurnya. Tulis kapan versi heboh menjadi tidak jujur.”</p></div>
+        <div class="b"><h4>Lintas mapel</h4><p>Bahasa Indonesia: grafik di teks berita &amp; iklan. IPS: grafik pertumbuhan penduduk/harga. IPA: grafik hasil percobaan yang harus dilaporkan apa adanya.</p></div>
+        <div class="b"><h4>Dimensi Profil Lulusan</h4><p>Penalaran kritis dan kewargaan digital: warga yang tidak mudah digiring grafik viral.</p></div>
+      </div>
+    </div>
+    <div class="layer" data-layer="tiru">
+      <ol class="tiru">
+        <li>Kumpulkan 2–3 grafik dari berita/media sosial minggu ini (grafik harga cabai, curah hujan, penonton) — minta murid memeriksa: sumbu mulai dari berapa? skalanya konsisten? sumbernya jelas?</li>
+        <li>Di <b>Google Sheets</b>, murid memasukkan ulang datanya dan membuat versi jujur, lalu menulis ulang kesimpulan beritanya dalam satu kalimat.</li>
+        <li>Jadikan ini proyek Bahasa Indonesia × Matematika: satu grafik, dua mata pelajaran, satu laporan.</li>
+        <li><b>Versi low-tech:</b> cetak grafik menyesatkan di kertas, murid menggambar ulang versi jujurnya dengan penggaris di kertas berpetak.</li>
+      </ol>
+    </div>
+  </article>
+</section>
+
+<!-- ================= BUAT SENDIRI ================= -->
+<section class="view" id="view-buat">
+  <div class="lab-head">
+    <h2>Buat Sendiri — Dari Inspirasi Menjadi Rencana</h2>
+    <p>Sesi praktik 65–100 menit. Bekerja berkelompok per mata pelajaran: gunakan Pemilih Media untuk memutuskan, susun Blueprint satu halaman, lalu presentasikan di IFP pada sesi showcase.</p>
+  </div>
+
+  <div class="form-card">
+    <h3>🧭 Pemilih Media</h3>
+    <p class="note">Jangan mulai dari aplikasi — mulai dari tujuan dan kondisi kelas Anda. Jawab empat hal ini:</p>
+    <div class="form-grid">
+      <div class="field"><label for="selTujuan">Tujuan utama pertemuan</label>
+        <select id="selTujuan">
+          <option value="konsep">Memahami konsep baru yang abstrak</option>
+          <option value="data">Mengolah &amp; menafsirkan data</option>
+          <option value="formatif">Asesmen formatif / review cepat</option>
+          <option value="mandiri">Belajar mandiri / remedial di rumah</option>
+        </select></div>
+      <div class="field"><label for="selAlat">Perangkat yang benar-benar tersedia</label>
+        <select id="selAlat">
+          <option value="ifp">Hanya IFP/proyektor + perangkat guru</option>
+          <option value="kelompok">1 HP per kelompok (3–5 murid)</option>
+          <option value="satu">1 HP per murid</option>
+          <option value="nol">Tidak ada perangkat yang bisa diandalkan</option>
+        </select></div>
+      <div class="field"><label for="selKuota">Kondisi internet &amp; kuota</label>
+        <select id="selKuota">
+          <option value="stabil">Stabil</option>
+          <option value="terbatas">Terbatas / sering putus</option>
+          <option value="tidakada">Tidak ada internet di kelas</option>
+        </select></div>
+      <div class="field"><label for="selData">Apakah Anda butuh data hasil untuk tindak lanjut besok?</label>
+        <select id="selData">
+          <option value="ya">Ya, perlu laporan per soal/murid</option>
+          <option value="tidak">Tidak, observasi &amp; exit ticket cukup</option>
+        </select></div>
+    </div>
+    <button class="big-btn" id="recoBtn">Tampilkan Rekomendasi</button>
+    <div class="reco" id="recoOut"></div>
+    <p class="note" style="margin-top:12px">Aturan emas: satu pertemuan = <b>satu media utama + satu pendukung</b>. Tiga aplikasi dalam satu pertemuan hampir selalu berarti tidak ada yang dieksplorasi dalam. Harga &amp; batas gratis tools berubah cepat — cek halaman resmi sebelum memakai angka apa pun di kelas.</p>
+  </div>
+
+  <div class="form-card">
+    <h3>📐 Pembuat Blueprint Media (1 halaman)</h3>
+    <p class="note">Isi bersama kelompok mapel Anda. Blueprint ini mengikuti 7 langkah merancang pembelajaran numerasi interaktif: tujuan → konteks → media → skenario → asesmen → pelaksanaan → refleksi.</p>
+    <div class="form-grid">
+      <div class="field"><label for="bpMapel">Mata pelajaran</label>
+        <input id="bpMapel" type="text" placeholder="cth. IPA / IPS / Bahasa Indonesia / Matematika"></div>
+      <div class="field"><label for="bpKelas">Kelas / fase</label>
+        <input id="bpKelas" type="text" placeholder="cth. Kelas 8 / Fase D"></div>
+      <div class="field"><label for="bpMateri">Materi / topik</label>
+        <input id="bpMateri" type="text" placeholder="cth. Membaca grafik suhu harian"></div>
+      <div class="field"><label for="bpKonten">Konten numerasi AKM yang dilatih</label>
+        <select id="bpKonten">
+          <option>Bilangan</option><option>Pengukuran dan Geometri</option>
+          <option selected>Data dan Ketidakpastian</option><option>Aljabar</option>
+        </select></div>
+      <div class="field"><label for="bpKonteks">Konteks dari kehidupan murid</label>
+        <input id="bpKonteks" type="text" placeholder="cth. Data suhu &amp; cuaca di lingkungan sekolah minggu ini"></div>
+      <div class="field"><label for="bpMiskon">Miskonsepsi / kesulitan yang diserang</label>
+        <input id="bpMiskon" type="text" placeholder="cth. Murid menyimpulkan dari grafik tanpa memeriksa sumbu"></div>
+      <div class="field"><label for="bpMedia">Media utama (dari Pemilih Media)</label>
+        <input id="bpMedia" type="text" placeholder="cth. Google Sheets + IFP"></div>
+      <div class="field"><label for="bpPrediksi">Pertanyaan prediksi pembuka</label>
+        <input id="bpPrediksi" type="text" placeholder="cth. “Menurutmu hari apa paling panas minggu ini? Buktikan.”"></div>
+    </div>
+    <button class="big-btn amber" id="bpBtn">Susun Blueprint</button>
+    <div class="blueprint" id="bpOut"></div>
+    <div class="btn-row no-print" id="bpActions" style="display:none">
+      <button class="big-btn line" id="bpCopy">📋 Salin Blueprint</button>
+      <button class="big-btn line" id="bpDl">⬇ Unduh .txt</button>
+    </div>
+    <p class="note" id="bpMsg"></p>
+  </div>
+
+  <div class="form-card">
+    <h3>✊ Komitmen Saya</h3>
+    <p class="note">Penutup sesi (100–120 menit). Tulis satu media yang akan Anda buat — kecil, spesifik, dan ada tanggalnya mengalahkan rencana besar yang kabur.</p>
+    <div class="form-grid">
+      <div class="field"><label for="kmNama">Nama / kelompok mapel</label>
+        <input id="kmNama" type="text" placeholder="cth. Ibu Rina — IPA"></div>
+      <div class="field"><label for="kmMedia">Media yang akan saya buat</label>
+        <input id="kmMedia" type="text" placeholder="cth. Kuis harga satuan dari foto kemasan warung sekolah"></div>
+      <div class="field"><label for="kmKapan">Akan dipakai di kelas pada</label>
+        <input id="kmKapan" type="text" placeholder="cth. Selasa depan, kelas 8B"></div>
+    </div>
+    <button class="big-btn" id="kmBtn">Tampilkan Kartu Komitmen</button>
+    <div class="commit-card" id="kmCard">
+      <div class="who" id="kmWho"></div>
+      <div class="what" id="kmWhat"></div>
+      <p class="note">Tunjukkan kartu ini di IFP saat showcase. Satu media selesai lebih berharga daripada sepuluh rencana.</p>
+    </div>
+    <div class="btn-row no-print" id="kmActions" style="display:none">
+      <button class="big-btn line" id="kmDl">⬇ Unduh Komitmen .txt</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BANGUN SENDIRI ================= -->
+<section class="view" id="view-bangun">
+  <div class="lab-head">
+    <h2>Bangun Sendiri Terpandu — Pulang Membawa Satu Media Jadi</h2>
+    <p>Di mode ini targetnya bukan “paham”, melainkan <b>satu media selesai dari setiap guru</b>. Aturannya: mulai dari pola dan contoh, bukan dari halaman kosong; bekerja <b>berpasangan</b>; guru yang selesai lebih dulu menjadi <b>tutor sebangku</b>, bukan menunggu fasilitator. Jalankan langkah bertimer di bawah langsung dari IFP ini.</p>
+  </div>
+
+  <div class="form-card">
+    <h3>✅ Standar “Media Jadi” — Lima Poin Saja</h3>
+    <p class="note">Sebuah media dinyatakan <b>jadi</b> — dan boleh dipresentasikan di showcase — bila kelima poin ini terpenuhi. Sentuh poinnya untuk menandai saat kelompok Anda memeriksanya di setiap pos pemeriksaan.</p>
+    <div class="bs-checks">
+      <button class="bs-check" aria-pressed="false"><span class="box"></span><span><b>Satu topik, satu tujuan.</b> Tidak mengejar satu bab penuh — satu pertemuan, satu kemampuan yang jelas.</span></button>
+      <button class="bs-check" aria-pressed="false"><span class="box"></span><span><b>Satu konteks numerasi yang nyata</b> dari kehidupan murid: harga, data kelas, jadwal, ukuran — bukan angka tempelan.</span></button>
+      <button class="bs-check" aria-pressed="false"><span class="box"></span><span><b>Minimal lima interaksi:</b> soal, pilihan, geseran, atau isian yang benar-benar dikerjakan murid — bukan lima tombol “Lanjut”.</span></button>
+      <button class="bs-check" aria-pressed="false"><span class="box"></span><span><b>Umpan balik menjelaskan mengapa</b> jawaban benar atau salah, dan memberi petunjuk perbaikan — bukan sekadar “salah, coba lagi”.</span></button>
+      <button class="bs-check" aria-pressed="false"><span class="box"></span><span><b>Bisa dibuka lewat tautan tanpa login</b> — sudah diuji dari perangkat lain, bukan hanya dari perangkat pembuatnya.</span></button>
+    </div>
+    <p style="font-weight:800;font-size:18px;margin:6px 0">Kemajuan: <span id="bsProgress">0 dari 5 poin terpenuhi</span></p>
+    <div class="result-line" id="bsDoneMsg"></div>
+  </div>
+
+  <div class="form-card">
+    <h3>⏱ Langkah Bertimer — Bangun Bersama, Pos demi Pos</h3>
+    <p class="note">Total ±70 menit termasuk publikasi. Sentuh tombol pada langkah untuk memasang timernya. Saat waktu habis: berhenti, periksa hasil pos itu bersama ruangan, baru lanjut — timerlah yang menjaga ritme sesi.</p>
+    <div class="bs-timer">
+      <div class="bs-clock" id="bsClock">05:00</div>
+      <div class="bs-stepname" id="bsStepName">Langkah 1 · Pilih pola &amp; duplikasi contoh</div>
+      <div class="btn-row" style="justify-content:center">
+        <button class="big-btn amber" id="bsStartPause">▶ Mulai Timer Langkah</button>
+        <button class="big-btn line" id="bsResetTimer">↺ Ulangi</button>
+      </div>
+      <p class="note" id="bsTimerMsg" style="font-weight:700;margin:4px 0 0"></p>
+    </div>
+    <div class="bs-steps">
+      <div class="bs-step"><h4><span class="n">1</span>Pilih pola &amp; duplikasi contoh</h4><span class="dur">±5 menit</span>
+        <p>Pilih satu dari empat pola di bawah, buka contoh jadi untuk mapel Anda, lalu <b>duplikasi</b>. Media pertama selalu modifikasi contoh — bukan kreasi dari nol.</p>
+        <button class="big-btn line bs-set" data-min="5" data-name="Langkah 1 · Pilih pola &amp; duplikasi contoh">⏱ Timer langkah ini</button></div>
+      <div class="bs-step"><h4><span class="n">2</span>Isi kerangka</h4><span class="dur">±10 menit</span><span class="pos">Pos pemeriksaan 1</span>
+        <p>Tulis tujuan satu kalimat, konteks numerasi nyatanya, dan daftar 5 item interaksi. Fasilitator memeriksa pos ini dulu — kerangka belum jelas, tool belum dibuka.</p>
+        <button class="big-btn line bs-set" data-min="10" data-name="Langkah 2 · Isi kerangka">⏱ Timer langkah ini</button></div>
+      <div class="bs-step"><h4><span class="n">3</span>Bangun di tool</h4><span class="dur">±20 menit</span><span class="pos">Pos pemeriksaan 2</span>
+        <p>Wujudkan kerangka di tool pilihan Anda. Kejar <b>selesai</b>, bukan sempurna: satu topik, lima item, tampilan terbaca dari baris belakang kelas.</p>
+        <button class="big-btn line bs-set" data-min="20" data-name="Langkah 3 · Bangun di tool">⏱ Timer langkah ini</button></div>
+      <div class="bs-step"><h4><span class="n">4</span>Tambahkan umpan balik</h4><span class="dur">±10 menit</span><span class="pos">Pos pemeriksaan 3</span>
+        <p>Setiap jawaban — terutama yang salah — mendapat penjelasan <i>mengapa</i> dan petunjuk langkah perbaikan. Di sinilah media berubah dari kuis menjadi guru.</p>
+        <button class="big-btn line bs-set" data-min="10" data-name="Langkah 4 · Tambahkan umpan balik">⏱ Timer langkah ini</button></div>
+      <div class="bs-step"><h4><span class="n">5</span>Uji berpasangan</h4><span class="dur">±10 menit</span>
+        <p>Tukar perangkat: teman sebangku berperan sebagai <b>murid</b> dan memainkan media sampai selesai tanpa dibantu. Catat di mana ia bingung — perbaiki satu hal itu saja.</p>
+        <button class="big-btn line bs-set" data-min="10" data-name="Langkah 5 · Uji berpasangan">⏱ Timer langkah ini</button></div>
+      <div class="bs-step"><h4><span class="n">6</span>Publikasi &amp; masuk galeri</h4><span class="dur">±15 menit</span>
+        <p>Atur akses, buat QR, uji tanpa login, lalu tempel tautan ke <b>Galeri Tautan</b> di bawah supaya semua karya hari ini terkumpul di satu tempat.</p>
+        <button class="big-btn line bs-set" data-min="15" data-name="Langkah 6 · Publikasi &amp; masuk galeri">⏱ Timer langkah ini</button></div>
+    </div>
+    <div class="story" style="margin-top:16px"><b>Jalur darurat:</b> tool bermasalah, login gagal, atau internet mati? Duplikasi template dan ganti isinya — itu tetap media Anda sendiri dan tetap dihitung jadi. Jangan habiskan sesi untuk melawan login.</div>
+  </div>
+
+  <div class="form-card">
+    <h3>🧩 Empat Pola — Pilih Satu, Tiru Contoh Mapel Anda</h3>
+    <p class="note">Setiap pola dilengkapi contoh jadi untuk empat mapel. Salin atau unduh kerangkanya, lalu isi dengan materi yang akan Anda ajarkan minggu depan — bahan yang sudah Anda bawa dari rumah.</p>
+    <div class="pola-grid">
+      <div class="pola">
+        <h4>Pola 1 · Kuis / Permainan</h4>
+        <div class="cocok">Wordwall · Wayground — paling cepat jadi, aman untuk semua mapel</div>
+        <ul>
+          <li>Buka contoh jadi → duplikasi ke akun Anda</li>
+          <li>Ganti kelima soal dengan materi minggu depan</li>
+          <li>Tulis umpan balik penjelas untuk tiap soal</li>
+          <li>Atur mode kecepatan sendiri, tanpa tekanan timer</li>
+          <li>Terbitkan → salin tautan → tempel ke galeri</li>
+        </ul>
+        <div class="contoh">
+          <span><b>Matematika:</b> “Mana Lebih Hemat?” — harga per 100 ml dari foto 3 kemasan</span>
+          <span><b>IPA:</b> membaca grafik suhu hasil percobaan pemanasan air</span>
+          <span><b>IPS:</b> kuis membaca tabel &amp; diagram penduduk kelurahan</span>
+          <span><b>Bahasa Indonesia:</b> “Benarkah klaim iklan ini?” — memeriksa angka di teks persuasi</span>
+        </div>
+        <div class="btn-row">
+          <button class="big-btn line" data-pola-copy="0">📋 Salin Kerangka</button>
+          <button class="big-btn line" data-pola-dl="0">⬇ .txt</button>
+        </div>
+      </div>
+      <div class="pola">
+        <h4>Pola 2 · Presentasi Klik Bercabang</h4>
+        <div class="cocok">Canva · Google Slides — untuk penjelasan yang bercerita</div>
+        <ul>
+          <li>Susun alur: pertanyaan → pilihan → halaman akibatnya</li>
+          <li>Setiap pilihan salah membuka halaman “coba pikir lagi” berisi petunjuk</li>
+          <li>Sisipkan satu data/grafik yang harus dibaca murid</li>
+          <li>Tutup dengan satu pertanyaan penalaran terbuka</li>
+          <li>Publikasikan sebagai tautan “dapat melihat”</li>
+        </ul>
+        <div class="contoh">
+          <span><b>Matematika:</b> petualangan belanja dengan anggaran terbatas</span>
+          <span><b>IPA:</b> “Kamu ilmuwannya” — memilih langkah percobaan &amp; akibatnya</span>
+          <span><b>IPS:</b> simulasi keputusan anggaran dana desa</span>
+          <span><b>Bahasa Indonesia:</b> memilih kelanjutan cerita, lalu membuktikannya dari teks</span>
+        </div>
+        <div class="btn-row">
+          <button class="big-btn line" data-pola-copy="1">📋 Salin Kerangka</button>
+          <button class="big-btn line" data-pola-dl="1">⬇ .txt</button>
+        </div>
+      </div>
+      <div class="pola">
+        <h4>Pola 3 · Data Jadi Grafik</h4>
+        <div class="cocok">Google Sheets · LibreOffice Calc — inti konten Data AKM</div>
+        <ul>
+          <li>Kumpulkan data nyata (kelas, percobaan, lingkungan sekolah)</li>
+          <li>Masukkan ke tabel; murid menulis rumus olahnya sendiri</li>
+          <li>Buat diagram batang &amp; lingkaran dari data itu</li>
+          <li>Tulis 3 pertanyaan tafsir: 1 didukung data, 1 tidak, 1 jebakan sumbu</li>
+          <li>Bagikan tautan “dapat melihat”; murid mempresentasikan kesimpulannya</li>
+        </ul>
+        <div class="contoh">
+          <span><b>Matematika:</b> data kelas langsung — dari survei menjadi grafik</span>
+          <span><b>IPA:</b> tinggi tanaman per hari dari praktikum, digrafikkan &amp; ditafsirkan</span>
+          <span><b>IPS:</b> sensus mini kelas → komposisi penduduk sekolah</span>
+          <span><b>Bahasa Indonesia:</b> survei bacaan kelas → bahan teks laporan hasil observasi</span>
+        </div>
+        <div class="btn-row">
+          <button class="big-btn line" data-pola-copy="2">📋 Salin Kerangka</button>
+          <button class="big-btn line" data-pola-dl="2">⬇ .txt</button>
+        </div>
+      </div>
+      <div class="pola">
+        <h4>Pola 4 · Media HTML Satu Berkas lewat AI</h4>
+        <div class="cocok">Canva AI · Gemini / AI lain — untuk yang sudah nyaman, dengan prompt siap salin</div>
+        <ul>
+          <li>Salin prompt di kerangka pola ini, ganti bagian dalam kurung siku</li>
+          <li>Minta AI membuat medianya; buka &amp; mainkan hasilnya sampai selesai</li>
+          <li><b>Periksa ulang semua soal, angka, dan kunci</b> — AI bisa salah hitung &amp; salah fakta</li>
+          <li>Perbaiki lewat perintah lanjutan (“umpan balik soal 3 kurang jelas…”) </li>
+          <li>Publikasikan tautannya dan uji tanpa login</li>
+        </ul>
+        <div class="contoh">
+          <span><b>Matematika:</b> simulasi harga satuan dengan slider harga &amp; isi</span>
+          <span><b>IPA:</b> simulasi sederhana tuas / rangkaian listrik</span>
+          <span><b>IPS:</b> kalkulator anggaran keluarga sebulan</span>
+          <span><b>Bahasa Indonesia:</b> kuis “periksa grafik berita ini” dengan sumbu yang bisa digeser</span>
+        </div>
+        <div class="btn-row">
+          <button class="big-btn line" data-pola-copy="3">📋 Salin Prompt</button>
+          <button class="big-btn line" data-pola-dl="3">⬇ .txt</button>
+        </div>
+      </div>
+    </div>
+    <p class="note" id="polaMsg"></p>
+  </div>
+
+  <div class="form-card">
+    <h3>🚀 Publikasi &amp; Galeri Tautan</h3>
+    <p class="note">Media yang tidak bisa dibuka murid bukanlah media. Selesaikan lima langkah publikasi ini sebelum menyebut media Anda jadi:</p>
+    <ol class="tiru">
+      <li>Atur akses berbagi: <b>“Siapa saja yang memiliki tautan dapat melihat.”</b></li>
+      <li>Salin tautan media Anda.</li>
+      <li>Buat <b>kode QR</b> dari tautan itu (pembuat QR gratis apa pun) untuk ditempel di kelas atau dibagikan ke grup.</li>
+      <li><b>Uji dari perangkat lain tanpa login</b> — pinjam HP teman sebangku; bila ia bisa membuka dan memainkan sampai selesai, lolos.</li>
+      <li>Tempel tautan ke galeri di bawah — satu galeri untuk semua karya hari ini.</li>
+    </ol>
+    <div class="form-grid">
+      <div class="field"><label for="galNama">Nama guru</label>
+        <input id="galNama" type="text" placeholder="cth. Ibu Rina"></div>
+      <div class="field"><label for="galMapel">Mata pelajaran</label>
+        <select id="galMapel">
+          <option>Matematika</option><option>IPA</option><option>IPS</option>
+          <option>Bahasa Indonesia</option><option>Bahasa Inggris</option>
+          <option>Pendidikan Agama</option><option>PPKn</option><option>PJOK</option>
+          <option>Seni &amp; Prakarya</option><option>Informatika</option><option>Lainnya</option>
+        </select></div>
+      <div class="field"><label for="galJudul">Judul media</label>
+        <input id="galJudul" type="text" placeholder="cth. Kuis Harga Satuan — Warung Sekolah"></div>
+      <div class="field"><label for="galUrl">Tautan media</label>
+        <input id="galUrl" type="url" inputmode="url" placeholder="cth. https://…"></div>
+    </div>
+    <button class="big-btn" id="galAdd">➕ Tambah ke Galeri</button>
+    <p class="note" id="galMsg"></p>
+    <p style="font-weight:800;font-size:18px" id="galCount"></p>
+    <div id="galList"></div>
+    <p class="note" id="galEmpty">Galeri masih kosong — media pertama yang terpublikasi akan tampil di sini dan dipamerkan di IFP saat showcase.</p>
+    <div class="btn-row no-print">
+      <button class="big-btn line" id="galCopy">📋 Salin Semua Tautan</button>
+      <button class="big-btn line" id="galDl">⬇ Unduh Daftar Galeri .txt</button>
+    </div>
+    <p class="note">Galeri terkumpul di halaman ini selama sesi berjalan. Sebelum pulang, <b>unduh atau salin daftarnya</b> agar tautan semua guru tersimpan dan bisa dibagikan ke grup sekolah untuk dipakai di kelas minggu depan.</p>
+  </div>
+</section>
+
+<!-- ================= RUNDOWN ================= -->
+<section class="view" id="view-rundown">
+  <div class="lab-head">
+    <h2>Rundown Fasilitator — 120 Menit</h2>
+    <p>Alur resmi sesi ini. Setiap baris bisa melompat langsung ke tempatnya. Timer di kanan atas membantu menjaga ritme — lab yang terlalu lama adalah showcase yang hilang.</p>
+  </div>
+  <div class="timeline">
+    <div class="tl-row"><span class="time">0–10′</span><div class="what"><b>Pemantik: satu soal, dua cara berpikir</b><p>Peserta menjawab soal kemasan sabun di IFP; fasilitator menahan jawaban benar dan menggali alasan. Akhiri dengan data PISA.</p></div><button data-jump="slide:1">Ke Panggung</button></div>
+    <div class="tl-row"><span class="time">10–25′</span><div class="what"><b>Konsep &amp; prinsip kilat</b><p>Numerasi ≠ berhitung, komponen AKM, 6 prinsip media efektif, checklist 2 menit. Setiap prinsip langsung ditautkan ke demo yang akan dicoba.</p></div><button data-jump="slide:3">Ke Panggung</button></div>
+    <div class="tl-row"><span class="time">25–65′</span><div class="what"><b>Lab demo (4 × ±10 menit)</b><p>Pecahan Visual → Mana Lebih Hemat → Peluang 1.000 Kali → Data Kelas Langsung. Pola tetap: Coba (sebagai murid) → Bongkar (sebagai guru) → Tiru (sebagai perancang). Demo Grafik Menyesatkan menjadi cadangan/pengayaan.</p></div><button data-jump="lab:pecahan">Ke Lab</button></div>
+    <div class="tl-row"><span class="time">65–100′</span><div class="what"><b>Praktik berkelompok per mapel</b><p>Kelompok memilih konten AKM + konteks mapelnya, memakai Pemilih Media, lalu menyusun Blueprint satu halaman. Bila kelompok siap membangun sungguhan, lanjutkan terpandu di mode Bangun Sendiri: langkah bertimer, pola per mapel, standar 5 poin media jadi, sampai publikasi ke galeri tautan. Fasilitator berkeliling dengan checklist 2 menit.</p></div><span style="display:grid;gap:6px"><button data-jump="buat">Ke Buat Sendiri</button><button data-jump="bangun">Ke Bangun Sendiri</button></span></div>
+    <div class="tl-row"><span class="time">100–120′</span><div class="what"><b>Showcase &amp; komitmen</b><p>2–3 kelompok mendemokan blueprint-nya di IFP (5 menit per kelompok + tanggapan). Semua peserta menulis kartu komitmen. Tutup dengan pesan: satu media, satu materi, satu bukti belajar.</p></div><button data-jump="slide:9">Ke Penutup</button></div>
+  </div>
+  <div class="form-card" style="margin-top:22px">
+    <h3>Catatan jujur untuk fasilitator</h3>
+    <ul style="font-size:17px;display:grid;gap:8px;padding-left:22px">
+      <li><b>Satu perangkat cukup.</b> Semua demo dirancang untuk satu IFP: peserta maju bergantian menyentuh layar; yang lain memprediksi &amp; berdiskusi dari tempat duduk. HP peserta tidak wajib.</li>
+      <li><b>Halaman ini tidak butuh internet saat demo berjalan</b> (setelah halaman terbuka) — seluruh simulasi berjalan di perangkat. Siapkan rencana B lisan bila koneksi awal pun gagal.</li>
+      <li><b>Angka tools berubah.</b> Harga dan batas paket gratis (Wordwall, Kahoot, Wayground, Edpuzzle) wajib dicek ulang di halaman resmi sebelum dikutip — sumber resmi sendiri pernah bertentangan.</li>
+      <li><b>Studi kasus bersampel kecil.</b> Kenaikan hasil pada studi PhET/Polypad/Edpuzzle/TGT berasal dari satu sekolah per studi — pakai sebagai bahan diskusi “kondisi apa yang mirip di sekolah kita?”, bukan janji hasil.</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p class="sig">Dibangun oleh Dody Adyansyah — untuk pelatihan guru SMP tentang media pembelajaran digital interaktif dan literasi numerasi.</p>
+  <p>Sumber data: OECD PISA 2022 (skor matematika Indonesia 366; rata-rata OECD 472; ±18% siswa mencapai Level 2+); Kemendikdasmen — Gerakan Numerasi Nasional (diluncurkan 19 Agustus 2025) &amp; target RPJMN 2025–2029 (matematika 419); definisi &amp; komponen numerasi AKM/Asesmen Nasional; UNESCO GEM Report 2023 &amp; Panduan AI Generatif UNESCO 2023 (batas usia 13 tahun). Studi kasus: Pratiwi dkk. 2025; Jurmadikta 2024; Polypad Socah 2025; Edpuzzle SMPN 1 Depok 2024 — semuanya studi satu sekolah bersampel kecil. Harga/batas gratis tools berubah cepat; verifikasi di halaman resmi masing-masing sebelum pelatihan.</p>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+/* ---------- mode switching ---------- */
+function showView(name){
+  $$(".mode-btn").forEach(function(b){b.setAttribute("aria-pressed", b.getAttribute("data-view")===name ? "true":"false")});
+  $$(".view").forEach(function(v){v.classList.toggle("active", v.id==="view-"+name)});
+  window.scrollTo({top:0});
+}
+$$(".mode-btn").forEach(function(b){ b.addEventListener("click",function(){ showView(b.getAttribute("data-view")); }); });
+$$("[data-goto-lab]").forEach(function(b){ b.addEventListener("click",function(){ showView("lab"); }); });
+$$("[data-goto-buat]").forEach(function(b){ b.addEventListener("click",function(){ showView("buat"); }); });
+
+/* ---------- fullscreen + timer ---------- */
+$("#fsBtn").addEventListener("click",function(){
+  if(document.fullscreenElement){ document.exitFullscreen(); }
+  else if(document.documentElement.requestFullscreen){ document.documentElement.requestFullscreen(); }
+});
+var timerSec=0, timerOn=false, timerId=null;
+function fmt(s){ var m=Math.floor(s/60), ss=s%60; return "⏱ "+(m<10?"0":"")+m+":"+(ss<10?"0":"")+ss; }
+$("#timerBtn").addEventListener("click",function(){
+  timerOn=!timerOn;
+  this.textContent = timerOn ? "Jeda Timer" : "Mulai Timer";
+  if(timerOn){ timerId=setInterval(function(){ timerSec++; $("#timerChip").textContent=fmt(timerSec); },1000); }
+  else { clearInterval(timerId); }
+});
+
+/* ---------- slides ---------- */
+var slides=$$(".slide"), cur=0;
+var dotsWrap=$("#slideDots");
+slides.forEach(function(_,i){ var d=document.createElement("button"); d.setAttribute("aria-label","Slide "+(i+1)); d.addEventListener("click",function(){go(i)}); dotsWrap.appendChild(d); });
+function go(i){
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach(function(s,j){ s.classList.toggle("active", j===cur); });
+  $$("#slideDots button").forEach(function(d,j){ d.classList.toggle("on", j===cur); });
+  $("#progFill").style.width=((cur+1)/slides.length*100)+"%";
+  $("#slideCount").textContent=(cur+1)+" / "+slides.length;
+  $("#prevSlide").disabled = cur===0;
+  $("#nextSlide").disabled = cur===slides.length-1;
+}
+$("#prevSlide").addEventListener("click",function(){go(cur-1)});
+$("#nextSlide").addEventListener("click",function(){go(cur+1)});
+document.addEventListener("keydown",function(e){
+  if(!$("#view-panggung").classList.contains("active")) return;
+  if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+  if(e.key==="ArrowRight"||e.key===" "){ go(cur+1); }
+  if(e.key==="ArrowLeft"){ go(cur-1); }
+});
+go(0);
+
+/* ---------- hook question ---------- */
+var hookDone=false;
+$$("#hookChoices .choice-btn").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    $$("#hookChoices .choice-btn").forEach(function(b){b.classList.remove("picked","right","wrong")});
+    btn.classList.add("picked");
+    var fb=$("#hookFb"); fb.className="feedback show";
+    if(btn.getAttribute("data-hook")==="b"){
+      btn.classList.add("right");
+      fb.classList.add("ok");
+      fb.innerHTML="<b>Tepat — Kemasan B.</b> Tetapi perhatikan: untuk tahu itu, Anda harus menghitung harga per ml — A: Rp30,0/ml, <b>B: Rp28,0/ml</b>, C: Rp29,0/ml. Murid yang hanya “merasa” kemasan terbesar pasti termurah akan menjawab C. <b>Numerasi adalah penalaran di balik hitungan itu</b> — dan media interaktif melatihnya dengan membiarkan murid menguji “bagaimana jika harganya berubah?”. Demo lengkapnya ada di Lab Demo 2.";
+    } else {
+      btn.classList.add("wrong");
+      fb.classList.add("no");
+      fb.innerHTML="<b>Belum tepat — dan justru di sinilah pelajarannya.</b> Harga tempel menipu: hitung harga per ml-nya. A: 13.500 ÷ 450 = Rp30,0/ml · B: 22.400 ÷ 800 = <b>Rp28,0/ml</b> · C: 29.000 ÷ 1.000 = Rp29,0/ml. Kemasan terbesar <i>bukan</i> yang termurah per ml. Murid kita menghadapi jebakan yang sama setiap hari — tugas media interaktif adalah membuat mereka <b>menguji, bukan mengira</b>. Coba lagi, atau lanjut ke Lab Demo 2 untuk membongkar caranya.";
+    }
+    hookDone=true;
+  });
+});
+
+/* ---------- demo picker & layers & contexts ---------- */
+var demoIds=["pecahan","hemat","peluang","data","grafik"];
+function showDemo(id){
+  demoIds.forEach(function(d){
+    $("#demo-"+d).classList.toggle("active", d===id);
+  });
+  $$("#demoPicker .demo-pick").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-demo")===id?"true":"false"); });
+}
+$$("#demoPicker .demo-pick").forEach(function(b){ b.addEventListener("click",function(){ showDemo(b.getAttribute("data-demo")); }); });
+
+$$(".demo-card").forEach(function(card){
+  $$(".layer-btn",card).forEach(function(btn){
+    btn.addEventListener("click",function(){
+      $$(".layer-btn",card).forEach(function(b){b.setAttribute("aria-pressed","false")});
+      btn.setAttribute("aria-pressed","true");
+      $$(".layer",card).forEach(function(l){ l.classList.toggle("active", l.getAttribute("data-layer")===btn.getAttribute("data-layer")); });
+    });
+  });
+});
+
+/* context stories */
+var STORIES={
+ pecahan:{
+  mat:"Dua potong kue di kantin: Sinta mengambil <b>2/3</b> loyang, Bima mengambil <b>3/4</b> loyang. Siapa mendapat bagian lebih besar? Kebanyakan murid menjawab dari “rasa besar” angkanya — buktikan dengan batang pecahan.",
+  ipa:"Di laboratorium, gelas A berisi <b>2/3</b> liter larutan dan gelas B berisi <b>3/4</b> liter. Untuk percobaan berikutnya dibutuhkan gelas yang lebih penuh. Mana yang Anda tuang?",
+  ips:"Lahan Pak Darto: <b>2/3</b> bagian ditanami jagung tahun ini; lahan Bu Sari: <b>3/4</b> bagian. Siapa menyisakan bagian lahan yang lebih besar untuk tanaman lain?",
+  indo:"Teks prosedur resep kue: adonan pertama memakai <b>2/3</b> gelas terigu, adonan kedua <b>3/4</b> gelas. Membaca resep pun numerasi — takaran mana yang lebih banyak?"
+ },
+ hemat:{
+  mat:"Tiga kemasan sabun cuci cair di warung dekat sekolah. Harga tempelnya berbeda, isinya berbeda. Kemasan mana yang benar-benar paling hemat?",
+  ipa:"Tiga botol larutan pembersih untuk praktikum, dengan volume dan harga berbeda. Laboratorium punya anggaran terbatas — mana pembelian paling efisien per mililiter?",
+  ips:"Di pasar, tiga kemasan minyak goreng dengan isi dan harga berbeda. Ibu-ibu di kampung Anda berdebat soal ini setiap minggu — selesaikan dengan angka, bukan perasaan.",
+  indo:"Iklan berbunyi: “KEMASAN JUMBO, PALING HEMAT!” Bahasa iklan meyakinkan — tetapi apakah angkanya mendukung? Baca labelnya, hitung, lalu nilai klaim iklannya."
+ },
+ peluang:{
+  mat:"Sebuah dadu dilempar berkali-kali. Di lemparan awal, mata 6 bisa tidak muncul sama sekali — atau muncul tiga kali berturut-turut. Apakah dadunya curang?",
+  ipa:"Dalam percobaan, hasil beberapa kali pertama sering “tidak sesuai teori”. Ilmuwan tidak panik: mereka mengulang percobaan berkali-kali. Mengapa pengulangan mengubah kesimpulan?",
+  ips:"Survei cepat 10 orang di kelas menyimpulkan “semua warga suka X”. Mengapa lembaga survei mewawancarai 1.000+ orang sebelum berani menyimpulkan tentang satu kota?",
+  indo:"Iklan menulis “9 dari 10 pengguna puas!” Dari 10 orang — atau dari 10.000? Membaca klaim statistik dalam teks persuasi dimulai dari bertanya: berapa banyak yang diuji?"
+ },
+ data:{
+  mat:"Pertanyaan: <b>Bagaimana cara peserta sampai ke tempat pelatihan hari ini?</b> Setiap peserta adalah satu data. Sentuh, kumpulkan, lalu baca grafiknya bersama.",
+  ipa:"Pertanyaan: <b>Apa golongan darah peserta di ruangan ini?</b> Data biologis kelas sendiri — sentuh golongan darah Anda dan amati distribusinya terbentuk.",
+  ips:"Pertanyaan: <b>Berapa jumlah anggota keluarga di rumah peserta?</b> Data kependudukan mini dari ruangan ini — bahan diskusi tentang rata-rata dan sebaran.",
+  indo:"Pertanyaan: <b>Jenis bacaan apa yang paling sering Anda baca bulan ini?</b> Survei literasi ruangan ini — hasilnya bisa jadi bahan teks laporan yang kita tulis bersama."
+ },
+ grafik:{
+  mat:"Sebuah poster memamerkan grafik: “Nilai rata-rata kelas naik!” Tahun lalu 82, tahun ini 86 — naik 4 poin. Tetapi grafiknya membuat kenaikan itu tampak seperti <i>dua kali lipat</i>. Apa yang dilakukan pembuat grafik?",
+  ipa:"Laporan percobaan menampilkan grafik suhu yang “melonjak drastis” — padahal suhunya hanya naik dari 81°C ke 85°C. Grafik hasil percobaan harus jujur, atau kesimpulan sainsnya runtuh.",
+  ips:"Grafik harga kebutuhan pokok di berita tampak “meroket” dari 80 ke 86 (indeks). Tanpa memeriksa sumbu, pembaca pulang dengan kepanikan yang tidak sebanding dengan datanya.",
+  indo:"Dalam teks berita, grafik adalah argumen. Penulis memilih tampilannya untuk meyakinkan Anda. Tugas pembaca kritis: periksa sumbu sebelum mempercayai judul."
+ }
+};
+var VOTE_SETS={
+ mat:{q:"Bagaimana cara peserta sampai ke tempat pelatihan hari ini?",opts:["Motor","Mobil","Angkutan umum","Jalan kaki / sepeda"]},
+ ipa:{q:"Apa golongan darah peserta di ruangan ini?",opts:["A","B","AB","O"]},
+ ips:{q:"Berapa jumlah anggota keluarga di rumah peserta?",opts:["1–2 orang","3–4 orang","5–6 orang","7+ orang"]},
+ indo:{q:"Jenis bacaan apa yang paling sering Anda baca bulan ini?",opts:["Berita daring","Buku / novel","Media sosial","Jurnal / artikel ilmiah"]}
+};
+var PROD_SETS={
+ mat:[{n:"Sabun Cair A",v:"450 ml",p:13500,u:450},{n:"Sabun Cair B",v:"800 ml",p:22400,u:800},{n:"Sabun Cair C",v:"1.000 ml",p:29000,u:1000}],
+ ipa:[{n:"Larutan X",v:"250 ml",p:9000,u:250},{n:"Larutan Y",v:"500 ml",p:16500,u:500},{n:"Larutan Z",v:"1.000 ml",p:35000,u:1000}],
+ ips:[{n:"Minyak Kemasan A",v:"900 ml",p:16200,u:900},{n:"Minyak Kemasan B",v:"1.800 ml",p:30600,u:1800},{n:"Minyak Kemasan C",v:"2.000 ml",p:36000,u:2000}],
+ indo:[{n:"“Jumbo Hemat!” A",v:"600 ml",p:17400,u:600},{n:"“Super Besar!” B",v:"750 ml",p:21000,u:750},{n:"“Keluarga!” C",v:"1.200 ml",p:32400,u:1200}]
+};
+function rp(n){ return "Rp"+n.toLocaleString("id-ID"); }
+function setContext(cardId, ctx){
+  var card=$("#demo-"+cardId);
+  $$(".ctx-btn",card).forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-ctx")===ctx?"true":"false"); });
+  var story=$("[data-story]",card); if(story) story.innerHTML=STORIES[cardId][ctx];
+  if(cardId==="data") buildVotes(ctx);
+  if(cardId==="hemat") buildProds(ctx);
+  if(cardId==="grafik") drawAxis();
+  if(cardId==="peluang"){ /* story only */ }
+}
+$$(".demo-card").forEach(function(card){
+  var id=card.id.replace("demo-","");
+  $$(".ctx-btn",card).forEach(function(b){ b.addEventListener("click",function(){ setContext(id, b.getAttribute("data-ctx")); }); });
+});
+
+/* ---------- DEMO 1: fractions ---------- */
+function segBar(el, num, den, cls){
+  el.innerHTML="";
+  for(var i=0;i<den;i++){ var d=document.createElement("div"); d.className="seg"+(i<num?" "+cls:""); el.appendChild(d); }
+}
+function fracUpdate(checkPred){
+  var nA=+$("#numA").value, dA=+$("#denA").value, nB=+$("#numB").value, dB=+$("#denB").value;
+  if(nA>dA){ nA=dA; $("#numA").value=nA; }
+  if(nB>dB){ nB=dB; $("#numB").value=nB; }
+  $("#numAVal").textContent=nA; $("#denAVal").textContent=dA;
+  $("#numBVal").textContent=nB; $("#denBVal").textContent=dB;
+  $("#capA").textContent="A = "+nA+"/"+dA+"  ≈ "+(nA/dA).toFixed(2).replace(".",",");
+  $("#capB").textContent="B = "+nB+"/"+dB+"  ≈ "+(nB/dB).toFixed(2).replace(".",",");
+  segBar($("#barA"),nA,dA,"on-a"); segBar($("#barB"),nB,dB,"on-b");
+  return {a:nA/dA,b:nB/dB,nA:nA,dA:dA,nB:nB,dB:dB};
+}
+["numA","denA","numB","denB"].forEach(function(id){ $("#"+id).addEventListener("input",function(){ fracUpdate(false); $("#fracResult").className="result-line"; }); });
+var fracPred=null;
+$$("#fracPredict [data-pred]").forEach(function(b){
+  b.addEventListener("click",function(){
+    fracPred=b.getAttribute("data-pred");
+    $$("#fracPredict [data-pred]").forEach(function(x){x.style.borderColor="";x.style.background=""});
+    b.style.borderColor="var(--amber)"; b.style.background="var(--amber-soft)";
+  });
+});
+$("#fracCheck").addEventListener("click",function(){
+  var f=fracUpdate(false), res=$("#fracResult");
+  var truth = f.a>f.b ? "a" : (f.b>f.a ? "b" : "sama");
+  var truthTxt = truth==="sama" ? "kedua pecahan <b>sama besar</b> (senilai)" : ("pecahan <b>"+(truth==="a"?"A":"B")+"</b> lebih besar");
+  res.className="result-line show";
+  if(!fracPred){ res.innerHTML="Hasilnya: "+truthTxt+". Lain kali, <b>tebak dulu</b> sebelum memeriksa — prediksi adalah separuh pembelajaran. Coba ubah slidernya dan tebak lagi."; return; }
+  if(fracPred===truth){ res.innerHTML="✅ <b>Prediksimu benar:</b> "+truthTxt+". Perhatikan buktinya di batang: panjang bagian berwarna tidak bisa dibantah. Sekarang tantang dirimu — buat dua pecahan senilai dengan penyebut berbeda."; }
+  else { res.innerHTML="🔍 <b>Prediksimu meleset — dan itu berharga.</b> Yang benar: "+truthTxt+". Lihat kembali kedua batang: bandingkan <i>panjangnya</i>, bukan besar angkanya. Miskonsepsi paling umum adalah mengira penyebut lebih besar berarti pecahan lebih besar — padahal penyebut besar berarti potongan <i>lebih kecil</i>."; }
+});
+$("#fracChallenge").addEventListener("click",function(){
+  $("#numA").value=1; $("#denA").value=2; $("#numB").value=2; $("#denB").value=4; fracPred=null;
+  fracUpdate(false);
+  var res=$("#fracResult"); res.className="result-line show";
+  res.innerHTML="Tantangan diterima: A = 1/2 dan B = 2/4 tampak <b>sama panjang</b> — itulah pecahan senilai. Sekarang buat pasangan senilai lain untuk 1/2 (petunjuk: 3/6, 4/8, 6/12) dan periksa dengan tombol di atas.";
+});
+fracUpdate(false);
+
+/* ---------- DEMO 2: hemat ---------- */
+var prodPick=-1, prodCtx="mat";
+function buildProds(ctx){
+  prodCtx=ctx; prodPick=-1;
+  var grid=$("#prodGrid"); grid.innerHTML="";
+  PROD_SETS[ctx].forEach(function(p,i){
+    var b=document.createElement("button"); b.className="prod";
+    b.innerHTML='<span class="pname">'+p.n+'</span><br><span class="pvol">Isi: '+p.v+'</span><div class="pprice">'+rp(p.p)+'</div>';
+    b.addEventListener("click",function(){
+      prodPick=i;
+      $$("#prodGrid .prod").forEach(function(x,j){ x.classList.toggle("picked", j===i); x.classList.remove("best"); });
+      $("#hematReveal").disabled=false;
+      $("#hematCalc").innerHTML=""; var r=$("#hematResult"); r.className="result-line"; r.innerHTML="";
+    });
+    grid.appendChild(b);
+  });
+  $("#hematReveal").disabled=true;
+  $("#hematCalc").innerHTML=""; var r=$("#hematResult"); r.className="result-line"; r.innerHTML="";
+}
+$("#hematReveal").addEventListener("click",function(){
+  if(prodPick<0) return;
+  var set=PROD_SETS[prodCtx];
+  var rows=set.map(function(p){ return {p:p, per:p.p/p.u*100}; });
+  var best=0; rows.forEach(function(r,i){ if(r.per<rows[best].per) best=i; });
+  var html='<table class="calc-table"><tr><th>Kemasan</th><th class="n">Harga</th><th class="n">Isi</th><th class="n">Harga per 100 ml</th></tr>';
+  rows.forEach(function(r,i){ html+="<tr"+(i===best?' style="font-weight:800"':"")+'><td>'+r.p.n+(i===best?" 🏆":"")+'</td><td class="n">'+rp(r.p.p)+'</td><td class="n">'+r.p.v+'</td><td class="n">'+rp(Math.round(r.per))+"</td></tr>"; });
+  html+="</table>";
+  $("#hematCalc").innerHTML=html;
+  $$("#prodGrid .prod").forEach(function(x,j){ x.classList.toggle("best", j===best); });
+  var res=$("#hematResult"); res.className="result-line show";
+  if(prodPick===best){ res.innerHTML="✅ <b>Instingmu didukung angka:</b> "+set[best].n+" memang termurah per 100 ml ("+rp(Math.round(rows[best].per))+"). Tetapi ajukan pertanyaan penalaran ini ke murid: <i>kapan jawaban ini berubah?</i> — bila kemasan lain diskon 15%, bila kebutuhanmu hanya sedikit dan sisanya terbuang, atau bila tanggal kedaluwarsa dekat. Numerasi selalu punya “tetapi jika…”. "; }
+  else { res.innerHTML="🔍 <b>Pilihanmu: "+set[prodPick].n+" — tetapi angka berkata lain.</b> Yang termurah per 100 ml adalah <b>"+set[best].n+"</b> ("+rp(Math.round(rows[best].per))+"). Harga tempel dan ukuran kemasan memang dirancang untuk mengecoh. Di sinilah murid belajar: <i>bandingkan satuan yang sama, atau jangan membandingkan sama sekali.</i>"; }
+});
+buildProds("mat");
+
+/* ---------- DEMO 3: peluang ---------- */
+var dice=[0,0,0,0,0,0], diceTotal=0;
+function drawDice(){
+  var max=Math.max.apply(null,dice.concat([1]));
+  var W=640,H=260,base=210,bw=64,gap=28,x0=50;
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Diagram batang hasil lemparan dadu">';
+  svg+='<line x1="40" y1="'+base+'" x2="'+(W-10)+'" y2="'+base+'" stroke="var(--ink2)" stroke-width="2"/>';
+  dice.forEach(function(c,i){
+    var h=Math.round(c/max*(base-30));
+    svg+='<rect x="'+(x0+i*(bw+gap))+'" y="'+(base-h)+'" width="'+bw+'" height="'+h+'" rx="6" fill="var(--teal)"/>';
+    svg+='<text x="'+(x0+i*(bw+gap)+bw/2)+'" y="'+(base-h-8)+'" text-anchor="middle" font-size="19" font-weight="800" fill="var(--ink)">'+c+'</text>';
+    svg+='<text x="'+(x0+i*(bw+gap)+bw/2)+'" y="'+(base+26)+'" text-anchor="middle" font-size="17" fill="var(--ink2)">Mata '+(i+1)+'</text>';
+  });
+  svg+="</svg>";
+  $("#rollChart").innerHTML=svg;
+  $("#rollTotal").textContent=diceTotal.toLocaleString("id-ID");
+  if(diceTotal>0){
+    var mn=Math.min.apply(null,dice), mx=Math.max.apply(null,dice);
+    $("#rollSpread").textContent=(mx-mn).toLocaleString("id-ID");
+    var pcts=dice.map(function(c){return c/diceTotal*100});
+    $("#rollPct").textContent=Math.min.apply(null,pcts).toFixed(1).replace(".",",")+"% – "+Math.max.apply(null,pcts).toFixed(1).replace(".",",")+"%";
+  } else { $("#rollSpread").textContent="—"; $("#rollPct").textContent="—"; }
+}
+$$("[data-roll]").forEach(function(b){
+  b.addEventListener("click",function(){
+    var n=+b.getAttribute("data-roll");
+    for(var i=0;i<n;i++){ dice[Math.floor(Math.random()*6)]++; }
+    diceTotal+=n; drawDice();
+    var res=$("#rollResult"); res.className="result-line show";
+    if(diceTotal<50){ res.innerHTML="Baru "+diceTotal+" lemparan: hasilnya masih “liar” — ada mata yang belum muncul, ada yang muncul berkali-kali. <b>Inilah mengapa percobaan sekali-dua kali tidak cukup untuk menyimpulkan.</b> Tambah lemparannya."; }
+    else if(diceTotal<500){ res.innerHTML="Di "+diceTotal.toLocaleString("id-ID")+" lemparan, batang mulai merata — tetapi belum sempurna. Teruskan ke 1.000 dan perhatikan <i>rentang persentasenya</i> menyempit mendekati 16,7%."; }
+    else { res.innerHTML="Di <b>"+diceTotal.toLocaleString("id-ID")+" lemparan</b>, setiap mata mendekati 16,7% — hukum bilangan besar bekerja. Selisih mutlak antar-mata mungkin masih puluhan, tetapi secara <i>relatif</i> ia mengecil. Melakukan ini manual butuh seharian; simulasi melakukannya dalam sekejap — itulah alasan media ini ada."; }
+  });
+});
+$("#rollReset").addEventListener("click",function(){ dice=[0,0,0,0,0,0]; diceTotal=0; drawDice(); $("#rollResult").className="result-line"; });
+drawDice();
+
+/* ---------- DEMO 4: data kelas ---------- */
+var votes=[0,0,0,0], voteCtx="mat";
+function buildVotes(ctx){
+  voteCtx=ctx; votes=[0,0,0,0];
+  var set=VOTE_SETS[ctx];
+  var story=$("#demo-data [data-story]"); /* story set by setContext order fix below */
+  var grid=$("#voteGrid"); grid.innerHTML="";
+  set.opts.forEach(function(o,i){
+    var b=document.createElement("button"); b.className="vote-btn";
+    b.innerHTML=o+'<span class="cnt" id="vc'+i+'">0</span>';
+    b.addEventListener("click",function(){ votes[i]++; $("#vc"+i).textContent=votes[i]; drawVotes(); });
+    grid.appendChild(b);
+  });
+  drawVotes();
+}
+function drawVotes(){
+  var set=VOTE_SETS[voteCtx], total=votes.reduce(function(a,b){return a+b},0);
+  var W=640,rowH=52,H=rowsH(total), max=Math.max.apply(null,votes.concat([1]));
+  function rowsH(){ return votes.length*rowH+16; }
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Diagram batang hasil polling">';
+  votes.forEach(function(c,i){
+    var y=10+i*rowH, w=Math.round(c/max*300);
+    var lbl=set.opts[i], lines=[lbl];
+    if(lbl.length>13){ var cut=lbl.lastIndexOf(" ", Math.ceil(lbl.length/2)); if(cut>0) lines=[lbl.slice(0,cut), lbl.slice(cut+1)]; }
+    if(lines.length>1){
+      svg+='<text x="6" y="'+(y+18)+'" font-size="15.5" font-weight="700" fill="var(--ink)">'+lines[0]+'<tspan x="6" dy="19">'+lines[1]+'</tspan></text>';
+    } else {
+      svg+='<text x="6" y="'+(y+26)+'" font-size="16" font-weight="700" fill="var(--ink)">'+lbl+'</text>';
+    }
+    svg+='<rect x="215" y="'+(y+6)+'" width="'+Math.max(w,2)+'" height="30" rx="6" fill="var(--teal)"/>';
+    var pct= total? Math.round(c/total*100):0;
+    svg+='<text x="'+(223+Math.max(w,2))+'" y="'+(y+28)+'" font-size="16.5" font-weight="800" fill="var(--ink)">'+c+" ("+pct+"%)</text>";
+  });
+  svg+="</svg>";
+  /* pie */
+  if(total>0){
+    var cx=90,cy=90,r=78,ang=-Math.PI/2, colors=["var(--teal)","var(--amber)","#7fb3a8","#d97b2f"];
+    var pie='<svg viewBox="0 0 180 180" width="180" role="img" aria-label="Diagram lingkaran hasil polling" style="vertical-align:top">';
+    votes.forEach(function(c,i){
+      if(!c) return;
+      var frac=c/total, a2=ang+frac*Math.PI*2;
+      if(frac>=0.999){ pie+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+colors[i]+'"/>'; }
+      else{
+        var x1=cx+r*Math.cos(ang), y1=cy+r*Math.sin(ang), x2=cx+r*Math.cos(a2), y2=cy+r*Math.sin(a2);
+        pie+='<path d="M'+cx+','+cy+' L'+x1.toFixed(1)+','+y1.toFixed(1)+' A'+r+','+r+' 0 '+(frac>0.5?1:0)+' 1 '+x2.toFixed(1)+','+y2.toFixed(1)+' Z" fill="'+colors[i]+'" stroke="var(--surface)" stroke-width="2"/>';
+      }
+      ang=a2;
+    });
+    pie+="</svg>";
+    $("#voteChart").innerHTML='<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start"><div style="flex:1;min-width:280px">'+svg+'</div><div>'+pie+'<div class="note" style="text-align:center">Diagram lingkaran<br>Total: '+total+' suara</div></div></div>';
+  } else { $("#voteChart").innerHTML=svg; }
+  var res=$("#voteResult");
+  if(total>=6){
+    res.className="result-line show";
+    var top=0; votes.forEach(function(c,i){ if(c>votes[top]) top=i; });
+    res.innerHTML="Total <b>"+total+" suara</b>. Pilihan terbanyak sementara: <b>"+set.opts[top]+"</b>. Sekarang pertanyaan numerasinya: <i>kesimpulan apa yang didukung data ini — dan apa yang TIDAK?</i> (Petunjuk: ruangan ini bukan seluruh sekolah; yang belum memilih belum terwakili.)";
+  } else { res.className="result-line"; }
+}
+$("#voteReset").addEventListener("click",function(){ buildVotes(voteCtx); });
+
+/* ---------- DEMO 5: grafik menyesatkan ---------- */
+var AXIS_DATA=[{l:"Tahun lalu",v:82},{l:"Tahun ini",v:86}];
+function drawAxis(){
+  var start=+$("#axisSlider").value;
+  $("#axisVal").textContent=start; $("#axisCutVal").textContent=start;
+  var W=560,H=300,base=240,top=30,maxV=100;
+  var span=maxV-start||1;
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Diagram batang nilai rata-rata kelas dengan sumbu yang dapat diubah">';
+  svg+='<line x1="70" y1="'+base+'" x2="'+(W-20)+'" y2="'+base+'" stroke="var(--ink2)" stroke-width="2"/>';
+  /* gridlines at start, mid, 100 */
+  [start, Math.round((start+100)/2), 100].forEach(function(gv){
+    var y=base-((gv-start)/span)*(base-top);
+    svg+='<line x1="70" y1="'+y+'" x2="'+(W-20)+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/>';
+    svg+='<text x="62" y="'+(y+5)+'" text-anchor="end" font-size="15" fill="var(--ink2)">'+gv+'</text>';
+  });
+  AXIS_DATA.forEach(function(d,i){
+    var h=Math.max(((d.v-start)/span)*(base-top),2);
+    var x=140+i*210;
+    svg+='<rect x="'+x+'" y="'+(base-h)+'" width="120" height="'+h+'" rx="8" fill="'+(i? "var(--amber)":"var(--teal)")+'"/>';
+    svg+='<text x="'+(x+60)+'" y="'+(base-h-10)+'" text-anchor="middle" font-size="24" font-weight="900" fill="var(--ink)">'+d.v+'</text>';
+    svg+='<text x="'+(x+60)+'" y="'+(base+28)+'" text-anchor="middle" font-size="17" fill="var(--ink2)">'+d.l+'</text>';
+  });
+  svg+="</svg>";
+  $("#axisChart").innerHTML=svg;
+}
+$("#axisSlider").addEventListener("input",drawAxis);
+$("#axisCut").addEventListener("click",function(){ $("#axisSlider").value=80; drawAxis(); });
+$("#axisFull").addEventListener("click",function(){ $("#axisSlider").value=0; drawAxis(); });
+
+/* init contexts (stories + builders) */
+demoIds.forEach(function(id){ setContext(id,"mat"); });
+
+/* ---------- rundown jumps ---------- */
+$$("[data-jump]").forEach(function(b){
+  b.addEventListener("click",function(){
+    var j=b.getAttribute("data-jump");
+    if(j.indexOf("slide:")===0){ showView("panggung"); go(+j.split(":")[1]); }
+    else if(j.indexOf("lab:")===0){ showView("lab"); showDemo(j.split(":")[1]); }
+    else showView(j);
+  });
+});
+
+/* ---------- pemilih media ---------- */
+var RECO={
+ konsep:{t:"Manipulatif virtual & simulasi",main:"GeoGebra, PhET, atau Polypad — konsep abstrak perlu dilihat dan digeser, bukan diceramahkan.",tools:"Awali selalu dengan pertanyaan prediksi sebelum murid menyentuh apa pun."},
+ data:{t:"Spreadsheet & data nyata",main:"Google Sheets / Excel / LibreOffice Calc di IFP — murid mengumpulkan data nyata, mengolah dengan rumus, membuat grafik, lalu menafsirkannya.",tools:"Satu spreadsheet bisa dipakai berulang: mean, median, grafik, sampai peluang."},
+ formatif:{t:"Kuis interaktif gamifikasi",main:"Wayground (mode kecepatan sendiri, laporan per soal) atau Wordwall (cepat dibuat, banyak format dari satu bank soal).",tools:"Selalu bahas soal yang paling banyak salah setelahnya — di situlah belajarnya."},
+ mandiri:{t:"Video interaktif / platform berjenjang",main:"Edpuzzle (video + pertanyaan sisipan) atau Khan Academy (latihan berjenjang) untuk remedial & pengayaan di rumah.",tools:"Jaga kuota: video pendek, dan sediakan ringkasan teks bagi murid tanpa kuota."}
+};
+var ALAT_TXT={
+ ifp:"Mode satu layar: guru/perwakilan murid mengoperasikan di IFP, murid lain memprediksi & menjawab dengan kartu A/B/C/D. Persis seperti demo di Lab tadi.",
+ kelompok:"Mode kelompok: satu perangkat per kelompok dengan peran bergilir (operator, pencatat, pelapor, penanya) agar tidak ada yang hanya menonton.",
+ satu:"Mode 1:1: manfaatkan mode kecepatan sendiri agar murid berpikir tanpa tekanan timer; matikan papan peringkat individu bila ada murid yang cemas matematika.",
+ nol:"Mode tanpa perangkat: versi low-tech-nya adalah media utamanya — kartu pecahan, pasar kelas, tally di papan, diagram dari kertas tempel. Kompetensi numerasinya sama."
+};
+var KUOTA_TXT={
+ stabil:"Internet stabil: versi daring penuh dapat dipakai.",
+ terbatas:"Kuota terbatas: pilih aktivitas teks/gambar ringan, unduh simulasi (PhET/GeoGebra/Desmos) sekali di Wi-Fi sekolah untuk dipakai offline, dan putar video sekali lewat IFP — bukan per murid.",
+ tidakada:"Tanpa internet: gunakan aplikasi yang sudah diunduh (GeoGebra/Desmos/PhET offline, LibreOffice) atau versi low-tech penuh. Rancang ini sejak awal, bukan sebagai kepanikan."
+};
+$("#recoBtn").addEventListener("click",function(){
+  var t=$("#selTujuan").value, a=$("#selAlat").value, k=$("#selKuota").value, d=$("#selData").value;
+  var r=RECO[t], out=$("#recoOut");
+  var dataNote = d==="ya" ? "<p><b>Data tindak lanjut:</b> Anda butuh laporan — prioritaskan Wayground / GeoGebra Classroom / Edpuzzle yang dasbornya terbaca dalam 5 menit: soal mana paling banyak salah, siapa perlu remedial, siapa siap pengayaan.</p>"
+                          : "<p><b>Data tindak lanjut:</b> cukup dengan observasi terstruktur + exit ticket 2 soal (1 prosedur, 1 penalaran: “kapan strategimu tidak berlaku?”).</p>";
+  out.innerHTML="<h4>Rekomendasi: "+r.t+"</h4><p><b>Media utama:</b> "+r.main+"</p><p>"+r.tools+"</p><p><b>Cara menjalankan:</b> "+ALAT_TXT[a]+"</p><p><b>Soal kuota:</b> "+KUOTA_TXT[k]+"</p>"+dataNote+"<p><b>Rencana B (selalu siapkan):</b> versi kertas/benda dari aktivitas yang sama di meja guru — guru yang merancang dua versi tidak panik saat Wi-Fi mati.</p>";
+  out.className="reco show";
+});
+
+/* ---------- blueprint ---------- */
+var bpText="";
+$("#bpBtn").addEventListener("click",function(){
+  var g=function(id){ return $("#"+id).value.trim(); };
+  var mapel=g("bpMapel")||"(mapel)", kelas=g("bpKelas")||"(kelas/fase)", materi=g("bpMateri")||"(materi)",
+      konten=$("#bpKonten").value, konteks=g("bpKonteks")||"(konteks kehidupan murid)", miskon=g("bpMiskon")||"(miskonsepsi sasaran)",
+      media=g("bpMedia")||"(media utama)", prediksi=g("bpPrediksi")||"(pertanyaan prediksi)";
+  bpText=
+"BLUEPRINT MEDIA NUMERASI INTERAKTIF — 1 HALAMAN\n"+
+"================================================\n"+
+"Mapel / Kelas   : "+mapel+" · "+kelas+"\n"+
+"Materi          : "+materi+"\n"+
+"Konten AKM      : "+konten+" · Level: pemahaman → penerapan → penalaran\n\n"+
+"1. TUJUAN\n"+
+"   Murid dapat menyelesaikan masalah kontekstual pada materi "+materi+" dan menjelaskan alasannya dengan bukti (angka, gambar, atau grafik).\n"+
+"   Miskonsepsi yang diserang: "+miskon+".\n\n"+
+"2. KONTEKS\n"+
+"   "+konteks+". (Uji: apakah murid peduli jawabannya? datanya bisa diperoleh? lebih dari satu strategi mungkin?)\n\n"+
+"3. MEDIA\n"+
+"   Utama: "+media+". Pendukung: LKPD/kartu jawaban. Rencana B low-tech: versi kertas/benda dari aktivitas yang sama.\n\n"+
+"4. SKENARIO (prediksi → manipulasi → diskusi → refleksi)\n"+
+"   Pembuka (10'): tampilkan pertanyaan prediksi — “"+prediksi+"” Murid menulis tebakan + alasan, tanpa dihukum bila salah.\n"+
+"   Inti 1 (25'): eksplorasi berpasangan/kelompok dengan media; guru berkeliling bertanya “bagaimana kamu tahu?”.\n"+
+"   Inti 2 (20'): dua kelompok dengan strategi berbeda mempresentasikan; kelas menguji strategi pada kasus baru.\n"+
+"   Formatif (10'): cek cepat (kuis kecepatan sendiri / kartu jawaban) + 1 soal uraian penalaran.\n"+
+"   Penutup (15'): refleksi tertulis — satu hal yang kupahami, satu yang masih membingungkan; guru mengumumkan remedial & pengayaan besok.\n\n"+
+"5. DIFERENSIASI\n"+
+"   Dasar: representasi konkret/visual + petunjuk bertingkat. Menengah: simbol + konteks baru. Lanjut: membuat soal sendiri / membuktikan / “kapan strategi ini gagal?”.\n\n"+
+"6. ASESMEN & UMPAN BALIK\n"+
+"   Exit ticket 2 soal (1 prosedur, 1 penalaran). Umpan balik spesifik & bisa ditindaklanjuti, bukan sekadar benar/salah. Pisahkan formatif (untuk belajar) dari sumatif (untuk nilai).\n\n"+
+"7. REFLEKSI GURU (15 menit setelah kelas)\n"+
+"   Soal mana paling banyak salah & miskonsepsi apa di baliknya? Media mana yang benar-benar membantu, mana yang hanya seru? Siapa remedial (kembali ke konkret), siapa pengayaan (lebih dalam, bukan lebih banyak)?";
+  var out=$("#bpOut"); out.textContent=bpText; out.className="blueprint show";
+  $("#bpActions").style.display="flex";
+  $("#bpMsg").textContent="Blueprint tersusun. Salin atau unduh, lalu presentasikan di IFP pada sesi showcase.";
+});
+function download(name, text){
+  var blob=new Blob([text],{type:"text/plain;charset=utf-8"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },400);
+}
+$("#bpCopy").addEventListener("click",function(){
+  function done(){ $("#bpMsg").textContent="✅ Blueprint tersalin — tempel ke dokumen/catatan Anda."; }
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(bpText).then(done,function(){ $("#bpMsg").textContent="Penyalinan otomatis gagal di perangkat ini — gunakan tombol Unduh .txt."; }); }
+  else { $("#bpMsg").textContent="Gunakan tombol Unduh .txt pada perangkat ini."; }
+});
+$("#bpDl").addEventListener("click",function(){ download("blueprint-media-numerasi.txt", bpText); });
+
+/* ---------- komitmen ---------- */
+var kmText="";
+$("#kmBtn").addEventListener("click",function(){
+  var nama=$("#kmNama").value.trim()||"(nama/kelompok)", media=$("#kmMedia").value.trim()||"(media saya)", kapan=$("#kmKapan").value.trim()||"(jadwal saya)";
+  $("#kmWho").textContent="✊ Komitmen — "+nama;
+  $("#kmWhat").textContent="Saya akan membuat: “"+media+"”, dan memakainya pada "+kapan+".";
+  $("#kmCard").className="commit-card show";
+  $("#kmActions").style.display="flex";
+  kmText="KOMITMEN MEDIA NUMERASI\n"+nama+"\nSaya akan membuat: "+media+"\nAkan dipakai pada: "+kapan+"\nSatu media, satu materi, satu bukti belajar yang saya baca besok paginya.";
+});
+$("#kmDl").addEventListener("click",function(){ download("komitmen-media-numerasi.txt", kmText); });
+
+/* ---------- bangun sendiri: checklist media jadi ---------- */
+var bsDone=0;
+$$(".bs-check").forEach(function(b){
+  b.addEventListener("click",function(){
+    var on=b.getAttribute("aria-pressed")==="true";
+    b.setAttribute("aria-pressed", on?"false":"true");
+    $(".box",b).textContent = on ? "" : "✓";
+    bsDone += on ? -1 : 1;
+    $("#bsProgress").textContent=bsDone+" dari 5 poin terpenuhi";
+    var ok=$("#bsDoneMsg");
+    if(bsDone===5){
+      ok.className="result-line show";
+      ok.innerHTML="🎉 <b>Standar terpenuhi — media ini resmi jadi.</b> Publikasikan tautannya ke Galeri Tautan di bawah dan bersiaplah mempresentasikannya di showcase.";
+    } else { ok.className="result-line"; ok.innerHTML=""; }
+  });
+});
+
+/* ---------- bangun sendiri: timer langkah ---------- */
+function bsBeep(){
+  try{
+    var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    var ctx=new AC(), o=ctx.createOscillator(), g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value=880; g.gain.setValueAtTime(0.08, ctx.currentTime);
+    o.start(); setTimeout(function(){ try{o.stop(); ctx.close();}catch(e){} },400);
+  }catch(e){}
+}
+var bsTotal=5*60, bsLeft=5*60, bsId=null, bsRun=false, bsName="Langkah 1 · Pilih pola & duplikasi contoh";
+function bsFmt(s){ var m=Math.floor(s/60), ss=s%60; return (m<10?"0":"")+m+":"+(ss<10?"0":"")+ss; }
+function bsDraw(){
+  $("#bsClock").textContent=bsFmt(Math.max(bsLeft,0));
+  $("#bsStepName").textContent=bsName;
+  $("#bsClock").classList.toggle("over", bsLeft<=0);
+}
+function bsStop(){
+  bsRun=false; if(bsId) clearInterval(bsId); bsId=null;
+  $("#bsStartPause").textContent="▶ Mulai Timer Langkah";
+}
+$$(".bs-set").forEach(function(b){
+  b.addEventListener("click",function(){
+    bsStop();
+    bsTotal=bsLeft=(+b.getAttribute("data-min"))*60;
+    bsName=b.getAttribute("data-name");
+    $("#bsTimerMsg").textContent="";
+    bsDraw();
+    $("#bsClock").scrollIntoView({block:"center",behavior:"smooth"});
+  });
+});
+$("#bsStartPause").addEventListener("click",function(){
+  if(bsRun){ bsStop(); return; }
+  if(bsLeft<=0) bsLeft=bsTotal;
+  bsRun=true; this.textContent="⏸ Jeda";
+  bsId=setInterval(function(){
+    bsLeft--; bsDraw();
+    if(bsLeft<=0){
+      bsStop();
+      $("#bsTimerMsg").textContent="⏰ Waktu langkah ini habis — berhenti di pos ini, periksa hasilnya bersama ruangan, lalu pasang timer langkah berikutnya.";
+      bsBeep();
+    }
+  },1000);
+});
+$("#bsResetTimer").addEventListener("click",function(){ bsStop(); bsLeft=bsTotal; $("#bsTimerMsg").textContent=""; bsDraw(); });
+bsDraw();
+
+/* ---------- bangun sendiri: kerangka pola ---------- */
+var POLA_TXT=[
+"KERANGKA POLA 1 — KUIS / PERMAINAN (Wordwall atau Wayground)\n"+
+"==============================================================\n"+
+"Judul media : \n"+
+"Mapel/Kelas : \n"+
+"Materi      : (materi yang diajarkan minggu depan)\n\n"+
+"LIMA SOAL — tiap soal wajib punya kunci + umpan balik penjelas:\n"+
+"Soal 1: \n  Kunci: \n  Umpan balik (mengapa benar/salah + petunjuk): \n"+
+"Soal 2: \n  Kunci: \n  Umpan balik: \n"+
+"Soal 3: \n  Kunci: \n  Umpan balik: \n"+
+"Soal 4: \n  Kunci: \n  Umpan balik: \n"+
+"Soal 5 (penalaran — 'kapan jawabanmu berubah jika…?'): \n  Kunci: \n  Umpan balik: \n\n"+
+"PENGATURAN: mode kecepatan sendiri (tanpa tekanan timer), acak urutan soal.\n"+
+"CONTOH JADI: Matematika 'Mana Lebih Hemat?' harga per 100 ml · IPA membaca grafik suhu percobaan · IPS membaca tabel penduduk · Bahasa Indonesia memeriksa klaim angka di iklan.\n"+
+"SELESAI BILA: terbit → tautan teruji tanpa login → tautan ditempel ke Galeri.",
+"KERANGKA POLA 2 — PRESENTASI KLIK BERCABANG (Canva atau Google Slides)\n"+
+"=======================================================================\n"+
+"Judul media : \n"+
+"Mapel/Kelas : \n"+
+"Materi      : \n\n"+
+"ALUR CABANG (tulis dulu di kertas):\n"+
+"Halaman 1 — Situasi & pertanyaan pembuka (konteks nyata murid): \n"+
+"Halaman 2 — Murid memilih tindakan/jawaban: A … / B … / C …\n"+
+"Cabang benar — halaman akibat + penjelasan mengapa: \n"+
+"Cabang salah — halaman 'coba pikir lagi' berisi petunjuk (bukan jawaban): \n"+
+"Halaman data — satu tabel/grafik yang harus dibaca murid sebelum lanjut: \n"+
+"Halaman penutup — satu pertanyaan penalaran terbuka + refleksi: \n\n"+
+"CONTOH JADI: Matematika petualangan belanja beranggaran · IPA 'Kamu Ilmuwannya' memilih langkah percobaan · IPS simulasi anggaran desa · Bahasa Indonesia memilih kelanjutan cerita dan membuktikannya dari teks.\n"+
+"SELESAI BILA: tautan 'dapat melihat' teruji di perangkat lain tanpa login → tempel ke Galeri.",
+"KERANGKA POLA 3 — DATA JADI GRAFIK (Google Sheets atau LibreOffice Calc)\n"+
+"==========================================================================\n"+
+"Judul media : \n"+
+"Mapel/Kelas : \n"+
+"Data nyata yang dikumpulkan: (kelas / percobaan / lingkungan sekolah)\n\n"+
+"LANGKAH:\n"+
+"1. Tabel data mentah — siapa mengukur/mencatat apa: \n"+
+"2. Rumus olah yang ditulis murid sendiri (jumlah, rata-rata, persen): \n"+
+"3. Grafik 1 — diagram batang: \n"+
+"4. Grafik 2 — diagram lingkaran: \n"+
+"5. Tiga pertanyaan tafsir:\n"+
+"   a. Kesimpulan yang DIDUKUNG data: \n"+
+"   b. Klaim yang TIDAK didukung data: \n"+
+"   c. Jebakan: apa yang terjadi bila sumbu grafik tidak mulai dari 0? \n\n"+
+"CONTOH JADI: Matematika data kelas langsung · IPA tinggi tanaman per hari · IPS sensus mini kelas · Bahasa Indonesia survei bacaan untuk teks laporan.\n"+
+"SELESAI BILA: tautan 'dapat melihat' teruji → tempel ke Galeri.",
+"PROMPT SIAP SALIN — POLA 4: MEDIA HTML SATU BERKAS LEWAT AI\n"+
+"==============================================================\n"+
+"Salin teks di bawah ke Canva AI / Gemini / AI lain, ganti bagian [kurung siku]:\n\n"+
+"Buatkan satu berkas HTML interaktif untuk murid SMP kelas [7/8/9], mata pelajaran [mapel], materi [materi]. Konteksnya numerasi dari kehidupan murid: [konteks, cth. harga kemasan di warung sekolah]. Isi media: (1) satu pertanyaan prediksi pembuka, (2) lima soal/interaksi yang dikerjakan murid, (3) setiap jawaban diberi umpan balik yang menjelaskan MENGAPA benar atau salah beserta petunjuk perbaikan, (4) satu soal penalaran penutup berbentuk 'kapan jawabanmu berubah jika…?'. Syarat tampilan: Bahasa Indonesia, tombol dan huruf besar agar nyaman disentuh di IFP dan terbaca di HP, kontras tinggi, satu berkas HTML saja, tanpa login, tanpa gambar dari internet.\n\n"+
+"WAJIB SETELAH AI SELESAI: mainkan media sampai tamat, periksa ulang semua soal, angka, dan kunci jawaban (AI bisa salah hitung dan salah fakta), perbaiki lewat perintah lanjutan bila perlu, baru publikasikan tautannya dan uji tanpa login.\n"+
+"CONTOH JADI: Matematika simulasi harga satuan berslider · IPA simulasi tuas · IPS kalkulator anggaran keluarga · Bahasa Indonesia kuis periksa grafik berita."
+];
+function copyText(txt, msgEl){
+  function done(){ msgEl.textContent="✅ Tersalin — tempel ke dokumen atau langsung ke tool/AI pilihan Anda."; }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done,function(){ msgEl.textContent="Penyalinan otomatis gagal di perangkat ini — gunakan tombol Unduh .txt pada pola yang sama."; });
+  } else { msgEl.textContent="Gunakan tombol Unduh .txt pada pola yang sama di perangkat ini."; }
+}
+$$("[data-pola-copy]").forEach(function(b){
+  b.addEventListener("click",function(){ copyText(POLA_TXT[+b.getAttribute("data-pola-copy")], $("#polaMsg")); });
+});
+$$("[data-pola-dl]").forEach(function(b){
+  b.addEventListener("click",function(){
+    var i=+b.getAttribute("data-pola-dl");
+    download("kerangka-pola-"+(i+1)+".txt", POLA_TXT[i]);
+    $("#polaMsg").textContent="✅ Kerangka pola "+(i+1)+" terunduh sebagai berkas .txt.";
+  });
+});
+
+/* ---------- bangun sendiri: galeri tautan ---------- */
+var gal=[];
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function galRender(){
+  var wrap=$("#galList"); wrap.innerHTML="";
+  $("#galEmpty").style.display = gal.length ? "none" : "block";
+  $("#galCount").textContent = gal.length ? "🏆 "+gal.length+" media terkumpul di galeri" : "";
+  gal.forEach(function(e,i){
+    var d=document.createElement("div"); d.className="gal-item";
+    var url=e.url; if(!/^https?:\/\//i.test(url)) url="https://"+url;
+    d.innerHTML='<div class="gi-main"><span class="gi-title">'+esc(e.judul)+'</span> <span class="tag">'+esc(e.mapel)+'</span><br><span class="note">oleh '+esc(e.nama)+'</span></div>';
+    var a=document.createElement("a"); a.className="gal-open"; a.href=url; a.target="_blank"; a.rel="noopener"; a.textContent="Buka Media ↗";
+    var del=document.createElement("button"); del.className="gal-del"; del.textContent="Hapus";
+    del.addEventListener("click",function(){ gal.splice(i,1); galRender(); });
+    d.appendChild(a); d.appendChild(del);
+    wrap.appendChild(d);
+  });
+}
+$("#galAdd").addEventListener("click",function(){
+  var nama=$("#galNama").value.trim(), mapel=$("#galMapel").value,
+      judul=$("#galJudul").value.trim(), url=$("#galUrl").value.trim();
+  if(!judul || !url){ $("#galMsg").textContent="Isi dulu judul media dan tautannya — dua itu yang wajib."; return; }
+  gal.push({nama:nama||"(tanpa nama)", mapel:mapel, judul:judul, url:url});
+  $("#galJudul").value=""; $("#galUrl").value="";
+  $("#galMsg").textContent="✅ Masuk galeri. Sebelum showcase, uji tautannya sekali lagi dari perangkat lain tanpa login.";
+  galRender();
+});
+function galText(){
+  return gal.map(function(e,i){ return (i+1)+". "+e.judul+" — "+e.nama+" ("+e.mapel+")\n   "+e.url; }).join("\n");
+}
+$("#galCopy").addEventListener("click",function(){
+  if(!gal.length){ $("#galMsg").textContent="Galeri masih kosong — belum ada tautan untuk disalin."; return; }
+  copyText("GALERI MEDIA NUMERASI — HASIL BANGUN SENDIRI\n"+galText(), $("#galMsg"));
+});
+$("#galDl").addEventListener("click",function(){
+  if(!gal.length){ $("#galMsg").textContent="Galeri masih kosong — belum ada yang bisa diunduh."; return; }
+  download("galeri-tautan-media.txt", "GALERI MEDIA NUMERASI — HASIL BANGUN SENDIRI\n================================================\n"+galText());
+  $("#galMsg").textContent="✅ Daftar galeri terunduh — simpan dan bagikan ke grup sekolah.";
+});
+galRender();
+})();
+</script>
+</body>
+</html>

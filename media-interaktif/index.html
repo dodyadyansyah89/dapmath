@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Media Pembelajaran Digital Interaktif — Bahan Bacaan &amp; Rujukan Guru SMP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f7f6f2;
+    --surface:#ffffff;
+    --surface-2:#efeee8;
+    --ink:#1c2420;
+    --ink-soft:#45524b;
+    --ink-faint:#6b7a71;
+    --line:#d9d7cc;
+    --accent:#0f5c46;
+    --accent-soft:#dcefe6;
+    --fact:#0f5c46;
+    --fact-bg:#dcefe6;
+    --reco:#8a5a00;
+    --reco-bg:#f7e8c3;
+    --warn:#a02c1c;
+    --warn-bg:#f9ddd6;
+    --code-bg:#1c2420;
+    --code-ink:#e8ece9;
+    --shadow:0 1px 2px rgba(28,36,32,.06),0 8px 24px -18px rgba(28,36,32,.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#141816;
+      --surface:#1d2320;
+      --surface-2:#262c28;
+      --ink:#e9edea;
+      --ink-soft:#b6c2ba;
+      --ink-faint:#8b9a90;
+      --line:#39423c;
+      --accent:#5ec9a3;
+      --accent-soft:#1e3a30;
+      --fact:#5ec9a3;
+      --fact-bg:#1e3a30;
+      --reco:#e8bd5a;
+      --reco-bg:#3f3312;
+      --warn:#f0917d;
+      --warn-bg:#47251d;
+      --code-bg:#0c100e;
+      --code-ink:#dde5df;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -18px rgba(0,0,0,.7);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:"Spectral",Georgia,serif;line-height:1.22;margin:0}
+  a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+  a:hover{text-decoration-thickness:2px}
+  strong{font-weight:700}
+  ::selection{background:var(--accent-soft)}
+
+  /* ---------- Lead ---------- */
+  .lead{
+    max-width:1180px;margin:0 auto;padding:56px 28px 8px;
+  }
+  .lead .meta{
+    display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--ink-faint);
+    font-size:.86rem;letter-spacing:.02em;margin-bottom:20px;
+  }
+  .lead h1{font-size:clamp(2rem,5.2vw,3.4rem);font-weight:700;letter-spacing:-.01em;max-width:20ch}
+  .lead .sub{
+    font-family:"Spectral",Georgia,serif;font-style:italic;font-size:clamp(1.05rem,2.2vw,1.3rem);
+    color:var(--ink-soft);max-width:62ch;margin-top:14px;
+  }
+  .lead-rule{height:3px;background:var(--accent);width:84px;margin:26px 0 0;border-radius:2px}
+
+  /* legend */
+  .legend{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 8px;
+  }
+  .legend .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    padding:16px 18px;box-shadow:var(--shadow);
+  }
+  .legend h3{font-size:1rem;font-family:"Atkinson Hyperlegible",sans-serif;font-weight:700;margin:8px 0 4px}
+  .legend p{margin:0;font-size:.92rem;color:var(--ink-soft)}
+
+  .tag{
+    display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    padding:3px 9px;border-radius:999px;vertical-align:middle;
+  }
+  .tag.fact{background:var(--fact-bg);color:var(--fact)}
+  .tag.reco{background:var(--reco-bg);color:var(--reco)}
+  .tag.warn{background:var(--warn-bg);color:var(--warn)}
+  .tag.inline{margin-right:6px;transform:translateY(-1px)}
+
+  /* ---------- Layout ---------- */
+  .layout{
+    max-width:1180px;margin:0 auto;padding:12px 28px 80px;
+    display:grid;grid-template-columns:248px minmax(0,1fr);gap:48px;align-items:start;
+  }
+  nav.toc{
+    position:sticky;top:24px;font-size:.92rem;
+  }
+  nav.toc .toc-title{
+    font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px;
+  }
+  nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:toc}
+  nav.toc li{margin:0}
+  nav.toc a{
+    display:block;padding:7px 10px;border-radius:8px;color:var(--ink-soft);text-decoration:none;
+    border-left:3px solid transparent;
+  }
+  nav.toc a:hover{background:var(--surface-2);color:var(--ink)}
+  nav.toc a.active{background:var(--accent-soft);color:var(--ink);border-left-color:var(--accent);font-weight:700}
+  nav.toc details{display:none}
+
+  main{min-width:0}
+  section{scroll-margin-top:24px;padding-top:44px}
+  section:first-of-type{padding-top:18px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
+  .sec-num{
+    font-family:"Spectral",Georgia,serif;font-size:2.1rem;font-weight:700;color:var(--accent);
+    line-height:1;flex:none;
+  }
+  h2.sec-title{font-size:clamp(1.5rem,3.4vw,2rem);font-weight:700}
+  h3{font-size:1.22rem;font-weight:600;margin:34px 0 8px}
+  h4{font-size:1.05rem;font-weight:600;margin:24px 0 6px}
+  p{margin:10px 0}
+  .lede{font-size:1.08rem;color:var(--ink-soft)}
+  ul,ol{margin:10px 0;padding-left:24px}
+  li{margin:5px 0}
+  li::marker{color:var(--accent)}
+
+  .pullquote{
+    font-family:"Spectral",Georgia,serif;font-size:clamp(1.2rem,2.6vw,1.5rem);font-style:italic;
+    line-height:1.45;border-left:4px solid var(--accent);padding:6px 0 6px 22px;margin:28px 0;
+    color:var(--ink);
+  }
+  .note{
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    padding:16px 20px;margin:20px 0;box-shadow:var(--shadow);
+  }
+  .note.warnbox{background:var(--warn-bg);border-color:transparent}
+  .note.recobox{background:var(--reco-bg);border-color:transparent}
+  .note p:first-child{margin-top:0}.note p:last-child{margin-bottom:0}
+
+  /* key figures strip */
+  .figures{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+  .figure{
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;
+    box-shadow:var(--shadow);
+  }
+  .figure .big{font-family:"Spectral",Georgia,serif;font-size:1.9rem;font-weight:700;color:var(--accent);line-height:1.1}
+  .figure .cap{font-size:.88rem;color:var(--ink-soft);margin-top:6px}
+
+  /* ---------- Tables ---------- */
+  .tbl-wrap{margin:20px 0;overflow:hidden;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%;font-size:.94rem}
+  th,td{text-align:left;vertical-align:top;padding:11px 14px;border-bottom:1px solid var(--line);overflow-wrap:break-word}
+  .tbl-fixed table{table-layout:fixed}
+  code{overflow-wrap:anywhere}
+  thead th{background:var(--surface-2);font-weight:700;font-size:.86rem;letter-spacing:.01em}
+  tbody tr:last-child td{border-bottom:none}
+  td .sub{color:var(--ink-soft);font-size:.88rem}
+  .plat-name{font-weight:700}
+
+  /* ---------- Prompt block ---------- */
+  .prompt{
+    background:var(--code-bg);color:var(--code-ink);border-radius:12px;margin:20px 0;overflow:hidden;
+  }
+  .prompt .bar{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.14);
+    font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#9fb3a7;
+  }
+  .prompt pre{
+    margin:0;padding:18px;font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:.86rem;line-height:1.6;white-space:pre-wrap;word-break:break-word;
+  }
+  .copy-btn{
+    background:transparent;border:1px solid rgba(255,255,255,.35);color:var(--code-ink);
+    font:inherit;font-size:.78rem;letter-spacing:.04em;padding:5px 12px;border-radius:7px;cursor:pointer;
+  }
+  .copy-btn:hover{border-color:#fff}
+  .copy-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* steps */
+  .step{display:flex;gap:18px;margin:26px 0}
+  .step .n{
+    flex:none;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.05rem;margin-top:2px;
+  }
+  @media (prefers-color-scheme: dark){ .step .n{color:#0c100e} }
+  .step .body{min-width:0}
+  .step h3{margin-top:2px}
+
+  /* checklist (display only — not form controls) */
+  .checklist{list-style:none;padding:0;margin:14px 0}
+  .checklist li{
+    display:flex;gap:12px;align-items:flex-start;background:var(--surface);
+    border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin:8px 0;
+  }
+  .checklist .box{
+    flex:none;width:19px;height:19px;border:2px solid var(--accent);border-radius:5px;margin-top:3px;
+  }
+  .check-group{font-weight:700;margin:22px 0 4px;font-size:1rem}
+
+  /* references */
+  .refs{font-size:.93rem}
+  .refs li{margin:9px 0;overflow-wrap:anywhere}
+  .refs .src{color:var(--ink-soft)}
+  .ref-cat{font-weight:700;font-size:1rem;margin:26px 0 6px}
+
+  footer{
+    max-width:1180px;margin:0 auto;padding:0 28px 56px;color:var(--ink-faint);font-size:.88rem;
+  }
+  footer .rule{border-top:1px solid var(--line);padding-top:18px}
+
+  /* ---------- Mobile ---------- */
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr;gap:8px;padding:12px 20px 64px}
+    .lead{padding:40px 20px 4px}
+    footer{padding:0 20px 48px}
+    nav.toc{position:static}
+    nav.toc>ol,nav.toc .toc-title{display:none}
+    nav.toc details{display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 14px}
+    nav.toc summary{cursor:pointer;font-weight:700;padding:8px 0}
+    nav.toc details ol{list-style:none;margin:4px 0 10px;padding:0}
+    nav.toc details a{padding:8px 6px}
+    .legend{grid-template-columns:1fr}
+    .figures{grid-template-columns:1fr}
+    /* tables stack */
+    .tbl-wrap{border:none;background:transparent;box-shadow:none;overflow:visible}
+    table,tbody,tr,td{display:block;width:100%}
+    thead{display:none}
+    tbody tr{
+      background:var(--surface);border:1px solid var(--line);border-radius:10px;
+      margin-bottom:12px;padding:6px 0;box-shadow:var(--shadow);
+    }
+    td{border-bottom:none;padding:7px 16px}
+    td::before{
+      content:attr(data-label);display:block;font-size:.72rem;font-weight:700;
+      letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:2px;
+    }
+    td.nolabel::before{display:none}
+    .plat-name{white-space:normal}
+  }
+</style>
+</head>
+<body>
+
+<header class="lead">
+  <div class="meta">
+    <span>Bahan bacaan &amp; rujukan guru SMP</span>
+    <span>·</span>
+    <span>Konteks Kurikulum Merdeka &amp; Pembelajaran Mendalam</span>
+    <span>·</span>
+    <span>Riset 4 November 2026</span>
+  </div>
+  <h1>Media Pembelajaran Digital Interaktif</h1>
+  <p class="sub">Pengertian, jenis, bukti manfaat, perbandingan platform, langkah merancang, asesmen &amp; umpan balik, aksesibilitas, contoh kelas, dan daftar rujukan — disusun untuk guru SMP di Indonesia.</p>
+  <div class="lead-rule"></div>
+
+  <div class="legend" aria-label="Cara membaca halaman ini">
+    <div class="card">
+      <span class="tag fact">Fakta bersumber</span>
+      <h3>Ada rujukannya</h3>
+      <p>Pernyataan dengan tautan dan tanggal akses di Daftar Rujukan (Bagian 9).</p>
+    </div>
+    <div class="card">
+      <span class="tag reco">Rekomendasi praktis</span>
+      <h3>Saran yang boleh diadaptasi</h3>
+      <p>Saran berdasarkan fakta yang ada — bukan dalil. Sesuaikan dengan kondisi kelas Anda.</p>
+    </div>
+    <div class="card">
+      <span class="tag warn">Belum terverifikasi</span>
+      <h3>Cepat berubah — cek ulang</h3>
+      <p>Terutama harga dan batas paket gratis platform. Selalu periksa situs resmi sebelum menganggarkan atau merencanakan satu semester penuh.</p>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Daftar isi">
+    <div class="toc-title">Daftar Isi</div>
+    <ol>
+      <li><a href="#ringkasan">Ringkasan</a></li>
+      <li><a href="#pengertian">1 · Pengertian &amp; Teori</a></li>
+      <li><a href="#jenis">2 · Jenis-jenis Media</a></li>
+      <li><a href="#manfaat">3 · Manfaat &amp; Tantangan</a></li>
+      <li><a href="#platform">4 · Perbandingan Platform</a></li>
+      <li><a href="#merancang">5 · Langkah Merancang</a></li>
+      <li><a href="#asesmen">6 · Asesmen &amp; Umpan Balik</a></li>
+      <li><a href="#akses">7 · Aksesibilitas &amp; Konteks Indonesia</a></li>
+      <li><a href="#contoh">8 · Contoh Kelas &amp; Kesalahan Umum</a></li>
+      <li><a href="#rujukan">9 · Daftar Rujukan</a></li>
+      <li><a href="#belum-terverifikasi">Hal yang Belum Terverifikasi</a></li>
+    </ol>
+    <details>
+      <summary>Daftar Isi</summary>
+      <ol>
+        <li><a href="#ringkasan">Ringkasan</a></li>
+        <li><a href="#pengertian">1 · Pengertian &amp; Teori</a></li>
+        <li><a href="#jenis">2 · Jenis-jenis Media</a></li>
+        <li><a href="#manfaat">3 · Manfaat &amp; Tantangan</a></li>
+        <li><a href="#platform">4 · Perbandingan Platform</a></li>
+        <li><a href="#merancang">5 · Langkah Merancang</a></li>
+        <li><a href="#asesmen">6 · Asesmen &amp; Umpan Balik</a></li>
+        <li><a href="#akses">7 · Aksesibilitas &amp; Konteks Indonesia</a></li>
+        <li><a href="#contoh">8 · Contoh Kelas &amp; Kesalahan Umum</a></li>
+        <li><a href="#rujukan">9 · Daftar Rujukan</a></li>
+        <li><a href="#belum-terverifikasi">Hal yang Belum Terverifikasi</a></li>
+      </ol>
+    </details>
+  </nav>
+
+  <main>
+  <!-- ================= RINGKASAN ================= -->
+  <section id="ringkasan">
+    <div class="sec-head"><span class="sec-num">§</span><h2 class="sec-title">Ringkasan</h2></div>
+    <p class="lede"><strong>Jawaban singkat.</strong> Media pembelajaran digital interaktif adalah media digital yang <strong>meminta siswa berbuat sesuatu — dan merespons perbuatan itu</strong>: mengklik, menggeser, menjawab, mencoba, lalu mendapat umpan balik yang menjelaskan <em>mengapa</em> jawabannya benar atau salah, atau melihat akibat langsung dari pilihannya. Inilah pembedanya dari video/PDF biasa (siswa hanya menonton/membaca) dan dari media cetak (tidak bisa memberi umpan balik otomatis, mensimulasikan, atau bercabang).</p>
+    <p><strong>Mengapa relevan sekarang.</strong> Kurikulum Merdeka menekankan materi esensial, diferensiasi, dan asesmen formatif; Pembelajaran Mendalam (Kemendikdasmen) menuntut suasana <strong>berkesadaran (<em>mindful</em>), bermakna (<em>meaningful</em>), dan menggembirakan (<em>joyful</em>)</strong> lewat olah pikir, olah hati, olah rasa, dan olah raga, dengan pengalaman belajar <strong>memahami → mengaplikasi → merefleksi</strong>. Media interaktif yang baik mendukung ketiganya — tetapi hanya bila dirancang dari tujuan pembelajaran, bukan dari kecanggihan teknologinya. Media yang sekadar ramai klik justru menambah beban kognitif dan distraksi.</p>
+
+    <h3>Bukti yang ada — dengan kehati-hatian</h3>
+    <p>Studi-studi Indonesia berskala kecil dan kebanyakan kuasi-eksperimen, tetapi arahnya konsisten. Ini <strong>bukti menjanjikan, bukan jaminan</strong>: efek kebaruan (<em>novelty effect</em>), pendampingan guru, dan kualitas soal ikut menentukan.</p>
+    <div class="figures">
+      <div class="figure">
+        <div class="big">0,67</div>
+        <div class="cap">N-Gain hasil belajar pada studi simulasi PhET materi gerak dan gaya di SMP yang disintesis, dengan ketuntasan klasikal 86,67%.</div>
+      </div>
+      <div class="figure">
+        <div class="big">69,1 → 85,1</div>
+        <div class="cap">Rata-rata kelas eksperimen kuis interaktif QuizWhizzer pada IPS kelas VIII (kontrol 77,7 → 81,5; Sig. 0,000).</div>
+      </div>
+      <div class="figure">
+        <div class="big">+27%</div>
+        <div class="cap">Kenaikan nilai rata-rata e-modul interaktif berbasis PjBL untuk menulis teks berita kelas VIII dibanding kelas kontrol.</div>
+      </div>
+    </div>
+    <p>Tinjauan sistematis 9 artikel (2022–2026) menyimpulkan gim edukasi mobile berkontribusi positif pada penguasaan konsep matematika SMP, motivasi, dan partisipasi — dengan catatan efektivitasnya bergantung pada kesiapan teknologi dan kemampuan awal siswa.</p>
+
+    <h3>Pilihan paling hemat untuk guru Indonesia <span class="tag reco inline">Rekomendasi</span></h3>
+    <ol>
+      <li><strong>Mulai dari yang gratis dan tanpa login bagi siswa:</strong> PhET, GeoGebra, Google Sites + Google Form, dan media HTML satu berkas buatan AI yang dibagikan lewat tautan.</li>
+      <li><strong>Untuk kuis dan gim cepat:</strong> Quizizz (kini Wayground) dan Wordwall — perhatikan batas gratisnya (Wordwall sangat ketat: hanya 3 aktivitas buatan pada paket Basic resmi terbaru).</li>
+      <li><strong>Untuk tampilan dan modul cantik:</strong> Canva — paling kuat bila guru terverifikasi Canva for Education (gratis untuk K-12), tetapi <strong>bukan</strong> alat perekam nilai: skor dan database harus disambungkan ke Google Form/Quizizz atau media HTML.</li>
+      <li><strong>Untuk pelajaran terpandu real-time:</strong> Nearpod dan Genially — bagus, tetapi batas kelas gratisnya (sekitar 40 siswa/pelajaran untuk Nearpod) dan fitur laporan individu pada Genially sering terkunci di paket berbayar.</li>
+      <li><strong>Untuk sekolah minim internet:</strong> prioritaskan media yang bisa diunduh dan dibuka luring (PhET, GeoGebra, HTML satu berkas, PDF/Wordwall versi cetak), tayangan kelas lewat proyektor, dan kerja kelompok satu perangkat.</li>
+    </ol>
+    <p class="pullquote">Interaktif yang baik bukan yang paling banyak tombolnya, melainkan yang setiap kliknya membuat siswa berpikir, mencoba, dan mendapat penjelasan atas kesalahannya.</p>
+  </section>
+
+  <!-- ================= 1 PENGERTIAN ================= -->
+  <section id="pengertian">
+    <div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">Pengertian, Ciri-ciri, dan Landasan Teori</h2></div>
+
+    <h3>1.1 Pengertian kerja</h3>
+    <p><span class="tag fact inline">Fakta</span><strong>Media pembelajaran digital interaktif</strong> adalah bahan ajar dalam bentuk digital yang memungkinkan <strong>interaksi dua arah</strong> antara siswa dan materi: siswa memberi masukan (jawaban, pilihan, geseran, percobaan), dan media memberi respons yang bermakna — umpan balik, perubahan tampilan, percabangan materi, atau skor — sehingga siswa dapat belajar sesuai kecepatan dan pilihannya sendiri.</p>
+    <p>Definisi ini sejalan dengan literatur Indonesia: modul ajar digital interaktif digambarkan sebagai gabungan teks, audio, grafik, video, animasi, dan hyperlink yang memungkinkan interaksi antar unsur bahan ajar, dengan lingkungan, dan antara bahan ajar dan penggunanya; fitur interaktif seperti video, kuis, dan simulasi membuat pembelajaran lebih menarik dan memperkuat konsep (<a href="https://jurnal.globalaksarapers.com/index.php/eduaksara/article/download/109/130/809">Edu Aksara, Vol. 3 No. 2, Desember 2024</a>).</p>
+    <div class="note recobox">
+      <p><span class="tag reco inline">Rekomendasi</span><strong>Uji sederhana “apakah ini interaktif?”</strong> Tanyakan: <em>Jika siswa tidak menyentuh apa-apa, apakah medianya tetap berjalan sendiri sampai selesai?</em> Jika ya — itu media presentasi, bukan media interaktif. Jika media berhenti, menunggu jawaban/percobaan siswa, dan meresponsnya — itu interaktif.</p>
+    </div>
+
+    <h3>1.2 Pembeda: interaktif vs digital biasa vs cetak</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Ciri</th><th>Media cetak</th><th>Media digital biasa</th><th>Media digital interaktif</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Ciri"><strong>Arah komunikasi</strong></td><td data-label="Media cetak">Satu arah (buku → siswa)</td><td data-label="Digital biasa">Satu arah (layar → siswa)</td><td data-label="Digital interaktif">Dua arah (siswa ↔ media)</td></tr>
+        <tr><td data-label="Ciri"><strong>Umpan balik</strong></td><td data-label="Media cetak">Tertunda (menunggu guru memeriksa)</td><td data-label="Digital biasa">Tidak ada / sangat terbatas</td><td data-label="Digital interaktif">Segera, bisa menjelaskan alasan benar–salah</td></tr>
+        <tr><td data-label="Ciri"><strong>Kecepatan belajar</strong></td><td data-label="Media cetak">Sama untuk semua</td><td data-label="Digital biasa">Sama untuk semua</td><td data-label="Digital interaktif">Bisa mandiri, mengulang, bercabang (remedial/pengayaan)</td></tr>
+        <tr><td data-label="Ciri"><strong>Manipulasi objek</strong></td><td data-label="Media cetak">Tidak bisa (gambar diam)</td><td data-label="Digital biasa">Terbatas (putar video)</td><td data-label="Digital interaktif">Bisa: geser variabel, rakit rangkaian, putar bangun</td></tr>
+        <tr><td data-label="Ciri"><strong>Simulasi fenomena</strong></td><td data-label="Media cetak">Digambarkan saja</td><td data-label="Digital biasa">Ditonton saja</td><td data-label="Digital interaktif">Dicoba: ubah variabel → lihat akibatnya</td></tr>
+        <tr><td data-label="Ciri"><strong>Rekam hasil belajar</strong></td><td data-label="Media cetak">Manual (nilai di buku guru)</td><td data-label="Digital biasa">Tidak ada</td><td data-label="Digital interaktif">Otomatis (skor, waktu, jawaban tersimpan — tergantung platform)</td></tr>
+        <tr><td data-label="Ciri"><strong>Ketergantungan</strong></td><td data-label="Media cetak">Tidak perlu listrik/internet</td><td data-label="Digital biasa">Perlu perangkat + listrik, kadang internet</td><td data-label="Digital interaktif">Perlu perangkat; internet tergantung jenisnya (ada yang luring)</td></tr>
+        <tr><td data-label="Ciri"><strong>Biaya penggandaan</strong></td><td data-label="Media cetak">Cetak per eksemplar</td><td data-label="Digital biasa">Murah lewat tautan</td><td data-label="Digital interaktif">Murah lewat tautan; biaya awal pembuatan lebih tinggi</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>1.3 Ciri-ciri media digital interaktif yang baik</h3>
+    <ol>
+      <li><strong>Responsif:</strong> setiap aksi siswa (klik, seret, jawab) menghasilkan respons yang dapat diamati — bukan sekadar animasi hiasan.</li>
+      <li><strong>Umpan balik informatif:</strong> bukan hanya “Benar/Salah”, melainkan “Mengapa” (lihat Bagian 6).</li>
+      <li><strong>Kendali di tangan siswa:</strong> dapat menjeda, mengulang, memilih jalur, dan mengatur kecepatan — sesuai prinsip segmentasi Mayer (Bagian 1.4).</li>
+      <li><strong>Manipulatif:</strong> siswa dapat mengubah variabel dan mengamati akibatnya (ciri manipulatif media; bandingkan ciri fiksatif = merekam, dan distributif = menyebar ke banyak siswa).</li>
+      <li><strong>Bercabang (<em>branching</em>):</strong> jawaban salah mengarah ke penjelasan/remedial; jawaban benar mengarah ke tantangan lanjutan — bukan satu jalur lurus untuk semua.</li>
+      <li><strong>Multimodal dan hemat:</strong> menggabungkan kata + gambar yang saling melengkapi, tanpa hiasan berlebihan yang membebani memori kerja.</li>
+      <li><strong>Dapat direkam dan ditindaklanjuti:</strong> hasilnya bisa dibaca guru untuk tindak lanjut (remedial, pengayaan, diskusi kelas).</li>
+    </ol>
+
+    <h3>1.4 Landasan teori — dengan bahasa guru</h3>
+
+    <h4>a. Teori Kognitif Pembelajaran Multimedia — Richard E. Mayer (CTML)</h4>
+    <p><span class="tag fact inline">Fakta</span>Tiga asumsi yang dirangkum dalam literatur Indonesia: (1) manusia memproses informasi lewat <strong>dua saluran</strong> — visual (gambar/teks) dan auditori (suara/narasi); (2) tiap saluran <strong>kapasitasnya terbatas</strong>; (3) belajar adalah <strong>proses aktif</strong>: siswa memilih informasi relevan, mengorganisasikannya, dan mengintegrasikannya dengan pengetahuan lama (<a href="https://ejournal.upi.edu/index.php/antomusik/article/download/85115/32656">ringkasan 1</a>; <a href="https://oj.mjukn.org/index.php/jtp/article/download/11/11">ringkasan 2</a>).</p>
+    <p><strong>Prinsip praktis Mayer versi ringkas:</strong></p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Prinsip</th><th>Artinya untuk guru</th><th>Contoh salah → benar</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Prinsip"><strong>Multimedia</strong></td><td data-label="Artinya">Kata + gambar lebih baik daripada kata saja</td><td data-label="Contoh">❌ Paragraf panjang tentang fotosintesis saja → ✅ Diagram + penjelasan singkat</td></tr>
+        <tr><td data-label="Prinsip"><strong>Koherensi</strong></td><td data-label="Artinya">Buang yang tidak relevan</td><td data-label="Contoh">❌ Musik latar keras + stiker beterbangan → ✅ Hanya elemen yang mendukung tujuan</td></tr>
+        <tr><td data-label="Prinsip"><strong>Sinyal (<em>signalling</em>)</strong></td><td data-label="Artinya">Soroti yang penting</td><td data-label="Contoh">❌ Semua teks sama tebal → ✅ Panah, warna, dan penekanan pada kata kunci</td></tr>
+        <tr><td data-label="Prinsip"><strong>Kedekatan spasial</strong></td><td data-label="Artinya">Label dekat dengan gambarnya</td><td data-label="Contoh">❌ Keterangan di halaman lain → ✅ Label menempel pada bagian gambar</td></tr>
+        <tr><td data-label="Prinsip"><strong>Kedekatan temporal</strong></td><td data-label="Artinya">Narasi bersamaan dengan animasi</td><td data-label="Contoh">❌ Penjelasan dulu, animasi belakangan → ✅ Narasi mengiringi animasi</td></tr>
+        <tr><td data-label="Prinsip"><strong>Segmentasi</strong></td><td data-label="Artinya">Pecah jadi bagian kecil yang dikendalikan siswa</td><td data-label="Contoh">❌ Video 20 menit tanpa jeda → ✅ 4 segmen + cek pemahaman tiap segmen</td></tr>
+        <tr><td data-label="Prinsip"><strong>Modalitas</strong></td><td data-label="Artinya">Animasi + narasi lisan lebih ringan daripada animasi + teks panjang di layar</td><td data-label="Contoh">❌ Animasi + teks menumpuk → ✅ Animasi + suara guru yang menjelaskan</td></tr>
+        <tr><td data-label="Prinsip"><strong>Personalisasi</strong></td><td data-label="Artinya">Bahasa percakapan lebih mudah dipahami</td><td data-label="Contoh">❌ Bahasa kaku seperti buku teks → ✅ “Coba kamu geser slider-nya, apa yang berubah?”</td></tr>
+        <tr><td data-label="Prinsip"><strong>Pra-latihan</strong></td><td data-label="Artinya">Kenalkan istilah kunci dulu sebelum materi kompleks</td><td data-label="Contoh">❌ Langsung ke soal sulit → ✅ Glosarium mini + contoh sederhana dulu</td></tr>
+        <tr><td data-label="Prinsip"><strong>Redundansi</strong></td><td data-label="Artinya">Jangan menumpuk teks yang sama persis dengan narasi</td><td data-label="Contoh">❌ Teks penuh + narasi membaca teks itu → ✅ Poin kunci saja di layar</td></tr>
+      </tbody>
+    </table></div>
+
+    <h4>b. Teori Beban Kognitif — John Sweller</h4>
+    <p><span class="tag fact inline">Fakta</span>Memori kerja terbatas. Beban belajar terdiri dari: beban <strong>intrinsik</strong> (sulitnya materi itu sendiri), beban <strong>asing</strong> (<em>extraneous</em> — akibat desain buruk, misalnya instruksi membingungkan), dan beban <strong>relevan</strong> (<em>germane</em> — usaha membangun pemahaman). Tugas guru: <strong>menurunkan beban asing, mengelola beban intrinsik (pecah materi), dan memaksimalkan beban relevan</strong> (latihan bermakna). Inilah alasan teoretis mengapa media yang “ramai” justru bisa menurunkan hasil belajar — dan mengapa Bagian 3 membahas distraksi dan beban kognitif sebagai risiko nyata.</p>
+
+    <h4>c. Pembelajaran aktif dan konstruktivisme</h4>
+    <p><span class="tag reco inline">Rekomendasi</span>Siswa membangun pemahaman dengan <strong>berbuat dan merefleksi</strong>, bukan sekadar menerima. Media interaktif mendukung ini bila ia meminta siswa memprediksi (“Menurutmu apa yang terjadi jika…?”), mencoba, mengamati, lalu menjelaskan — urutan yang sama dengan inkuiri dan pembelajaran berbasis masalah/proyek. Sebaliknya, media yang hanya meminta klik “Lanjut” berulang kali adalah pembelajaran pasif berkedok digital.</p>
+
+    <h4>d. Umpan balik sebagai mesin belajar</h4>
+    <p><span class="tag fact inline">Fakta</span>Hattie &amp; Timperley (2007), dari tinjauan 196 studi dan hampir 7.000 efek, melaporkan rata-rata <em>effect size</em> umpan balik sebesar <strong>0,79</strong> — lebih besar daripada pengaruh kemampuan awal, latar sosioekonomi, dan pengecilan ukuran kelas (dikutip dalam <a href="https://famemichigan.org/wp-content/uploads/2018/04/CCSSO_Formative_Assessment_Next_Generation_Heritage_601101_7.pdf">dokumen CCSSO tentang asesmen formatif</a>). Umpan balik paling efektif bila <strong>fokus pada tugas dan memberi petunjuk/langkah berikutnya</strong>, bukan sekadar pujian atau nilai. Detail penerapannya ada di Bagian 6.</p>
+
+    <h4>e. Pembelajaran bermakna — Ausubel, dan jembatannya ke Pembelajaran Mendalam</h4>
+    <p><span class="tag fact inline">Fakta</span>Belajar bermakna terjadi bila pengetahuan baru <strong>dikaitkan dengan struktur kognitif yang sudah dimiliki siswa</strong> (Ausubel, dirujuk dalam <a href="https://jurnal.itscience.org/index.php/digitech/article/download/7941/5620/40691">literatur Pembelajaran Mendalam</a>). Kemendikdasmen merumuskan Pembelajaran Mendalam sebagai pendekatan yang “memuliakan manusia” dengan menciptakan suasana belajar yang <strong>berkesadaran, bermakna, dan menggembirakan</strong> secara holistik melalui olah pikir, olah hati, olah rasa, dan olah raga (<a href="https://bbgtkjateng.kemendikdasmen.go.id/blog/Tingkatkan%20Kompetensi%20Penilik,%20Disdikbud%20Kabupaten%20Tegal%20berkunjung%20ke%20BBGTK%20Jateng">BBGTK Jawa Tengah</a>). Pengalaman belajarnya dirancang dalam fase <strong>memahami → mengaplikasi → merefleksi</strong>.</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Prinsip Pembelajaran Mendalam</th><th>Wujudnya dalam media interaktif</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Prinsip"><strong>Berkesadaran (<em>mindful</em>)</strong></td><td data-label="Wujud">Tujuan belajar ditulis jelas di awal; siswa tahu “saya sedang belajar apa dan mengapa”; ada jeda refleksi (“Apa yang sudah kamu pahami? Apa yang masih membingungkan?”)</td></tr>
+        <tr><td data-label="Prinsip"><strong>Bermakna (<em>meaningful</em>)</strong></td><td data-label="Wujud">Konteks lokal dan nyata (harga di pasar, banjir di lingkungan, teks berita lokal); siswa mengaplikasikan konsep, bukan hanya menghafal</td></tr>
+        <tr><td data-label="Prinsip"><strong>Menggembirakan (<em>joyful</em>)</strong></td><td data-label="Wujud">Tantangan yang menantang tapi bisa dicapai, suasana aman untuk salah (umpan balik tidak menghukum), unsur bermain yang proporsional</td></tr>
+        <tr><td data-label="Prinsip"><strong>Memahami</strong></td><td data-label="Wujud">Penjelasan + visualisasi + contoh</td></tr>
+        <tr><td data-label="Prinsip"><strong>Mengaplikasi</strong></td><td data-label="Wujud">Simulasi, studi kasus, soal penerapan</td></tr>
+        <tr><td data-label="Prinsip"><strong>Merefleksi</strong></td><td data-label="Wujud">Jurnal singkat, pertanyaan refleksi, peta konsep akhir</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note warnbox">
+      <p><span class="tag warn inline">Perhatian</span><strong>Catatan penting:</strong> Pembelajaran Mendalam <strong>bukan</strong> “deep learning” kecerdasan buatan, dan bukan pula keharusan memakai teknologi canggih. Media interaktif adalah <em>salah satu</em> kendaraan, bukan tujuan. Jika satu lembar LKPD diskusi kelompok mencapai ketiga prinsip itu lebih baik daripada satu gim mahal yang hanya menguji kecepatan klik, pilih LKPD itu.</p>
+    </div>
+  </section>
+
+  <!-- ================= 2 JENIS ================= -->
+  <section id="jenis">
+    <div class="sec-head"><span class="sec-num">2</span><h2 class="sec-title">Jenis-jenis Media Pembelajaran Digital Interaktif</h2></div>
+    <p class="lede">Setiap jenis disusun dengan pola yang sama: <strong>cara kerja → contoh SMP lintas mapel → kelebihan → keterbatasan</strong>. Pilihan jenis harus mengikuti tujuan (Bagian 5), bukan tren.</p>
+
+    <h3>2.1 Video interaktif</h3>
+    <p><strong>Cara kerja.</strong> Video yang berhenti pada titik tertentu dan meminta respons: pertanyaan pilihan ganda, isian, hotspot yang bisa diklik, atau percabangan (“Jika jawabanmu A, lanjut ke menit 3:10; jika B, tonton penjelasan ulang”). Guru dapat membuatnya dari video sendiri atau video yang sudah ada (misalnya lewat Edpuzzle, Nearpod, atau HTML) dengan menyisipkan pertanyaan.</p>
+    <p><strong>Contoh SMP.</strong></p>
+    <ul>
+      <li><em>IPA:</em> video percobaan gerak lurus — video berhenti, siswa memprediksi grafik jarak–waktu sebelum melihat hasilnya.</li>
+      <li><em>Bahasa Indonesia:</em> video berita — siswa mengidentifikasi unsur 5W+1H lewat pertanyaan yang muncul di tengah video.</li>
+      <li><em>IPS:</em> video dokumenter perdagangan — siswa mengklik hotspot peta jalur perdagangan dan menjawab pertanyaan konteks.</li>
+    </ul>
+    <p><strong>Kelebihan:</strong> menggabungkan kekuatan video (menunjukkan proses) dengan keaktifan; siswa tidak bisa “menonton sambil melamun” tanpa terdeteksi; bagus untuk <em>flipped classroom</em>.</p>
+    <p><strong>Keterbatasan:</strong> boros kuota bila video berat; butuh internet stabil untuk streaming; pembuatan (syuting + editing + penyisipan soal) memakan waktu; bila pertanyaannya hanya hafalan, nilainya sama dengan kuis biasa.</p>
+
+    <h3>2.2 Simulasi dan laboratorium virtual</h3>
+    <p><strong>Cara kerja.</strong> Model digital dari fenomena nyata yang dapat dimanipulasi: geser variabel, ubah parameter, rakit alat, lalu amati akibatnya secara langsung. PhET adalah contoh paling mapan (lihat Bagian 4).</p>
+    <p><strong>Contoh SMP.</strong></p>
+    <ul>
+      <li><em>IPA:</em> PhET “Forces and Motion” (gerak dan gaya), “Circuit Construction Kit” (rangkaian listrik — merakit baterai, kabel, sakelar, lampu tanpa risiko korsleting).</li>
+      <li><em>Matematika:</em> GeoGebra untuk grafik fungsi dan geometri dinamis (juga masuk kategori ini, sekaligus alat matematika).</li>
+      <li><em>IPS:</em> simulasi sederhana penawaran–permintaan atau simulasi anggaran keluarga dalam HTML (geser harga → lihat daya beli).</li>
+    </ul>
+    <p><strong>Kelebihan:</strong> membuat yang tak terlihat menjadi terlihat (gaya, arus, molekul); aman dan murah dibanding praktikum yang bahannya langka/berbahaya; memungkinkan pengulangan tanpa batas; mendukung inkuiri (“coba, amati, simpulkan”).</p>
+    <p><strong>Keterbatasan:</strong> simulasi adalah model yang disederhanakan — siswa perlu dibimbing membedakan model dan kenyataan; tanpa LKPD/panduan inkuiri, siswa cenderung “mengutak-atik tanpa belajar”; beberapa simulasi lama masih berat di HP kentang; guru perlu menyiapkan pertanyaan pemandu, bukan sekadar “silakan mainkan”.</p>
+
+    <h3>2.3 Gim edukasi / kuis interaktif</h3>
+    <p><strong>Cara kerja.</strong> Soal dan tantangan dibungkus mekanik permainan: poin, nyawa, waktu, papan peringkat, level, atau cerita. Platformnya antara lain Quizizz/Wayground, Kahoot!, Wordwall, dan gim HTML buatan AI. Ada dua gaya: <strong>sinkron</strong> (semua main bersama, dipandu guru) dan <strong>asinkron</strong> (siswa mengerjakan sesuai kecepatan sendiri).</p>
+    <p><strong>Contoh SMP.</strong></p>
+    <ul>
+      <li><em>Matematika:</em> Kahoot!/Quizizz review SPLDV; Wordwall “pasangkan” (istilah–definisi) untuk aljabar.</li>
+      <li><em>IPA:</em> gim klasifikasi makhluk hidup; kuis berwaktu tentang sistem organ.</li>
+      <li><em>IPS:</em> kuis peta dan kronologi; Wordwall roda acak untuk ice-breaking materi.</li>
+      <li><em>Bahasa Indonesia:</em> kuis struktur teks, kosakata baku/tidak baku, atau gim “Quiz Show” tokoh cerita.</li>
+    </ul>
+    <p><strong>Kelebihan:</strong> keterlibatan dan motivasi tinggi dalam waktu singkat; umpan balik dan skor instan; data hasil langsung tersedia bagi guru (pada platform kuis, bukan pada Canva — lihat Bagian 6); cocok untuk apersepsi, review, dan asesmen formatif cepat.</p>
+    <p><strong>Keterbatasan:</strong> risiko terbesar adalah <strong>kompetisi kecepatan mengalahkan pemahaman</strong> (siswa menebak cepat demi poin); soal cenderung pilihan ganda dangkal bila guru tidak merancangnya; distraksi musik/animasi; ketergantungan internet dan perangkat per siswa pada mode sinkron; kecurangan (mencontek jawaban teman/ponsel) sulit dipantau pada mode asinkron tanpa pengawasan.</p>
+
+    <h3>2.4 Infografis dan modul interaktif (e-modul)</h3>
+    <p><strong>Cara kerja.</strong> Materi disusun sebagai dokumen digital bernavigasi: daftar isi yang bisa diklik, teks + gambar + video + audio, tombol “coba”, latihan tersemat, dan kuis di akhir tiap bagian. Dibuat dengan Canva, Genially, Heyzine/flipbook, atau Google Sites. Contoh yang terdokumentasi: e-modul flipbook persamaan garis lurus kelas VIII SMPN 1 Ngadiluwih yang memadukan materi, ilustrasi GeoGebra, video YouTube, latihan, dan kuis Google Form/Quizizz (<a href="https://ejournal.uika-bogor.ac.id/index.php/JIEM/article/download/25035/8947">Idarah Tarbawiyah, 2026</a>).</p>
+    <p><strong>Contoh SMP.</strong></p>
+    <ul>
+      <li><em>Matematika:</em> e-modul persamaan garis lurus dengan grafik yang bisa digeser + latihan bertingkat.</li>
+      <li><em>IPA:</em> modul sistem pencernaan dengan diagram klik (klik organ → fungsi + video singkat).</li>
+      <li><em>IPS:</em> modul interaktif “perdagangan antardaerah” dengan peta klik dan studi kasus pasar lokal.</li>
+      <li><em>Bahasa Indonesia:</em> e-modul menulis teks berita berbasis proyek (PjBL) — materi, contoh berita, rubrik, dan latihan menulis bertahap.</li>
+    </ul>
+    <p><strong>Kelebihan:</strong> belajar mandiri dan sesuai kecepatan; bisa dipakai berulang sebagai bahan remedial/pengayaan; strukturnya jelas (cocok untuk diferensiasi: jalur dasar/lanjut); mudah dibagikan lewat tautan.</p>
+    <p><strong>Keterbatasan:</strong> bila hanya “buku yang dipindah ke layar” tanpa interaksi bermakna, manfaatnya kecil; file berat bila penuh video/gambar resolusi tinggi; perlu disiplin membaca — siswa yang literasinya rendah mudah tersesat tanpa panduan guru; versi Canva tidak merekam skor secara otomatis (lihat Bagian 6).</p>
+
+    <h3>2.5 Presentasi interaktif</h3>
+    <p><strong>Cara kerja.</strong> Slide yang tidak berjalan lurus: ada tombol navigasi, polling, pertanyaan, papan tulis kolaboratif, dan segmen “coba dulu” di tengah presentasi. Dibuat dengan Canva, Genially, Nearpod, atau PowerPoint + ClassPoint. Guru dapat memandu dari depan kelas sementara siswa merespons dari HP-nya (atau, pada Nearpod, memakai mode “Front of Class” tanpa perangkat siswa).</p>
+    <p><strong>Contoh SMP.</strong></p>
+    <ul>
+      <li><em>Semua mapel:</em> presentasi dengan polling awal (“Menurutmu, mana yang benar?”) → diskusi → simulasi → cek pemahaman → refleksi.</li>
+      <li><em>IPS:</em> presentasi peta interaktif Genially: klik provinsi → data, foto, dan pertanyaan muncul.</li>
+      <li><em>Bahasa Indonesia:</em> presentasi struktur teks eksplanasi dengan contoh yang bisa dibongkar-pasang (klik untuk melihat kaidah kebahasaannya).</li>
+    </ul>
+    <p><strong>Kelebihan:</strong> paling mudah diadopsi guru pemula (mulai dari slide yang sudah ada); menjaga kendali guru atas alur kelas; kolaborasi real-time terlihat langsung.</p>
+    <p><strong>Keterbatasan:</strong> mudah tergelincir menjadi ceramah + slide biasa bila tidak ada momen respons siswa; pada kelas besar, memantau respons individu dari satu layar guru itu sulit; sebagian fitur kolaborasi dan laporan terkunci di paket berbayar.</p>
+
+    <h3>2.6 Realitas tertambah (AR) dan realitas virtual (VR)</h3>
+    <p><strong>Cara kerja.</strong> <strong>AR</strong> menempelkan objek virtual 3D ke dunia nyata lewat kamera HP (misalnya organ tubuh muncul di atas kartu/flashcard atau meja). <strong>VR</strong> membenamkan siswa ke lingkungan virtual 3D (biasanya lewat headset, atau mode 360° di layar). Contoh terdokumentasi di SMP: media AR sistem ekskresi kelas VIII dengan Assemblr EDU (visualisasi ginjal, paru-paru, kulit, hati secara 3D lewat tautan/barcode) dan video AR berbasis flashcard untuk PAI kelas IX (validitas rata-rata 0,95; praktikalitas 87%) (<a href="https://etheses.iainkediri.ac.id/23120/2/22208032_bab1.pdf">skripsi IAIN Kediri</a>; <a href="https://itscience.org/jurnal/index.php/educendikia/article/download/9180/6321/48286">Educendikia, 2026</a>). VR anatomi jantung dengan MilleaLab di MTs dinilai “Sangat Layak” oleh ahli media (82,5%) dan ahli materi (92,67%) (<a href="https://mail.ejournal.itn.ac.id/jati/article/download/17387/9128/">JATI, 2026</a>).</p>
+    <p><strong>Contoh SMP.</strong></p>
+    <ul>
+      <li><em>IPA:</em> AR organ ekskresi/peredaran darah; VR menjelajahi tata surya atau struktur sel.</li>
+      <li><em>IPS:</em> AR peta/artefak sejarah (candi, peta kuno) yang bisa diputar 3D; VR “kunjungan” ke situs sejarah.</li>
+      <li><em>Bahasa Indonesia:</em> AR flashcard kosakata/unsur cerita; VR suasana latar cerita untuk menulis deskripsi.</li>
+    </ul>
+    <p><strong>Kelebihan:</strong> visualisasi 3D paling konkret untuk konsep abstrak dan spasial; motivasi dan rasa ingin tahu sangat tinggi; pengalaman yang sulit/berbahaya/mahal di dunia nyata menjadi mungkin.</p>
+    <p><strong>Keterbatasan:</strong> paling berat dari semua jenis — butuh HP dengan kamera/gyroscope memadai, memori besar, dan internet; pembuatan memakan waktu dan keterampilan (atau biaya); penelitian yang ada kebanyakan mengukur <strong>kelayakan dan motivasi</strong>, belum membuktikan peningkatan hasil belajar jangka panjang secara luas; risiko mabuk gerak (<em>motion sickness</em>) pada VR dan kelelahan mata; jangan dipakai untuk seluruh jam pelajaran.</p>
+
+    <h3>2.7 Media web interaktif satu berkas (HTML)</h3>
+    <p><strong>Cara kerja.</strong> Seluruh media — teks, gaya, dan logika permainan/kuis — ditulis dalam <strong>satu berkas <code>.html</code></strong> (HTML + CSS + JavaScript). Guru membuatnya dengan bantuan AI generatif (Gemini, Claude, ChatGPT, dan sejenisnya) lewat prompt yang terstruktur, lalu membagikannya sebagai berkas atau tautan (misalnya lewat GitHub Pages, Netlify, atau Google Drive/Sites). Siswa membukanya di browser HP tanpa instalasi dan tanpa login. Contoh praktiknya terdokumentasi dalam workshop guru SMP: spesifikasi ditulis dulu, diunggah ke AI bersama gambar, hasil <code>.html</code> diunduh, diuji dengan klik ganda, lalu dipublikasikan (<a href="https://fanani.my.id/edu/workshop/2026-09-workshop-kka-dinas-pendidikan/">catatan workshop 1</a>; <a href="https://www.mashindraprismasaputra.web.id/2026/10/bikin-game-spin-the-wheel-gemini-ai.html">catatan workshop 2</a>).</p>
+    <p><strong>Contoh SMP.</strong></p>
+    <ul>
+      <li><em>Matematika:</em> gim “Spin the Wheel” apersepsi + kuis SPLDV dengan skor otomatis dan pembahasan instan.</li>
+      <li><em>IPA:</em> laboratorium warna/simulasi tetesan warna (aditif–subtraktif) dalam satu tautan.</li>
+      <li><em>IPS:</em> peta klik + kuis kronologi dengan timer dan nyawa.</li>
+      <li><em>Bahasa Indonesia:</em> “Quiz Show berwaktu” tokoh cerita dengan pembahasan tiap soal.</li>
+    </ul>
+    <p><strong>Kelebihan:</strong> paling fleksibel dan paling hemat kuota setelah diunduh (bisa dibuka <strong>luring</strong> di browser bila tidak memanggil sumber eksternal); tanpa login siswa; sepenuhnya milik guru (bisa diedit, dipakai ulang, dibagikan); skor dan umpan balik elaboratif dapat diprogram sendiri; tidak terikat batas paket gratis platform.</p>
+    <p><strong>Keterbatasan:</strong> guru tetap harus <strong>memverifikasi</strong> setiap soal, jawaban, dan pembahasan yang dibuat AI (AI bisa keliru dan “percaya diri”); kode yang panjang sulit diperbaiki bila guru tidak memahami dasarnya; perekaman hasil ke database guru memerlukan sambungan tambahan (Google Apps Script — lihat Bagian 6) dan tidak otomatis; bila media memanggil gambar/video dari internet, mode luringnya batal; aksesibilitas (kontras, ukuran huruf, pembaca layar) harus diminta eksplisit dalam prompt, tidak otomatis.</p>
+  </section>
+
+  <!-- ================= 3 MANFAAT ================= -->
+  <section id="manfaat">
+    <div class="sec-head"><span class="sec-num">3</span><h2 class="sec-title">Manfaat yang Terbukti dan Tantangan/Keterbatasan</h2></div>
+
+    <h3>3.1 Manfaat — apa yang didukung bukti, dan seberapa kuat buktinya</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Manfaat</th><th>Bukti yang ditemukan</th><th>Kekuatan bukti</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Manfaat"><strong>Keterlibatan dan motivasi siswa</strong></td><td data-label="Bukti">PhET meningkatkan motivasi secara signifikan vs konvensional (sintesis studi SMP, 2025); gim edukasi mobile meningkatkan motivasi, minat, dan partisipasi siswa SMP (SLR 9 artikel, 2022–2026); media interaktif di SMPN 144 Jakarta dinilai “sangat baik” oleh siswa (88%) dan berbeda signifikan hasil belajarnya (Sig. 0,001)</td><td data-label="Kekuatan bukti">Konsisten arahnya, tetapi banyak studi mengukur motivasi lewat angket sesaat — efek kebaruan belum dipisahkan dari efek belajar</td></tr>
+        <tr><td data-label="Manfaat"><strong>Pemahaman konsep</strong></td><td data-label="Bukti">PhET pada gerak dan gaya: N-Gain 0,67 (kategori sedang) dan ketuntasan klasikal 86,67% pada studi yang disintesis; SLR gim matematika: penguasaan konsep meningkat, materi abstrak menjadi lebih mudah dipahami lewat visual dan interaksi</td><td data-label="Kekuatan bukti">Menjanjikan; sampel kecil, satu-dua sekolah, desain kuasi-eksperimen</td></tr>
+        <tr><td data-label="Manfaat"><strong>Hasil belajar (nilai)</strong></td><td data-label="Bukti">QuizWhizzer IPS VIII: eksperimen 69,1→85,1 vs kontrol 77,7→81,5 (Sig. 0,000); e-modul teks berita VIII: +27% vs kontrol; media interaktif SMPN 144: perbedaan signifikan antarkelas</td><td data-label="Kekuatan bukti">Positif, tetapi perlu replikasi: efek bisa berasal dari pendampingan guru dan waktu belajar tambahan, bukan medianya semata</td></tr>
+        <tr><td data-label="Manfaat"><strong>Diferensiasi dan belajar mandiri</strong></td><td data-label="Bukti">E-modul interaktif dan media HTML memungkinkan jalur belajar sesuai kecepatan, pengulangan, remedial/pengayaan; Google Sites + Form mendukung belajar mandiri dan blended learning (tinjauan literatur)</td><td data-label="Kekuatan bukti">Bukti lebih bersifat desain dan studi kasus daripada eksperimen; manfaatnya sangat bergantung pada kualitas percabangan dan umpan baliknya</td></tr>
+        <tr><td data-label="Manfaat"><strong>Umpan balik cepat</strong></td><td data-label="Bukti">Umpan balik secara umum berefek besar (Hattie &amp; Timperley 0,79); platform kuis dan simulasi memberi umpan balik seketika, sehingga miskonsepsi dapat dikoreksi saat masih segar</td><td data-label="Kekuatan bukti">Kuat untuk umpan balik secara umum; khusus untuk media interaktif, kualitas penjelasan (bukan kecepatan saja) yang menentukan</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note recobox">
+      <p><span class="tag reco inline">Rekomendasi</span><strong>Prinsip membaca bukti untuk guru:</strong> bila sebuah penelitian hanya melibatkan satu kelas selama 2–3 pertemuan dan mengukur dengan tes buatan sendiri, perlakukan hasilnya sebagai “layak dicoba di kelas saya dengan evaluasi sendiri”, bukan sebagai “terbukti berhasil di semua SMP”. Uji di kelas sendiri dengan pre-test/post-test sederhana (Bagian 5, langkah 5) lebih berharga daripada mengutip angka orang lain.</p>
+    </div>
+
+    <h3>3.2 Tantangan dan keterbatasan — yang harus diantisipasi sejak desain</h3>
+    <ol>
+      <li><strong>Distraksi.</strong> Notifikasi HP, musik, animasi, dan papan peringkat dapat mengalihkan perhatian dari tujuan belajar. <em>Antisipasi:</em> matikan elemen yang tidak mendukung tujuan (prinsip koherensi Mayer); tetapkan aturan HP (mode jangan ganggu, satu aplikasi); selingi interaksi dengan diskusi tatap muka; batasi durasi gim.</li>
+      <li><strong>Beban kognitif berlebih.</strong> Layar yang penuh teks + gambar + narasi + tombol membuat memori kerja penuh sebelum konsep dipahami. <em>Antisipasi:</em> satu ide per layar; segmentasi; label dekat gambar; teks layar singkat, penjelasan lewat narasi atau diskusi.</li>
+      <li><strong>Ketimpangan akses perangkat dan internet.</strong> Ini tantangan paling struktural di Indonesia: meski infrastruktur secara teknis menjangkau ~95% sekolah, keterbatasan broadband, harga perangkat dan kuota, serta literasi digital tetap memperlebar kesenjangan (<a href="https://conference.um.ac.id/index.php/esp/article/download/11140/4985">prosiding UM</a>). Sumber sekunder mengutip Kemendikbudristek (2023) bahwa hanya 48% sekolah di daerah 3T memiliki internet stabil, dan banyak siswa harus berbagi HP dengan orang tua (<a href="https://suaramuda.net/2025/12/03/kurikulum-merdeka-di-tengah-ketimpangan-akses-pendidikan-antara-harapan-dan-realita/">suaramuda.net</a>). <span class="tag warn inline">Belum terverifikasi</span> Angka 48% ini <strong>belum diverifikasi ke dokumen asli Kemendikbudristek dalam riset ini</strong> — gunakan sebagai gambaran masalah, bukan statistik resmi. Solusi praktisnya ada di Bagian 7.</li>
+      <li><strong>Keamanan dan privasi data siswa.</strong> <span class="tag fact inline">Fakta</span> UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi menggolongkan <strong>data anak sebagai data pribadi yang spesifik</strong> — kategori paling sensitif — sehingga standar kehati-hatiannya lebih tinggi, termasuk persetujuan dan pembatasan pengumpulan (<a href="https://www.slbbiromaru.sch.id/urgensi-perlindungan-data-pribadi-di-era-digitalisasi-pendidikan-tanggung-jawab-pengelola-data-di-sekolah">pembahasan konteks sekolah</a>; <a href="http://smartlawyer.id/pelindungan-data-pribadi-dalam-pendidikan-digital/">smartlawyer.id</a>). <em>Praktik aman:</em> jangan minta NISN, alamat, foto wajah, atau tanggal lahir dalam media/kuis kecuali benar-benar perlu dan sudah ada persetujuan sekolah/orang tua; cukup nama + kelas (atau kode siswa); jangan unggah hasil belajar bernama ke situs publik; periksa kebijakan privasi platform sebelum siswa membuat akun; untuk siswa SMP, <strong>utamakan media tanpa login</strong> (tautan saja) — ini sekaligus menyelesaikan masalah privasi dan masalah akun.</li>
+      <li><strong>Kualitas konten AI dan platform komunitas.</strong> Soal buatan AI bisa salah; aktivitas komunitas Wordwall/Quizizz bisa mengandung kesalahan konsep atau bahasa yang tidak sesuai. <em>Antisipasi:</em> selalu ada tahap verifikasi guru (Bagian 5); cantumkan sumber materi; uji ke 2–3 siswa sebelum dipakai massal.</li>
+      <li><strong>Ketergantungan pada platform dan perubahan paket gratis.</strong> Akun gratis bisa berubah batasnya di tengah semester; konten bisa hilang bila platform mengubah kebijakan. <em>Antisipasi:</em> simpan salinan materi (PDF/HTML) di Drive guru; jangan letakkan satu-satunya salinan modul di satu platform gratis.</li>
+      <li><strong>Beban kerja guru.</strong> Media interaktif yang baik membutuhkan waktu desain dan uji coba. <em>Antisipasi:</em> mulai dari satu media untuk satu tujuan yang paling sulit dipahami siswa; gunakan kembali (<em>reuse</em>) dan adaptasi; kolaborasi antarguru mapel (satu template, banyak materi).</li>
+      <li><strong>Kecurangan dan validitas nilai.</strong> Kuis asinkron tanpa pengawasan mudah dicontek; skor gim bukan bukti pemahaman. <em>Antisipasi:</em> pakai kuis untuk formatif, bukan satu-satunya penentu nilai sumatif; acak urutan soal/jawaban bila platform mendukung; tindak lanjuti dengan diskusi atau tugas uraian singkat.</li>
+    </ol>
+  </section>
+
+  <!-- ================= 4 PLATFORM ================= -->
+  <section id="platform">
+    <div class="sec-head"><span class="sec-num">4</span><h2 class="sec-title">Perbandingan Praktis Platform dan Tools</h2></div>
+
+    <h3>4.1 Cara membaca tabel ini</h3>
+    <ul>
+      <li>Kolom <strong>“Login siswa”</strong> menjawab pertanyaan kunci: <em>bisakah siswa membuka lewat tautan tanpa membuat akun?</em></li>
+      <li>Kolom <strong>“Gratis (potret Okt–Nov 2026)”</strong> adalah perkiraan dari sumber yang dikutip, <strong>bukan janji vendor</strong>. Mata uang dan batas berbeda menurut negara dan jenis akun (pribadi vs sekolah). <span class="tag warn inline">Cek ulang</span> Periksa halaman harga resmi sebelum memutuskan.</li>
+      <li>“HP” berarti dapat dipakai dari browser HP; hampir semua platform di bawah bisa, tetapi kenyamanannya berbeda (PhET/GeoGebra paling nyaman di layar agak besar atau proyektor; kuis paling nyaman di HP).</li>
+    </ul>
+    <div class="note warnbox">
+      <p><span class="tag warn inline">Belum terverifikasi</span>Harga dalam halaman ini adalah <strong>potret Oktober–November 2026</strong> dari sumber yang dikutip. Platform mengubah batas gratisnya beberapa kali dalam setahun; contohnya Kahoot! dan Genially tercatat berubah antar pengecekan September–Oktober 2026 pada sumber sekunder yang sama.</p>
+    </div>
+
+    <h3>4.2 Tabel perbandingan</h3>
+    <div class="tbl-wrap tbl-fixed"><table>
+      <colgroup><col style="width:11%"><col style="width:13%"><col style="width:11%"><col style="width:6%"><col style="width:21%"><col style="width:19%"><col style="width:19%"></colgroup>
+      <thead><tr><th>Platform</th><th>Fungsi utama</th><th>Login siswa?</th><th>Di HP?</th><th>Gratis — potret Okt–Nov 2026</th><th>Kelebihan</th><th>Keterbatasan</th></tr></thead>
+      <tbody>
+        <tr>
+          <td data-label="Platform" class="plat-name">Canva (+ Canva AI)</td>
+          <td data-label="Fungsi utama">Desain presentasi, infografis, modul, video, situs; AI untuk draf teks/gambar/desain</td>
+          <td data-label="Login siswa?">Siswa diundang guru (Canva Education); tautan tayang publik bisa dibuka tanpa login untuk <em>melihat</em></td>
+          <td data-label="Di HP?">Ya, aplikasi + browser</td>
+          <td data-label="Gratis (Okt–Nov 2026)"><strong>Canva for Education 100% gratis</strong> untuk pendidik K-12 dan siswa yang diundang, termasuk fitur Pro (<a href="https://www.canva.com/education/teachers/">situs resmi, dibaca 4 Nov 2026</a>). Canva Free perorangan juga gratis permanen dengan batas (mis. 5 GB, kredit AI bulanan kecil). Canva AI di Education dibatasi (sumber sekunder Okt 2026: s.d. 200 pemakaian Premium/bln/orang) — cek di akun Anda</td>
+          <td data-label="Kelebihan">Paling mudah untuk hasil yang cantik; template melimpah; kolaborasi; tayang lewat tautan; integrasi LMS</td>
+          <td data-label="Keterbatasan"><strong>Tidak merekam skor/nilai otomatis dan tidak punya database hasil</strong> — interaktivitasnya terutama navigasi hyperlink dan animasi; tanpa skor otomatis dan tanpa <em>drag-and-drop</em> (terdokumentasi dalam studi Canva, Bagian 6); butuh internet untuk mengedit/membuka tautan; file video berat</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">Gemini &amp; AI generatif lain</td>
+          <td data-label="Fungsi utama">Membuat naskah, soal, gambar, dan <strong>kode media HTML satu berkas</strong> dari prompt; merangkum dan menyusun diferensiasi (ChatGPT, Claude, Copilot, dsb.)</td>
+          <td data-label="Login siswa?">Hanya guru yang memakai AI; <strong>siswa tidak perlu login</strong> ke media hasilnya</td>
+          <td data-label="Di HP?">Ya (guru lewat aplikasi/browser)</td>
+          <td data-label="Gratis (Okt–Nov 2026)">Gemini Free $0 (<a href="https://gemini.google/gp/about/?hl=en">situs resmi</a>): model Flash-Lite; batas pemakaian standar yang diperbarui berkala; AI Pro $19,99/bln (USD). Model dan batas gratis berubah — pada Oktober 2026 pengguna gratis dilaporkan kehilangan akses Flash/Pro dan hanya mendapat Flash-Lite. Penawaran pelajar berubah menurut negara dan periode</td>
+          <td data-label="Kelebihan">Paling cepat mengubah ide menjadi media jadi; bisa membuat kuis, gim, dan simulasi sederhana tanpa coding; membantu diferensiasi (versi mudah/sulit)</td>
+          <td data-label="Keterbatasan"><strong>AI bisa salah</strong> — semua soal dan pembahasan wajib diverifikasi guru; batas gratis dan model berubah; jangan masukkan data pribadi siswa ke prompt; kualitas kode panjang sulit diperbaiki tanpa dasar pemrograman; perlu akun guru (18+ untuk paket AI tertentu)</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">Wordwall</td>
+          <td data-label="Fungsi utama">Gim dan aktivitas: pasangkan, urutkan, roda acak, kuis, teka-teki; bisa dicetak jadi LKPD</td>
+          <td data-label="Login siswa?">Tidak perlu (tautan/kode)</td>
+          <td data-label="Di HP?">Ya</td>
+          <td data-label="Gratis (Okt–Nov 2026)"><strong>Basic gratis: buat s.d. 3 aktivitas, 12 template, berbagi dasar</strong> (<a href="http://wordwall.net/price-plans?ref=subscription-required-print">halaman harga resmi</a>). Standard ±$57,60/thn, Pro ±$86,40/thn (tampilan USD). Sumber lama menyebut 5 aktivitas — angka resmi terbaru yang dikutip di sini adalah 3; sumber sekunder juga mencatat aktivitas yang dihapus tetap menghitung kuota</td>
+          <td data-label="Kelebihan">Sangat cepat dibuat; variasi template besar; satu konten bisa diubah jadi banyak bentuk permainan dan lembar cetak; cocok untuk latihan kosakata dan drill</td>
+          <td data-label="Keterbatasan"><strong>Batas 3 aktivitas sangat ketat</strong> untuk pemakaian rutin; fitur AI, timer, skor lanjutan, dan cetak ada di paket berbayar; laporan hasil terbatas di gratis; main dari komunitas perlu dicek akurasinya</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">Quizizz (kini Wayground)</td>
+          <td data-label="Fungsi utama">Kuis gamifikasi, pelajaran, dan asesmen formatif; mode live dan tugas mandiri; laporan hasil detail</td>
+          <td data-label="Login siswa?">Opsional; siswa bisa gabung lewat kode/tautan</td>
+          <td data-label="Di HP?">Ya</td>
+          <td data-label="Gratis (Okt–Nov 2026)">Basic gratis (sumber sekunder Okt 2026, <a href="https://www.mindomax.com/kahoot-alternatives">mindomax.com</a>): s.d. 100 siswa, penyimpanan s.d. 20 aktivitas, akses AI terbatas; paket sekolah/distrik berdasarkan penawaran (<em>quote</em>), tidak lagi dipublikasikan harga perorangan secara luas. Sumber lain menyebut batas dan harga Super yang berbeda — cek halaman resmi</td>
+          <td data-label="Kelebihan">Laporan hasil paling detail di antara kuis gratis; mode mandiri (siswa sesuai kecepatan sendiri) mengurangi tekanan kecepatan; perpustakaan soal besar; ada mode kertas untuk kelas tanpa perangkat</td>
+          <td data-label="Keterbatasan">Butuh internet; soal cenderung pilihan ganda; batas penyimpanan gratis memaksa guru menghapus/mendaur ulang; kebijakan AI dan harga berubah setelah rebranding menjadi Wayground (Juni 2025)</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">Kahoot!</td>
+          <td data-label="Fungsi utama">Kuis live gaya <em>game show</em>: papan peringkat real-time, musik, avatar</td>
+          <td data-label="Login siswa?">Kode sesi; tanpa akun siswa untuk bermain</td>
+          <td data-label="Di HP?">Ya</td>
+          <td data-label="Gratis (Okt–Nov 2026)">Go gratis: sumber sekunder yang membaca halaman resmi Kahoot! pada 3 Okt 2026 menemukan <strong>konflik internal di situs Kahoot! sendiri</strong> — tabel perbandingan menyebut 40 pemain/game, FAQ menyebut s.d. 10 (<a href="https://www.mindomax.com/kahoot-alternatives">mindomax.com</a>). Bronze berbayar mulai ±$3/bln (tahunan). Jangan merencanakan kelas 32 siswa dengan asumsi gratis pasti cukup — uji dulu</td>
+          <td data-label="Kelebihan">Paling seru untuk review kelas dan ice-breaking; sangat dikenal siswa; pembuatan cepat; musik dan papan peringkat membangkitkan energi kelas</td>
+          <td data-label="Keterbatasan">Batas pemain gratis paling ketat dan membingungkan; sangat menekankan kecepatan (menebak cepat menang); jenis soal dasar di gratis; semua siswa idealnya punya perangkat; butuh proyektor/layar untuk soal</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">Genially</td>
+          <td data-label="Fungsi utama">Presentasi, infografis, gambar, dan gim interaktif (termasuk <em>escape room</em>) dengan hotspot dan animasi; tanpa coding</td>
+          <td data-label="Login siswa?">Tautan publik; tanpa login untuk melihat/memainkan</td>
+          <td data-label="Di HP?">Ya</td>
+          <td data-label="Gratis (Okt–Nov 2026)">Paket gratis tersedia (kreasi publik tanpa batas menurut sumber sekunder); Edu Pro mulai sekitar €4,99–€10/bln (tahunan, tergantung sumber dan wilayah; sumber Eropa Okt 2026: €6/bln). Laporan individu per siswa dilaporkan mulai di paket Master yang lebih tinggi</td>
+          <td data-label="Kelebihan">Visual paling fleksibel untuk infografis dan presentasi bercabang; template melimpah; bagus untuk modul eksplorasi mandiri</td>
+          <td data-label="Keterbatasan">Unduhan (PDF/JPG/video/luring), folder, dan privasi di paket berbayar; laporan per siswa terbatas di gratis; konten gratis bersifat publik secara default — perhatikan privasi; berat bila banyak animasi/video</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">Nearpod</td>
+          <td data-label="Fungsi utama">Pelajaran terpandu: slide + video + kuis + polling + papan kolaboratif dalam satu alur; laporan real-time</td>
+          <td data-label="Login siswa?">Kode pelajaran; mode Front of Class tanpa perangkat siswa</td>
+          <td data-label="Di HP?">Ya</td>
+          <td data-label="Gratis (Okt–Nov 2026)">Silver gratis: <strong>40 siswa/pelajaran</strong>, penyimpanan 100–300 MB (sumber sekunder berbeda-beda: 100 MB vs 300 MB — cek resmi); Gold ±$159/thn, Platinum ±$397/thn (<a href="https://www.mindomax.com/kahoot-alternatives">mindomax.com</a>; <a href="https://github.com/dinomartino/dse_econ_worksheet-editor/blob/HEAD/docs/research/2026-09-competitive/design.md">dokumen riset GitHub</a>)</td>
+          <td data-label="Kelebihan">Alur pelajaran paling terkendali; guru melihat respons real-time; mode tanpa perangkat siswa sangat membantu sekolah minim HP; perpustakaan pelajaran siap pakai besar</td>
+          <td data-label="Keterbatasan">Batas 40 siswa/pelajaran gratis bermasalah untuk kelas besar; penyimpanan kecil untuk video; fitur AI dan drag-and-drop di berbayar; butuh internet stabil untuk mode live</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">PhET</td>
+          <td data-label="Fungsi utama">Simulasi interaktif sains dan matematika berbasis riset (fisika, kimia, biologi, kebumian, matematika)</td>
+          <td data-label="Login siswa?"><strong>Tidak perlu sama sekali</strong></td>
+          <td data-label="Di HP?">Ya (browser; lebih nyaman di layar besar/proyektor)</td>
+          <td data-label="Gratis (Okt–Nov 2026)"><strong>Gratis sepenuhnya</strong>, open source, didukung sponsor; bisa daring atau diunduh untuk luring (<a href="https://phet.colorado.edu/in/about">situs resmi</a>). 173 simulasi, 132 bahasa (halaman utama PhET)</td>
+          <td data-label="Kelebihan">Berbasis riset dan diuji di kelas; membuat yang tak terlihat menjadi terlihat; umpan balik sebab-akibat seketika; bisa luring setelah diunduh; tanpa akun dan tanpa iklan</td>
+          <td data-label="Keterbatasan">Bukan alat perekam nilai (perlu LKPD/Form pendamping); butuh panduan inkuiri agar tidak sekadar “main”; sebagian simulasi lama tidak optimal di HP kecil; tidak mencakup semua topik (terutama IPS/Bahasa)</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">GeoGebra</td>
+          <td data-label="Fungsi utama">Matematika dinamis: geometri, grafik fungsi, aljabar, statistik, 3D; Classroom untuk pelajaran interaktif</td>
+          <td data-label="Login siswa?"><strong>Tidak perlu</strong> untuk membuka/menggunakan kalkulator dan materi</td>
+          <td data-label="Di HP?">Ya (aplikasi + browser; versi Classic bisa luring)</td>
+          <td data-label="Gratis (Okt–Nov 2026)"><strong>Gratis untuk penggunaan non-komersial</strong> (guru, siswa, orang tua di sekolah/rumah); tanpa akun pun bisa membuat konstruksi dan menyimpan lokal (situs resmi GeoGebra, geogebra.org)</td>
+          <td data-label="Kelebihan">Menggabungkan geometri + aljabar real-time (geser titik → persamaan berubah); materi komunitas sangat banyak; ringan; cocok untuk semua jenjang SMP</td>
+          <td data-label="Keterbatasan">Khusus matematika (dan sebagian fisika); kurva belajar guru pemula agak curam; tidak merekam nilai secara otomatis tanpa Classroom/LMS; tampilan di HP kecil perlu desain yang sederhana</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">Google Sites + Google Form</td>
+          <td data-label="Fungsi utama">Sites: situs/modul kelas; Form: kuis, survei, absensi, dan perekam hasil yang otomatis masuk ke Sheet</td>
+          <td data-label="Login siswa?"><strong>Siswa tanpa login</strong> bila situs/form diatur “Siapa saja yang memiliki tautan” (perlu dicek setelan akun sekolah — akun belajar.id mungkin membatasi)</td>
+          <td data-label="Di HP?">Ya</td>
+          <td data-label="Gratis (Okt–Nov 2026)">Gratis dengan akun Google (termasuk belajar.id); tanpa biaya hosting/domain untuk Sites dasar; Form gratis dengan penyimpanan di Drive</td>
+          <td data-label="Kelebihan">Kombinasi paling praktis untuk “modul + kuis + database” tanpa biaya; Form terhubung otomatis ke Sheet; mudah dibagikan lewat tautan/QR; Sites bisa menyematkan PhET, GeoGebra, video, Form, dan HTML</td>
+          <td data-label="Keterbatasan">Desain Sites terbatas dan kurang “bermain”; Form hanya menilai soal tertutup secara otomatis (uraian perlu koreksi manual); butuh internet (kecuali berkas diunduh); setelan privasi akun sekolah perlu diperiksa agar tautan benar-benar terbuka tanpa login</td>
+        </tr>
+        <tr>
+          <td data-label="Platform" class="plat-name">Media HTML satu berkas lewat AI</td>
+          <td data-label="Fungsi utama">Kuis, gim, simulasi sederhana, dan modul dalam satu berkas <code>.html</code></td>
+          <td data-label="Login siswa?"><strong>Tidak perlu</strong> — buka di browser lewat tautan/berkas</td>
+          <td data-label="Di HP?">Ya, dirancang responsif bila diminta dalam prompt</td>
+          <td data-label="Gratis (Okt–Nov 2026)">Gratis setelah dibuat (tanpa biaya platform); biaya satu-satunya adalah waktu guru dan (bila memakai AI berbayar) langganan AI; publikasi gratis lewat GitHub Pages/Netlify/Drive</td>
+          <td data-label="Kelebihan">Paling hemat kuota dan bisa luring; tanpa login; skor + umpan balik elaboratif dapat diprogram; sepenuhnya dapat diedit dan dipakai ulang; tidak terikat batas paket</td>
+          <td data-label="Keterbatasan">Verifikasi konten AI wajib; perbaikan kode sulit bagi pemula; perekaman hasil butuh Apps Script (Bagian 6) dan keahlian tambahan; tanpa dukungan vendor bila rusak; aksesibilitas harus dirancang eksplisit</td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <h3>4.3 Rekomendasi pemilihan cepat <span class="tag reco inline">Rekomendasi</span></h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Kebutuhan guru</th><th>Mulai dari</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Kebutuhan">“Saya baru pertama kali, mau yang langsung jadi”</td><td data-label="Mulai dari">Canva for Education (modul/presentasi) + Quizizz (kuis)</td></tr>
+        <tr><td data-label="Kebutuhan">“Kelas saya minim internet dan HP”</td><td data-label="Mulai dari">PhET/GeoGebra yang diunduh + tayang proyektor + HTML satu berkas + Wordwall versi cetak</td></tr>
+        <tr><td data-label="Kebutuhan">“Saya butuh nilai dan laporan otomatis”</td><td data-label="Mulai dari">Quizizz/Wayground atau Google Form (bukan Canva saja)</td></tr>
+        <tr><td data-label="Kebutuhan">“Saya mau siswa bereksplorasi, bukan sekadar menjawab”</td><td data-label="Mulai dari">PhET (IPA), GeoGebra (Matematika), Genially (eksplorasi modul)</td></tr>
+        <tr><td data-label="Kebutuhan">“Saya mau satu tautan untuk satu bab penuh”</td><td data-label="Mulai dari">Google Sites sebagai “pintu masuk” yang menautkan modul Canva/Genially + simulasi PhET + kuis Form/Quizizz</td></tr>
+        <tr><td data-label="Kebutuhan">“Saya mau media yang benar-benar milik saya dan bisa luring”</td><td data-label="Mulai dari">HTML satu berkas lewat AI, dengan verifikasi dan uji coba (Bagian 5)</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ================= 5 MERANCANG ================= -->
+  <section id="merancang">
+    <div class="sec-head"><span class="sec-num">5</span><h2 class="sec-title">Langkah-langkah Merancang Media yang Baik</h2></div>
+    <p class="lede">Kerangka ini menyederhanakan model <strong>ADDIE</strong> (<em>Analysis, Design, Development, Implementation, Evaluation</em>) — model yang paling banyak dipakai dalam pengembangan media pembelajaran di Indonesia (<a href="https://pendidikan-matematika.fmipa.unesa.ac.id/post/model-addie-kerangka-kerja-sistematis-pengembangan-media-pembelajaran-matematika">FMIPA Unesa</a>) — menjadi 6 langkah yang bisa diselesaikan guru dalam 1–2 minggu untuk satu topik.</p>
+
+    <div class="step"><div class="n">1</div><div class="body">
+      <h3>Tentukan tujuan pembelajaran — sebelum membuka aplikasi apa pun</h3>
+      <ul>
+        <li>Tulis <strong>satu</strong> tujuan yang terukur: “Setelah belajar, siswa dapat …” (misalnya: “menentukan gradien dari grafik dan menjelaskan maknanya dalam konteks jarak–waktu”).</li>
+        <li>Tulis <strong>miskonsepsi yang paling sering muncul</strong> (misalnya: “siswa mengira gradien negatif berarti garisnya salah”). Media yang baik dirancang untuk membongkar miskonsepsi itu, bukan sekadar menampilkan definisi.</li>
+        <li>Tentukan <strong>bukti belajarnya</strong>: apa yang akan siswa hasilkan (jawaban, grafik, penjelasan, produk) dan bagaimana Anda menilainya.</li>
+      </ul>
+      <p><span class="tag reco inline">Rekomendasi</span><em>Kesalahan pemula yang paling sering:</em> mulai dari “mau buat Canva yang bagus”, bukan dari tujuan. Akibatnya media cantik tetapi tidak mengajar apa-apa.</p>
+    </div></div>
+
+    <div class="step"><div class="n">2</div><div class="body">
+      <h3>Pilih jenis media yang sesuai dengan tujuan</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Tujuan</th><th>Jenis yang paling cocok</th></tr></thead>
+        <tbody>
+          <tr><td data-label="Tujuan">Memahami konsep abstrak yang tak terlihat</td><td data-label="Jenis">Simulasi / lab virtual (PhET, GeoGebra)</td></tr>
+          <tr><td data-label="Tujuan">Mengingat dan membedakan istilah/fakta</td><td data-label="Jenis">Gim/kuis, Wordwall (pasangkan, urutkan)</td></tr>
+          <tr><td data-label="Tujuan">Menerapkan prosedur bertahap</td><td data-label="Jenis">Modul interaktif dengan latihan bertingkat + umpan balik</td></tr>
+          <tr><td data-label="Tujuan">Menganalisis teks/gambar/isu</td><td data-label="Jenis">Presentasi interaktif + diskusi (polling, hotspot, studi kasus)</td></tr>
+          <tr><td data-label="Tujuan">Mengalami ruang/wujud 3D</td><td data-label="Jenis">AR/VR (pilih satu momen saja, bukan satu bab penuh)</td></tr>
+          <tr><td data-label="Tujuan">Belajar mandiri satu bab + tercatat hasilnya</td><td data-label="Jenis">Google Sites + Form, atau HTML satu berkas + Apps Script</td></tr>
+          <tr><td data-label="Tujuan">Review cepat dan cek pemahaman kelas</td><td data-label="Jenis">Kuis live (Kahoot!/Quizizz/Nearpod)</td></tr>
+        </tbody>
+      </table></div>
+    </div></div>
+
+    <div class="step"><div class="n">3</div><div class="body">
+      <h3>Tulis naskah / prompt yang jelas</h3>
+      <p><strong>Untuk media buatan sendiri (naskah):</strong> buat alur (<em>storyboard</em>) satu halaman: layar 1 tujuan → layar 2 apersepsi → layar 3 eksplorasi → layar 4 latihan → layar 5 refleksi. Tulis teks yang akan tampil, soal, kunci, dan <strong>penjelasan untuk tiap pengecoh</strong> (mengapa jawaban itu salah dan apa yang seharusnya dipikirkan).</p>
+      <p><strong>Untuk media buatan AI (prompt):</strong> AI hanya sebaik instruksi Anda. Template prompt berikut bisa disalin dan diisi:</p>
+      <div class="prompt">
+        <div class="bar"><span>Template prompt — media HTML satu berkas</span><button class="copy-btn" type="button" id="copyPrompt">Salin prompt</button></div>
+        <pre id="promptText">Buatkan media pembelajaran interaktif dalam satu berkas HTML (HTML + CSS + JavaScript dalam satu file, tanpa pustaka eksternal agar bisa dibuka luring).
+Mata pelajaran: [IPS], Kelas: [VIII], Topik: [Perdagangan antardaerah], Tujuan: [siswa dapat menjelaskan manfaat dan hambatan perdagangan antardaerah dengan contoh lokal].
+Struktur: (1) tujuan dan petunjuk singkat; (2) materi singkat dengan contoh dari [pasar lokal]; (3) aktivitas interaktif [peta klik]; (4) kuis 8 soal pilihan ganda dengan umpan balik yang menjelaskan alasan tiap jawaban, skor otomatis, dan tombol ulangi; (5) refleksi 2 pertanyaan.
+Gaya: bahasa Indonesia sederhana untuk SMP, huruf besar dan kontras tinggi, tombol besar untuk HP, tanpa musik otomatis, tanpa gambar dari internet (gunakan bentuk dan warna CSS saja).
+Akhiri dengan daftar soal, kunci, dan sumber materi yang kamu pakai agar saya bisa memeriksa.</pre>
+      </div>
+      <p><strong>Aturan prompt yang penting:</strong></p>
+      <ul>
+        <li>Selalu minta <strong>satu berkas</strong>, <strong>tanpa dependensi eksternal</strong> (bila ingin luring), dan <strong>responsif untuk HP</strong>.</li>
+        <li>Selalu minta <strong>kunci + penjelasan</strong> ditampilkan terpisah agar guru bisa memeriksa sebelum dipakai.</li>
+        <li>Jangan pernah menulis data pribadi siswa (nama, NISN) di prompt.</li>
+        <li>Bila AI menghasilkan kode yang terpotong, minta “tulis ulang lengkap dari <code>&lt;!DOCTYPE html&gt;</code> sampai <code>&lt;/html&gt;</code> tanpa disingkat”.</li>
+      </ul>
+    </div></div>
+
+    <div class="step"><div class="n">4</div><div class="body">
+      <h3>Buat prototipe — versi kasar dulu, cantik belakangan</h3>
+      <ul>
+        <li>Buat <strong>versi 1 dalam 1–2 jam</strong> dengan konten minimal: 1 tujuan, 1 aktivitas inti, 3–5 soal. Jangan menghabiskan sehari untuk desain sebelum tahu apakah aktivitas intinya berhasil.</li>
+        <li>Untuk Canva/Genially: pakai template, ganti teks/gambar saja. Untuk HTML: tempel kode AI ke Notepad, simpan sebagai <code>.html</code> (pilih “All Files”), buka dengan klik ganda di browser.</li>
+        <li>Periksa di <strong>HP siswa yang paling sederhana</strong> (bukan hanya laptop guru): apakah tombol bisa diklik, teks terbaca, dan media tidak berat?</li>
+      </ul>
+    </div></div>
+
+    <div class="step"><div class="n">5</div><div class="body">
+      <h3>Uji ke siswa — uji kecil lebih baik daripada tidak sama sekali</h3>
+      <ul>
+        <li><strong>Uji perorangan (2–3 siswa):</strong> minta mereka memakai media sambil “berpikir keras” (<em>think aloud</em>): “Bagian mana yang membingungkan? Apa yang kamu kira harus diklik?” Catat semua kebingungan.</li>
+        <li><strong>Uji kelompok kecil (5–8 siswa):</strong> jalankan seperti di kelas, ukur waktu, dan beri pre-test/post-test sangat singkat (3–5 soal) untuk melihat apakah ada perubahan pemahaman.</li>
+        <li><strong>Uji kelas:</strong> jalankan satu pertemuan penuh, kumpulkan hasil (skor Form/Quizizz/Sheet), dan minta refleksi siswa (1 kalimat: “Satu hal yang kupahami, satu hal yang masih membingungkan”).</li>
+      </ul>
+      <p><span class="tag reco inline">Rekomendasi</span>Standar minimal sebelum dipakai massal: <strong>tidak ada soal yang kuncinya salah, tidak ada tautan yang mati, dan siswa paling lemah pun bisa menyelesaikan tanpa bantuan teknis lebih dari 2 menit.</strong></p>
+    </div></div>
+
+    <div class="step"><div class="n">6</div><div class="body">
+      <h3>Revisi dan publikasikan</h3>
+      <ul>
+        <li>Revisi berdasarkan tiga sumber: <strong>kesalahan konten</strong> (perbaiki kunci/penjelasan), <strong>kebingungan navigasi</strong> (perbaiki petunjuk/tombol), dan <strong>hasil belajar</strong> (tambah remedial untuk soal yang paling banyak salah).</li>
+        <li>Simpan versi final dengan penamaan jelas: <code>Kelas8_IPS_Perdagangan_v2.html</code> atau tautan yang stabil; simpan salinan cadangan di Drive.</li>
+        <li>Publikasikan lewat <strong>satu tautan utama</strong> (Google Sites, grup kelas, atau QR di papan tulis) — jangan menyebar 5 tautan berbeda untuk satu bab.</li>
+        <li>Catat di modul ajar: tujuan, tautan, durasi, perangkat yang dibutuhkan, dan rencana cadangan bila internet mati (lihat Bagian 7).</li>
+      </ul>
+    </div></div>
+
+    <h3>Kriteria kualitas media yang baik</h3>
+    <p>Untuk menilai media sendiri atau media orang lain:</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Aspek</th><th>Media baik</th><th>Media bermasalah</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Aspek"><strong>Kesesuaian tujuan</strong></td><td data-label="Media baik">Setiap layar melayani tujuan yang tertulis</td><td data-label="Media bermasalah">Banyak hiasan yang tidak terkait tujuan</td></tr>
+        <tr><td data-label="Aspek"><strong>Keakuratan konten</strong></td><td data-label="Media baik">Materi, soal, kunci, dan penjelasan sudah diverifikasi; sumber dicantumkan</td><td data-label="Media bermasalah">Ada soal yang kuncinya salah atau penjelasannya menyesatkan</td></tr>
+        <tr><td data-label="Aspek"><strong>Interaktivitas bermakna</strong></td><td data-label="Media baik">Setiap interaksi membuat siswa berpikir/mencoba</td><td data-label="Media bermasalah">Interaksi hanya “klik Lanjut” atau animasi hiasan</td></tr>
+        <tr><td data-label="Aspek"><strong>Umpan balik</strong></td><td data-label="Media baik">Menjelaskan alasan, memberi petunjuk langkah berikutnya</td><td data-label="Media bermasalah">Hanya “Benar/Salah” atau skor tanpa penjelasan</td></tr>
+        <tr><td data-label="Aspek"><strong>Beban kognitif</strong></td><td data-label="Media baik">Satu ide per layar; teks singkat; visual relevan</td><td data-label="Media bermasalah">Layar padat, musik keras, banyak distraksi</td></tr>
+        <tr><td data-label="Aspek"><strong>Bahasa</strong></td><td data-label="Media baik">Sederhana, baku, sesuai jenjang; istilah baru dijelaskan</td><td data-label="Media bermasalah">Kalimat panjang, istilah asing tanpa penjelasan, typo</td></tr>
+        <tr><td data-label="Aspek"><strong>Aksesibilitas</strong></td><td data-label="Media baik">Huruf terbaca, kontras cukup, bisa di HP, ada alternatif teks/gambar</td><td data-label="Media bermasalah">Huruf kecil, kontras rendah, hanya bisa di laptop, video tanpa teks</td></tr>
+        <tr><td data-label="Aspek"><strong>Teknis</strong></td><td data-label="Media baik">Tautan hidup, tombol berfungsi, hemat kuota, ada versi luring/cadangan</td><td data-label="Media bermasalah">Tautan mati, tombol tidak berfungsi, berat, hanya daring</td></tr>
+        <tr><td data-label="Aspek"><strong>Etika dan privasi</strong></td><td data-label="Media baik">Tidak meminta data sensitif; konten aman dan inklusif</td><td data-label="Media bermasalah">Meminta NISN/foto; ada iklan/konten tidak pantas</td></tr>
+        <tr><td data-label="Aspek"><strong>Keterpakai-ulangan</strong></td><td data-label="Media baik">Bisa dipakai ulang, diedit, dan dibagikan</td><td data-label="Media bermasalah">Terkunci di satu akun/platform tanpa salinan</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Checklist guru — sebelum media dipakai di kelas</h3>
+    <p class="check-group">Konten dan tujuan</p>
+    <ul class="checklist">
+      <li><span class="box"></span><span>Tujuan pembelajaran tertulis di awal media dan di modul ajar saya.</span></li>
+      <li><span class="box"></span><span>Semua soal, kunci jawaban, dan penjelasan sudah saya periksa satu per satu (terutama bila dibuat AI atau diambil dari komunitas).</span></li>
+      <li><span class="box"></span><span>Materi sesuai dengan buku/Capaian Pembelajaran yang berlaku; sumber dicantumkan.</span></li>
+      <li><span class="box"></span><span>Ada soal/aktivitas untuk remedial (yang belum paham) dan pengayaan (yang sudah paham).</span></li>
+    </ul>
+    <p class="check-group">Interaksi dan umpan balik</p>
+    <ul class="checklist">
+      <li><span class="box"></span><span>Siswa harus berbuat sesuatu di tiap bagian (bukan hanya menonton/membaca).</span></li>
+      <li><span class="box"></span><span>Setiap jawaban salah mendapat penjelasan, bukan hanya “Salah, coba lagi”.</span></li>
+      <li><span class="box"></span><span>Ada tombol kembali, ulangi, dan petunjuk yang jelas di tiap layar.</span></li>
+    </ul>
+    <p class="check-group">Bahasa dan tampilan</p>
+    <ul class="checklist">
+      <li><span class="box"></span><span>Bahasa sederhana, tanpa typo; istilah baru dijelaskan.</span></li>
+      <li><span class="box"></span><span>Huruf terbaca di HP kecil; kontras warna cukup; tidak ada teks yang tertutup tombol.</span></li>
+      <li><span class="box"></span><span>Tidak ada musik/video yang berputar otomatis dan mengganggu.</span></li>
+    </ul>
+    <p class="check-group">Teknis dan akses</p>
+    <ul class="checklist">
+      <li><span class="box"></span><span>Sudah dicoba di HP (bukan hanya laptop) dan di jaringan yang mirip dengan kondisi siswa.</span></li>
+      <li><span class="box"></span><span>Tautan/QR sudah dicoba dari perangkat siswa (tanpa login guru); semua tautan hidup.</span></li>
+      <li><span class="box"></span><span>Ada rencana cadangan bila internet mati (tayang proyektor / versi cetak / kerja kelompok).</span></li>
+      <li><span class="box"></span><span>Ukuran berkas/video sudah dihemat; tidak ada gambar/video yang tidak perlu.</span></li>
+    </ul>
+    <p class="check-group">Asesmen dan privasi</p>
+    <ul class="checklist">
+      <li><span class="box"></span><span>Hasil belajar bisa saya lihat (laporan platform / Sheet / foto hasil siswa).</span></li>
+      <li><span class="box"></span><span>Media tidak meminta NISN, alamat, foto wajah, atau data sensitif lain.</span></li>
+      <li><span class="box"></span><span>Hasil belajar bernama tidak dibagikan ke publik; hanya guru dan siswa yang bersangkutan yang melihat.</span></li>
+    </ul>
+    <p class="check-group">Uji coba</p>
+    <ul class="checklist">
+      <li><span class="box"></span><span>Sudah dicoba ke minimal 2–3 siswa; kebingungan mereka sudah diperbaiki.</span></li>
+      <li><span class="box"></span><span>Durasi pemakaian sesuai dengan alokasi waktu (tidak melebihi jam pelajaran).</span></li>
+    </ul>
+  </section>
+
+  <!-- ================= 6 ASESMEN ================= -->
+  <section id="asesmen">
+    <div class="sec-head"><span class="sec-num">6</span><h2 class="sec-title">Kaitan dengan Asesmen dan Umpan Balik</h2></div>
+
+    <h3>6.1 Dari “Benar/Salah” menjadi umpan balik yang mengajar</h3>
+    <p>Ada tiga tingkat umpan balik dalam media interaktif — dan hanya tingkat ketiga yang benar-benar mengajar:</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Tingkat</th><th>Bentuk</th><th>Nilai belajar</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Tingkat"><strong>1. Koreksi sederhana (KCR)</strong></td><td data-label="Bentuk">“Benar” / “Salah” — contoh: “Jawabanmu salah.”</td><td data-label="Nilai belajar">Rendah — siswa tahu ia salah, tetapi tidak tahu mengapa</td></tr>
+        <tr><td data-label="Tingkat"><strong>2. Koreksi + jawaban benar</strong></td><td data-label="Bentuk">“Salah. Jawaban yang benar adalah B.”</td><td data-label="Nilai belajar">Sedang — siswa menghafal jawaban, belum tentu paham</td></tr>
+        <tr><td data-label="Tingkat"><strong>3. Umpan balik elaboratif</strong></td><td data-label="Bentuk">“Salah. Kamu memilih B karena mengira …, padahal …. Coba perhatikan …, lalu kerjakan soal serupa ini.”</td><td data-label="Nilai belajar"><strong>Tinggi — inilah yang harus diminta dalam prompt dan ditulis untuk tiap pengecoh</strong></td></tr>
+      </tbody>
+    </table></div>
+    <p><span class="tag fact inline">Fakta</span>Dasar risetnya: umpan balik yang fokus pada tugas dan memberi petunjuk/langkah berikutnya lebih efektif daripada pujian atau komentar tentang performa (Hattie &amp; Timperley 2007, dikutip dalam <a href="https://famemichigan.org/wp-content/uploads/2018/04/CCSSO_Formative_Assessment_Next_Generation_Heritage_601101_7.pdf">dokumen CCSSO</a>); tinjauan lanjutan menegaskan umpan balik elaboratif yang rinci menghasilkan hasil belajar lebih kuat daripada koreksi sederhana.</p>
+    <div class="note">
+      <p><strong>Tiga pertanyaan yang harus dijawab media (dan guru) untuk tiap siswa</strong> — kerangka Hattie &amp; Timperley:</p>
+      <ol>
+        <li><strong>“Mau ke mana?”</strong> (<em>Where am I going?</em>) — tujuan dan kriteria berhasil ditulis jelas.</li>
+        <li><strong>“Sudah sampai mana?”</strong> (<em>How am I going?</em>) — umpan balik tentang kemajuan saat ini.</li>
+        <li><strong>“Apa langkah berikutnya?”</strong> (<em>Where to next?</em>) — remedial, petunjuk, atau tantangan lanjutan yang spesifik.</li>
+      </ol>
+    </div>
+
+    <h3>6.2 Media interaktif sebagai asesmen formatif</h3>
+    <p>Asesmen formatif adalah penilaian <strong>selama</strong> proses belajar untuk memperbaiki pembelajaran berikutnya — bukan untuk menghakimi di akhir. Media interaktif mendukungnya lewat:</p>
+    <ul>
+      <li><strong>Cek pemahaman cepat</strong> di tengah materi (bukan hanya di akhir bab): polling, 2–3 soal singkat, atau pertanyaan “Seberapa yakin kamu?” — hasilnya langsung mengubah apa yang guru lakukan berikutnya (mengulang, memberi contoh lain, atau melanjutkan).</li>
+      <li><strong>Diagnosis miskonsepsi:</strong> bila 60% siswa memilih pengecoh yang sama, itu sinyal untuk diskusi kelas, bukan sekadar remedial individu. Platform kuis (Quizizz, Nearpod) menampilkan pola ini otomatis; pada media HTML/Canva, guru perlu merekapnya dari Sheet atau dari diskusi.</li>
+      <li><strong>Asesmen sebagai belajar (<em>assessment as learning</em>):</strong> siswa menilai pemahamannya sendiri lewat refleksi dan soal latihan dengan pembahasan — sesuai fase “merefleksi” dalam Pembelajaran Mendalam.</li>
+      <li><strong>Tindak lanjut yang nyata:</strong> hasil formatif harus berujung pada tindakan — kelompok remedial, soal pengayaan, atau pengulangan dengan media berbeda. Skor yang hanya dicatat tanpa tindak lanjut bukan asesmen formatif.</li>
+    </ul>
+    <div class="note warnbox">
+      <p><span class="tag warn inline">Perhatian</span><strong>Batas yang harus dijaga:</strong> skor gim/kuis daring <strong>tidak cukup</strong> menjadi nilai sumatif tunggal. Gunakan untuk formatif dan sebagai salah satu bukti; lengkapi dengan tugas uraian, observasi, atau diskusi untuk menilai penalaran yang lebih dalam.</p>
+    </div>
+
+    <h3>6.3 Cara sederhana memberi database / perekam pengguna pada media</h3>
+    <p>Guru sering bertanya: “Bagaimana caranya agar hasil siswa di media saya tersimpan dan bisa saya lihat?” Jawabannya tergantung platform — dan di sinilah perbedaan terbesar antar platform.</p>
+
+    <h4>A. Paling mudah: pakai platform yang sudah punya laporan (tanpa coding)</h4>
+    <ul>
+      <li><strong>Quizizz/Wayground, Kahoot!, Nearpod, Wordwall (berbayar):</strong> hasil tersimpan otomatis di dasbor guru — skor, jawaban per soal, dan waktu. Guru cukup membagikan kode/tautan dan membuka laporan. Ini pilihan yang direkomendasikan untuk guru yang belum nyaman dengan skrip.</li>
+      <li><strong>Google Form:</strong> setiap jawaban otomatis menjadi satu baris di Google Sheet yang terhubung (tab Respons → ikon Sheet). Form juga bisa menilai soal pilihan ganda secara otomatis bila diatur sebagai “Kuis” (tunjukkan kunci dan poin), dan menampilkan pembahasan setelah siswa menjawab.</li>
+    </ul>
+
+    <h4>B. Untuk media Canva: sambungkan, jangan berharap Canva merekam sendiri</h4>
+    <p><span class="tag fact inline">Fakta</span>Interaktivitas Canva terbatas dan <strong>tidak menampilkan hasil kuis secara otomatis</strong> (<a href="https://repository.unp.ac.id/id/eprint/47859/1/final_5_Umar_Hamdan_21065046_15748_2025.pdf">repositori UNP</a>); e-modul Canva <strong>belum merekam kemajuan belajar, mengintegrasikan nilai, dan memberi umpan balik otomatis</strong> seperti platform e-learning (<a href="https://journal-laaroiba.com/ojs/index.php/reslaj/article/download/13284/9644/77280">Reslaj</a>); studi lain mencatat Canva belum memiliki <em>drag-and-drop</em> dan fitur menampilkan skor jumlah benar, sehingga solusinya adalah <strong>menyambungkan lewat hyperlink ke Wordwall dan Quizizz</strong> (<a href="https://kpd.ejournal.unri.ac.id/index.php/kpd/en/article/download/280/143/1103">KPD, Unri</a>).</p>
+    <p><strong>Pola yang berhasil untuk Canva:</strong></p>
+    <ol>
+      <li>Canva sebagai “kulit” modul/presentasi (materi + navigasi + video).</li>
+      <li>Di tiap titik cek pemahaman, pasang <strong>tombol hyperlink</strong> ke: Google Form (untuk latihan yang perlu direkam) atau Quizizz/Wordwall (untuk gim dan skor).</li>
+      <li>Di akhir modul Canva, pasang tautan “Kirim refleksi” ke Google Form singkat (nama, kelas, satu hal yang dipahami, satu hal yang membingungkan).</li>
+      <li>Rekap hasil dari Sheet/laporan platform — bukan dari Canva.</li>
+    </ol>
+
+    <h4>C. Untuk media HTML satu berkas: kirim hasil ke Google Sheet lewat Apps Script</h4>
+    <p><span class="tag fact inline">Fakta</span>Pola ini terdokumentasi dalam <a href="https://www.braincompt.com/tutorial/Membuat+Quiz+Online+dari+Canva+AI+yang+Terhubung+ke+Google+Spreadsheet">tutorial kuis Canva AI → Google Spreadsheet</a> dan <a href="https://home.gscopilot.com/blog/google-apps-script-google-forms-full-guide">panduan Apps Script–Forms</a>. Langkah ringkasnya (perlu penyesuaian dengan akun sekolah Anda):</p>
+    <ol>
+      <li><strong>Buat Sheet penampung</strong> di Google Drive guru (misalnya <code>Hasil_Kuis_Kelas8_IPS</code>), dengan kolom: Waktu | Nama | Kelas | Skor | Jawaban.</li>
+      <li><strong>Buka Extensions → Apps Script</strong> dari Sheet itu, tempel skrip <code>doPost(e)</code> yang membaca parameter yang dikirim media (nama, kelas, skor) dan menuliskannya sebagai baris baru dengan <code>appendRow</code>.</li>
+      <li><strong>Deploy → New deployment → Web App</strong>, atur akses sesuai kebutuhan, salin URL Web App-nya.</li>
+      <li><strong>Di media HTML</strong>, tambahkan tombol “Kirim Hasil” yang memakai <code>fetch(URL_Web_App, {method: 'POST', body: data})</code> setelah siswa selesai. Minta AI menuliskan kode ini saat pembuatan media (“tambahkan tombol Kirim Hasil yang mengirim nama, kelas, dan skor ke URL Web App berikut …”).</li>
+      <li><strong>Uji dengan data Anda sendiri</strong> sebelum dibagikan; periksa apakah baris baru muncul di Sheet.</li>
+    </ol>
+    <div class="note warnbox">
+      <p><span class="tag warn inline">Wajib dibaca</span><strong>Keterbatasan dan risiko pola Apps Script:</strong></p>
+      <ul>
+        <li><strong>Keamanan:</strong> Web App yang diatur “Anyone” (siapa saja) dapat dikirimi data oleh siapa pun yang memiliki URL-nya. Jangan pernah menaruh URL Web App di media publik tanpa pertimbangan; jangan kumpulkan data sensitif (NISN, alamat, foto); cukup nama + kelas + skor. Bila akun sekolah membatasi, konsultasikan dengan operator/admin sekolah.</li>
+        <li><strong>Keandalan:</strong> pengiriman gagal bila internet putus di tengah jalan — media harus memberi konfirmasi “Terkirim” atau “Gagal, coba lagi”, dan siswa harus punya cadangan (tangkapan layar skor / foto hasil) bila pengiriman gagal.</li>
+        <li><strong>Kuota dan batas:</strong> Apps Script memiliki kuota eksekusi harian; untuk satu-dua kelas biasanya cukup, tetapi untuk seluruh sekolah perlu diuji.</li>
+        <li><strong>Validasi:</strong> skor yang dikirim dari browser <strong>bisa dimanipulasi</strong> (siswa yang paham teknologi dapat mengirim skor palsu). Karena itu, hasil HTML hanya dipakai untuk formatif dan pemantauan, bukan nilai sumatif tunggal. Untuk nilai yang harus dapat dipertanggungjawabkan, pakai platform kuis/Form yang dikendalikan server.</li>
+        <li><strong>Alternatif tanpa skrip:</strong> bila langkah di atas terasa berat, cukup minta siswa <strong>mengirim tangkapan layar skor + mengisi Google Form refleksi singkat</strong> — pola ini lebih sederhana, lebih andal, dan cukup untuk formatif di banyak kelas.</li>
+        <li><strong>Penyimpanan lokal (<em>localStorage</em>)</strong> pada HTML hanya tersimpan di perangkat siswa itu sendiri dan <strong>tidak bisa dilihat guru</strong> — jangan mengandalkannya sebagai database kelas.</li>
+      </ul>
+    </div>
+
+    <h4>D. Rekap per platform: apa yang terekam dan apa yang tidak</h4>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Platform</th><th>Yang terekam otomatis</th><th>Yang tidak terekam</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Platform"><strong>Quizizz/Wayground, Kahoot!, Nearpod</strong></td><td data-label="Terekam">Skor, jawaban per soal, waktu, laporan kelas</td><td data-label="Tidak terekam">Penalaran uraian (kecuali soal terbuka yang dikoreksi manual)</td></tr>
+        <tr><td data-label="Platform"><strong>Google Form (+ Sheet)</strong></td><td data-label="Terekam">Semua jawaban, waktu kirim, skor soal tertutup (mode Kuis)</td><td data-label="Tidak terekam">Proses berpikir siswa; jawaban uraian perlu koreksi manual</td></tr>
+        <tr><td data-label="Platform"><strong>Canva (saja)</strong></td><td data-label="Terekam">Tidak ada (hanya tayangan)</td><td data-label="Tidak terekam">Skor, jawaban, kemajuan — harus lewat tautan ke Form/Quizizz</td></tr>
+        <tr><td data-label="Platform"><strong>Genially (gratis)</strong></td><td data-label="Terekam">Interaksi dasar; laporan individu terbatas</td><td data-label="Tidak terekam">Laporan per siswa rinci (paket lebih tinggi)</td></tr>
+        <tr><td data-label="Platform"><strong>PhET / GeoGebra (saja)</strong></td><td data-label="Terekam">Tidak ada (kecuali GeoGebra Classroom/LMS)</td><td data-label="Tidak terekam">Skor dan jawaban — perlu LKPD/Form pendamping</td></tr>
+        <tr><td data-label="Platform"><strong>HTML satu berkas (saja)</strong></td><td data-label="Terekam">Skor di layar siswa; <em>localStorage</em> lokal</td><td data-label="Tidak terekam">Database guru — perlu Apps Script atau Form pendamping</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ================= 7 AKSES ================= -->
+  <section id="akses">
+    <div class="sec-head"><span class="sec-num">7</span><h2 class="sec-title">Aksesibilitas dan Konteks Indonesia</h2></div>
+
+    <h3>7.1 Prinsip: desain untuk HP paling sederhana dulu</h3>
+    <p>Mayoritas siswa SMP Indonesia mengakses media lewat HP, sering berbagi perangkat dengan orang tua, dan dengan kuota terbatas. Karena itu:</p>
+    <ul>
+      <li><strong>Uji di HP, bukan hanya laptop.</strong> Tombol minimal mudah disentuh, teks cukup besar, tidak ada elemen yang mengharuskan <em>hover</em> (arahan kursor) karena HP tidak punya <em>hover</em>.</li>
+      <li><strong>Satu ide per layar, teks singkat.</strong> Layar yang harus di-<em>scroll</em> panjang di HP kecil melelahkan dan membuat siswa kehilangan alur.</li>
+      <li><strong>Hemat kuota:</strong> kompres gambar (cukup 800–1200 px lebar untuk layar HP), hindari video autoplay dan latar video, pakai format yang ringan, dan beri tahu siswa perkiraan ukuran (“Video ini ±15 MB; bila kuota terbatas, tonton versi ringkas di halaman 3”).</li>
+      <li><strong>Mode luring sebisa mungkin:</strong> PhET dan GeoGebra yang diunduh, HTML satu berkas tanpa sumber eksternal, dan PDF modul dapat dibuka tanpa internet setelah diunduh sekali. Untuk video, unduh di sekolah (Wi-Fi) lalu putar luring di kelas — jangan andalkan streaming di tiap HP.</li>
+      <li><strong>Bahasa yang jelas:</strong> kalimat pendek, istilah baru langsung dijelaskan, hindari singkatan tanpa kepanjangan, dan gunakan contoh dari kehidupan siswa Indonesia (pasar, sawah, angkot, banjir, warung) — bukan contoh impor yang asing.</li>
+      <li><strong>Aksesibilitas dasar:</strong> kontras warna yang cukup (teks gelap di latar terang), jangan hanya mengandalkan warna untuk menyampaikan makna (tambahkan label/teks, misalnya “Benar ✓” bukan hanya hijau), sediakan teks alternatif/transkrip untuk video dan audio, dan beri waktu yang cukup (hindari timer yang terlalu ketat untuk siswa berkebutuhan khusus atau yang membaca lambat).</li>
+      <li><strong>Bahasa dan budaya:</strong> bila kelas memiliki siswa dengan bahasa ibu yang kuat, sediakan glosarium dwibahasa untuk istilah kunci; hindari contoh yang hanya relevan untuk kota besar.</li>
+    </ul>
+
+    <h3>7.2 Tips untuk sekolah dengan perangkat dan internet terbatas <span class="tag reco inline">Rekomendasi</span></h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Situasi</th><th>Strategi yang bisa langsung dipakai</th></tr></thead>
+      <tbody>
+        <tr><td data-label="Situasi"><strong>Hanya ada 1 proyektor + 1 laptop guru</strong></td><td data-label="Strategi">Tayangkan simulasi/kuis dari depan; siswa menjawab lewat diskusi kelompok, kartu jawaban, atau perwakilan kelompok yang mengoperasikan. Nearpod mode Front of Class dan Kahoot! gaya kelas bersama cocok untuk ini.</td></tr>
+        <tr><td data-label="Situasi"><strong>HP terbatas (1 HP untuk 3–4 siswa)</strong></td><td data-label="Strategi">Kerja kelompok: satu operator, satu pencatat, satu pelapor. Media dirancang untuk diskusi, bukan untuk individu yang diam. Rotasi peran tiap pertemuan.</td></tr>
+        <tr><td data-label="Situasi"><strong>Internet tidak stabil</strong></td><td data-label="Strategi">Unduh dulu di sekolah: PhET, GeoGebra Classic, HTML satu berkas, PDF. Di kelas, pakai mode luring; kirim hasil belakangan (Form/Sheet) saat ada jaringan, atau kumpulkan lewat foto/tangkapan layar.</td></tr>
+        <tr><td data-label="Situasi"><strong>Kuota siswa terbatas</strong></td><td data-label="Strategi">Bagikan media lewat tautan sekali, bukan video berulang; sediakan versi teks ringan (ringkasan 1 halaman) sebagai alternatif; jangan wajibkan streaming video HD.</td></tr>
+        <tr><td data-label="Situasi"><strong>Listrik tidak stabil</strong></td><td data-label="Strategi">Siapkan versi cetak (LKPD dari Wordwall, ringkasan modul) sebagai cadangan; simpan berkas di HP guru, bukan hanya di cloud.</td></tr>
+        <tr><td data-label="Situasi"><strong>Siswa belum lancar memakai HP untuk belajar</strong></td><td data-label="Strategi">Latih 10 menit di pertemuan pertama: cara membuka tautan, mengisi nama/kelas, mengirim hasil, dan apa yang dilakukan bila gagal. Tempel panduan bergambar di dinding kelas.</td></tr>
+        <tr><td data-label="Situasi"><strong>Kelas besar (32–40 siswa)</strong></td><td data-label="Strategi">Hindari platform gratis yang batasnya 10–40 pemain untuk kuis serentak (lihat Bagian 4); pilih mode tugas mandiri (Quizizz/Form/HTML) yang tidak dibatasi pemain serentak, atau bagi kelas menjadi dua sesi.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ================= 8 CONTOH ================= -->
+  <section id="contoh">
+    <div class="sec-head"><span class="sec-num">8</span><h2 class="sec-title">Contoh Nyata di Kelas SMP dan Kesalahan Umum</h2></div>
+    <p class="lede">Contoh di bawah dipadukan dari studi dan praktik yang terdokumentasi; skenario kelasnya adalah rekomendasi praktis.</p>
+
+    <h3>Matematika — Persamaan garis lurus dan SPLDV (Kelas VIII)</h3>
+    <ul>
+      <li><em>Media:</em> GeoGebra (geser gradien dan titik potong, lihat grafik berubah) + e-modul flipbook (materi, video, latihan, kuis Form/Quizizz) seperti pada studi SMPN 1 Ngadiluwih (<a href="https://ejournal.uika-bogor.ac.id/index.php/JIEM/article/download/25035/8947">Idarah Tarbawiyah</a>).</li>
+      <li><em>Alur 2×40 menit:</em> (1) Apersepsi: “Jalan menanjak — apa artinya curam?” (2) Eksplorasi GeoGebra berpasangan: geser slider gradien, catat pola. (3) Diskusi: mengapa gradien negatif garisnya turun? (4) Kuis Form 5 soal + refleksi. (5) Pengayaan: siswa membuat soal sendiri dari grafik.</li>
+      <li><em>Bukti pendukung:</em> aplikasi interaktif SPLDV di SMPN 3 Sungguminasa dinilai valid, praktis, dan efektif dalam studi pengembangan ADDIE (<a href="https://mathjournal.unram.ac.id/index.php/Griya/article/download/654/582">Griya Journal</a>); program asistensi di SMPN 22 Gresik melaporkan GeoGebra, Quizizz, dan Wordwall membantu pemahaman aljabar dan persamaan linear yang sebelumnya dianggap sulit (<a href="https://e-journal.hamzanwadi.ac.id/index.php/teknokrat/article/download/33396/7866">Teknokrat</a>).</li>
+    </ul>
+
+    <h3>IPA — Gerak dan gaya; rangkaian listrik; sistem ekskresi (Kelas VII–VIII)</h3>
+    <ul>
+      <li><em>Media:</em> PhET “Forces and Motion” dan “Circuit Construction Kit” + LKPD inkuiri.</li>
+      <li><em>Alur:</em> Prediksi (“Apa yang terjadi bila gaya diperbesar?”) → coba di simulasi → amati → simpulkan → uji dengan soal penerapan. Untuk sistem ekskresi, tambahkan AR 3D organ (ginjal, paru-paru, kulit, hati) lewat tautan/barcode seperti pada studi SMPN 9 Kediri (<a href="https://etheses.iainkediri.ac.id/23120/2/22208032_bab1.pdf">skripsi IAIN Kediri</a>).</li>
+      <li><em>Bukti pendukung:</em> sintesis PhET pada gerak dan gaya (N-Gain 0,67; ketuntasan 86,67%) (<a href="https://jurnalistiqomah.org/index.php/jppi/article/download/6013/3964">JPPI, 2025</a>); tinjauan literatur PhET untuk hasil belajar IPA SMP (<a href="https://jurnal.uns.ac.id/jkc/article/download/103602/51426">Kalam Cendekia, 2025</a>).</li>
+    </ul>
+
+    <h3>IPS — Perdagangan antardaerah dan kronologi sejarah (Kelas VIII)</h3>
+    <ul>
+      <li><em>Media:</em> Genially peta interaktif (klik daerah → komoditas, jalur, hambatan) + kuis QuizWhizzer/Quizizz.</li>
+      <li><em>Alur:</em> Eksplorasi peta → studi kasus pasar lokal (“Barang apa yang datang dari luar daerah kita? Mengapa?”) → kuis → diskusi: “Apa untung dan ruginya bila satu daerah hanya bergantung pada satu komoditas?”</li>
+      <li><em>Bukti pendukung:</em> kuis interaktif QuizWhizzer pada IPS kelas VIII SMPN 275 Jakarta berpengaruh signifikan terhadap hasil belajar (eksperimen 69,1→85,1) (<a href="https://jptam.org/index.php/jptam/article/download/40935/25285">Jurnal Pendidikan Tambusai</a>).</li>
+    </ul>
+
+    <h3>Bahasa Indonesia — Menulis teks berita (Kelas VIII)</h3>
+    <ul>
+      <li><em>Media:</em> e-modul interaktif berbasis PjBL (materi, contoh berita, rubrik, latihan bertahap, kuis) + Wordwall untuk struktur dan kaidah kebahasaan.</li>
+      <li><em>Alur:</em> Baca contoh berita → identifikasi 5W+1H lewat kuis interaktif → tulis berita dari peristiwa sekolah/lingkungan → tukar dan beri umpan balik dengan rubrik → revisi.</li>
+      <li><em>Bukti pendukung:</em> e-modul interaktif PjBL untuk menulis teks berita kelas VIII meningkatkan nilai rata-rata sekitar 27% dibanding kontrol dan meningkatkan motivasi, kreativitas, serta keterlibatan (<a href="https://journal.iaincurup.ac.id/index.php/estetik/article/download/15338/4078">Estetik, 2026</a>).</li>
+    </ul>
+
+    <h3>Lintas mapel — Satu tautan untuk satu bab (pola “pintu masuk”)</h3>
+    <p>Buat Google Sites untuk satu bab yang menautkan: modul Canva/Genially (materi), simulasi PhET/GeoGebra (eksplorasi), kuis Form/Quizizz (cek pemahaman), dan Form refleksi. Siswa hanya mengingat satu tautan; guru hanya memantau dua sumber hasil (Sheet + laporan kuis). Pola ini paling hemat waktu dalam jangka panjang.</p>
+
+    <h3>8.2 Kesalahan umum guru pemula — dan cara menghindarinya</h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>#</th><th>Kesalahan</th><th>Akibat</th><th>Perbaikan</th></tr></thead>
+      <tbody>
+        <tr><td data-label="#" class="nolabel">1</td><td data-label="Kesalahan">Mulai dari aplikasi, bukan tujuan</td><td data-label="Akibat">Media cantik, tidak mengajar</td><td data-label="Perbaikan">Tulis tujuan dan miskonsepsi dulu (Bagian 5, Langkah 1)</td></tr>
+        <tr><td data-label="#" class="nolabel">2</td><td data-label="Kesalahan">Menumpuk teks, gambar, musik, dan animasi dalam satu layar</td><td data-label="Akibat">Beban kognitif meledak; siswa bingung</td><td data-label="Perbaikan">Satu ide per layar; buang yang tidak mendukung tujuan (koherensi Mayer)</td></tr>
+        <tr><td data-label="#" class="nolabel">3</td><td data-label="Kesalahan">Mengira “klik = belajar”</td><td data-label="Akibat">Siswa mengklik tanpa berpikir</td><td data-label="Perbaikan">Setiap interaksi harus meminta prediksi, pilihan beralasan, atau percobaan</td></tr>
+        <tr><td data-label="#" class="nolabel">4</td><td data-label="Kesalahan">Umpan balik hanya “Benar/Salah”</td><td data-label="Akibat">Miskonsepsi tidak terkoreksi</td><td data-label="Perbaikan">Tulis penjelasan untuk tiap pengecoh (Bagian 6.1)</td></tr>
+        <tr><td data-label="#" class="nolabel">5</td><td data-label="Kesalahan">Memakai soal AI/komunitas tanpa verifikasi</td><td data-label="Akibat">Kunci salah diajarkan ke satu kelas</td><td data-label="Perbaikan">Periksa semua soal + kunci; uji ke 2–3 siswa</td></tr>
+        <tr><td data-label="#" class="nolabel">6</td><td data-label="Kesalahan">Mengandalkan Canva untuk nilai</td><td data-label="Akibat">Nilai tidak terekam; guru kebingungan di akhir</td><td data-label="Perbaikan">Sambungkan Canva ke Form/Quizizz (Bagian 6.3B)</td></tr>
+        <tr><td data-label="#" class="nolabel">7</td><td data-label="Kesalahan">Kuis hanya mengejar kecepatan dan papan peringkat</td><td data-label="Akibat">Siswa menebak; yang lambat tetapi paham merasa gagal</td><td data-label="Perbaikan">Pakai mode mandiri, matikan timer bila perlu, dan hargai penjelasan, bukan hanya kecepatan</td></tr>
+        <tr><td data-label="#" class="nolabel">8</td><td data-label="Kesalahan">Tidak menyiapkan cadangan bila internet mati</td><td data-label="Akibat">Satu jam pelajaran hilang</td><td data-label="Perbaikan">Siapkan tayangan proyektor / versi cetak / kerja kelompok (Bagian 7.2)</td></tr>
+        <tr><td data-label="#" class="nolabel">9</td><td data-label="Kesalahan">Meminta data pribadi berlebihan (NISN, foto)</td><td data-label="Akibat">Risiko privasi dan pelanggaran UU PDP</td><td data-label="Perbaikan">Cukup nama + kelas; media tanpa login bila memungkinkan</td></tr>
+        <tr><td data-label="#" class="nolabel">10</td><td data-label="Kesalahan">Memakai media untuk seluruh jam, setiap pertemuan</td><td data-label="Akibat">Kelelahan digital; diskusi dan praktik hilang</td><td data-label="Perbaikan">Media sebagai salah satu fase (memahami/mengaplikasi), bukan pengganti guru; selingi diskusi, praktik, dan refleksi tatap muka</td></tr>
+        <tr><td data-label="#" class="nolabel">11</td><td data-label="Kesalahan">Tidak menguji di HP siswa</td><td data-label="Akibat">Tombol tidak bisa diklik, teks tidak terbaca</td><td data-label="Perbaikan">Uji di HP paling sederhana sebelum dipakai massal</td></tr>
+        <tr><td data-label="#" class="nolabel">12</td><td data-label="Kesalahan">Menyimpan satu-satunya salinan di satu platform gratis</td><td data-label="Akibat">Media hilang saat batas/platform berubah</td><td data-label="Perbaikan">Simpan salinan di Drive (PDF/HTML) dan catat tautan di modul ajar</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ================= 9 RUJUKAN ================= -->
+  <section id="rujukan">
+    <div class="sec-head"><span class="sec-num">9</span><h2 class="sec-title">Daftar Rujukan</h2></div>
+    <p><strong>Tanggal akses semua tautan di bawah: 4 November 2026</strong>, kecuali dinyatakan lain. Tautan disalin verbatim dari hasil pencarian/pembacaan; bila suatu situs resmi tidak tercantum tautan lengkapnya, itu karena tautan pastinya tidak terverifikasi dalam riset ini — cari nama platform + “pricing” di mesin pencari dan periksa halaman resminya.</p>
+
+    <p class="ref-cat">A. Panduan dan layanan resmi pemerintah Indonesia</p>
+    <ol class="refs">
+      <li>Kemendikdasmen — Pusat Informasi Rumah Pendidikan, “Informasi Layanan yang Tersedia di Rumah Pendidikan” (Ruang GTK sebagai transformasi Platform Merdeka Mengajar; Ruang Murid untuk pembelajaran mendalam). <a href="https://pusatinformasi.rumahpendidikan.kemendikdasmen.go.id/hc/id/articles/46357347464729-Informasi-Layanan-yang-Tersedia-di-Rumah-Pendidikan">pusatinformasi.rumahpendidikan.kemendikdasmen.go.id</a></li>
+      <li>Kemendikdasmen — BBGTK Jawa Tengah, “Ruang GTK Jadi Sarana Belajar yang Inspiratif, Terintegrasi, Inklusif, dan Sederhana Bagi Insan GTK” (transformasi PMM menjadi Ruang GTK, Januari 2025). <a href="https://bbgtkjateng.kemendikdasmen.go.id/blog/ruang-gtk-jadi-sarana-belajar-yang-inspiratif,-terintegrasi,-inklusif,-dan-sederhana-bagi-insan-gtk">bbgtkjateng.kemendikdasmen.go.id</a></li>
+      <li>Kemendikdasmen — BBGTK Jawa Tengah, paparan “Pembelajaran Mendalam” (definisi: berkesadaran, bermakna, menggembirakan; olah pikir/hati/rasa/raga). <a href="https://bbgtkjateng.kemendikdasmen.go.id/blog/Tingkatkan%20Kompetensi%20Penilik,%20Disdikbud%20Kabupaten%20Tegal%20berkunjung%20ke%20BBGTK%20Jateng">bbgtkjateng.kemendikdasmen.go.id</a></li>
+      <li>Kemendikdasmen (2024/2025) — <em>Pedoman/Naskah Akademik Pembelajaran Mendalam</em> — dirujuk lewat literatur sekunder: <a href="https://jurnal.itscience.org/index.php/digitech/article/download/7941/5620/40691">jurnal.itscience.org</a> dan paparan resmi yang diunggah di <a href="https://www.slideshare.net/slideshow/2-mar_paparan-pembelajaran-mendalam-pptx/284501917">slideshare.net</a> — <span class="tag warn inline">Belum terverifikasi</span> Dokumen asli Kemendikdasmen tidak dibuka langsung dalam riset ini; unduh dari kanal resmi Kemendikdasmen/Rumah Pendidikan dan periksa edisi terbarunya (Permendikdasmen No. 13/2025 dan No. 10/2025 disebut dalam literatur sekunder sebagai kerangka kurikulum terbaru).</li>
+      <li>Undang-Undang No. 27 Tahun 2022 tentang Pelindungan Data Pribadi — dibahas untuk konteks sekolah di <a href="https://www.slbbiromaru.sch.id/urgensi-perlindungan-data-pribadi-di-era-digitalisasi-pendidikan-tanggung-jawab-pengelola-data-di-sekolah">slbbiromaru.sch.id</a> dan <a href="http://smartlawyer.id/pelindungan-data-pribadi-dalam-pendidikan-digital/">smartlawyer.id</a> — <span class="tag warn inline">Catatan</span> Untuk bunyi pasal yang mengikat, rujuk teks UU resmi (JDIH), bukan artikel sekunder.</li>
+    </ol>
+
+    <p class="ref-cat">B. Jurnal dan penelitian (Indonesia, jenjang SMP/sederajat)</p>
+    <ol class="refs" start="6">
+      <li>Romadoni, R. B. (2025). Pengaruh Penggunaan Media Virtual Lab PhET Simulation pada Materi Gerak dan Gaya terhadap Peningkatan Hasil Belajar Siswa SMP. <em>Jurnal Penelitian Pendidikan Indonesia</em>, 3(1), 214–223. <a href="https://jurnalistiqomah.org/index.php/jppi/article/download/6013/3964">jurnalistiqomah.org</a></li>
+      <li>Pengaruh QuizWhizzer terhadap Hasil Belajar IPS Kelas VIII SMP Negeri 275 Jakarta. <em>Jurnal Pendidikan Tambusai</em>, 10(2), 2026, 17881–17888. <a href="https://jptam.org/index.php/jptam/article/download/40935/25285">jptam.org</a></li>
+      <li>Pengembangan E-modul Menulis Teks Berita Berbasis Project Based Learning bagi Peserta Didik SMP Kelas VIII. <em>Estetik</em>, 9(1), 2026, 158–172. <a href="https://journal.iaincurup.ac.id/index.php/estetik/article/download/15338/4078">journal.iaincurup.ac.id</a></li>
+      <li>Santiasih, N. D., dkk. (2026). Tinjauan Sistematis Efektivitas Game Edukasi Berbasis Mobile terhadap Peningkatan Pemahaman Konsep Matematika SMP di Indonesia. <em>Jurnal Prasasti Ilmu</em>, 6(2), 87–97. <a href="https://jurnal.umk.ac.id/index.php/jpi/article/download/17427/7204/60657">jurnal.umk.ac.id</a></li>
+      <li>Analisis Pengaruh Penggunaan Laboratorium Virtual (PhET Simulations) terhadap Hasil Belajar IPA Siswa SMP: Study Literature Review. <em>Kalam Cendekia</em>, 13(2), 2025. <a href="https://jurnal.uns.ac.id/jkc/article/download/103602/51426">jurnal.uns.ac.id</a></li>
+      <li>Pengaruh Media Pembelajaran Interaktif terhadap Efektivitas Proses dan Hasil Belajar Siswa (SMP Negeri 144 Jakarta, 2025/2026). <a href="https://repository.bsi.ac.id/repo/82128/Jurnal-pengaruh-media-pembelajaran-interaktif-terhadap-efektivitas-proses-dan-hasil-belajar-siswa-dalam-kegiatan-pembelajaran-menggunakan-metode-TAM">repository.bsi.ac.id</a></li>
+      <li>Pengembangan e-modul berbasis flipbook untuk meningkatkan pemahaman konseptual Persamaan Garis Lurus (kelas VIII SMPN 1 Ngadiluwih, model ADDIE). <em>Idarah Tarbawiyah</em>, 7(6), 2026, 132–154. <a href="https://ejournal.uika-bogor.ac.id/index.php/JIEM/article/download/25035/8947">ejournal.uika-bogor.ac.id</a></li>
+      <li>Pengembangan Aplikasi Pembelajaran Interaktif Berbantuan Kodular untuk Literasi Matematika Materi SPLDV (kelas VIII K SMPN 3 Sungguminasa, ADDIE). <em>Griya Journal of Mathematics Education and Application</em>, 5(3), 2025. <a href="https://mathjournal.unram.ac.id/index.php/Griya/article/download/654/582">mathjournal.unram.ac.id</a></li>
+      <li>Optimalisasi Pemanfaatan Media Digital Program Asistensi Mengajar di SMP Negeri 22 Gresik (GeoGebra, Quizizz, Wordwall). <em>Teknokrat</em>, 3(2), 2025, 383–393. <a href="https://e-journal.hamzanwadi.ac.id/index.php/teknokrat/article/download/33396/7866">e-journal.hamzanwadi.ac.id</a></li>
+      <li>Analisis Efektivitas Penggunaan Modul Ajar Digital Interaktif dalam Kurikulum Merdeka. <em>Edu Aksara</em>, 3(2), 2024, 64–79. <a href="https://jurnal.globalaksarapers.com/index.php/eduaksara/article/download/109/130/809">jurnal.globalaksarapers.com</a></li>
+      <li>Pengembangan Video Pembelajaran AR Berbasis Flashcard pada PAI dan Budi Pekerti Kelas IX SMP (validitas 0,95; praktikalitas 87%). <em>Educendikia</em>, 6(2), 2026. <a href="https://itscience.org/jurnal/index.php/educendikia/article/download/9180/6321/48286">itscience.org</a></li>
+      <li>Rancang Bangun Media Pembelajaran Interaktif Berbasis VR Materi Anatomi Jantung Menggunakan MilleaLab di MTsN 2 Pidie Jaya. <em>JATI</em>, 10(2), 2026. <a href="https://mail.ejournal.itn.ac.id/jati/article/download/17387/9128/">mail.ejournal.itn.ac.id</a></li>
+      <li>Pengembangan Media Pembelajaran Interaktif Berbasis Canva — keterbatasan skor dan perekaman (studi-studi yang dikutip di Bagian 6): <a href="https://repository.unp.ac.id/id/eprint/47859/1/final_5_Umar_Hamdan_21065046_15748_2025.pdf">repository.unp.ac.id</a>; <a href="https://journal-laaroiba.com/ojs/index.php/reslaj/article/download/13284/9644/77280">journal-laaroiba.com</a>; <a href="https://kpd.ejournal.unri.ac.id/index.php/kpd/en/article/download/280/143/1103">kpd.ejournal.unri.ac.id</a></li>
+    </ol>
+
+    <p class="ref-cat">C. Landasan teori</p>
+    <ol class="refs" start="19">
+      <li>Mayer, R. E. — <em>Cognitive Theory of Multimedia Learning</em> (CTML): ringkasan prinsip dalam <a href="https://oj.mjukn.org/index.php/jtp/article/download/11/11">oj.mjukn.org</a> dan <a href="https://ejournal.upi.edu/index.php/antomusik/article/download/85115/32656">ejournal.upi.edu</a> — <span class="tag warn inline">Catatan</span> Untuk kutipan akademik formal, rujuk buku Mayer, <em>Multimedia Learning</em> (Cambridge University Press), bukan hanya artikel sekunder.</li>
+      <li>Hattie, J., &amp; Timperley, H. (2007). The Power of Feedback. <em>Review of Educational Research</em>, 77(1), 81–112 — effect size 0,79, dikutip dalam <a href="https://famemichigan.org/wp-content/uploads/2018/04/CCSSO_Formative_Assessment_Next_Generation_Heritage_601101_7.pdf">famemichigan.org (dokumen CCSSO)</a></li>
+      <li>Model ADDIE — kerangka sistematis pengembangan media: <a href="https://pendidikan-matematika.fmipa.unesa.ac.id/post/model-addie-kerangka-kerja-sistematis-pengembangan-media-pembelajaran-matematika">pendidikan-matematika.fmipa.unesa.ac.id</a></li>
+      <li>Kesenjangan digital pendidikan Indonesia: <a href="https://conference.um.ac.id/index.php/esp/article/download/11140/4985">conference.um.ac.id</a>; <a href="https://suaramuda.net/2025/12/03/kurikulum-merdeka-di-tengah-ketimpangan-akses-pendidikan-antara-harapan-dan-realita/">suaramuda.net</a></li>
+    </ol>
+
+    <p class="ref-cat">D. Situs resmi platform (periksa halaman harga/ketentuan terbaru sebelum memakai)</p>
+    <ol class="refs" start="23">
+      <li>Canva for Teachers (Canva Education gratis untuk K-12). <a href="https://www.canva.com/education/teachers/">canva.com/education/teachers</a></li>
+      <li>Wordwall — halaman harga resmi (Basic: 3 aktivitas, 12 template). <a href="http://wordwall.net/price-plans?ref=subscription-required-print">wordwall.net/price-plans</a></li>
+      <li>PhET Interactive Simulations — Tentang PhET (gratis, berbasis riset, HTML5, luring). <a href="https://phet.colorado.edu/in/about">phet.colorado.edu/in/about</a> — Beranda: <a href="http://phet.colorado.edu/in/">phet.colorado.edu/in</a></li>
+      <li>GeoGebra — situs resmi (geogebra.org; gratis untuk non-komersial). Pengantar dalam bahasa Indonesia: <a href="https://www.geogebra.org/m/bpuchpa3">geogebra.org/m/bpuchpa3</a></li>
+      <li>Gemini — halaman paket resmi (Free $0, Flash-Lite; Pro $19,99/bln USD). <a href="https://gemini.google/gp/about/?hl=en">gemini.google/gp/about</a> — <span class="tag warn inline">Catatan</span> Batas dan model gratis berubah Oktober 2026; periksa juga halaman Bantuan Gemini tentang batas pemakaian.</li>
+      <li>Google Sites — panduan perguruan tinggi (gratis, tanpa coding, atur “anyone” agar tanpa login): <a href="https://dti.ugm.ac.id/knowledge-base/google-site-sebagai-alternatif-lain-dari-wordpress-multisite-wpmu">dti.ugm.ac.id</a></li>
+      <li>Google Form → Sheet → Apps Script — tutorial pola kirim hasil: <a href="https://www.braincompt.com/tutorial/Membuat+Quiz+Online+dari+Canva+AI+yang+Terhubung+ke+Google+Spreadsheet">braincompt.com</a> dan <a href="https://home.gscopilot.com/blog/google-apps-script-google-forms-full-guide">home.gscopilot.com</a></li>
+      <li>Media HTML satu berkas lewat AI — praktik workshop guru SMP: <a href="https://fanani.my.id/edu/workshop/2026-09-workshop-kka-dinas-pendidikan/">fanani.my.id</a> dan <a href="https://www.mashindraprismasaputra.web.id/2026/10/bikin-game-spin-the-wheel-gemini-ai.html">mashindraprismasaputra.web.id</a></li>
+      <li>Perbandingan harga sekunder (Oktober 2026, wajib cek ulang ke situs resmi): Kahoot!/Wayground/Nearpod/Genially — <a href="https://www.mindomax.com/kahoot-alternatives">mindomax.com/kahoot-alternatives</a> (dibaca 3 Okt 2026) dan <a href="https://github.com/dinomartino/dse_econ_worksheet-editor/blob/HEAD/docs/research/2026-09-competitive/design.md">dokumen riset di GitHub</a> (24 Sep 2026). Untuk Kahoot!, Genially, Nearpod, dan Quizizz/Wayground, halaman harga resmi masing-masing vendor adalah sumber yang mengikat, bukan tabel sekunder ini.</li>
+    </ol>
+  </section>
+
+  <!-- ================= BELUM TERVERIFIKASI ================= -->
+  <section id="belum-terverifikasi">
+    <div class="sec-head"><span class="sec-num">!</span><h2 class="sec-title">Hal yang Belum Terverifikasi / Cepat Berubah</h2></div>
+    <ol>
+      <li><strong>Harga dan batas gratis</strong> Kahoot!, Quizizz/Wayground, Genially, Nearpod, dan Gemini — angka di Bagian 4 berasal dari pembacaan sekunder September–Oktober 2026 dan, untuk Kahoot! dan Nearpod, sumber-sumber itu sendiri saling bertentangan (40 vs 10 pemain; 100 vs 300 MB). <strong>Jangan mengutip angka ini sebagai harga resmi.</strong></li>
+      <li><strong>Dokumen asli Kemendikdasmen</strong> tentang Pembelajaran Mendalam dan Permendikdasmen 13/2025 &amp; 10/2025 — dalam riset ini hanya diakses lewat literatur sekunder dan paparan. Perlu dibuka langsung dari kanal resmi Kemendikdasmen sebelum dijadikan dasar kebijakan sekolah.</li>
+      <li><strong>Angka 48% sekolah 3T berinternet stabil (Kemendikbudristek 2023)</strong> — dikutip dari artikel sekunder; dokumen aslinya belum diverifikasi.</li>
+      <li><strong>Efektivitas jangka panjang AR/VR</strong> di SMP — studi yang ditemukan umumnya mengukur kelayakan dan motivasi, bukan hasil belajar jangka panjang.</li>
+      <li><strong>Ketersediaan Canva AI dan Gemini di akun belajar.id / akun sekolah tertentu</strong> — kebijakan akun yang dikelola sekolah dapat membatasi fitur AI dan setelan berbagi tanpa login. Uji di akun sekolah Anda sendiri.</li>
+      <li><strong>Generalisasi hasil penelitian kecil</strong> — sebagian besar studi Indonesia yang dikutip berskala satu-dua sekolah dan berdurasi singkat. Perlakukan sebagai bukti awal, dan uji di kelas Anda sendiri (Bagian 5, Langkah 5).</li>
+    </ol>
+
+    <h3>Penutup untuk Guru</h3>
+    <p>Mulailah dari <strong>satu tujuan, satu media, satu kelas</strong>. Buat prototipe kasar, uji ke tiga siswa, perbaiki, baru bagikan ke satu kelas. Bila media itu membuat siswa berpikir lebih dalam, berani salah, dan bisa menjelaskan kembali dengan kata-katanya sendiri — itulah media interaktif yang baik, apa pun platformnya. Teknologi boleh berganti setiap tahun; prinsipnya tetap: <strong>tujuan jelas, interaksi bermakna, umpan balik yang menjelaskan, dan hasil yang ditindaklanjuti.</strong></p>
+  </section>
+  </main>
+</div>
+
+<footer>
+  <div class="rule">
+    <p>Disusun dari riset web bertanggal 4 November 2026 untuk bahan bacaan dan rujukan guru SMP. Harga dan batas paket gratis platform adalah potret Oktober–November 2026 dan dapat berubah sewaktu-waktu — periksa situs resmi masing-masing platform sebelum mengambil keputusan.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Copy prompt template
+  var btn = document.getElementById('copyPrompt');
+  var pre = document.getElementById('promptText');
+  if (btn && pre) {
+    btn.addEventListener('click', function(){
+      var text = pre.textContent;
+      function done(){ btn.textContent = 'Tersalin ✓'; setTimeout(function(){ btn.textContent = 'Salin prompt'; }, 2000); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function(){ fallback(); });
+      } else { fallback(); }
+      function fallback(){
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch(e){}
+        document.body.removeChild(ta);
+      }
+    });
+  }
+
+  // TOC active highlighting
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc > ol a'));
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+  if ('IntersectionObserver' in window && sections.length) {
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) {
+          links.forEach(function(a){ a.classList.remove('active'); });
+          var link = map[en.target.id];
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(function(s){ obs.observe(s); });
+  }
+
+  // Close mobile TOC after choosing a link
+  var det = document.querySelector('nav.toc details');
+  if (det) {
+    det.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ det.open = false; });
+    });
+  }
+})();
+</script>
+</body>
+</html>
