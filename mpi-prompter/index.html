@@ -455,6 +455,28 @@
                 <label><input type="checkbox" value="Efek suara sederhana untuk jawaban benar/salah dan keberhasilan misi" /> Efek suara sederhana</label>
               </div>
             </div>
+
+            <div class="field">
+              <span class="flabel">Cara mengendalikan media</span>
+              <div class="chips" id="kendaliChips">
+                <label><input type="radio" name="kendali" value="Sentuh / klik (tombol dan layar sentuh)" checked /> Sentuh / Klik</label>
+                <label><input type="radio" name="kendali" value="Gerakan tangan lewat kamera (gestur)" /> Gerakan Tangan (Gestur)</label>
+                <label><input type="radio" name="kendali" value="Keduanya: gestur lewat kamera + sentuh/klik sebagai cadangan" /> Gestur + Sentuh (Cadangan)</label>
+              </div>
+            </div>
+
+            <div class="field" id="gesturBlock" style="display:none">
+              <span class="flabel">Gestur yang dipakai</span>
+              <div class="checks" id="gesturChecks">
+                <label><input type="checkbox" value="Menunjuk dan tahan ±1 detik untuk memilih jawaban" checked /> Menunjuk &amp; tahan (±1 detik)</label>
+                <label><input type="checkbox" value="Cubit (ujung jempol dan telunjuk menempel) untuk memilih seketika" checked /> Cubit (jempol + telunjuk)</label>
+                <label><input type="checkbox" value="Berhitung dengan jari (1–5 jari) untuk menjawab soal hitungan sederhana" /> Berhitung jari (1–5)</label>
+                <label><input type="checkbox" value="Telapak terbuka sebagai gestur siap / jeda" /> Telapak terbuka</label>
+                <label><input type="checkbox" value="Genggaman sebagai gestur netral / berhenti" /> Genggaman</label>
+                <label><input type="checkbox" value="Geser / sapu tangan untuk pindah slide atau soal" /> Geser / sapu tangan</label>
+              </div>
+              <p class="hint">Catatan: media gestur membutuhkan pustaka pelacak tangan dari CDN dan halaman HTTPS agar browser mengizinkan kamera — sehingga tidak bisa sepenuhnya offline. Prompt akan menyesuaikan ketentuan offline secara otomatis.</p>
+            </div>
           </section>
 
           <!-- Bagian 3 -->
@@ -683,6 +705,8 @@
           var model = $("model").value;
           var jumlahSoal = $("jumlahSoal").value;
           var fitur = checkedValues("fiturChecks");
+          var kendali = radioValue("kendali");
+          var gestur = checkedValues("gesturChecks");
           var tema = val("tema");
           var maskot = val("maskot");
           var konteks = val("konteks");
@@ -713,6 +737,18 @@
             L.push("- Fitur interaktif yang wajib ada:");
             fitur.forEach(function (f) { L.push("  • " + f); });
           }
+          L.push("- Cara mengendalikan media: " + kendali + ".");
+          if (kendali.indexOf("gestur") >= 0) {
+            if (gestur.length) {
+              L.push("- Gestur yang wajib dikenali:");
+              gestur.forEach(function (g) { L.push("  • " + g); });
+            }
+            L.push("- Sediakan pratinjau kamera di layar, mode latihan gestur sebelum mulai, dan indikator gestur yang sedang terbaca.");
+            L.push("- Pelacakan tangan memakai pustaka MediaPipe Hands dan diproses sepenuhnya di perangkat: video tidak direkam, tidak diunggah, dan tidak dikirim ke server mana pun.");
+            L.push("- Semua aksi yang bisa dilakukan dengan gestur harus dapat dilakukan juga dengan ketuk/klik sebagai cadangan, sehingga pembelajaran tidak berhenti bila kamera tidak tersedia atau izin kamera ditolak.");
+            L.push("- Syarat kamera: halaman dibuka lewat HTTPS agar browser mengizinkan kamera; bila izin kamera ditolak, tampilkan pesan ramah dan arahkan siswa ke mode sentuh/klik.");
+            L.push("- Aturan pakai kamera: satu orang di depan kamera dalam satu waktu, jarak 40–70 cm dari kamera, dan ruangan cukup terang agar pelacakan stabil.");
+          }
           L.push("- Evaluasi akhir berisi " + jumlahSoal + " soal yang selaras dengan TP, lengkap dengan kunci jawaban dan pembahasan singkat untuk setiap soal.");
           L.push("");
           L.push("=== 3. CERITA & VISUAL ===");
@@ -732,10 +768,18 @@
           L.push("7. Layar hasil: skor akhir, pesan apresiasi sesuai capaian, tombol main lagi, dan satu pertanyaan refleksi singkat.");
           L.push("");
           L.push("=== 5. KETENTUAN TEKNIS (WAJIB) ===");
-          if (teknis.length) {
-            teknis.forEach(function (t) { L.push("- " + t); });
+          var gesturMode = kendali.indexOf("gestur") >= 0;
+          var teknisOut = teknis;
+          if (gesturMode) {
+            teknisOut = teknis.filter(function (t) { return t.indexOf("OFFLINE") < 0; });
+          }
+          if (teknisOut.length) {
+            teknisOut.forEach(function (t) { L.push("- " + t); });
           } else {
             L.push("- (Tidak ada ketentuan teknis khusus.)");
+          }
+          if (gesturMode) {
+            L.push("- Pengecualian ketentuan offline: pustaka pelacak tangan (MediaPipe Hands) dimuat dari CDN karena tidak dapat dibundel ke dalam satu file; di luar pustaka itu, media tetap satu file HTML mandiri.");
           }
           if (tambahan) {
             L.push("");
@@ -752,7 +796,12 @@
         }
 
         var currentPrompt = "";
+        function syncGestur() {
+          var g = $("gesturBlock");
+          if (g) g.style.display = (radioValue("kendali").indexOf("gestur") >= 0) ? "" : "none";
+        }
         function update() {
+          syncGestur();
           currentPrompt = buildPrompt();
           $("promptBox").textContent = currentPrompt;
           $("charCount").textContent = currentPrompt.length.toLocaleString("id-ID") + " karakter";
@@ -936,6 +985,11 @@
           $("tp").value = "Peserta didik dapat membuktikan teorema Pythagoras, menentukan panjang sisi segitiga siku-siku, dan menerapkannya untuk menyelesaikan masalah sehari-hari.";
           setChecked("dplChecks", ["Penalaran Kritis", "Kemandirian", "Kolaborasi"]);
           setRadio("jenis", "Campuran: eksplorasi materi, aktivitas interaktif, dan kuis dalam satu media");
+          setRadio("kendali", "Sentuh / klik (tombol dan layar sentuh)");
+          setChecked("gesturChecks", [
+            "Menunjuk dan tahan ±1 detik untuk memilih jawaban",
+            "Cubit (ujung jempol dan telunjuk menempel) untuk memilih seketika"
+          ]);
           $("model").value = "Discovery Learning (siswa menemukan konsep lewat aktivitas)";
           $("jumlahSoal").value = "10";
           setChecked("fiturChecks", [
