@@ -185,6 +185,11 @@
     #beranda .float{animation:none}
     .btn,.app-card,.karya-card,.kontak-card,.dl-btn{transition:none}
   }
+  /* Gerbang PIN menu Pelatihan */
+  #pelatihan.locked .karya-grid{display:none}
+  #pelatihan .lock-msg{display:none;text-align:center;border:1.5px dashed var(--teal);border-radius:16px;padding:28px 20px}
+  #pelatihan.locked .lock-msg{display:block}
+  #pelatihan .lock-msg p{margin:0 0 14px}
 </style>
 </head>
 <body>
@@ -438,11 +443,15 @@
 </section>
 
 <!-- ================= 4d. PELATIHAN ================= -->
-<section id="pelatihan">
+<section id="pelatihan" class="locked">
   <div class="wrap">
     <span class="eyebrow reveal">Untuk Guru</span>
     <h2 class="sec-title reveal">Pelatihan</h2>
     <p class="sec-sub reveal">Bahan pelatihan guru: bacaan, alat, dan berkas workshop — semuanya bisa dibuka dari perangkat apa pun.</p>
+    <div class="lock-msg">
+      <p>🔒 Bagian ini terkunci. Masukkan PIN untuk membuka daftar bahan pelatihan.</p>
+      <button class="btn btn-primary" id="btnPinPelatihan" type="button">Masukkan PIN</button>
+    </div>
     <div class="karya-grid">
       <article class="karya-card reveal">
         <span class="doc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-5-6-5M12 19h8"/></svg></span>
@@ -478,13 +487,6 @@
         <p>Slide workshop narasumber 120 menit (20 slide): Pembuka, Showcase, Konsep kilat, Praktik Canva AI, Praktik Gemini &amp; AI lain, Publikasi &amp; uji akses, Demo, dan Penutup.</p>
         <span class="file-meta">PPTX · Unduhan</span>
         <a class="dl-btn" href="pelatihan/Deck-Workshop-Media-Pembelajaran-Digital.pptx" download>Unduh Deck (PPTX) ↓</a>
-      </article>
-      <article class="karya-card reveal">
-        <span class="doc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-5-6-5M12 19h8"/></svg></span>
-        <h3>Panduan Fasilitator Workshop</h3>
-        <p>Naskah fasilitator kata-per-kata 120 menit: 8 segmen sesuai deck, pantun, ice breaking, instruksi praktik Canva AI dan Gemini, publikasi &amp; uji akses, kalimat penyelamat, serta bank pantun dan yel.</p>
-        <span class="file-meta">DOCX · Unduhan</span>
-        <a class="dl-btn" href="pelatihan/Panduan-Fasilitator-Workshop-Media-Pembelajaran-Digital.docx" download>Unduh Panduan (DOCX) ↓</a>
       </article>
     </div>
   </div>
@@ -701,6 +703,41 @@
   document.addEventListener("keydown", function(e){
     if (e.key === "Escape" && !rBack.hidden) closeReader();
   });
+
+  /* Gerbang PIN menu Pelatihan */
+  var pelatihanSec = document.getElementById("pelatihan");
+  var PIN_PELATIHAN = "171171";
+  function bukaPelatihan(){
+    var pin = prompt("Masukkan PIN untuk membuka menu Pelatihan:");
+    if (pin === null) return false;
+    pin = pin.trim();
+    if (pin === PIN_PELATIHAN){
+      pelatihanSec.classList.remove("locked");
+      pelatihanSec.scrollIntoView();
+      return true;
+    }
+    alert("PIN salah. Silakan coba lagi.");
+    return false;
+  }
+  var btnPin = document.getElementById("btnPinPelatihan");
+  if (btnPin) btnPin.addEventListener("click", bukaPelatihan);
+  var navPel = document.querySelector('#navLinks a[href="#pelatihan"]');
+  if (navPel) navPel.addEventListener("click", function(e){
+    if (pelatihanSec.classList.contains("locked")){ e.preventDefault(); bukaPelatihan(); }
+  });
+  var semuaNav = document.querySelectorAll("#navLinks a");
+  for (var ni = 0; ni < semuaNav.length; ni++){
+    (function(link){
+      link.addEventListener("click", function(){
+        if (link.getAttribute("href") !== "#pelatihan" && !pelatihanSec.classList.contains("locked")){
+          pelatihanSec.classList.add("locked");
+        }
+      });
+    })(semuaNav[ni]);
+  }
+  if (location.hash === "#pelatihan" && pelatihanSec.classList.contains("locked")){
+    bukaPelatihan();
+  }
 })();
 </script>
 </body>
