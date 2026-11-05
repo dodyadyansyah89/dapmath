@@ -453,15 +453,17 @@
                 <label><input type="checkbox" value="Soal dan pilihan jawaban diacak setiap kali dimainkan" /> Soal diacak</label>
                 <label><input type="checkbox" value="Elemen seret dan letakkan (drag and drop)" /> Seret &amp; letakkan</label>
                 <label><input type="checkbox" value="Efek suara sederhana untuk jawaban benar/salah dan keberhasilan misi" /> Efek suara sederhana</label>
+                <label><input type="checkbox" value="Augmented Reality (AR): objek 3D tampil di atas dunia nyata lewat kamera HP" /> Augmented Reality (AR)</label>
               </div>
             </div>
 
             <div class="field">
               <span class="flabel">Cara mengendalikan media</span>
+              <p class="hint">Boleh pilih lebih dari satu — mis. gestur dengan sentuh sebagai cadangan.</p>
               <div class="chips" id="kendaliChips">
-                <label><input type="radio" name="kendali" value="Sentuh / klik (tombol dan layar sentuh)" checked /> Sentuh / Klik</label>
-                <label><input type="radio" name="kendali" value="Gerakan tangan lewat kamera (gestur)" /> Gerakan Tangan (Gestur)</label>
-                <label><input type="radio" name="kendali" value="Keduanya: gestur lewat kamera + sentuh/klik sebagai cadangan" /> Gestur + Sentuh (Cadangan)</label>
+                <label><input type="checkbox" value="Sentuh / klik (tombol dan layar sentuh)" checked /> Sentuh / Klik</label>
+                <label><input type="checkbox" value="Gerakan tangan lewat kamera (gestur)" /> Gerakan Tangan (Gestur)</label>
+                <label><input type="checkbox" value="Suara (perintah dan jawaban lisan lewat mikrofon)" /> Suara (Mikrofon)</label>
               </div>
             </div>
 
@@ -476,6 +478,30 @@
                 <label><input type="checkbox" value="Geser / sapu tangan untuk pindah slide atau soal" /> Geser / sapu tangan</label>
               </div>
               <p class="hint">Catatan: media gestur membutuhkan pustaka pelacak tangan dari CDN dan halaman HTTPS agar browser mengizinkan kamera — sehingga tidak bisa sepenuhnya offline. Prompt akan menyesuaikan ketentuan offline secara otomatis.</p>
+            </div>
+
+            <div class="field" id="suaraBlock" style="display:none">
+              <span class="flabel">Interaksi suara yang dipakai</span>
+              <div class="checks" id="suaraChecks">
+                <label><input type="checkbox" value="Menjawab soal secara lisan lewat pengenalan suara (speech recognition)" checked /> Jawab soal dengan suara</label>
+                <label><input type="checkbox" value="Perintah suara untuk navigasi, misalnya 'Lanjut', 'Ulangi', 'Kembali'" /> Perintah suara (Lanjut / Ulangi)</label>
+                <label><input type="checkbox" value="Soal, petunjuk, dan pembahasan dibacakan dengan suara (text-to-speech)" checked /> Soal dibacakan (text-to-speech)</label>
+                <label><input type="checkbox" value="Umpan balik lisan setelah siswa menjawab" /> Umpan balik lisan</label>
+                <label><input type="checkbox" value="Latihan membaca nyaring / pengucapan dengan penilaian sederhana" /> Latihan membaca nyaring</label>
+              </div>
+              <p class="hint">Catatan: pengenalan suara di sebagian besar browser membutuhkan internet; bila offline, media tetap jalan lewat mode ketik/klik. Mikrofon membutuhkan halaman HTTPS agar diizinkan browser.</p>
+            </div>
+
+            <div class="field" id="arBlock" style="display:none">
+              <span class="flabel">Fitur AR yang dipakai</span>
+              <div class="checks" id="arChecks">
+                <label><input type="checkbox" value="Menampilkan model 3D di atas permukaan nyata (meja, lantai) lewat kamera" checked /> Model 3D di permukaan nyata</label>
+                <label><input type="checkbox" value="Objek 3D dapat diputar, diperbesar, dan diperkecil oleh siswa" checked /> Putar &amp; perbesar objek 3D</label>
+                <label><input type="checkbox" value="Penanda (marker) gambar yang dicetak untuk memunculkan objek" /> Marker cetak untuk memunculkan objek</label>
+                <label><input type="checkbox" value="Tanpa marker: objek diletakkan pada permukaan yang terdeteksi kamera" /> Tanpa marker (deteksi permukaan)</label>
+                <label><input type="checkbox" value="Anotasi / label pada objek 3D (nama bagian, ukuran, keterangan)" /> Anotasi / label pada objek 3D</label>
+              </div>
+              <p class="hint">Catatan: AR membutuhkan kamera dan pustaka AR dari CDN serta halaman HTTPS — sehingga tidak bisa sepenuhnya offline. Prompt akan menyesuaikan ketentuan offline secara otomatis.</p>
             </div>
           </section>
 
@@ -705,8 +731,10 @@
           var model = $("model").value;
           var jumlahSoal = $("jumlahSoal").value;
           var fitur = checkedValues("fiturChecks");
-          var kendali = radioValue("kendali");
+          var kendali = checkedValues("kendaliChips");
           var gestur = checkedValues("gesturChecks");
+          var suara = checkedValues("suaraChecks");
+          var ar = checkedValues("arChecks");
           var tema = val("tema");
           var maskot = val("maskot");
           var konteks = val("konteks");
@@ -737,8 +765,12 @@
             L.push("- Fitur interaktif yang wajib ada:");
             fitur.forEach(function (f) { L.push("  • " + f); });
           }
-          L.push("- Cara mengendalikan media: " + kendali + ".");
-          if (kendali.indexOf("gestur") >= 0) {
+          var kendaliText = kendali.length ? kendali.join("; ") : "Sentuh / klik (tombol dan layar sentuh)";
+          var gesturMode = kendali.some(function (k) { return k.indexOf("gestur") >= 0; });
+          var suaraMode = kendali.some(function (k) { return k.indexOf("Suara") >= 0; });
+          var arMode = fitur.some(function (f) { return f.indexOf("Augmented Reality") >= 0; });
+          L.push("- Cara mengendalikan media: " + kendaliText + ".");
+          if (gesturMode) {
             if (gestur.length) {
               L.push("- Gestur yang wajib dikenali:");
               gestur.forEach(function (g) { L.push("  • " + g); });
@@ -748,6 +780,29 @@
             L.push("- Semua aksi yang bisa dilakukan dengan gestur harus dapat dilakukan juga dengan ketuk/klik sebagai cadangan, sehingga pembelajaran tidak berhenti bila kamera tidak tersedia atau izin kamera ditolak.");
             L.push("- Syarat kamera: halaman dibuka lewat HTTPS agar browser mengizinkan kamera; bila izin kamera ditolak, tampilkan pesan ramah dan arahkan siswa ke mode sentuh/klik.");
             L.push("- Aturan pakai kamera: satu orang di depan kamera dalam satu waktu, jarak 40–70 cm dari kamera, dan ruangan cukup terang agar pelacakan stabil.");
+          }
+          if (suaraMode) {
+            if (suara.length) {
+              L.push("- Interaksi suara yang wajib ada:");
+              suara.forEach(function (s) { L.push("  • " + s); });
+            }
+            L.push("- Pengenalan suara memakai Web Speech API di browser (bahasa Indonesia, id-ID); sediakan tombol mikrofon yang jelas dan indikator sedang mendengarkan, serta tampilkan teks hasil pengenalan di layar agar siswa dapat memeriksa sebelum dikirim.");
+            L.push("- Suara bacaan (text-to-speech) memakai suara bawaan browser berbahasa Indonesia; sediakan tombol putar/ulang.");
+            L.push("- Semua aksi suara harus dapat dilakukan juga dengan ketuk/klik atau ketik sebagai cadangan, sehingga pembelajaran tidak berhenti bila mikrofon tidak tersedia, izin ditolak, atau pengenalan gagal.");
+            L.push("- Syarat mikrofon: halaman dibuka lewat HTTPS agar browser mengizinkan mikrofon; bila izin ditolak, tampilkan pesan ramah dan alihkan ke mode ketik/klik.");
+            L.push("- Catatan: pengenalan suara membutuhkan koneksi internet di sebagian besar browser; bila offline, fitur suara nonaktif dan media tetap dapat dimainkan lewat ketik/klik.");
+            L.push("- Aturan pakai suara: satu suara dalam satu waktu dan lingkungan cukup tenang agar pengenalan akurat.");
+          }
+          if (arMode) {
+            if (ar.length) {
+              L.push("- Fitur Augmented Reality (AR) yang wajib ada:");
+              ar.forEach(function (a) { L.push("  • " + a); });
+            }
+            L.push("- AR memakai kamera HP dan pustaka AR berbasis web (AR.js / model-viewer); tampilkan pratinjau kamera dengan objek 3D di atas dunia nyata.");
+            L.push("- Sediakan tombol untuk memutar, memperbesar, dan memperkecil objek 3D, serta petunjuk memindai marker bila memakai marker.");
+            L.push("- Bila kamera tidak tersedia atau perangkat tidak mendukung AR, tampilkan versi 3D biasa yang dapat diputar dengan sentuhan sebagai pengganti.");
+            L.push("- Syarat kamera: halaman dibuka lewat HTTPS agar browser mengizinkan kamera; bila izin ditolak, tampilkan pesan ramah.");
+            L.push("- Aturan pakai AR: ruangan cukup terang, permukaan datar dan tidak mengilap untuk penempatan objek, dan satu perangkat dalam satu waktu.");
           }
           L.push("- Evaluasi akhir berisi " + jumlahSoal + " soal yang selaras dengan TP, lengkap dengan kunci jawaban dan pembahasan singkat untuk setiap soal.");
           L.push("");
@@ -768,9 +823,8 @@
           L.push("7. Layar hasil: skor akhir, pesan apresiasi sesuai capaian, tombol main lagi, dan satu pertanyaan refleksi singkat.");
           L.push("");
           L.push("=== 5. KETENTUAN TEKNIS (WAJIB) ===");
-          var gesturMode = kendali.indexOf("gestur") >= 0;
           var teknisOut = teknis;
-          if (gesturMode) {
+          if (gesturMode || arMode) {
             teknisOut = teknis.filter(function (t) { return t.indexOf("OFFLINE") < 0; });
           }
           if (teknisOut.length) {
@@ -778,8 +832,11 @@
           } else {
             L.push("- (Tidak ada ketentuan teknis khusus.)");
           }
-          if (gesturMode) {
-            L.push("- Pengecualian ketentuan offline: pustaka pelacak tangan (MediaPipe Hands) dimuat dari CDN karena tidak dapat dibundel ke dalam satu file; di luar pustaka itu, media tetap satu file HTML mandiri.");
+          if (gesturMode || arMode) {
+            var cdnLibs = [];
+            if (gesturMode) cdnLibs.push("pelacak tangan (MediaPipe Hands)");
+            if (arMode) cdnLibs.push("AR berbasis web (AR.js / model-viewer)");
+            L.push("- Pengecualian ketentuan offline: pustaka " + cdnLibs.join(" dan ") + " dimuat dari CDN karena tidak dapat dibundel ke dalam satu file; di luar pustaka itu, media tetap satu file HTML mandiri.");
           }
           if (tambahan) {
             L.push("");
@@ -796,12 +853,17 @@
         }
 
         var currentPrompt = "";
-        function syncGestur() {
+        function syncKondisional() {
+          var kendaliNow = checkedValues("kendaliChips");
           var g = $("gesturBlock");
-          if (g) g.style.display = (radioValue("kendali").indexOf("gestur") >= 0) ? "" : "none";
+          if (g) g.style.display = kendaliNow.some(function (k) { return k.indexOf("gestur") >= 0; }) ? "" : "none";
+          var s = $("suaraBlock");
+          if (s) s.style.display = kendaliNow.some(function (k) { return k.indexOf("Suara") >= 0; }) ? "" : "none";
+          var a = $("arBlock");
+          if (a) a.style.display = checkedValues("fiturChecks").some(function (f) { return f.indexOf("Augmented Reality") >= 0; }) ? "" : "none";
         }
         function update() {
-          syncGestur();
+          syncKondisional();
           currentPrompt = buildPrompt();
           $("promptBox").textContent = currentPrompt;
           $("charCount").textContent = currentPrompt.length.toLocaleString("id-ID") + " karakter";
@@ -985,10 +1047,18 @@
           $("tp").value = "Peserta didik dapat membuktikan teorema Pythagoras, menentukan panjang sisi segitiga siku-siku, dan menerapkannya untuk menyelesaikan masalah sehari-hari.";
           setChecked("dplChecks", ["Penalaran Kritis", "Kemandirian", "Kolaborasi"]);
           setRadio("jenis", "Campuran: eksplorasi materi, aktivitas interaktif, dan kuis dalam satu media");
-          setRadio("kendali", "Sentuh / klik (tombol dan layar sentuh)");
+          setChecked("kendaliChips", ["Sentuh / klik (tombol dan layar sentuh)"]);
           setChecked("gesturChecks", [
             "Menunjuk dan tahan ±1 detik untuk memilih jawaban",
             "Cubit (ujung jempol dan telunjuk menempel) untuk memilih seketika"
+          ]);
+          setChecked("suaraChecks", [
+            "Menjawab soal secara lisan lewat pengenalan suara (speech recognition)",
+            "Soal, petunjuk, dan pembahasan dibacakan dengan suara (text-to-speech)"
+          ]);
+          setChecked("arChecks", [
+            "Menampilkan model 3D di atas permukaan nyata (meja, lantai) lewat kamera",
+            "Objek 3D dapat diputar, diperbesar, dan diperkecil oleh siswa"
           ]);
           $("model").value = "Discovery Learning (siswa menemukan konsep lewat aktivitas)";
           $("jumlahSoal").value = "10";
