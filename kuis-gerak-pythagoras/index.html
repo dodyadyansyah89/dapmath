@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Media Belajar Gestur Interaktif — Kuis Gerak Pythagoras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f6f5;
+        --surface: #ffffff;
+        --surface-2: #e9efec;
+        --ink: #14201c;
+        --ink-soft: #43554f;
+        --line: #d3ddd8;
+        --teal: #0e7a6d;
+        --teal-dark: #0a5c52;
+        --teal-soft: #d9efe9;
+        --amber: #e8a020;
+        --amber-soft: #fdf0d3;
+        --red: #c8402a;
+        --red-soft: #fbe3dd;
+        --green: #1d8a4e;
+        --green-soft: #dcf2e3;
+        --stage-bg: #10201c;
+        --stage-ink: #eef6f2;
+        --shadow: 0 10px 30px rgba(16, 42, 36, 0.10);
+        --radius: 16px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1412;
+          --surface: #16211d;
+          --surface-2: #1d2b26;
+          --ink: #e8f1ed;
+          --ink-soft: #a7bcb3;
+          --line: #2b3d36;
+          --teal: #2fbfa9;
+          --teal-dark: #7fe0d0;
+          --teal-soft: #173b34;
+          --amber: #f2b13c;
+          --amber-soft: #3d2f10;
+          --red: #f0836c;
+          --red-soft: #40201a;
+          --green: #4cc97e;
+          --green-soft: #14301f;
+          --stage-bg: #0a1714;
+          --stage-ink: #eef6f2;
+          --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 18px 48px; }
+
+      /* ---------- Header ---------- */
+      header.top {
+        display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 28px;
+        padding: 10px 0 18px; border-bottom: 2px solid var(--ink);
+        margin-bottom: 22px;
+      }
+      header.top .title-block { flex: 1 1 320px; }
+      h1 {
+        font-family: "Fraunces", serif; font-weight: 900;
+        font-size: clamp(1.7rem, 4vw, 2.5rem); line-height: 1.08; margin: 0 0 6px;
+        letter-spacing: -0.01em;
+      }
+      h1 .accent { color: var(--teal); }
+      .subtitle { margin: 0; color: var(--ink-soft); font-size: 0.98rem; max-width: 56ch; }
+      .cam-status {
+        display: flex; align-items: center; gap: 10px;
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: 999px; padding: 8px 8px 8px 16px; box-shadow: var(--shadow);
+      }
+      .cam-status .dot { width: 11px; height: 11px; border-radius: 50%; background: #9db3ab; flex: none; }
+      .cam-status .dot.on { background: var(--green); box-shadow: 0 0 0 4px var(--green-soft); }
+      .cam-status .dot.err { background: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
+      .cam-status span { font-size: 0.88rem; font-weight: 600; white-space: nowrap; }
+      button {
+        font-family: inherit; cursor: pointer; border: none;
+        font-weight: 700; border-radius: 999px;
+      }
+      .btn-primary {
+        background: var(--teal); color: #fff; padding: 10px 20px; font-size: 0.92rem;
+        transition: background 0.15s ease, transform 0.1s ease;
+      }
+      .btn-primary:hover { background: var(--teal-dark); }
+      .btn-primary:active { transform: scale(0.97); }
+      .btn-ghost {
+        background: var(--surface-2); color: var(--ink); padding: 10px 18px; font-size: 0.92rem;
+        border: 1px solid var(--line);
+      }
+
+      /* ---------- Tabs ---------- */
+      nav.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+      .tab {
+        background: var(--surface); color: var(--ink-soft); border: 1px solid var(--line);
+        padding: 10px 20px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px;
+      }
+      .tab svg { width: 18px; height: 18px; }
+      .tab.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+      @media (prefers-color-scheme: dark) { .tab.active { background: var(--teal); color: #08110e; border-color: var(--teal); } }
+
+      /* ---------- Stage layout ---------- */
+      .stage-grid { display: grid; grid-template-columns: 340px 1fr; gap: 18px; align-items: start; }
+      @media (max-width: 860px) { .stage-grid { grid-template-columns: 1fr; } }
+
+      .cam-card {
+        background: var(--stage-bg); border-radius: var(--radius); overflow: hidden;
+        box-shadow: var(--shadow); color: var(--stage-ink);
+      }
+      .cam-frame { position: relative; aspect-ratio: 4 / 3; background: #000; }
+      .cam-frame video, .cam-frame canvas {
+        position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+        transform: scaleX(-1);
+      }
+      .cam-frame .cam-placeholder {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 20px;
+        color: #b9cdc5; font-size: 0.9rem;
+      }
+      .cam-placeholder svg { width: 44px; height: 44px; opacity: 0.7; }
+      .gesture-readout { padding: 14px 16px 16px; }
+      .gesture-readout .gr-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8fb3a7; font-weight: 700; }
+      .gesture-readout .gr-value { font-size: 1.3rem; font-weight: 800; margin: 2px 0 0; min-height: 1.6em; }
+      .finger-dots { display: flex; gap: 7px; margin-top: 10px; }
+      .finger-dots i {
+        width: 26px; height: 26px; border-radius: 50%; border: 2px solid #3d5a51;
+        display: flex; align-items: center; justify-content: center;
+        font-style: normal; font-size: 0.68rem; font-weight: 800; color: #8fb3a7;
+      }
+      .finger-dots i.up { background: var(--amber); border-color: var(--amber); color: #23180a; }
+
+      /* ---------- Quiz stage ---------- */
+      .quiz-stage {
+        position: relative; background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px;
+        overflow: hidden; min-height: 480px;
+      }
+      .quiz-meta { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 14px; }
+      .pill {
+        display: inline-flex; align-items: center; gap: 7px; font-size: 0.85rem; font-weight: 700;
+        background: var(--surface-2); border-radius: 999px; padding: 6px 13px;
+      }
+      .pill svg { width: 15px; height: 15px; }
+      .pill.streak { background: var(--amber-soft); color: #7a5200; }
+      @media (prefers-color-scheme: dark) { .pill.streak { color: var(--amber); } }
+      .progress-track { height: 9px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-bottom: 20px; }
+      .progress-fill { height: 100%; background: var(--teal); border-radius: 99px; transition: width 0.4s ease; width: 0%; }
+      .question-num { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin: 0 0 6px; }
+      .question-text { font-size: clamp(1.15rem, 2.4vw, 1.45rem); font-weight: 700; line-height: 1.4; margin: 0 0 8px; }
+      .question-figure { margin: 6px 0 16px; }
+      .question-figure svg { max-width: 240px; width: 100%; height: auto; display: block; }
+      .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+      @media (max-width: 520px) { .answers { grid-template-columns: 1fr; } }
+      .answer-card {
+        position: relative; text-align: left; background: var(--surface);
+        border: 2px solid var(--line); border-radius: 14px; padding: 16px 18px;
+        font-size: 1.12rem; font-weight: 700; color: var(--ink);
+        display: flex; align-items: center; gap: 12px; width: 100%;
+        transition: border-color 0.15s ease, background 0.15s ease;
+        overflow: hidden;
+      }
+      .answer-card .letter {
+        flex: none; width: 32px; height: 32px; border-radius: 9px; background: var(--surface-2);
+        display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 800;
+      }
+      .answer-card .dwell-bar {
+        position: absolute; left: 0; bottom: 0; height: 5px; width: 0%;
+        background: var(--amber); border-radius: 0 4px 4px 0;
+      }
+      .answer-card.hovered { border-color: var(--amber); background: var(--amber-soft); }
+      .answer-card.correct { border-color: var(--green); background: var(--green-soft); }
+      .answer-card.correct .letter { background: var(--green); color: #fff; }
+      .answer-card.wrong { border-color: var(--red); background: var(--red-soft); }
+      .answer-card.wrong .letter { background: var(--red); color: #fff; }
+      .answer-card.locked { pointer-events: none; }
+      .feedback {
+        margin-top: 18px; border-radius: 14px; padding: 16px 18px; display: none;
+        font-size: 0.97rem;
+      }
+      .feedback.show { display: block; }
+      .feedback.good { background: var(--green-soft); border: 1px solid var(--green); }
+      .feedback.bad { background: var(--red-soft); border: 1px solid var(--red); }
+      .feedback strong { display: block; font-size: 1.05rem; margin-bottom: 4px; }
+      .feedback p { margin: 0 0 12px; }
+      .next-btn { background: var(--ink); color: var(--bg); padding: 11px 22px; font-size: 0.95rem; position: relative; overflow: hidden; }
+      @media (prefers-color-scheme: dark) { .next-btn { background: var(--teal); color: #08110e; } }
+      .next-btn .dwell-bar { position: absolute; left: 0; bottom: 0; height: 4px; width: 0%; background: var(--amber); }
+      .next-btn.hovered { outline: 3px solid var(--amber); }
+
+      /* fingertip cursor */
+      .hand-cursor {
+        position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px;
+        pointer-events: none; z-index: 30; display: none;
+      }
+      .hand-cursor.show { display: block; }
+      .hand-cursor .ring { transform: rotate(-90deg); }
+      .hand-cursor .ring-bg { fill: rgba(255,255,255,0.85); stroke: var(--line); stroke-width: 2; }
+      .hand-cursor .ring-fg { fill: none; stroke: var(--amber); stroke-width: 4; stroke-linecap: round; }
+      .hand-cursor .dot-center { fill: var(--teal); }
+      .hand-cursor.pinched .dot-center { fill: var(--amber); }
+
+      /* result */
+      .result-box { text-align: center; padding: 26px 10px 10px; }
+      .result-box .big-score { font-family: "Fraunces", serif; font-size: 4rem; font-weight: 900; line-height: 1; margin: 8px 0; }
+      .result-box p { color: var(--ink-soft); max-width: 46ch; margin: 0 auto 18px; }
+
+      /* ---------- Practice mode ---------- */
+      .practice-card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow); padding: 22px;
+      }
+      .task-banner {
+        background: var(--teal-soft); border: 1px dashed var(--teal); border-radius: 14px;
+        padding: 18px; text-align: center; margin-bottom: 16px;
+      }
+      .task-banner .tb-label { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-dark); }
+      .task-banner .tb-task { font-size: 1.5rem; font-weight: 800; margin: 4px 0 0; }
+      .task-steps { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+      .task-steps i {
+        font-style: normal; width: 34px; height: 34px; border-radius: 50%;
+        border: 2px solid var(--line); display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 0.85rem; color: var(--ink-soft); background: var(--surface);
+      }
+      .task-steps i.done { background: var(--green); border-color: var(--green); color: #fff; }
+      .task-steps i.now { border-color: var(--amber); background: var(--amber-soft); color: var(--ink); }
+      .gesture-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+      .gesture-item { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: var(--surface-2); }
+      .gesture-item h3 { margin: 0 0 4px; font-size: 0.98rem; }
+      .gesture-item p { margin: 0; font-size: 0.85rem; color: var(--ink-soft); }
+      .gesture-item svg { width: 30px; height: 30px; margin-bottom: 8px; color: var(--teal); }
+
+      /* ---------- Guide ---------- */
+      .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+      .guide-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+      .guide-card h3 { margin: 0 0 8px; font-size: 1.05rem; display: flex; align-items: center; gap: 9px; }
+      .guide-card h3 svg { width: 20px; height: 20px; color: var(--teal); flex: none; }
+      .guide-card p, .guide-card li { font-size: 0.93rem; color: var(--ink-soft); }
+      .guide-card ul { margin: 6px 0 0; padding-left: 18px; }
+      .guide-card li { margin-bottom: 5px; }
+      .notice {
+        margin-top: 16px; border-radius: var(--radius); padding: 16px 18px;
+        background: var(--amber-soft); border: 1px solid var(--amber); font-size: 0.93rem;
+      }
+      .notice strong { display: block; margin-bottom: 3px; }
+
+      .panel { display: none; }
+      .panel.active { display: block; }
+
+      footer { margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.87rem; display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: space-between; }
+      .hidden { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <div class="title-block">
+          <h1>Kuis Gerak <span class="accent">Pythagoras</span></h1>
+          <p class="subtitle">Media belajar berbasis gestur tangan untuk Matematika kelas 8. Jawab soal cukup dengan menunjuk jawaban di depan kamera — atau ketuk seperti biasa.</p>
+        </div>
+        <div class="cam-status">
+          <span class="dot" id="camDot"></span>
+          <span id="camStatusText">Kamera belum aktif</span>
+          <button class="btn-primary" id="btnCamera">Aktifkan Kamera</button>
+        </div>
+      </header>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="quiz" role="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+          Kuis Gerak
+        </button>
+        <button class="tab" data-tab="practice" role="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6.5a1.5 1.5 0 0 0-3 0V11m0-5.5v-2a1.5 1.5 0 0 0-3 0V11m0-7.5a1.5 1.5 0 0 0-3 0V12m6-1a1.5 1.5 0 0 1 3 0v3c0 3.9-3 7-6.8 7S5 18.4 4 14.6l-1-3.9c-.2-.9.3-1.7 1.1-1.9.7-.2 1.4.2 1.7.9L7 12"/></svg>
+          Latihan Gestur
+        </button>
+        <button class="tab" data-tab="guide" role="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5v13z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
+          Cara Pakai
+        </button>
+      </nav>
+
+      <!-- ==================== QUIZ PANEL ==================== -->
+      <section class="panel active" id="panel-quiz">
+        <div class="stage-grid">
+          <div class="cam-card">
+            <div class="cam-frame">
+              <video id="camVideo" playsinline muted></video>
+              <canvas id="camCanvas" width="640" height="480"></canvas>
+              <div class="cam-placeholder" id="camPlaceholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                <div>Tekan <strong>“Aktifkan Kamera”</strong> di atas, lalu hadapkan satu tangan ke kamera.<br />Video diproses di perangkat ini saja — tidak dikirim ke mana pun.</div>
+              </div>
+            </div>
+            <div class="gesture-readout">
+              <div class="gr-label">Gestur terdeteksi</div>
+              <div class="gr-value" id="gestureName">—</div>
+              <div class="finger-dots" id="fingerDots" aria-label="Status jari">
+                <i data-f="thumb">Jp</i><i data-f="index">Tl</i><i data-f="middle">Tg</i><i data-f="ring">Mn</i><i data-f="pinky">Kl</i>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-stage" id="quizStage">
+            <div class="hand-cursor" id="handCursor" aria-hidden="true">
+              <svg viewBox="0 0 44 44" width="44" height="44">
+                <circle class="ring-bg" cx="22" cy="22" r="17"></circle>
+                <g class="ring"><circle class="ring-fg" id="dwellRing" cx="22" cy="22" r="17" stroke-dasharray="106.8" stroke-dashoffset="106.8"></circle></g>
+                <circle class="dot-center" cx="22" cy="22" r="5"></circle>
+              </svg>
+            </div>
+
+            <div id="quizPlay">
+              <div class="quiz-meta">
+                <span class="pill">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+                  Skor <b id="scoreVal">0</b>
+                </span>
+                <span class="pill streak">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s1 3.2-1.2 5.6C9 7.5 8.4 9 8.6 10.6c-1-.5-1.8-1.4-2.3-2.6C4.9 10 4 12.3 4 14.6A7.4 7.4 0 0 0 12 22a7.4 7.4 0 0 0 8-7.4c0-4.6-3.4-6.9-5-9.4-.4 1-1.1 1.8-2 2.3C13.6 5.8 12 2 12 2z"/></svg>
+                  Beruntun <b id="streakVal">0</b>
+                </span>
+                <span class="pill">Soal <b id="qPosVal">1 / 10</b></span>
+              </div>
+              <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+              <p class="question-num" id="qNum">Soal 1 dari 10</p>
+              <p class="question-text" id="qText"></p>
+              <div class="question-figure" id="qFigure"></div>
+              <div class="answers" id="answers"></div>
+
+              <div class="feedback" id="feedback">
+                <strong id="feedbackTitle"></strong>
+                <p id="feedbackText"></p>
+                <button class="next-btn" id="btnNext">Soal Berikutnya
+                  <span class="dwell-bar"></span>
+                </button>
+              </div>
+            </div>
+
+            <div id="quizResult" class="result-box hidden">
+              <div class="gr-label" style="font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);font-weight:800;">Kuis Selesai</div>
+              <div class="big-score"><span id="finalScore">0</span><span style="font-size:1.6rem;color:var(--ink-soft);"> / 100</span></div>
+              <p id="finalMsg"></p>
+              <button class="btn-primary" id="btnRestart" style="padding:13px 28px;font-size:1rem;">Main Lagi</button>
+              <button class="btn-ghost" id="btnToPractice">Latihan Gestur Dulu</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PRACTICE PANEL ==================== -->
+      <section class="panel" id="panel-practice">
+        <div class="stage-grid">
+          <div class="cam-card">
+            <div class="cam-frame">
+              <div class="cam-placeholder" style="position:static;padding:34px 20px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6.5a1.5 1.5 0 0 0-3 0V11m0-5.5v-2a1.5 1.5 0 0 0-3 0V11m0-7.5a1.5 1.5 0 0 0-3 0V12m6-1a1.5 1.5 0 0 1 3 0v3c0 3.9-3 7-6.8 7S5 18.4 4 14.6l-1-3.9c-.2-.9.3-1.7 1.1-1.9.7-.2 1.4.2 1.7.9L7 12"/></svg>
+                <div>Pratinjau kamera ada di panel <strong>Kuis Gerak</strong> dan tetap aktif di sini.<br />Gestur yang terbaca saat ini: <strong id="practiceGesture" style="color:#fff;">—</strong></div>
+              </div>
+            </div>
+            <div class="gesture-readout">
+              <div class="gr-label">Tantangan selesai</div>
+              <div class="gr-value"><span id="practiceDone">0</span> / 6</div>
+            </div>
+          </div>
+
+          <div class="practice-card">
+            <div class="task-banner">
+              <div class="tb-label">Tantangan gestur</div>
+              <div class="tb-task" id="taskText">Tunjukkan 3 jari</div>
+              <p style="margin:6px 0 0;color:var(--ink-soft);font-size:0.9rem;" id="taskHint">Angkat tiga jari (misalnya telunjuk, tengah, dan manis) dan tahan sebentar.</p>
+            </div>
+            <div class="task-steps" id="taskSteps"></div>
+            <p style="font-size:0.93rem;color:var(--ink-soft);margin:0 0 18px;">Selesaikan keenam tantangan untuk mengenal semua gestur yang dipakai di kuis. Belum punya kamera? Tidak apa-apa — gestur di bawah ini juga yang dipakai temanmu saat bermain bergiliran di depan kelas.</p>
+            <div class="gesture-grid">
+              <div class="gesture-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 5V2m0 20v-3M5 12H2m20 0h-3"/></svg>
+                <h3>Menunjuk</h3><p>Telunjuk lurus, jari lain menekuk. Ujung telunjuk menjadi penunjuk di layar.</p>
+              </div>
+              <div class="gesture-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="3.2"/><circle cx="16.5" cy="15.5" r="3.2"/><path d="M10.5 10.5l3.5 2.5"/></svg>
+                <h3>Cubit</h3><p>Tempelkan ujung jempol dan telunjuk untuk memilih jawaban seketika.</p>
+              </div>
+              <div class="gesture-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11.5V14a7 7 0 0 0 14 0v-2.5a1.5 1.5 0 0 0-3 0m0-1V6a1.5 1.5 0 0 0-3 0m0 1V4.5a1.5 1.5 0 0 0-3 0V10m0-5.5A1.5 1.5 0 0 0 9 6v6" transform="scale(0.92)"/></svg>
+                <h3>Telapak Terbuka</h3><p>Kelima jari lurus dan renggang — gestur “siap” dan untuk berhitung sampai 5.</p>
+              </div>
+              <div class="gesture-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="6" y="9" width="12" height="10" rx="4"/><path d="M8 9V7a2 2 0 0 1 4 0m0 2V6a2 2 0 0 1 4 0v3"/></svg>
+                <h3>Genggaman</h3><p>Semua jari menekuk rapat. Dipakai sebagai gestur netral / berhenti.</p>
+              </div>
+              <div class="gesture-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20v-6m5 6V8m5 12V5m4 15v-9"/></svg>
+                <h3>Berhitung 1–5</h3><p>Angkat jari sejumlah angka yang diminta — cara tercepat menjawab soal hitungan sederhana.</p>
+              </div>
+              <div class="gesture-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 12h13m0 0l-4-4m4 4l-4 4"/></svg>
+                <h3>Tunjuk &amp; Tahan</h3><p>Arahkan telunjuk ke jawaban dan tahan ±1 detik sampai lingkaran penuh — jawaban terkunci.</p>
+              </div>
+            </div>
+            <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-ghost" id="btnResetPractice">Ulangi Tantangan</button>
+              <button class="btn-primary" id="btnToQuiz">Ke Kuis Gerak</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== GUIDE PANEL ==================== -->
+      <section class="panel" id="panel-guide">
+        <div class="guide-grid">
+          <div class="guide-card">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Menyiapkan kamera</h3>
+            <ul>
+              <li>Tekan tombol <strong>Aktifkan Kamera</strong>, lalu izinkan akses kamera di browser.</li>
+              <li>Duduk/berdiri 40–70 cm dari kamera, satu tangan dalam bingkai.</li>
+              <li>Pastikan ruangan cukup terang — cahaya redup membuat pelacakan tidak stabil.</li>
+              <li>Di IFP atau laptop kelas, guru dapat mendemonstrasikan dulu sebelum siswa maju bergiliran.</li>
+            </ul>
+          </div>
+          <div class="guide-card">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/></svg>Menjawab dengan gestur</h3>
+            <ul>
+              <li><strong>Tunjuk &amp; tahan:</strong> arahkan ujung telunjuk ke kartu jawaban, tahan sampai lingkaran kuning penuh (±1 detik).</li>
+              <li><strong>Cubit:</strong> tempelkan jempol dan telunjuk saat penunjuk berada di atas jawaban untuk memilih seketika.</li>
+              <li>Tombol “Soal Berikutnya” juga bisa dipilih dengan cara yang sama.</li>
+            </ul>
+          </div>
+          <div class="guide-card">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.5a3 3 0 1 1 4.6 2.5L12 20l-1.6-6A3 3 0 0 1 9 11.5z"/><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z" opacity="0.35"/></svg>Tanpa kamera? Tetap bisa</h3>
+            <p>Semua jawaban dan tombol dapat diketuk atau diklik seperti biasa. Mode sentuh ini adalah cadangan resmi — misalnya saat kamera dipakai aplikasi lain, izin kamera ditolak, atau memakai perangkat tanpa kamera. Belajar tidak berhenti hanya karena gestur tidak terbaca.</p>
+          </div>
+          <div class="guide-card">
+            <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Privasi video</h3>
+            <p>Pelacakan tangan berjalan sepenuhnya di perangkat ini memakai pustaka MediaPipe. Gambar kamera tidak direkam, tidak diunggah, dan tidak dikirim ke server mana pun — yang dibaca hanya posisi titik-titik tangan untuk mengenali gestur.</p>
+          </div>
+        </div>
+        <div class="notice">
+          <strong>Catatan untuk guru</strong>
+          Materi kuis adalah Teorema Pythagoras kelas 8 (Fase D): menghitung sisi miring, sisi tegak, triple Pythagoras, dan penerapan sehari-hari (tangga, layar, jarak tempuh). Setiap soal disertai pembahasan singkat setelah dijawab, sehingga media ini bisa dipakai sebagai pemanasan kelas, kuis bergiliran di depan IFP, atau latihan mandiri di HP siswa.
+        </div>
+      </section>
+
+      <footer>
+        <span>Dibangun oleh Dody Adyansyah · DapMath</span>
+        <span>Media Belajar Gestur Interaktif — Teorema Pythagoras, Matematika Kelas 8</span>
+      </footer>
+    </div>
+
+    <script>
+      "use strict";
+
+      /* ================= Question bank: Teorema Pythagoras (kelas 8) ================= */
+      var TRIANGLE_SVG = function (a, b, c) {
+        return '' +
+        '<svg viewBox="0 0 260 170" role="img" aria-label="Segitiga siku-siku">' +
+          '<polygon points="40,140 220,140 40,30" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linejoin="round"/>' +
+          '<polyline points="40,122 58,122 58,140" fill="none" stroke="var(--ink-soft)" stroke-width="2"/>' +
+          '<text x="122" y="162" font-size="17" font-weight="700" fill="var(--ink)">' + a + '</text>' +
+          '<text x="8" y="90" font-size="17" font-weight="700" fill="var(--ink)">' + b + '</text>' +
+          '<text x="140" y="76" font-size="17" font-weight="700" fill="var(--amber)">' + c + '</text>' +
+        '</svg>';
+      };
+
+      var QUESTIONS = [
+        {
+          q: "Segitiga siku-siku memiliki sisi tegak 3 cm dan 4 cm. Berapa panjang sisi miringnya (hipotenusa)?",
+          fig: TRIANGLE_SVG("4 cm", "3 cm", "?"),
+          opts: ["5 cm", "6 cm", "7 cm", "25 cm"],
+          answer: 0,
+          explain: "c = √(3² + 4²) = √(9 + 16) = √25 = 5 cm. Pasangan 3-4-5 adalah triple Pythagoras yang paling terkenal."
+        },
+        {
+          q: "Sisi tegak sebuah segitiga siku-siku adalah 6 cm dan 8 cm. Panjang hipotenusanya adalah …",
+          fig: TRIANGLE_SVG("8 cm", "6 cm", "?"),
+          opts: ["12 cm", "10 cm", "14 cm", "48 cm"],
+          answer: 1,
+          explain: "c = √(6² + 8²) = √(36 + 64) = √100 = 10 cm. Pasangan 6-8-10 adalah kelipatan dari 3-4-5."
+        },
+        {
+          q: "Sebuah segitiga siku-siku mempunyai hipotenusa 13 cm dan salah satu sisi tegaknya 5 cm. Panjang sisi tegak lainnya adalah …",
+          fig: TRIANGLE_SVG("?", "5 cm", "13 cm"),
+          opts: ["8 cm", "10 cm", "12 cm", "18 cm"],
+          answer: 2,
+          explain: "Sisi lain = √(13² − 5²) = √(169 − 25) = √144 = 12 cm. Ini triple 5-12-13."
+        },
+        {
+          q: "Manakah kelompok bilangan berikut yang merupakan triple Pythagoras?",
+          fig: "",
+          opts: ["4, 5, 6", "7, 24, 25", "2, 3, 4", "8, 10, 12"],
+          answer: 1,
+          explain: "7² + 24² = 49 + 576 = 625 = 25². Kelompok lain tidak memenuhi a² + b² = c²."
+        },
+        {
+          q: "Sebuah tangga bersandar pada tembok. Ujung atas tangga mencapai ketinggian 4 m dan kaki tangga berjarak 3 m dari tembok. Berapa panjang tangga itu?",
+          fig: "",
+          opts: ["5 m", "6 m", "7 m", "12 m"],
+          answer: 0,
+          explain: "Tangga adalah hipotenusa: √(4² + 3²) = √(16 + 9) = √25 = 5 m."
+        },
+        {
+          q: "Sisi tegak segitiga siku-siku adalah 9 cm dan 12 cm. Panjang hipotenusanya adalah …",
+          fig: TRIANGLE_SVG("12 cm", "9 cm", "?"),
+          opts: ["13 cm", "14 cm", "15 cm", "21 cm"],
+          answer: 2,
+          explain: "c = √(9² + 12²) = √(81 + 144) = √225 = 15 cm. Pasangan 9-12-15 adalah 3-4-5 dikali 3."
+        },
+        {
+          q: "Layar televisi berbentuk persegi panjang dengan panjang 12 cm dan lebar 5 cm (model skala). Panjang diagonal layar itu adalah …",
+          fig: "",
+          opts: ["13 cm", "15 cm", "17 cm", "60 cm"],
+          answer: 0,
+          explain: "Diagonal = √(12² + 5²) = √(144 + 25) = √169 = 13 cm. Diagonal membagi persegi panjang menjadi dua segitiga siku-siku."
+        },
+        {
+          q: "Hipotenusa segitiga siku-siku 10 cm dan satu sisi tegaknya 6 cm. Sisi tegak lainnya adalah …",
+          fig: TRIANGLE_SVG("?", "6 cm", "10 cm"),
+          opts: ["4 cm", "7 cm", "8 cm", "16 cm"],
+          answer: 2,
+          explain: "Sisi lain = √(10² − 6²) = √(100 − 36) = √64 = 8 cm. Ini pasangan 6-8-10."
+        },
+        {
+          q: "Sisi tegak segitiga siku-siku adalah 8 cm dan 15 cm. Panjang hipotenusanya adalah …",
+          fig: TRIANGLE_SVG("15 cm", "8 cm", "?"),
+          opts: ["16 cm", "17 cm", "20 cm", "23 cm"],
+          answer: 1,
+          explain: "c = √(8² + 15²) = √(64 + 225) = √289 = 17 cm. Pasangan 8-15-17 adalah salah satu triple Pythagoras."
+        },
+        {
+          q: "Sebuah kapal berlayar 12 km ke timur, lalu 5 km ke utara. Jarak terpendek kapal dari titik awal adalah …",
+          fig: "",
+          opts: ["13 km", "15 km", "17 km", "60 km"],
+          answer: 0,
+          explain: "Rute timur–utara membentuk segitiga siku-siku: jarak = √(12² + 5²) = √169 = 13 km."
+        }
+      ];
+
+      /* ================= Tabs ================= */
+      var tabs = document.querySelectorAll(".tab");
+      tabs.forEach(function (t) {
+        t.addEventListener("click", function () {
+          tabs.forEach(function (x) { x.classList.remove("active"); });
+          t.classList.add("active");
+          document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("active"); });
+          document.getElementById("panel-" + t.dataset.tab).classList.add("active");
+          currentTab = t.dataset.tab;
+          resetDwell();
+        });
+      });
+      var currentTab = "quiz";
+
+      /* ================= Sound (tiny beeps, resumed on interaction) ================= */
+      var audioCtx = null;
+      function beep(freq, dur, type) {
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === "suspended") audioCtx.resume();
+          var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+          o.type = type || "sine"; o.frequency.value = freq;
+          g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+          o.connect(g); g.connect(audioCtx.destination);
+          o.start(); o.stop(audioCtx.currentTime + dur);
+        } catch (e) { /* audio is a bonus, never a blocker */ }
+      }
+
+      /* ---- dwell-to-select state (declared early: renderQuestion uses it) ---- */
+      var DWELL_MS = 1000;
+      var dwell = { target: null, start: 0, locked: false };
+      var lastPinch = false, pinchCooldownUntil = 0;
+
+      /* ================= Quiz state ================= */
+      var quiz = { idx: 0, score: 0, streak: 0, answered: false, finished: false };
+      var qText = document.getElementById("qText"),
+          qFigure = document.getElementById("qFigure"),
+          qNum = document.getElementById("qNum"),
+          answersEl = document.getElementById("answers"),
+          feedbackEl = document.getElementById("feedback"),
+          feedbackTitle = document.getElementById("feedbackTitle"),
+          feedbackText = document.getElementById("feedbackText"),
+          btnNext = document.getElementById("btnNext"),
+          scoreVal = document.getElementById("scoreVal"),
+          streakVal = document.getElementById("streakVal"),
+          qPosVal = document.getElementById("qPosVal"),
+          progressFill = document.getElementById("progressFill");
+
+      function renderQuestion() {
+        var item = QUESTIONS[quiz.idx];
+        quiz.answered = false;
+        qNum.textContent = "Soal " + (quiz.idx + 1) + " dari " + QUESTIONS.length;
+        qPosVal.textContent = (quiz.idx + 1) + " / " + QUESTIONS.length;
+        qText.textContent = item.q;
+        qFigure.innerHTML = item.fig || "";
+        qFigure.style.display = item.fig ? "block" : "none";
+        progressFill.style.width = (quiz.idx / QUESTIONS.length * 100) + "%";
+        feedbackEl.classList.remove("show", "good", "bad");
+        answersEl.innerHTML = "";
+        var letters = ["A", "B", "C", "D"];
+        item.opts.forEach(function (opt, i) {
+          var b = document.createElement("button");
+          b.className = "answer-card";
+          b.setAttribute("data-idx", i);
+          b.innerHTML = '<span class="letter">' + letters[i] + '</span><span>' + opt + '</span><span class="dwell-bar"></span>';
+          b.addEventListener("click", function () { chooseAnswer(i); });
+          answersEl.appendChild(b);
+        });
+        resetDwell();
+      }
+
+      function chooseAnswer(i) {
+        if (quiz.answered || quiz.finished) return;
+        quiz.answered = true;
+        var item = QUESTIONS[quiz.idx];
+        var cards = answersEl.querySelectorAll(".answer-card");
+        cards.forEach(function (c) { c.classList.add("locked"); });
+        cards[item.answer].classList.add("correct");
+        if (i === item.answer) {
+          quiz.streak += 1;
+          quiz.score += 10 + (quiz.streak >= 3 ? 5 : 0);
+          feedbackTitle.textContent = "Benar! Kerja bagus.";
+          feedbackEl.classList.add("good");
+          beep(660, 0.15, "sine"); setTimeout(function () { beep(880, 0.2, "sine"); }, 130);
+        } else {
+          quiz.streak = 0;
+          cards[i].classList.add("wrong");
+          feedbackTitle.textContent = "Belum tepat — jawaban yang benar: " + item.opts[item.answer] + ".";
+          feedbackEl.classList.add("bad");
+          beep(220, 0.25, "triangle");
+        }
+        scoreVal.textContent = quiz.score;
+        streakVal.textContent = quiz.streak;
+        feedbackText.textContent = item.explain;
+        feedbackEl.classList.add("show");
+        btnNext.textContent = quiz.idx === QUESTIONS.length - 1 ? "Lihat Hasil" : "Soal Berikutnya";
+        var bar = document.createElement("span"); bar.className = "dwell-bar"; btnNext.appendChild(bar);
+        resetDwell();
+      }
+
+      function nextQuestion() {
+        if (!quiz.answered) return;
+        if (quiz.idx === QUESTIONS.length - 1) { showResult(); return; }
+        quiz.idx += 1;
+        renderQuestion();
+      }
+
+      function showResult() {
+        quiz.finished = true;
+        progressFill.style.width = "100%";
+        document.getElementById("quizPlay").classList.add("hidden");
+        var res = document.getElementById("quizResult");
+        res.classList.remove("hidden");
+        document.getElementById("finalScore").textContent = quiz.score;
+        var msg;
+        if (quiz.score >= 90) msg = "Luar biasa! Kamu menguasai Teorema Pythagoras — sisi miring, sisi tegak, dan triple-nya sudah di luar kepala.";
+        else if (quiz.score >= 70) msg = "Bagus! Sedikit lagi menuju sempurna. Perhatikan kembali soal mencari sisi tegak: kurangi kuadrat hipotenusa dengan kuadrat sisi yang diketahui.";
+        else if (quiz.score >= 50) msg = "Cukup baik untuk awal. Ingat rumusnya: c² = a² + b² untuk sisi miring, dan a² = c² − b² untuk sisi tegak.";
+        else msg = "Tidak apa-apa, ini baru latihan. Coba mode Latihan Gestur, baca pembahasan tiap soal, lalu main lagi — triple 3-4-5, 5-12-13, dan 8-15-17 akan sangat membantumu.";
+        document.getElementById("finalMsg").textContent = msg;
+        beep(523, 0.15); setTimeout(function () { beep(659, 0.15); }, 150); setTimeout(function () { beep(784, 0.3); }, 300);
+      }
+
+      function restartQuiz() {
+        quiz = { idx: 0, score: 0, streak: 0, answered: false, finished: false };
+        scoreVal.textContent = "0"; streakVal.textContent = "0";
+        document.getElementById("quizResult").classList.add("hidden");
+        document.getElementById("quizPlay").classList.remove("hidden");
+        renderQuestion();
+      }
+
+      btnNext.addEventListener("click", nextQuestion);
+      document.getElementById("btnRestart").addEventListener("click", restartQuiz);
+      document.getElementById("btnToPractice").addEventListener("click", function () {
+        document.querySelector('[data-tab="practice"]').click();
+      });
+      renderQuestion();
+
+      /* ================= Practice challenges ================= */
+      var TASKS = [
+        { text: "Tunjukkan 3 jari", hint: "Angkat tiga jari (misalnya telunjuk, tengah, dan manis) dan tahan sebentar.", test: function (g) { return g.count === 3; } },
+        { text: "Buka telapak tangan", hint: "Kelima jari lurus dan renggang, telapak menghadap kamera.", test: function (g) { return g.name === "Telapak Terbuka"; } },
+        { text: "Kepalkan tangan", hint: "Tekuk semua jari rapat-rapat seperti menggenggam.", test: function (g) { return g.name === "Genggaman"; } },
+        { text: "Lakukan gestur cubit", hint: "Tempelkan ujung jempol dan ujung telunjuk sampai menyentuh.", test: function (g) { return g.pinch; } },
+        { text: "Tunjuk dengan telunjuk", hint: "Telunjuk lurus ke depan, jari lain menekuk.", test: function (g) { return g.name === "Menunjuk"; } },
+        { text: "Tunjukkan 5 jari", hint: "Angkat kelima jarimu — jempol ikut dibuka lebar.", test: function (g) { return g.count === 5; } }
+      ];
+      var practice = { idx: 0, holdStart: 0 };
+      var taskText = document.getElementById("taskText"),
+          taskHint = document.getElementById("taskHint"),
+          taskSteps = document.getElementById("taskSteps"),
+          practiceDone = document.getElementById("practiceDone");
+
+      function renderPractice() {
+        taskSteps.innerHTML = "";
+        TASKS.forEach(function (_, i) {
+          var s = document.createElement("i");
+          s.textContent = i + 1;
+          if (i < practice.idx) s.className = "done";
+          if (i === practice.idx) s.className = "now";
+          taskSteps.appendChild(s);
+        });
+        practiceDone.textContent = Math.min(practice.idx, TASKS.length);
+        if (practice.idx >= TASKS.length) {
+          taskText.textContent = "Semua tantangan selesai!";
+          taskHint.textContent = "Kamu sudah mengenal semua gesturnya. Sekarang coba Kuis Gerak dan jawab tanpa menyentuh layar.";
+        } else {
+          taskText.textContent = TASKS[practice.idx].text;
+          taskHint.textContent = TASKS[practice.idx].hint;
+        }
+      }
+      document.getElementById("btnResetPractice").addEventListener("click", function () {
+        practice.idx = 0; practice.holdStart = 0; renderPractice();
+      });
+      document.getElementById("btnToQuiz").addEventListener("click", function () {
+        document.querySelector('[data-tab="quiz"]').click();
+      });
+      renderPractice();
+
+      /* ================= Gesture engine (MediaPipe Hands) ================= */
+      var videoEl = document.getElementById("camVideo"),
+          canvasEl = document.getElementById("camCanvas"),
+          ctx = canvasEl.getContext("2d"),
+          camDot = document.getElementById("camDot"),
+          camStatusText = document.getElementById("camStatusText"),
+          btnCamera = document.getElementById("btnCamera"),
+          camPlaceholder = document.getElementById("camPlaceholder"),
+          gestureNameEl = document.getElementById("gestureName"),
+          practiceGestureEl = document.getElementById("practiceGesture"),
+          fingerDots = document.querySelectorAll("#fingerDots i"),
+          handCursor = document.getElementById("handCursor"),
+          dwellRing = document.getElementById("dwellRing"),
+          quizStage = document.getElementById("quizStage");
+
+      var cameraOn = false, cameraStarting = false;
+      var handState = { present: false, gesture: null, tip: { x: 0.5, y: 0.5 }, smooth: { x: 0.5, y: 0.5 } };
+
+      function dist(a, b) { var dx = a.x - b.x, dy = a.y - b.y; return Math.sqrt(dx * dx + dy * dy); }
+
+      function analyzeHand(lm) {
+        var wrist = lm[0];
+        var scale = dist(lm[0], lm[9]) || 0.0001;
+        function ext(tip, pip) { return dist(lm[tip], wrist) > dist(lm[pip], wrist) * 1.12; }
+        var fingers = {
+          thumb: dist(lm[4], lm[17]) > dist(lm[2], lm[17]) * 1.08,
+          index: ext(8, 6), middle: ext(12, 10), ring: ext(16, 14), pinky: ext(20, 18)
+        };
+        var count = (fingers.thumb ? 1 : 0) + (fingers.index ? 1 : 0) + (fingers.middle ? 1 : 0) + (fingers.ring ? 1 : 0) + (fingers.pinky ? 1 : 0);
+        var pinch = dist(lm[4], lm[8]) < 0.38 * scale;
+        var four = fingers.index && fingers.middle && fingers.ring && fingers.pinky;
+        var name;
+        if (pinch && !fingers.middle) name = "Cubit";
+        else if (count === 5 || (four && fingers.thumb)) name = "Telapak Terbuka";
+        else if (count === 0) name = "Genggaman";
+        else if (fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky) name = "Menunjuk";
+        else name = count + " jari terangkat";
+        return { fingers: fingers, count: count, pinch: pinch, name: name, tip: lm[8] };
+      }
+
+      /* ---- dwell-to-select ---- */
+      function resetDwell() { dwell.target = null; dwell.start = 0; dwell.locked = false; clearHover(); }
+      function clearHover() {
+        document.querySelectorAll(".answer-card.hovered, .next-btn.hovered").forEach(function (el) {
+          el.classList.remove("hovered");
+          var bar = el.querySelector(".dwell-bar"); if (bar) bar.style.width = "0%";
+        });
+        if (dwellRing) dwellRing.style.strokeDashoffset = 106.8;
+      }
+
+      function dwellTargets() {
+        var list = [];
+        if (currentTab !== "quiz" || quiz.finished) return list;
+        if (!quiz.answered) {
+          answersEl.querySelectorAll(".answer-card").forEach(function (c) { list.push({ el: c, action: function () { chooseAnswer(parseInt(c.getAttribute("data-idx"), 10)); } }); });
+        } else if (feedbackEl.classList.contains("show")) {
+          list.push({ el: btnNext, action: nextQuestion });
+        }
+        return list;
+      }
+
+      function updateCursorAndDwell() {
+        if (!handState.present) { handCursor.classList.remove("show"); clearHover(); dwell.target = null; return; }
+        var rect = quizStage.getBoundingClientRect();
+        /* landmarks are unmirrored; mirror x so the cursor matches the mirrored video */
+        var nx = 1 - handState.smooth.x, ny = handState.smooth.y;
+        var px = nx * rect.width, py = ny * rect.height;
+        handCursor.style.left = px + "px";
+        handCursor.style.top = py + "px";
+        handCursor.classList.toggle("show", currentTab === "quiz");
+        handCursor.classList.toggle("pinched", !!(handState.gesture && handState.gesture.pinch));
+
+        var targets = dwellTargets();
+        var hit = null;
+        for (var i = 0; i < targets.length; i++) {
+          var r = targets[i].el.getBoundingClientRect();
+          if (px + rect.left >= r.left && px + rect.left <= r.right && py + rect.top >= r.top && py + rect.top <= r.bottom) { hit = targets[i]; break; }
+        }
+        var now = performance.now();
+
+        /* pinch = instant select */
+        var pinching = !!(handState.gesture && handState.gesture.pinch);
+        if (pinching && !lastPinch && hit && now > pinchCooldownUntil) {
+          pinchCooldownUntil = now + 900;
+          hit.action();
+          resetDwell();
+          lastPinch = pinching;
+          return;
+        }
+        lastPinch = pinching;
+
+        if (!hit) { dwell.target = null; dwell.start = 0; clearHover(); return; }
+        if (dwell.target !== hit.el) { clearHover(); dwell.target = hit.el; dwell.start = now; hit.el.classList.add("hovered"); }
+        var frac = Math.min(1, (now - dwell.start) / DWELL_MS);
+        var bar = hit.el.querySelector(".dwell-bar"); if (bar) bar.style.width = (frac * 100) + "%";
+        dwellRing.style.strokeDashoffset = 106.8 * (1 - frac);
+        if (frac >= 1 && !dwell.locked) {
+          dwell.locked = true;
+          hit.action();
+          resetDwell();
+        }
+      }
+
+      /* ---- MediaPipe wiring ---- */
+      var hands = null, mpCamera = null;
+
+      function onResults(results) {
+        ctx.save();
+        ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+        var lm = results.multiHandLandmarks && results.multiHandLandmarks[0];
+        if (lm) {
+          handState.present = true;
+          var g = analyzeHand(lm);
+          handState.gesture = g;
+          handState.tip = g.tip;
+          handState.smooth.x += (g.tip.x - handState.smooth.x) * 0.45;
+          handState.smooth.y += (g.tip.y - handState.smooth.y) * 0.45;
+          if (window.drawConnectors && window.HAND_CONNECTIONS) {
+            window.drawConnectors(ctx, lm, window.HAND_CONNECTIONS, { color: "#2fbfa9", lineWidth: 3 });
+            window.drawLandmarks(ctx, lm, { color: "#e8a020", lineWidth: 1, radius: 3 });
+          }
+          gestureNameEl.textContent = g.name;
+          practiceGestureEl.textContent = g.name;
+          var order = ["thumb", "index", "middle", "ring", "pinky"];
+          fingerDots.forEach(function (d, i) { d.classList.toggle("up", !!g.fingers[order[i]]); });
+          /* practice challenge check: must hold gesture ~600ms */
+          if (currentTab === "practice" && practice.idx < TASKS.length) {
+            if (TASKS[practice.idx].test(g)) {
+              if (!practice.holdStart) practice.holdStart = performance.now();
+              else if (performance.now() - practice.holdStart > 600) {
+                practice.idx += 1; practice.holdStart = 0;
+                beep(740, 0.15); renderPractice();
+              }
+            } else practice.holdStart = 0;
+          }
+        } else {
+          handState.present = false;
+          handState.gesture = null;
+          gestureNameEl.textContent = "Tidak ada tangan terdeteksi";
+          practiceGestureEl.textContent = "—";
+          fingerDots.forEach(function (d) { d.classList.remove("up"); });
+          practice.holdStart = 0;
+        }
+        ctx.restore();
+        updateCursorAndDwell();
+      }
+
+      function setCamStatus(state, text) {
+        camDot.className = "dot" + (state === "on" ? " on" : state === "err" ? " err" : "");
+        camStatusText.textContent = text;
+      }
+
+      btnCamera.addEventListener("click", function () {
+        if (cameraOn || cameraStarting) return;
+        if (typeof Hands === "undefined" || typeof Camera === "undefined") {
+          setCamStatus("err", "Pustaka gestur gagal dimuat");
+          camPlaceholder.querySelector("div").innerHTML = "Pustaka pelacak tangan tidak berhasil dimuat (periksa koneksi internet), tetapi kuis tetap bisa dimainkan dengan ketukan atau klik.";
+          return;
+        }
+        cameraStarting = true;
+        btnCamera.textContent = "Menyiapkan…";
+        setCamStatus("", "Meminta izin kamera…");
+        try {
+          hands = new Hands({ locateFile: function (f) { return "https://cdn.jsdelivr.net/npm/@mediapipe/hands/" + f; } });
+          hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.6, minTrackingConfidence: 0.5 });
+          hands.onResults(onResults);
+          mpCamera = new Camera(videoEl, {
+            onFrame: function () { return hands.send({ image: videoEl }); },
+            width: 640, height: 480
+          });
+          mpCamera.start().then(function () {
+            cameraOn = true; cameraStarting = false;
+            camPlaceholder.classList.add("hidden");
+            btnCamera.textContent = "Kamera Aktif";
+            btnCamera.disabled = true;
+            setCamStatus("on", "Kamera aktif — tunjukkan tanganmu");
+            gestureNameEl.textContent = "Tidak ada tangan terdeteksi";
+          }).catch(function () {
+            cameraStarting = false;
+            btnCamera.textContent = "Coba Lagi";
+            setCamStatus("err", "Izin kamera ditolak / tidak tersedia");
+            camPlaceholder.querySelector("div").innerHTML = "Kamera tidak dapat diakses. Periksa izin kamera di browser — atau tetap main dengan ketukan/klik, semua soal bisa dijawab tanpa gestur.";
+          });
+        } catch (e) {
+          cameraStarting = false;
+          btnCamera.textContent = "Coba Lagi";
+          setCamStatus("err", "Kamera tidak tersedia di perangkat ini");
+        }
+      });
+    </script>
+  </body>
+</html>
