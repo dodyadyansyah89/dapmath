@@ -202,7 +202,6 @@
       <a href="#matematika">Tentang Matematika</a>
       <a href="#karya">Karya</a>
       <a href="#galeri">Galeri Karya</a>
-      <a href="#prompter">Prompter</a>
       <a href="#pelatihan">Pelatihan</a>
       <a href="#tentang">Tentang Saya</a>
       <a href="#kontak">Kontak</a>
@@ -429,25 +428,8 @@
   </div>
 </section>
 
-<!-- ================= 4c. PROMPTER ================= -->
-<section id="prompter">
-  <div class="wrap">
-    <span class="eyebrow reveal">Untuk Guru</span>
-    <h2 class="sec-title reveal">Prompter</h2>
-    <p class="sec-sub reveal">Perangkat bantu guru merangkai prompt AI untuk membuat media pembelajaran — isi formulir, dapatkan prompt siap pakai.</p>
-    <div class="karya-grid">
-      <article class="karya-card reveal">
-        <span class="doc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-5-6-5M12 19h8"/></svg></span>
-        <h3>MPI Prompter</h3>
-        <p>Perangkai prompt media pembelajaran interaktif untuk guru: isi formulir (identitas, tujuan pembelajaran, jenis media, cerita &amp; visual, fitur wajib), dapatkan prompt siap salin, kirim ke 11 AI — termasuk Gemini, ChatGPT, dan Claude — dan simpan ke pustaka pribadi.</p>
-        <span class="file-meta">Web App · Gratis</span>
-        <a class="dl-btn" href="mpi-prompter/">Buka MPI Prompter →</a>
-      </article>
-    </div>
-  </div>
-</section>
 
-<!-- ================= 4d. PELATIHAN ================= -->
+<!-- ================= 4c. PELATIHAN ================= -->
 <section id="pelatihan" class="locked">
   <div class="wrap">
     <span class="eyebrow reveal">Untuk Guru</span>
@@ -489,7 +471,7 @@
       <article class="karya-card reveal">
         <span class="doc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-5-6-5M12 19h8"/></svg></span>
         <h3>Deck Workshop Media Pembelajaran Digital</h3>
-        <p>Slide workshop narasumber 120 menit (20 slide): Pembuka, Showcase, Konsep kilat, Praktik Canva AI, Praktik Gemini &amp; AI lain, Publikasi &amp; uji akses, Demo, dan Penutup.</p>
+        <p>Slide workshop narasumber 120 menit (21 slide): Pembuka, Showcase, Konsep kilat, Praktik Canva AI, Praktik Gemini &amp; AI lain, Publikasi &amp; uji akses, Demo, dan Penutup.</p>
         <span class="file-meta">PPTX · Unduhan</span>
         <a class="dl-btn" href="pelatihan/Deck-Workshop-Media-Pembelajaran-Digital.pptx" download>Unduh Deck (PPTX) ↓</a>
       </article>
@@ -671,7 +653,7 @@
 
   /* Status aktif pada navigasi */
   var navLinks = document.querySelectorAll("#navLinks a");
-  var sections = ["beranda","aplikasi","matematika","karya","galeri","prompter","pelatihan","tentang","kontak"].map(function(id){return document.getElementById(id);});
+  var sections = ["beranda","aplikasi","matematika","karya","galeri","pelatihan","tentang","kontak"].map(function(id){return document.getElementById(id);});
   if ("IntersectionObserver" in window){
     var nio = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
