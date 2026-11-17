@@ -25,6 +25,14 @@
   .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
   section{padding:72px 0}
   section:nth-of-type(even){background:var(--surface)}
+
+  /* ---------- Halaman satu-per-satu (tanpa skrol halaman) ---------- */
+  html,body{height:100%}
+  body{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+  nav{flex:none}
+  #pages{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+  #pages > section{display:none}
+  #pages > section.page-active{display:block}
   .eyebrow{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:10px}
   h2.sec-title{margin:0 0 8px;font-size:clamp(26px,4vw,36px);font-weight:800;letter-spacing:-.02em;line-height:1.2}
   .sec-sub{margin:0 0 34px;color:var(--ink-soft);max-width:44em;font-size:16px}
@@ -210,7 +218,8 @@
 </nav>
 
 <!-- ================= 1. BERANDA ================= -->
-<section id="beranda">
+<main id="pages">
+<section id="beranda" class="page-active">
   <span class="float" style="top:12%;left:6%;font-size:64px">∑</span>
   <span class="float" style="top:64%;left:3%;font-size:48px;animation-delay:1.4s">√</span>
   <span class="float" style="top:20%;right:8%;font-size:56px;animation-delay:2.6s">π</span>
@@ -552,6 +561,7 @@
     <p>Membuat Matematika Menyenangkan.</p>
   </div>
 </footer>
+</main>
 
 <!-- ================= MODAL PEMBACA KARYA ================= -->
 <div class="reader-backdrop" id="readerBackdrop" role="dialog" aria-modal="true" aria-labelledby="readerTitle" hidden>
@@ -651,20 +661,27 @@
     revealEls.forEach(function(el){ el.classList.add("visible"); });
   }
 
-  /* Status aktif pada navigasi */
+  /* Navigasi halaman satu-per-satu: hanya satu seksi tampil, skrol hanya di dalam #pages */
+  var PAGE_IDS = ["beranda","aplikasi","matematika","karya","galeri","pelatihan","tentang","kontak"];
+  var pagesEl = document.getElementById("pages");
+  var pageSections = {};
+  PAGE_IDS.forEach(function(id){ pageSections[id] = document.getElementById(id); });
   var navLinks = document.querySelectorAll("#navLinks a");
-  var sections = ["beranda","aplikasi","matematika","karya","galeri","pelatihan","tentang","kontak"].map(function(id){return document.getElementById(id);});
-  if ("IntersectionObserver" in window){
-    var nio = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if (e.isIntersecting){
-          navLinks.forEach(function(a){
-            a.classList.toggle("active", a.getAttribute("href")==="#"+e.target.id);
-          });
-        }
-      });
-    }, {rootMargin:"-40% 0px -55% 0px"});
-    sections.forEach(function(s){ if(s) nio.observe(s); });
+  function showPage(id, push){
+    if (!pageSections[id]) id = "beranda";
+    PAGE_IDS.forEach(function(pid){
+      var s = pageSections[pid];
+      if (s) s.classList.toggle("page-active", pid === id);
+    });
+    navLinks.forEach(function(a){
+      a.classList.toggle("active", a.getAttribute("href") === "#" + id);
+    });
+    if (pagesEl) pagesEl.scrollTop = 0;
+    window.scrollTo(0, 0);
+    try {
+      if (push) { history.pushState(null, "", "#" + id); }
+      else { history.replaceState(null, "", "#" + id); }
+    } catch (e) {}
   }
 
   /* Modal pembaca karya (Buku & Perangkat Ajar) */
@@ -707,7 +724,7 @@
     pin = pin.trim();
     if (pin === PIN_PELATIHAN){
       pelatihanSec.classList.remove("locked");
-      pelatihanSec.scrollIntoView();
+      showPage("pelatihan", true);
       return true;
     }
     alert("PIN salah. Silakan coba lagi.");
@@ -715,22 +732,41 @@
   }
   var btnPin = document.getElementById("btnPinPelatihan");
   if (btnPin) btnPin.addEventListener("click", bukaPelatihan);
-  var navPel = document.querySelector('#navLinks a[href="#pelatihan"]');
-  if (navPel) navPel.addEventListener("click", function(e){
-    if (pelatihanSec.classList.contains("locked")){ e.preventDefault(); bukaPelatihan(); }
-  });
-  var semuaNav = document.querySelectorAll("#navLinks a");
-  for (var ni = 0; ni < semuaNav.length; ni++){
-    (function(link){
-      link.addEventListener("click", function(){
-        if (link.getAttribute("href") !== "#pelatihan" && !pelatihanSec.classList.contains("locked")){
-          pelatihanSec.classList.add("locked");
-        }
-      });
-    })(semuaNav[ni]);
+  function kunciPelatihan(){
+    if (!pelatihanSec.classList.contains("locked")) pelatihanSec.classList.add("locked");
   }
-  if (location.hash === "#pelatihan" && pelatihanSec.classList.contains("locked")){
-    bukaPelatihan();
+  function pergiKe(id){
+    if (id === "pelatihan"){
+      if (pelatihanSec.classList.contains("locked")){ bukaPelatihan(); return; }
+      showPage("pelatihan", true);
+      return;
+    }
+    kunciPelatihan();
+    showPage(id, true);
+  }
+  /* Semua tautan dalam halaman (#beranda, #aplikasi, tombol hero, dst.) pindah halaman, bukan skrol */
+  document.addEventListener("click", function(e){
+    var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var id = a.getAttribute("href").slice(1);
+    if (PAGE_IDS.indexOf(id) === -1) return;
+    e.preventDefault();
+    pergiKe(id);
+  });
+  /* Tombol kembali/maju browser ikut pindah halaman */
+  window.addEventListener("popstate", function(){
+    var h = (location.hash || "").slice(1);
+    if (PAGE_IDS.indexOf(h) === -1) h = "beranda";
+    if (h === "pelatihan" && pelatihanSec.classList.contains("locked")){ showPage("beranda"); return; }
+    showPage(h);
+  });
+  /* Halaman awal dari hash di alamat, kalau ada */
+  var hashAwal = (location.hash || "").slice(1);
+  if (PAGE_IDS.indexOf(hashAwal) === -1) hashAwal = "beranda";
+  if (hashAwal === "pelatihan" && pelatihanSec.classList.contains("locked")){
+    if (!bukaPelatihan()) showPage("beranda");
+  } else {
+    showPage(hashAwal);
   }
 })();
 </script>
