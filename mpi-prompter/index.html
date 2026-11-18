@@ -163,6 +163,11 @@
         .chips label:has(input:checked) { color: #08130f; }
       }
       .chips label:has(input:focus-visible) { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .chips .fgroup {
+        flex: 0 0 100%; font-weight: 700; font-size: 0.82rem;
+        color: var(--muted); margin-top: 6px;
+      }
+      .chips .fgroup:first-child { margin-top: 0; }
 
       /* checkboxes */
       .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
@@ -406,16 +411,37 @@
             <div class="field">
               <span class="flabel">Jenis media</span>
               <div class="chips" id="jenisChips">
-                <label><input type="radio" name="jenis" value="Game petualangan berbasis misi" checked /> Game Petualangan</label>
-                <label><input type="radio" name="jenis" value="Game kuis interaktif" /> Game Kuis</label>
-                <label><input type="radio" name="jenis" value="Simulasi interaktif yang dapat dimanipulasi siswa" /> Simulasi Interaktif</label>
-                <label><input type="radio" name="jenis" value="Kuis interaktif dengan umpan balik langsung" /> Kuis Interaktif</label>
-                <label><input type="radio" name="jenis" value="Cerita interaktif bercabang (pilih jalan ceritamu)" /> Cerita Interaktif</label>
-                <label><input type="radio" name="jenis" value="Komik interaktif dengan panel dan balon percakapan" /> Komik Interaktif</label>
-                <label><input type="radio" name="jenis" value="Eksplorasi virtual (menjelajahi tempat/objek secara virtual)" /> Eksplorasi Virtual</label>
-                <label><input type="radio" name="jenis" value="Latihan interaktif bertahap (drill & practice)" /> Latihan Bertahap</label>
-                <label><input type="radio" name="jenis" value="Campuran: eksplorasi materi, aktivitas interaktif, dan kuis dalam satu media" /> Campuran</label>
+                <span class="fgroup">A. Eksplorasi dan Visualisasi</span>
+                <label><input type="radio" name="jenis" value="Manipulasi Objek Interaktif" /> Manipulasi Objek</label>
+                <label><input type="radio" name="jenis" value="Visualisasi 3D" /> Visualisasi 3D</label>
+                <label><input type="radio" name="jenis" value="Simulasi Interaktif" /> Simulasi Interaktif</label>
+                <label><input type="radio" name="jenis" value="Laboratorium Virtual" /> Laboratorium Virtual</label>
+                <span class="fgroup">B. Game-Based Learning</span>
+                <label><input type="radio" name="jenis" value="Quiz Game" /> Quiz Game</label>
+                <label><input type="radio" name="jenis" value="Escape Room" /> Escape Room</label>
+                <label><input type="radio" name="jenis" value="Adventure Learning Game" checked /> Adventure Game</label>
+                <label><input type="radio" name="jenis" value="Strategy Game" /> Strategy Game</label>
+                <label><input type="radio" name="jenis" value="Matching and Memory Game" /> Matching &amp; Memory</label>
+                <label><input type="radio" name="jenis" value="Platformer Game" /> Platformer Game</label>
+                <span class="fgroup">C. Interaksi Langsung</span>
+                <label><input type="radio" name="jenis" value="Gesture Recognition" /> Gesture Recognition</label>
+                <label><input type="radio" name="jenis" value="Touch-Based Learning" /> Touch-Based Learning</label>
+                <label><input type="radio" name="jenis" value="Augmented Reality (AR)" /> Augmented Reality (AR)</label>
+                <label><input type="radio" name="jenis" value="Virtual Reality (VR)" /> Virtual Reality (VR)</label>
+                <span class="fgroup">D. Kecerdasan Buatan</span>
+                <label><input type="radio" name="jenis" value="AI Tutor" /> AI Tutor</label>
+                <label><input type="radio" name="jenis" value="Voice Interactive Learning" /> Voice Interactive</label>
+                <label><input type="radio" name="jenis" value="Adaptive Learning" /> Adaptive Learning</label>
+                <label><input type="radio" name="jenis" value="Intelligent Assessment" /> Intelligent Assessment</label>
+                <span class="fgroup">E. Cerita dan Simulasi Kehidupan Nyata</span>
+                <label><input type="radio" name="jenis" value="Interactive Digital Comic" /> Komik Digital Interaktif</label>
+                <label><input type="radio" name="jenis" value="Branching Scenario" /> Branching Scenario</label>
+                <label><input type="radio" name="jenis" value="Virtual World Simulation" /> Simulasi Dunia Virtual</label>
+                <label><input type="radio" name="jenis" value="Real-Life Problem Simulation" /> Simulasi Masalah Nyata</label>
+                <span class="fgroup">Lainnya</span>
+                <label><input type="radio" name="jenis" value="Campuran" /> Campuran</label>
               </div>
+              <p class="hint">Panduan memilih: materi abstrak → visualisasi/simulasi • prosedural → demonstrasi/tutorial • hafalan → kuis/matching • penalaran → game problem-solving • eksperimen → lab virtual • komunikasi → voice • berdiferensiasi → adaptive learning.</p>
             </div>
 
             <div class="grid2">
@@ -718,6 +744,144 @@
         }
         function val(id) { return $(id).value.trim(); }
 
+        /* ---------- cetak biru per jenis media (22 jenis + Campuran) ---------- */
+        /* Hanya blok jenis yang dipilih yang disisipkan ke prompt. */
+        var JENIS_BLOK = {
+          "Manipulasi Objek Interaktif": [
+            "Sediakan objek yang relevan dengan materi dan dapat digeser, diputar, diperbesar, diperkecil, atau diubah bentuknya dengan drag-and-drop.",
+            "Sediakan input nilai (mis. koordinat, sudut, ukuran) yang langsung mengubah objek dan menampilkan perhitungan otomatis.",
+            "Sertakan pertanyaan eksplorasi dan tantangan mandiri agar siswa menemukan konsep lewat percobaan, bukan hanya membaca rumus.",
+            "Animasi perubahan objek harus mengikuti aksi siswa secara langsung."
+          ],
+          "Visualisasi 3D": [
+            "Tampilkan objek 3D yang dapat diputar 360 derajat, diperbesar, dan diperkecil.",
+            "Sediakan pilihan sudut pandang dan label pada setiap bagian objek; klik bagian objek menampilkan informasi bagiannya.",
+            "Sertakan animasi dan aktivitas eksplorasi terpandu (mis. temukan dan tandai bagian tertentu).",
+            "Visualisasi 3D harus dapat dijalankan langsung di browser."
+          ],
+          "Simulasi Interaktif": [
+            "Sediakan variabel yang dapat diubah siswa (mis. slider, input nilai) dan tampilkan dampaknya secara langsung pada sistem yang disimulasikan.",
+            "Tampilkan hubungan sebab-akibat dengan jelas: setiap perubahan variabel menghasilkan perubahan yang dapat diamati dan dijelaskan.",
+            "Sertakan pertanyaan pengamatan (apa yang terjadi jika...) dan tantangan prediksi sebelum siswa mengubah variabel.",
+            "Pastikan simulasi mengikuti prinsip keilmuan yang benar dan hasilnya masuk akal."
+          ],
+          "Laboratorium Virtual": [
+            "Sediakan area eksperimen dengan alat/bahan virtual yang dapat dimanipulasi siswa.",
+            "Sediakan variabel yang dapat diubah dan tampilkan perubahan hasil eksperimen secara langsung.",
+            "Sertakan pertanyaan pengamatan, lembar pencatatan hasil, dan langkah menarik kesimpulan.",
+            "Pastikan simulasi mengikuti prinsip ilmiah dan menghasilkan hubungan sebab-akibat yang masuk akal."
+          ],
+          "Quiz Game": [
+            "Sediakan minimal 15 soal yang sesuai materi dan tingkat kelas, dengan variasi bentuk: pilihan ganda, benar/salah, dan isian singkat.",
+            "Terapkan sistem skor, timer, dan level kesulitan; tampilkan papan skor/rekap hasil di akhir.",
+            "Berikan animasi respons benar/salah dan pembahasan singkat untuk setiap soal; pastikan kunci jawaban benar.",
+            "Acak urutan soal dan pilihan jawaban setiap kali dimainkan."
+          ],
+          "Escape Room": [
+            "Buka dengan cerita dan misi yang jelas: siswa harus menyelesaikan tantangan untuk membuka ruangan berikutnya.",
+            "Sediakan minimal lima ruangan; setiap ruangan berisi satu tantangan pembelajaran.",
+            "Jawaban benar menghasilkan kode atau kunci untuk lanjut; jawaban salah memberikan petunjuk, bukan jalan buntu.",
+            "Sediakan indikator progres dan penghargaan saat seluruh ruangan selesai."
+          ],
+          "Adventure Learning Game": [
+            "Bangun peta/misi petualangan: siswa menjelajahi lingkungan virtual dan menyelesaikan tantangan pembelajaran di tiap titik.",
+            "Setiap tantangan yang diselesaikan membuka area, item, atau petunjuk berikutnya.",
+            "Sediakan progres misi, poin, dan akhir cerita yang hanya tercapai bila semua tantangan diselesaikan.",
+            "Cerita dan tantangan harus selaras dengan materi dan TP."
+          ],
+          "Strategy Game": [
+            "Siswa mengambil keputusan berbasis materi (mis. mengelola anggaran, membangun berdasarkan perhitungan, menyusun strategi) dan melihat konsekuensinya.",
+            "Setiap keputusan memakai konsep dari materi; keputusan yang keliru harus dijelaskan kenapa merugikan.",
+            "Sediakan sumber daya terbatas (uang, waktu, material) dan skor akhir berdasarkan kualitas keputusan.",
+            "Sertakan beberapa ronde agar strategi dapat diperbaiki."
+          ],
+          "Matching and Memory Game": [
+            "Sediakan permainan mencocokkan pasangan (mis. istilah-definisi, rumus-konsep, gambar-nama) dan/atau kartu memori.",
+            "Terapkan skor berdasarkan jumlah percobaan dan waktu; tampilkan pasangan yang sudah benar.",
+            "Sediakan minimal 8 pasang dan acak posisi kartu setiap permainan.",
+            "Setelah semua pasangan ditemukan, tampilkan rangkuman seluruh pasangan sebagai penguatan."
+          ],
+          "Platformer Game": [
+            "Sediakan karakter yang bergerak melewati rintangan; untuk melanjutkan perjalanan siswa harus menyelesaikan soal.",
+            "Jawaban benar membuat karakter melompat/maju; jawaban salah memberi kesempatan ulang dengan petunjuk.",
+            "Sediakan beberapa level dengan kesulitan menanjak dan rintangan yang bertambah.",
+            "Tampilkan skor, nyawa/progres, dan layar akhir saat perjalanan selesai."
+          ],
+          "Gesture Recognition": [
+            "Kendalikan media dengan gerakan tangan lewat kamera: gerakan menunjuk untuk memilih jawaban, cubit untuk memilih seketika, dan gerakan tangan untuk menggerakkan objek di layar.",
+            "Rancang aktivitas agar seluruh jawaban dan aksi dapat dilakukan dengan gestur; sentuh/klik hanya sebagai cadangan."
+          ],
+          "Touch-Based Learning": [
+            "Rancang seluruh interaksi untuk layar sentuh: geser, ketuk, seret-dan-letakkan, dan menggambar langsung.",
+            "Tombol dan area sentuh harus cukup besar untuk jari siswa dan responsif tanpa jeda.",
+            "Sertakan aktivitas manipulasi langsung (menyusun, mengurutkan, menggambar bangun), bukan hanya memilih jawaban.",
+            "Media harus nyaman dimainkan di HP, tablet, dan IFP."
+          ],
+          "Augmented Reality (AR)": [
+            "Tampilkan objek 3D sesuai materi di atas permukaan nyata lewat kamera HP, dengan pratinjau kamera.",
+            "Rancang aktivitas eksplorasi: siswa menemukan, memutar, dan memeriksa objek 3D untuk menjawab pertanyaan."
+          ],
+          "Virtual Reality (VR)": [
+            "Bawa siswa ke lingkungan virtual yang dapat dijelajahi (mis. museum virtual, luar angkasa, struktur bumi).",
+            "Sediakan navigasi melihat sekeliling dan titik-titik informasi yang dapat dibuka siswa.",
+            "Sertakan aktivitas eksplorasi terpandu dan pertanyaan di tiap titik.",
+            "Sediakan juga mode non-VR (tampilan 360 derajat yang dapat digeser) agar media tetap dapat dipakai tanpa headset."
+          ],
+          "AI Tutor": [
+            "AI berperan sebagai tutor: menjelaskan konsep dengan bahasa sesuai usia siswa, menjawab pertanyaan, dan memberi contoh.",
+            "AI membimbing langkah demi langkah dan memberi petunjuk bertahap; JANGAN langsung memberikan jawaban akhir sebelum membimbing.",
+            "AI mengidentifikasi kesalahan pemahaman siswa dan memberikan latihan sesuai kebutuhan.",
+            "AI hanya membahas materi yang ditentukan; bila siswa bertanya di luar materi, arahkan kembali ke tujuan pembelajaran.",
+            "Integrasikan layanan AI melalui API yang aman; jangan menempatkan API key di kode frontend."
+          ],
+          "Voice Interactive Learning": [
+            "Rancang percakapan suara sebagai cara utama berinteraksi: siswa bertanya dan menjawab dengan suara, media merespons secara lisan.",
+            "Sertakan latihan percakapan/latihan lisan sesuai materi dan mapel."
+          ],
+          "Adaptive Learning": [
+            "Mulai dengan tes diagnostik awal untuk memetakan tingkat kemampuan siswa.",
+            "Sediakan materi dan soal bertingkat; soal berikutnya menyesuaikan jawaban sebelumnya (salah menjadi lebih dasar, benar menjadi lebih menantang).",
+            "Sertakan analisis kesalahan dan rekomendasi materi berikutnya, serta laporan perkembangan di akhir.",
+            "Gunakan aturan adaptasi yang transparan dan dapat diperiksa guru."
+          ],
+          "Intelligent Assessment": [
+            "Analisis jawaban siswa lebih dalam dari sekadar benar/salah: periksa langkah penyelesaian dan deteksi kemungkinan kesalahan konsep.",
+            "Berikan umpan balik perbaikan yang spesifik dan petunjuk langkah berikutnya, bukan hanya skor.",
+            "Sertakan rekap hasil per siswa (bagian yang sudah dikuasai dan yang masih lemah) sebagai laporan untuk guru.",
+            "Soal harus selaras dengan TP dan kunci jawaban akurat."
+          ],
+          "Interactive Digital Comic": [
+            "Bangun cerita kontekstual dengan karakter menarik, panel komik, dan dialog.",
+            "Sisipkan pilihan respons pembaca dan pertanyaan pada bagian tertentu; pilihan memengaruhi kelanjutan cerita.",
+            "Berikan umpan balik pada pilihan/pertanyaan dan kesimpulan pembelajaran di akhir.",
+            "Pastikan cerita mendukung tujuan pembelajaran dan konsep akademiknya benar."
+          ],
+          "Branching Scenario": [
+            "Siswa menghadapi situasi dan memilih keputusan; setiap keputusan memiliki konsekuensi yang berbeda.",
+            "Buat minimal tiga jalur cerita dan beberapa kemungkinan akhir.",
+            "Tampilkan perubahan alur, konsekuensi, dan penjelasan pembelajaran dari setiap keputusan.",
+            "Sertakan kesempatan mengulang dari simpul keputusan untuk mencoba jalur lain."
+          ],
+          "Virtual World Simulation": [
+            "Sediakan lingkungan virtual yang dapat dijelajahi siswa untuk menyelesaikan berbagai permasalahan (mis. ekosistem, pasar, kota).",
+            "Siswa berinteraksi dengan objek dan tokoh di dunia virtual; tiap interaksi berkaitan dengan materi.",
+            "Sertakan misi/daftar tugas dan peta atau petunjuk navigasi.",
+            "Akhiri dengan refleksi: apa yang dipelajari dari menjelajahi dunia tersebut."
+          ],
+          "Real-Life Problem Simulation": [
+            "Angkat persoalan kehidupan nyata (mis. merancang rumah/taman, mengatur anggaran belanja, mengelola lingkungan sekolah).",
+            "Siswa menerapkan pengetahuan untuk merencanakan, menghitung, dan memutuskan; tampilkan dampak keputusan secara langsung.",
+            "Sediakan data dan alat bantu yang realistis (harga, ukuran, batasan) serta kriteria keberhasilan yang jelas.",
+            "Akhiri dengan presentasi/refleksi hasil rancangan siswa."
+          ],
+          "Campuran": [
+            "Gabungkan eksplorasi materi, aktivitas interaktif, dan kuis dalam satu media dengan alur yang jelas: pahami konsep, coba dan mainkan, lalu uji lewat kuis.",
+            "Setiap bagian harus terasa menyatu dalam satu tema/cerita, bukan tiga media yang ditempel."
+          ]
+        };
+        /* Jenis yang penilaiannya tertanam dalam tantangan/keputusan (tanpa kuis akhir terpisah). */
+        var JENIS_EVAL_TERTANAM = ["Escape Room", "Adventure Learning Game", "Strategy Game", "Platformer Game", "Matching and Memory Game", "Interactive Digital Comic", "Branching Scenario", "Virtual World Simulation", "Real-Life Problem Simulation"];
+
         function buildPrompt() {
           var jenjang = JENJANG_LABEL[$("jenjang").value] || $("jenjang").value;
           var kelas = $("kelas").value;
@@ -759,6 +923,11 @@
           L.push("");
           L.push("=== 2. BENTUK MEDIA ===");
           L.push("- Jenis media: " + jenis);
+          var blokJenis = JENIS_BLOK[jenis];
+          if (blokJenis) {
+            L.push("- Cetak biru jenis media ini (wajib diikuti):");
+            blokJenis.forEach(function (b) { L.push("  • " + b); });
+          }
           L.push("- Model pembelajaran: " + model + ". Susun alur aktivitas mengikuti sintaks model tersebut.");
           L.push("- Perangkat utama siswa: " + perangkat);
           if (fitur.length) {
@@ -766,9 +935,9 @@
             fitur.forEach(function (f) { L.push("  • " + f); });
           }
           var kendaliText = kendali.length ? kendali.join("; ") : "Sentuh / klik (tombol dan layar sentuh)";
-          var gesturMode = kendali.some(function (k) { return k.indexOf("gestur") >= 0; });
-          var suaraMode = kendali.some(function (k) { return k.indexOf("Suara") >= 0; });
-          var arMode = fitur.some(function (f) { return f.indexOf("Augmented Reality") >= 0; });
+          var gesturMode = kendali.some(function (k) { return k.indexOf("gestur") >= 0; }) || jenis === "Gesture Recognition";
+          var suaraMode = kendali.some(function (k) { return k.indexOf("Suara") >= 0; }) || jenis === "Voice Interactive Learning";
+          var arMode = fitur.some(function (f) { return f.indexOf("Augmented Reality") >= 0; }) || jenis === "Augmented Reality (AR)";
           L.push("- Cara mengendalikan media: " + kendaliText + ".");
           if (gesturMode) {
             if (gestur.length) {
@@ -804,7 +973,11 @@
             L.push("- Syarat kamera: halaman dibuka lewat HTTPS agar browser mengizinkan kamera; bila izin ditolak, tampilkan pesan ramah.");
             L.push("- Aturan pakai AR: ruangan cukup terang, permukaan datar dan tidak mengilap untuk penempatan objek, dan satu perangkat dalam satu waktu.");
           }
-          L.push("- Evaluasi akhir berisi " + jumlahSoal + " soal yang selaras dengan TP, lengkap dengan kunci jawaban dan pembahasan singkat untuk setiap soal.");
+          if (JENIS_EVAL_TERTANAM.indexOf(jenis) >= 0) {
+            L.push("- Penilaian tertanam dalam tantangan/keputusan di dalam media; akhiri dengan rekap capaian dan satu pertanyaan refleksi (tanpa kuis terpisah).");
+          } else {
+            L.push("- Evaluasi akhir berisi " + jumlahSoal + " soal yang selaras dengan TP, lengkap dengan kunci jawaban dan pembahasan singkat untuk setiap soal.");
+          }
           L.push("");
           L.push("=== 3. CERITA & VISUAL ===");
           if (tema) L.push("- Tema / alur cerita: " + tema + ". Jadikan cerita sebagai pengantar masalah dan pengikat antaraktivitas, bukan sekadar hiasan.");
@@ -818,8 +991,12 @@
           L.push("2. Petunjuk penggunaan yang singkat dan jelas.");
           L.push("3. Tujuan pembelajaran ditampilkan dengan bahasa yang dipahami siswa.");
           L.push("4. Apersepsi / pemantik: pertanyaan atau situasi pembuka yang mengaitkan materi dengan kehidupan siswa.");
-          L.push("5. Aktivitas inti sesuai model pembelajaran dan jenis media yang dipilih, dengan materi ringkas disisipkan di antara aktivitas (bukan halaman teks panjang).");
-          L.push("6. Evaluasi: " + jumlahSoal + " soal dengan skor otomatis dan umpan balik per soal.");
+          L.push("5. Aktivitas inti mengikuti cetak biru jenis media pada Bagian 2, dengan materi ringkas disisipkan di antara aktivitas (bukan halaman teks panjang).");
+          if (JENIS_EVAL_TERTANAM.indexOf(jenis) >= 0) {
+            L.push("6. Penilaian tertanam: tantangan/keputusan di dalam media memberi skor dan umpan balik; akhiri dengan rekap capaian.");
+          } else {
+            L.push("6. Evaluasi: " + jumlahSoal + " soal dengan skor otomatis dan umpan balik per soal.");
+          }
           L.push("7. Layar hasil: skor akhir, pesan apresiasi sesuai capaian, tombol main lagi, dan satu pertanyaan refleksi singkat.");
           L.push("");
           L.push("=== 5. KETENTUAN TEKNIS (WAJIB) ===");
@@ -855,12 +1032,13 @@
         var currentPrompt = "";
         function syncKondisional() {
           var kendaliNow = checkedValues("kendaliChips");
+          var jenisNow = radioValue("jenis");
           var g = $("gesturBlock");
-          if (g) g.style.display = kendaliNow.some(function (k) { return k.indexOf("gestur") >= 0; }) ? "" : "none";
+          if (g) g.style.display = (kendaliNow.some(function (k) { return k.indexOf("gestur") >= 0; }) || jenisNow === "Gesture Recognition") ? "" : "none";
           var s = $("suaraBlock");
-          if (s) s.style.display = kendaliNow.some(function (k) { return k.indexOf("Suara") >= 0; }) ? "" : "none";
+          if (s) s.style.display = (kendaliNow.some(function (k) { return k.indexOf("Suara") >= 0; }) || jenisNow === "Voice Interactive Learning") ? "" : "none";
           var a = $("arBlock");
-          if (a) a.style.display = checkedValues("fiturChecks").some(function (f) { return f.indexOf("Augmented Reality") >= 0; }) ? "" : "none";
+          if (a) a.style.display = (checkedValues("fiturChecks").some(function (f) { return f.indexOf("Augmented Reality") >= 0; }) || jenisNow === "Augmented Reality (AR)") ? "" : "none";
         }
         function update() {
           syncKondisional();
@@ -1046,7 +1224,7 @@
           $("topik").value = "Menemukan rumus Pythagoras dan triple Pythagoras";
           $("tp").value = "Peserta didik dapat membuktikan teorema Pythagoras, menentukan panjang sisi segitiga siku-siku, dan menerapkannya untuk menyelesaikan masalah sehari-hari.";
           setChecked("dplChecks", ["Penalaran Kritis", "Kemandirian", "Kolaborasi"]);
-          setRadio("jenis", "Campuran: eksplorasi materi, aktivitas interaktif, dan kuis dalam satu media");
+          setRadio("jenis", "Campuran");
           setChecked("kendaliChips", ["Sentuh / klik (tombol dan layar sentuh)"]);
           setChecked("gesturChecks", [
             "Menunjuk dan tahan ±1 detik untuk memilih jawaban",
