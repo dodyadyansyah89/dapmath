@@ -137,6 +137,11 @@
   .g-card b{display:block;font-size:15.5px;line-height:1.4}
   .g-card small{color:var(--ink-soft);font-size:13px}
   .g-card .go{margin-left:auto;flex:none;color:var(--teal-deep);font-weight:800;font-size:14px}
+  .g-card.g-group{grid-column:1/-1;align-items:flex-start}
+  .g-group-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .g-group-body .g-links{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+  .g-group-body .g-links a{color:var(--teal-deep);font-weight:700;font-size:14px;text-decoration:none}
+  .g-group-body .g-links a:hover{text-decoration:underline}
 
   /* ---------- Modal pembaca karya ---------- */
   .reader-backdrop{position:fixed;inset:0;z-index:100;background:rgba(13,27,38,.72);display:flex;align-items:center;justify-content:center;padding:18px}
@@ -317,7 +322,7 @@
 
     <div class="galeri-cat reveal">
       <h3><span class="cat-icon ci-2">☑</span>Instrumen Asesmen</h3>
-      <p>Instrumen untuk mengenali profil dan pola pikir belajar siswa — terbuka di tab baru; dokumen Word terunduh langsung.</p>
+      <p>Instrumen untuk mengenali profil dan pola pikir belajar siswa — terbuka di tab baru; dokumen Word terunduh langsung, dokumen PDF di Google Drive dapat diunduh dari penampil Drive.</p>
       <div class="galeri-grid">
         <a class="g-card" href="https://dodymath.my.canva.site/asesmen-kecerdasan-majemuk-berdasarkan-teori-howard-gardner" target="_blank" rel="noopener">
           <span class="g-ic ci-2">☑</span>
@@ -339,6 +344,18 @@
           <span><b>LKPD Transformasi Geometri</b><small>8 halaman · DOCX ±102 KB</small></span>
           <span class="go">⭳</span>
         </a>
+        <div class="g-card g-group">
+          <span class="g-ic ci-2">☑</span>
+          <span class="g-group-body">
+            <b>ASAS Matematika Kelas 9 — 2026</b>
+            <small>Kisi-kisi, soal latihan &amp; kunci jawaban · PDF · Google Drive</small>
+            <span class="g-links">
+              <a href="https://drive.google.com/file/d/1vF1Ettv7JgTUuydK9oF62X3eu8L8IwU4/view?usp=sharing" target="_blank" rel="noopener">Kisi-Kisi ASAS ↗</a>
+              <a href="https://drive.google.com/file/d/1A5n_C15SStyBK334zOL5_Zm4DOhQOr2t/view?usp=sharing" target="_blank" rel="noopener">Soal Latihan ↗</a>
+              <a href="https://drive.google.com/file/d/1Z4TLb9QTkokOzRYO7GOojF3aUwc2EjSx/view?usp=sharing" target="_blank" rel="noopener">Kunci Jawaban ↗</a>
+            </span>
+          </span>
+        </div>
       </div>
     </div>
 
