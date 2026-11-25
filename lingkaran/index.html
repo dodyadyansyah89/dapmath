@@ -106,6 +106,16 @@
       .angle-read b{color:var(--teal-dark);font-size:1.3rem}
       @media (prefers-color-scheme: dark){.angle-read b{color:var(--teal)}}
 
+      /* ---------- Lab Pembuktian ---------- */
+      .lab-controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+      .lab-read{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0}
+      .lab-read .stat b{font-size:1.25rem}
+      #taliWrap{transition:stroke-dashoffset 1.1s ease}
+      .juring-seg{transition:transform .7s ease;transform-box:view-box;transform-origin:0 0;stroke:var(--surface);stroke-width:1.5}
+      .kesimpulan{background:var(--green-soft);border:1px solid var(--green);border-radius:12px;padding:14px 16px;margin-top:14px}
+      .kesimpulan b{color:var(--teal-dark)}
+      @media (prefers-color-scheme: dark){.kesimpulan b{color:var(--teal)}}
+
       /* ---------- Kalkulator ---------- */
       .calc-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
       .calc-tabs button{flex:1 1 40%;min-height:50px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;font-size:.95rem;padding:10px}
@@ -243,6 +253,9 @@
         <button data-page="materi" class="active" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
           Materi</button>
+        <button data-page="lab" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6M10 3v5l-5.5 9.5A2 2 0 0 0 6.2 20h11.6a2 2 0 0 0 1.7-2.5L14 8V3"/><path d="M7.5 14h9"/></svg>
+          Lab Pembuktian</button>
         <button data-page="kalkulator" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/></svg>
           Kalkulator</button>
@@ -313,6 +326,7 @@
             <div class="formula">K = 2 × π × r<small>atau K = π × d &nbsp;·&nbsp; r = jari-jari, d = diameter</small></div>
             <p><b>Contoh:</b> r = 7 cm → K = 2 × 22/7 × 7 = <b>44 cm</b>.</p>
             <p>Pakai π = 22/7 bila jari-jari/diameter kelipatan 7, dan π = 3,14 untuk bilangan lainnya.</p>
+            <button class="btn small ghost" id="btnKeLabPi" type="button">Buktikan π di Lab Pembuktian →</button>
           </div>
           <div class="card">
             <h2>Luas Lingkaran</h2>
@@ -320,6 +334,7 @@
             <div class="formula">L = π × r × r = π r²<small>r = jari-jari lingkaran</small></div>
             <p><b>Contoh:</b> r = 10 cm → L = 3,14 × 10 × 10 = <b>314 cm²</b>.</p>
             <p>Perhatikan satuan: keliling memakai satuan panjang (cm), luas memakai satuan persegi (cm²).</p>
+            <button class="btn small ghost" id="btnKeLabLuas" type="button">Lihat asal rumus di Lab Pembuktian →</button>
           </div>
         </div>
 
@@ -353,6 +368,85 @@
               <p>Akibatnya: sudut keliling yang menghadap <b>diameter</b> selalu <b>90°</b> (sudut siku-siku), karena sudut pusatnya 180°.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ==================== LAB PEMBUKTIAN ==================== -->
+      <section class="page" id="page-lab">
+        <div class="card">
+          <h2>Lab π — Menemukan π dengan Tali</h2>
+          <p class="lead">Seperti Kegiatan 2 di kelas: lingkarkan tali mengelilingi benda bundar, ukur panjang talinya (itulah keliling), lalu bagi dengan diameternya. Coba pada tiga benda — hasilnya selalu mendekati bilangan yang sama!</p>
+          <div class="lab-controls" id="labPiChips">
+            <button type="button" class="chip active" data-d="6" data-nama="Tutup botol">Tutup botol · d = 6 cm</button>
+            <button type="button" class="chip" data-d="8" data-nama="Gelas">Gelas · d = 8 cm</button>
+            <button type="button" class="chip" data-d="20" data-nama="Piring">Piring · d = 20 cm</button>
+          </div>
+          <label class="f" for="labPiD">Diameter (d) — dalam cm</label>
+          <input type="range" id="labPiD" min="4" max="24" value="6" step="1" />
+          <p class="angle-read">Diameter d = <b id="labPiDVal">6 cm</b></p>
+          <div class="grid2">
+            <div class="svg-box">
+              <svg id="svgTali" viewBox="0 0 220 220" role="img" aria-label="Lingkaran dengan tali pengukur">
+                <circle cx="110" cy="110" r="88" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+                <circle id="taliWrap" cx="110" cy="110" r="88" fill="none" stroke="#e8930c" stroke-width="6" stroke-linecap="round" transform="rotate(-90 110 110)"/>
+                <line x1="22" y1="110" x2="198" y2="110" stroke="#7c3aed" stroke-width="3" stroke-dasharray="6 5"/>
+                <text x="110" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="var(--ink)">d</text>
+              </svg>
+            </div>
+            <div>
+              <div class="lab-read">
+                <div class="stat"><b id="labPiK">–</b><span>Keliling K (cm)</span></div>
+                <div class="stat"><b id="labPiBagi">–</b><span>K ÷ d</span></div>
+              </div>
+              <div class="btn-row">
+                <button class="btn" id="btnUkur" type="button">Lingkarkan Tali &amp; Ukur</button>
+                <button class="btn ghost" id="btnCatat" type="button" disabled>Catat Pengukuran Ini</button>
+              </div>
+              <div style="margin-top:16px">
+                <div style="font-size:.88rem;font-weight:700">Diameter d = <span id="barDTeks">–</span></div>
+                <div id="barD" style="height:18px;border-radius:99px;background:#7c3aed;width:0%;transition:width .8s ease"></div>
+                <div style="font-size:.88rem;font-weight:700;margin-top:10px">Keliling K = <span id="barKTeks">–</span></div>
+                <div id="barK" style="height:18px;border-radius:99px;background:#e8930c;width:0%;transition:width .8s ease"></div>
+              </div>
+              <p class="lead" style="margin-top:12px">Batang keliling selalu sekitar 3,14 kali batang diameter — untuk lingkaran sekecil atau sebesar apa pun.</p>
+            </div>
+          </div>
+          <h3>Catatan Pengukuranmu (seperti tabel Kegiatan 2)</h3>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Benda</th><th>Diameter d (cm)</th><th>Keliling K (cm)</th><th>K ÷ d</th></tr></thead>
+              <tbody id="labPiRows"><tr><td colspan="4">Belum ada pengukuran yang dicatat.</td></tr></tbody>
+            </table>
+          </div>
+          <div class="btn-row">
+            <button class="btn ghost" id="btnResetPi" type="button">Hapus Semua Catatan</button>
+          </div>
+          <div class="kesimpulan hidden" id="labPiSimpulan"></div>
+          <p class="note">Di kelas dengan benang sungguhan, K ÷ d biasanya 3,0–3,3 karena pengukuran tidak sempurna — tapi selalu dekat 3,14. Itulah π!</p>
+        </div>
+
+        <div class="card">
+          <h2>Lab Luas — Potong &amp; Susun Juring</h2>
+          <p class="lead">Seperti Kegiatan 3 di kelas: potong lingkaran menjadi juring, lalu susun berselang-seling hingga mirip persegi panjang. Geser jumlah juringnya — makin banyak juring, makin lurus sisinya!</p>
+          <label class="f" for="labJurN">Jumlah juring</label>
+          <input type="range" id="labJurN" min="0" max="3" value="2" step="1" />
+          <p class="angle-read"><b id="labJurNVal">16 juring</b></p>
+          <label class="f" for="labJurR">Jari-jari (r) — dalam cm</label>
+          <input type="range" id="labJurR" min="4" max="10" value="6" step="1" />
+          <p class="angle-read">Jari-jari r = <b id="labJurRVal">6 cm</b></p>
+          <div class="svg-box">
+            <svg id="svgJuring" viewBox="0 0 340 220" role="img" aria-label="Juring lingkaran disusun menjadi persegi panjang"></svg>
+          </div>
+          <div class="btn-row" style="margin-top:14px">
+            <button class="btn" id="btnSusun" type="button">Susun Jadi Persegi Panjang</button>
+          </div>
+          <div class="lab-read">
+            <div class="stat"><b id="labLuasPjg">–</b><span>Panjang ≈ ½ keliling = πr</span></div>
+            <div class="stat"><b id="labLuasLbr">–</b><span>Lebar = r</span></div>
+            <div class="stat"><b id="labLuasHasil">–</b><span>Luas ≈ panjang × lebar</span></div>
+          </div>
+          <div class="formula">L = π × r × r = πr²<small id="labLuasRumus">r = 6 cm → L = 3,14 × 6 × 6 = 113,04 cm²</small></div>
+          <p class="note">Sama seperti lingkaran kertas berjuring 16 di kelas (r = 6 cm). Panjang susunan ≈ setengah keliling (πr), lebarnya = jari-jari (r), jadi luasnya πr × r = πr².</p>
         </div>
       </section>
 
@@ -761,6 +855,160 @@ $("btnHitung").addEventListener("click", function(){
   box.innerHTML = html; box.classList.remove("hidden");
 });
 
+/* =============== LAB PEMBUKTIAN =============== */
+$("btnKeLabPi").addEventListener("click", function(){ showPage("lab"); });
+$("btnKeLabLuas").addEventListener("click", function(){ showPage("lab"); });
+
+/* ---- Lab π: menemukan π dengan tali ---- */
+var LAB_PI = { d:6, nama:"Tutup botol", diukur:false, rows:[] };
+var TALI_C = 2*Math.PI*88;
+function labPiResetUkur(){
+  LAB_PI.diukur = false;
+  $("labPiK").textContent = "–";
+  $("labPiBagi").textContent = "–";
+  $("barD").style.width = "0%"; $("barK").style.width = "0%";
+  $("barDTeks").textContent = "–"; $("barKTeks").textContent = "–";
+  $("btnCatat").disabled = true;
+  var wrap = $("taliWrap");
+  wrap.style.transition = "none";
+  wrap.style.strokeDasharray = TALI_C;
+  wrap.style.strokeDashoffset = TALI_C;
+  void wrap.getBoundingClientRect();
+  wrap.style.transition = "";
+}
+function labPiPilih(d, nama){
+  LAB_PI.d = d; LAB_PI.nama = nama;
+  $("labPiD").value = d;
+  $("labPiDVal").textContent = fmtNum(d)+" cm";
+  document.querySelectorAll("#labPiChips .chip").forEach(function(c){
+    c.classList.toggle("active", parseInt(c.getAttribute("data-d"),10)===d);
+  });
+  labPiResetUkur();
+}
+document.querySelectorAll("#labPiChips .chip").forEach(function(c){
+  c.addEventListener("click", function(){
+    labPiPilih(parseInt(c.getAttribute("data-d"),10), c.getAttribute("data-nama"));
+  });
+});
+$("labPiD").addEventListener("input", function(){
+  var d = parseInt(this.value,10);
+  LAB_PI.d = d; LAB_PI.nama = "Diameter "+fmtNum(d)+" cm";
+  $("labPiDVal").textContent = fmtNum(d)+" cm";
+  document.querySelectorAll("#labPiChips .chip").forEach(function(c){ c.classList.remove("active"); });
+  labPiResetUkur();
+});
+$("btnUkur").addEventListener("click", function(){
+  var wrap = $("taliWrap");
+  wrap.style.transition = "none";
+  wrap.style.strokeDasharray = TALI_C;
+  wrap.style.strokeDashoffset = TALI_C;
+  void wrap.getBoundingClientRect();
+  wrap.style.transition = "";
+  $("btnUkur").disabled = true;
+  requestAnimationFrame(function(){ wrap.style.strokeDashoffset = 0; });
+  setTimeout(function(){
+    var K = Math.PI*LAB_PI.d;
+    $("labPiK").textContent = fmtNum(Math.round(K*100)/100)+" cm";
+    $("labPiBagi").textContent = fmtNum(Math.PI);
+    var maxK = Math.PI*24;
+    $("barD").style.width = (LAB_PI.d/maxK*100)+"%";
+    $("barK").style.width = (K/maxK*100)+"%";
+    $("barDTeks").textContent = fmtNum(LAB_PI.d)+" cm";
+    $("barKTeks").textContent = fmtNum(Math.round(K*100)/100)+" cm";
+    LAB_PI.diukur = true;
+    $("btnCatat").disabled = false;
+    $("btnUkur").disabled = false;
+  }, 1150);
+});
+function labPiRenderRows(){
+  var tb = $("labPiRows");
+  if(!LAB_PI.rows.length){ tb.innerHTML = "<tr><td colspan='4'>Belum ada pengukuran yang dicatat.</td></tr>"; return; }
+  tb.innerHTML = LAB_PI.rows.map(function(r){
+    return "<tr><td>"+esc(r.nama)+"</td><td>"+fmtNum(r.d)+"</td><td>"+fmtNum(r.K)+"</td><td>"+fmtNum(r.bagi)+"</td></tr>";
+  }).join("");
+}
+function labPiSimpulan(){
+  var box = $("labPiSimpulan");
+  if(!LAB_PI.rows.length){ box.classList.add("hidden"); box.innerHTML = ""; return; }
+  var avg = LAB_PI.rows.reduce(function(a,r){ return a+r.bagi; },0)/LAB_PI.rows.length;
+  box.classList.remove("hidden");
+  if(LAB_PI.rows.length < 3){
+    box.innerHTML = "<b>Baru "+LAB_PI.rows.length+" benda dicatat.</b> Sejauh ini K ÷ d ≈ <b>"+fmtNum(avg)+"</b>. Ukur "+(3-LAB_PI.rows.length)+" benda lagi untuk melihat polanya.";
+  } else {
+    box.innerHTML = "<b>Kesimpulan (seperti Kegiatan 2):</b> K ÷ d selalu ≈ <b>3,14</b> — sekecil atau sebesar apa pun lingkarannya! Bilangan ini disebut <b>π (pi)</b>. Maka <b>K = π × d = 2 × π × r</b>.";
+  }
+}
+$("btnCatat").addEventListener("click", function(){
+  if(!LAB_PI.diukur) return;
+  var K = Math.PI*LAB_PI.d;
+  LAB_PI.rows.push({ nama:LAB_PI.nama, d:LAB_PI.d, K:Math.round(K*100)/100, bagi:Math.PI });
+  labPiRenderRows(); labPiSimpulan();
+});
+$("btnResetPi").addEventListener("click", function(){
+  LAB_PI.rows = []; labPiRenderRows(); labPiSimpulan();
+});
+labPiPilih(6, "Tutup botol");
+
+/* ---- Lab Luas: potong & susun juring ---- */
+var JUR_N = [4, 8, 16, 32];
+var labJur = { nIdx:2, r:6, susun:false };
+function labJurRender(){
+  var N = JUR_N[labJur.nIdx], R = labJur.r*12, th = 2*Math.PI/N;
+  var w = 2*R*Math.sin(th/2);
+  var vbW = Math.ceil(Math.max(2*R+20, Math.PI*R + w + 26));
+  var vbH = 2*R+20;
+  var svg = $("svgJuring");
+  svg.setAttribute("viewBox", "0 0 "+vbW+" "+vbH);
+  var x1 = (R*Math.sin(-th/2)).toFixed(2), y1 = (-R*Math.cos(th/2)).toFixed(2);
+  var x2 = (R*Math.sin(th/2)).toFixed(2), y2 = (-R*Math.cos(th/2)).toFixed(2);
+  var d = "M0 0 L"+x1+" "+y1+" A"+R+" "+R+" 0 0 1 "+x2+" "+y2+" Z";
+  var html = "";
+  for(var i=0;i<N;i++){
+    html += '<path class="juring-seg" d="'+d+'" fill="'+(i%2 ? "#e8930c" : "#0e7a63")+'" data-i="'+i+'"/>';
+  }
+  svg.innerHTML = html;
+  labJurPlace(true);
+  var pjg = 3.14*labJur.r, L = 3.14*labJur.r*labJur.r;
+  $("labLuasPjg").textContent = fmtNum(pjg)+" cm";
+  $("labLuasLbr").textContent = fmtNum(labJur.r)+" cm";
+  $("labLuasHasil").textContent = fmtNum(L)+" cm²";
+  $("labLuasRumus").textContent = "r = "+fmtNum(labJur.r)+" cm → L = 3,14 × "+fmtNum(labJur.r)+" × "+fmtNum(labJur.r)+" = "+fmtNum(L)+" cm²";
+  $("labJurNVal").textContent = N+" juring";
+  $("labJurRVal").textContent = fmtNum(labJur.r)+" cm";
+}
+function labJurPlace(instant){
+  var N = JUR_N[labJur.nIdx], R = labJur.r*12, th = 2*Math.PI/N;
+  var w = 2*R*Math.sin(th/2);
+  var vbW = Math.ceil(Math.max(2*R+20, Math.PI*R + w + 26));
+  var cx = vbW/2, cy = R+10;
+  var x0 = (vbW - Math.PI*R)/2;
+  var top = cy - R/2, bot = cy + R/2;
+  var segs = $("svgJuring").querySelectorAll(".juring-seg");
+  segs.forEach(function(p){
+    var i = parseInt(p.getAttribute("data-i"),10), t;
+    if(!labJur.susun){ t = "translate("+cx+"px,"+cy+"px) rotate("+(i*360/N)+"deg)"; }
+    else if(i%2===0){ t = "translate("+(x0+(i/2)*w)+"px,"+bot+"px)"; }
+    else { t = "translate("+(x0+((i-1)/2+0.5)*w)+"px,"+top+"px) rotate(180deg)"; }
+    if(instant) p.style.transition = "none";
+    p.style.transform = t;
+  });
+  if(instant){ setTimeout(function(){ segs.forEach(function(p){ p.style.transition = ""; }); }, 60); }
+}
+$("labJurN").addEventListener("input", function(){
+  labJur.nIdx = parseInt(this.value,10);
+  labJurRender();
+});
+$("labJurR").addEventListener("input", function(){
+  labJur.r = parseInt(this.value,10);
+  labJurRender();
+});
+$("btnSusun").addEventListener("click", function(){
+  labJur.susun = !labJur.susun;
+  this.textContent = labJur.susun ? "Kembalikan ke Lingkaran" : "Susun Jadi Persegi Panjang";
+  labJurPlace(false);
+});
+labJurRender();
+
 /* =============== KUIS =============== */
 var SOAL = [
   { q:"Keliling lingkaran dengan jari-jari 7 cm adalah … (π = 22/7)",
@@ -899,7 +1147,7 @@ function gabungData(){
   }
   return { login:login, kuis:kuis, progress:progress };
 }
-var NAMA_MENU = { materi:"Materi", kalkulator:"Kalkulator", kuis:"Kuis" };
+var NAMA_MENU = { materi:"Materi", lab:"Lab Pembuktian", kalkulator:"Kalkulator", kuis:"Kuis" };
 function renderGuru(){
   var g = gabungData();
   var siswaMap = {};
