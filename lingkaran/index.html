@@ -425,7 +425,7 @@
           <p class="note">Di kelas dengan benang sungguhan, K ÷ d biasanya 3,0–3,3 karena pengukuran tidak sempurna — tapi selalu dekat 3,14. Itulah π!</p>
         </div>
 
-        <div class="card">
+        <div class="card" id="labLuasCard">
           <h2>Lab Luas — Potong &amp; Susun Juring</h2>
           <p class="lead">Seperti Kegiatan 3 di kelas: potong lingkaran menjadi juring, lalu susun berselang-seling hingga mirip persegi panjang. Geser jumlah juringnya — makin banyak juring, makin lurus sisinya!</p>
           <label class="f" for="labJurN">Jumlah juring</label>
@@ -446,7 +446,7 @@
             <div class="stat"><b id="labLuasHasil">–</b><span>Luas ≈ panjang × lebar</span></div>
           </div>
           <div class="formula">L = π × r × r = πr²<small id="labLuasRumus">r = 6 cm → L = 3,14 × 6 × 6 = 113,04 cm²</small></div>
-          <p class="note">Sama seperti lingkaran kertas berjuring 16 di kelas (r = 6 cm). Panjang susunan ≈ setengah keliling (πr), lebarnya = jari-jari (r), jadi luasnya πr × r = πr².</p>
+          <p class="note">Sama seperti lingkaran kertas di kelas. Panjang susunan ≈ setengah keliling (πr), lebarnya = jari-jari (r), jadi luasnya πr × r = πr².</p>
         </div>
       </section>
 
@@ -857,7 +857,10 @@ $("btnHitung").addEventListener("click", function(){
 
 /* =============== LAB PEMBUKTIAN =============== */
 $("btnKeLabPi").addEventListener("click", function(){ showPage("lab"); });
-$("btnKeLabLuas").addEventListener("click", function(){ showPage("lab"); });
+$("btnKeLabLuas").addEventListener("click", function(){
+  showPage("lab");
+  setTimeout(function(){ var c = $("labLuasCard"); if(c) c.scrollIntoView({ behavior:"smooth", block:"start" }); }, 450);
+});
 
 /* ---- Lab π: menemukan π dengan tali ---- */
 var LAB_PI = { d:6, nama:"Tutup botol", diukur:false, rows:[] };
