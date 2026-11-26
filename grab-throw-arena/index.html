@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grab & Throw – Knowledge Arena | Matematika 3D</title>
+    
+    <!-- Tailwind CSS untuk antarmuka modern & responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font ramah anak & terbaca jelas -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Three.js r128 via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- MediaPipe Hands & Camera Utils via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #38bdf8;
+            user-select: none;
+            touch-action: none;
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+        #game-canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-12px, 8px); }
+            40% { transform: translate(12px, -8px); }
+            60% { transform: translate(-8px, -6px); }
+            80% { transform: translate(8px, 6px); }
+        }
+        .shake-effect {
+            animation: screenShake 0.45s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .mirror-canvas {
+            transform: scaleX(-1);
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Canvas Utama Three.js 3D -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HUD (Heads-Up Display) Atas -->
+    <div id="hud-container" class="hidden fixed top-0 left-0 w-full z-20 p-2.5 md:p-4 pointer-events-none flex flex-col gap-2.5">
+        <!-- Baris Status: Soal, Skor, Timer, Nyawa -->
+        <div class="max-w-6xl w-full mx-auto flex flex-wrap items-center justify-between gap-2">
+            <!-- Nomor Soal -->
+            <div class="bg-white/95 backdrop-blur-md border-4 border-amber-400 rounded-2xl px-3.5 py-1.5 shadow-lg flex items-center gap-2">
+                <span class="text-xl md:text-2xl">📘</span>
+                <div>
+                    <p class="text-[10px] md:text-xs font-extrabold text-amber-600 uppercase tracking-wider">Soal</p>
+                    <p id="hud-question-num" class="text-base md:text-xl font-display font-bold text-slate-800">1 / 10</p>
+                </div>
+            </div>
+
+            <!-- Skor -->
+            <div class="bg-white/95 backdrop-blur-md border-4 border-emerald-400 rounded-2xl px-3.5 py-1.5 shadow-lg flex items-center gap-2">
+                <span class="text-xl md:text-2xl">⭐</span>
+                <div>
+                    <p class="text-[10px] md:text-xs font-extrabold text-emerald-600 uppercase tracking-wider">Skor</p>
+                    <p id="hud-score" class="text-base md:text-xl font-display font-bold text-slate-800">0</p>
+                </div>
+            </div>
+
+            <!-- Timer (45 detik) -->
+            <div id="timer-box" class="bg-white/95 backdrop-blur-md border-4 border-sky-400 rounded-2xl px-3.5 py-1.5 shadow-lg flex items-center gap-2 transition-colors">
+                <span class="text-xl md:text-2xl">⏱️</span>
+                <div>
+                    <p class="text-[10px] md:text-xs font-extrabold text-sky-600 uppercase tracking-wider">Waktu</p>
+                    <p id="hud-timer" class="text-base md:text-xl font-display font-bold text-slate-800">45s</p>
+                </div>
+            </div>
+
+            <!-- Nyawa (3 Hati) -->
+            <div class="bg-white/95 backdrop-blur-md border-4 border-rose-400 rounded-2xl px-3.5 py-1.5 shadow-lg flex items-center gap-2">
+                <div>
+                    <p class="text-[10px] md:text-xs font-extrabold text-rose-500 uppercase tracking-wider text-center">Nyawa</p>
+                    <div id="hud-lives" class="text-lg md:text-2xl tracking-widest">❤️❤️❤️</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Pertanyaan Matematika + Ilustrasi Bangun Datar -->
+        <div class="max-w-4xl w-full mx-auto bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 p-1 rounded-3xl shadow-2xl">
+            <div class="bg-white/98 rounded-[22px] px-4 py-2.5 md:px-6 md:py-3.5 flex flex-col sm:flex-row items-center gap-3 md:gap-5">
+                <!-- Ilustrasi SVG Bangun Datar -->
+                <div id="question-diagram" class="w-24 h-20 sm:w-28 sm:h-24 shrink-0 bg-sky-50 border-2 border-sky-200 rounded-2xl flex items-center justify-center p-1.5">
+                    <!-- SVG dirender dinamis -->
+                </div>
+                <div class="text-center sm:text-left flex-1">
+                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1">
+                        <span id="question-topic" class="inline-block bg-amber-100 text-amber-800 text-[11px] font-extrabold px-3 py-0.5 rounded-full uppercase tracking-wide">
+                            Bangun Datar
+                        </span>
+                        <span id="hand-action-hint" class="inline-block bg-indigo-100 text-indigo-700 text-[11px] font-extrabold px-3 py-0.5 rounded-full">
+                            🤏 Cubit bola jawaban & lempar ke Portal!
+                        </span>
+                    </div>
+                    <h2 id="question-text" class="text-sm sm:text-base md:text-xl font-display font-bold text-slate-800 leading-snug">
+                        Memuat pertanyaan...
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed Webcam Pemain & Overlay Kerangka Tangan (Pojok Kanan Bawah) -->
+    <div id="webcam-widget" class="hidden fixed bottom-3 right-3 z-30 w-44 sm:w-56 md:w-64 bg-white/95 p-2 rounded-3xl shadow-2xl border-4 border-amber-400 transition-all">
+        <div class="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden">
+            <video id="input-video" class="hidden" playsinline></video>
+            <canvas id="webcam-canvas" class="w-full h-full object-cover mirror-canvas"></canvas>
+            <!-- Badge Status Gestur Pinch & Throw -->
+            <div id="gesture-badge" class="absolute bottom-1.5 left-1.5 right-1.5 bg-slate-900/85 backdrop-blur-sm text-white text-[11px] sm:text-xs font-bold py-1 px-2 rounded-xl text-center truncate border border-white/20">
+                🔍 Mencari Tangan...
+            </div>
+        </div>
+        <div class="mt-1.5 flex items-center justify-between px-1 text-[10px] sm:text-[11px] font-bold text-slate-600">
+            <span>🤏 Cubit = Grab | 🖐️ Lepas = Lempar</span>
+            <span id="control-mode-label" class="text-emerald-600">Kamera</span>
+        </div>
+    </div>
+
+    <!-- Tombol Kontrol Audio & Tips di Pojok Kiri Bawah -->
+    <div id="helper-widget" class="hidden fixed bottom-3 left-3 z-30 flex flex-col gap-2 max-w-[230px] sm:max-w-xs">
+        <button id="btn-sound-toggle" class="w-fit bg-white/95 hover:bg-white text-slate-800 font-bold text-xs sm:text-sm px-3.5 py-2 rounded-2xl shadow-lg border-2 border-slate-200 flex items-center gap-2 transition active:scale-95">
+            <span id="sound-icon">🔊</span> <span id="sound-text">Suara Nyala</span>
+        </button>
+        <div class="bg-white/90 backdrop-blur-sm text-slate-700 text-[11px] font-bold px-3 py-2 rounded-2xl shadow border border-white leading-tight">
+            💡 <b>Cara Main:</b> Dekatkan tangan ke bola A/B/C/D, <b>cubit ibu jari & telunjuk</b> untuk mengambil, gerakkan ke atas/depan lalu <b>buka jari</b> untuk melempar ke Portal! (Bisa juga drag pakai mouse/sentuhan).
+        </div>
+    </div>
+
+    <!-- LAYAR MULAI (START SCREEN) -->
+    <div id="start-screen" class="fixed inset-0 z-40 bg-gradient-to-b from-sky-400/90 via-cyan-300/90 to-emerald-300/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+        <div class="max-w-2xl w-full bg-white rounded-[32px] shadow-2xl border-8 border-amber-300 p-5 md:p-8 text-center animate-pop">
+            <div class="inline-flex items-center gap-2 bg-amber-100 text-amber-800 font-extrabold text-xs sm:text-sm px-4 py-1.5 rounded-full mb-2">
+                <span>🎮 GAME EDUKASI 3D INTERAKTIF</span>
+                <span>•</span>
+                <span>MATEMATIKA</span>
+            </div>
+            
+            <h1 class="text-3xl sm:text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-indigo-600 mb-2">
+                Grab & Throw<br>Knowledge Arena
+            </h1>
+            
+            <!-- Materi & Tujuan Pembelajaran -->
+            <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-3 mb-5 text-left">
+                <p class="text-xs sm:text-sm font-extrabold text-indigo-900">
+                    📐 Materi: <span class="text-indigo-600">Luas dan Keliling Bangun Datar</span>
+                </p>
+                <p class="text-xs sm:text-sm font-semibold text-slate-700 mt-1">
+                    🎯 <b>Tujuan Pembelajaran:</b> Siswa dapat menentukan luas dan keliling bangun datar segitiga dan segiempat dengan tepat melalui tantangan interaktif.
+                </p>
+            </div>
+
+            <!-- Panduan Cara Bermain Pinch & Throw -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5 text-left">
+                <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-3.5">
+                    <div class="text-2xl mb-1">📷✋</div>
+                    <h3 class="font-display font-bold text-sky-900 text-sm">1. Tampilkan Tangan</h3>
+                    <p class="text-xs text-slate-600 mt-1">Aktifkan webcam dan arahkan telapak tangan ke bola jawaban (A, B, C, atau D).</p>
+                </div>
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3.5">
+                    <div class="text-2xl mb-1">🤏🔮</div>
+                    <h3 class="font-display font-bold text-amber-900 text-sm">2. Pinch (Cubit) = Grab</h3>
+                    <p class="text-xs text-slate-600 mt-1">Tempelkan <b>ibu jari & jari telunjuk</b> di dekat bola jawaban untuk menangkapnya.</p>
+                </div>
+                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-3.5">
+                    <div class="text-2xl mb-1">🖐️🌀</div>
+                    <h3 class="font-display font-bold text-emerald-900 text-sm">3. Ayun & Lepas = Lempar</h3>
+                    <p class="text-xs text-slate-600 mt-1">Gerakkan tangan menuju Portal Target di tengah arena, lalu <b>buka jari</b> untuk melempar!</p>
+                </div>
+            </div>
+
+            <div id="camera-status-msg" class="text-xs font-bold text-slate-500 mb-4">
+                Mendukung kontrol Gestur Webcam (MediaPipe Hands) maupun Drag Mouse/Layar Sentuh.
+            </div>
+
+            <button id="btn-start-game" class="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-display font-bold text-xl px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/30 border-b-4 border-emerald-700 transition transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-center gap-3 mx-auto">
+                <span>🚀 Mulai Bermain (Aktifkan Kamera)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL PEMBAHASAN SOAL (Muncul setelah bola masuk target / waktu habis) -->
+    <div id="explanation-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="max-w-xl w-full bg-white rounded-[32px] shadow-2xl border-8 border-indigo-400 p-6 md:p-7 animate-pop">
+            <!-- Header Status Benar / Salah -->
+            <div id="modal-status-banner" class="flex items-center gap-3 p-4 rounded-2xl mb-4 bg-emerald-100 border-2 border-emerald-400">
+                <span id="modal-status-icon" class="text-4xl">🎉</span>
+                <div>
+                    <h3 id="modal-status-title" class="font-display font-bold text-xl text-emerald-800">Benar! +100 Poin</h3>
+                    <p id="modal-status-subtitle" class="text-xs sm:text-sm font-bold text-emerald-700">Lemparan tepat sasaran ke Portal Pengetahuan!</p>
+                </div>
+            </div>
+
+            <!-- Kotak Pembahasan Rumus & Langkah -->
+            <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 mb-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">
+                        📖 Penjelasan & Rumus
+                    </span>
+                    <span id="modal-correct-answer" class="text-xs sm:text-sm font-extrabold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
+                        Jawaban: B. 81 m²
+                    </span>
+                </div>
+                <p id="modal-explanation-text" class="text-slate-700 text-sm sm:text-base font-semibold leading-relaxed whitespace-pre-line">
+                    Penjelasan langkah demi langkah akan muncul di sini.
+                </p>
+            </div>
+
+            <!-- Tombol Lanjut -->
+            <button id="btn-next-question" class="w-full bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white font-display font-bold text-lg py-3.5 px-6 rounded-2xl shadow-lg border-b-4 border-indigo-800 transition transform active:translate-y-0.5 flex items-center justify-center gap-2">
+                <span id="btn-next-text">Soal Berikutnya ➡️</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- LAYAR AKHIR (GAME OVER / VICTORY SCREEN) -->
+    <div id="end-screen" class="hidden fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="max-w-lg w-full bg-white rounded-[32px] shadow-2xl border-8 border-amber-400 p-6 md:p-8 text-center animate-pop">
+            <div id="end-trophy-icon" class="text-6xl mb-1">🏆</div>
+            <div id="end-stars" class="text-3xl mb-2 tracking-widest">⭐⭐⭐</div>
+            <h2 id="end-title" class="text-3xl sm:text-4xl font-display font-bold text-slate-800 mb-1">
+                Arena Ditaklukkan!
+            </h2>
+            <p id="end-subtitle" class="text-slate-600 font-bold text-sm sm:text-base mb-6">
+                Kamu hebat dalam menghitung luas & keliling bangun datar!
+            </p>
+
+            <!-- Statistik Akhir -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-amber-50 border-4 border-amber-300 rounded-2xl p-4">
+                    <p class="text-xs font-extrabold text-amber-600 uppercase">Total Skor</p>
+                    <p id="end-final-score" class="text-3xl font-display font-bold text-slate-800 mt-1">0</p>
+                </div>
+                <div class="bg-emerald-50 border-4 border-emerald-300 rounded-2xl p-4">
+                    <p class="text-xs font-extrabold text-emerald-600 uppercase">Jawaban Benar</p>
+                    <p id="end-correct-count" class="text-3xl font-display font-bold text-slate-800 mt-1">0 / 10</p>
+                </div>
+            </div>
+
+            <button id="btn-restart-game" class="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white font-display font-bold text-xl py-4 px-6 rounded-2xl shadow-xl border-b-4 border-rose-700 transition transform active:translate-y-0.5">
+                🔄 Main Lagi
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * ============================================================================
+         * 1. BANK SOAL MATEMATIKA (10 SOAL: LUAS & KELILING SEGITIGA & SEGIEMPAT)
+         * ============================================================================
+         */
+        const QUESTIONS = [
+            {
+                topic: "Persegi • Luas",
+                question: "Sebuah taman berbentuk persegi memiliki panjang sisi 9 meter. Berapakah luas taman tersebut?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <rect x="30" y="12" width="54" height="54" fill="#fde047" stroke="#ca8a04" stroke-width="3" rx="4"/>
+                        <text x="57" y="80" font-size="12" font-weight="bold" fill="#1e293b" text-anchor="middle">s = 9 m</text>
+                        <text x="96" y="43" font-size="12" font-weight="bold" fill="#1e293b" text-anchor="middle">9 m</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "36 m²", correct: false },
+                    { label: "B", text: "81 m²", correct: true },
+                    { label: "C", text: "18 m²", correct: false },
+                    { label: "D", text: "72 m²", correct: false }
+                ],
+                explanation: "Rumus Luas Persegi = sisi × sisi (s²)\nDiketahui s = 9 m.\nLuas = 9 m × 9 m = 81 m².\n(Catatan: 36 m adalah keliling persegi tersebut, bukan luasnya)."
+            },
+            {
+                topic: "Persegi Panjang • Keliling",
+                question: "Papan tulis berbentuk persegi panjang memiliki panjang 12 cm dan lebar 8 cm. Berapa kelilingnya?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <rect x="16" y="18" width="76" height="44" fill="#7dd3fc" stroke="#0284c7" stroke-width="3" rx="4"/>
+                        <text x="54" y="76" font-size="12" font-weight="bold" fill="#1e293b" text-anchor="middle">p = 12 cm</text>
+                        <text x="105" y="44" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">8 cm</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "96 cm", correct: false },
+                    { label: "B", text: "20 cm", correct: false },
+                    { label: "C", text: "40 cm", correct: true },
+                    { label: "D", text: "48 cm", correct: false }
+                ],
+                explanation: "Rumus Keliling Persegi Panjang = 2 × (panjang + lebar)\nKeliling = 2 × (12 cm + 8 cm)\nKeliling = 2 × 20 cm = 40 cm."
+            },
+            {
+                topic: "Segitiga • Luas",
+                question: "Sebuah penggaris segitiga memiliki panjang alas 14 cm dan tinggi 10 cm. Berapakah luas penggaris tersebut?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <polygon points="20,66 100,66 60,14" fill="#fca5a5" stroke="#dc2626" stroke-width="3"/>
+                        <line x1="60" y1="14" x2="60" y2="66" stroke="#1e293b" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="77" y="45" font-size="11" font-weight="bold" fill="#1e293b">t=10</text>
+                        <text x="60" y="81" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">a = 14 cm</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "140 cm²", correct: false },
+                    { label: "B", text: "70 cm²", correct: true },
+                    { label: "C", text: "24 cm²", correct: false },
+                    { label: "D", text: "48 cm²", correct: false }
+                ],
+                explanation: "Rumus Luas Segitiga = ½ × alas × tinggi\nLuas = ½ × 14 cm × 10 cm\nLuas = 7 × 10 = 70 cm²."
+            },
+            {
+                topic: "Segitiga Sama Sisi • Keliling",
+                question: "Sebuah segitiga sama sisi memiliki keliling 45 cm. Berapakah panjang setiap sisi segitiga tersebut?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <polygon points="25,68 95,68 60,14" fill="#86efac" stroke="#16a34a" stroke-width="3"/>
+                        <text x="60" y="52" font-size="11" font-weight="bold" fill="#14532d" text-anchor="middle">K = 45 cm</text>
+                        <text x="60" y="82" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">s = ?</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "15 cm", correct: true },
+                    { label: "B", text: "9 cm", correct: false },
+                    { label: "C", text: "22,5 cm", correct: false },
+                    { label: "D", text: "135 cm", correct: false }
+                ],
+                explanation: "Segitiga sama sisi memiliki 3 sisi yang sama panjang.\nKeliling = 3 × sisi\n45 cm = 3 × sisi → sisi = 45 ÷ 3 = 15 cm."
+            },
+            {
+                topic: "Jajargenjang • Luas",
+                question: "Bangun jajargenjang mempunyai alas 15 cm, sisi miring 10 cm, dan tinggi 8 cm. Berapakah luasnya?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <polygon points="30,18 104,18 86,66 12,66" fill="#c4b5fd" stroke="#7c3aed" stroke-width="3"/>
+                        <line x1="30" y1="18" x2="30" y2="66" stroke="#1e293b" stroke-width="2" stroke-dasharray="3,3"/>
+                        <text x="45" y="45" font-size="11" font-weight="bold" fill="#1e293b">t=8</text>
+                        <text x="52" y="81" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">a = 15 cm</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "150 cm²", correct: false },
+                    { label: "B", text: "80 cm²", correct: false },
+                    { label: "C", text: "50 cm²", correct: false },
+                    { label: "D", text: "120 cm²", correct: true }
+                ],
+                explanation: "Rumus Luas Jajargenjang = alas × tinggi\nIngat! Gunakan tinggi yang tegak lurus dengan alas (8 cm), bukan sisi miring.\nLuas = 15 cm × 8 cm = 120 cm²."
+            },
+            {
+                topic: "Belah Ketupat • Luas",
+                question: "Sebuah ketupat berbentuk belah ketupat memiliki panjang diagonal 12 cm dan 16 cm. Berapakah luasnya?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <polygon points="60,8 102,42 60,76 18,42" fill="#fdba74" stroke="#ea580c" stroke-width="3"/>
+                        <line x1="60" y1="8" x2="60" y2="76" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="3,2"/>
+                        <line x1="18" y1="42" x2="102" y2="42" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="3,2"/>
+                        <text x="60" y="88" font-size="10" font-weight="bold" fill="#1e293b" text-anchor="middle">d₁=12, d₂=16</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "192 cm²", correct: false },
+                    { label: "B", text: "96 cm²", correct: true },
+                    { label: "C", text: "28 cm²", correct: false },
+                    { label: "D", text: "56 cm²", correct: false }
+                ],
+                explanation: "Rumus Luas Belah Ketupat = ½ × d₁ × d₂\nLuas = ½ × 12 cm × 16 cm\nLuas = 6 × 16 = 96 cm²."
+            },
+            {
+                topic: "Layang-Layang • Keliling",
+                question: "Layang-layang memiliki dua pasang sisi sama panjang, yaitu 13 cm dan 20 cm. Berapa keliling layang-layang itu?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <polygon points="60,8 92,30 60,78 28,30" fill="#f9a8d4" stroke="#db2777" stroke-width="3"/>
+                        <text x="22" y="20" font-size="11" font-weight="bold" fill="#1e293b">13</text>
+                        <text x="20" y="60" font-size="11" font-weight="bold" fill="#1e293b">20</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "33 cm", correct: false },
+                    { label: "B", text: "260 cm", correct: false },
+                    { label: "C", text: "66 cm", correct: true },
+                    { label: "D", text: "130 cm", correct: false }
+                ],
+                explanation: "Rumus Keliling Layang-layang = 2 × (sisi pendek + sisi panjang)\nKeliling = 2 × (13 cm + 20 cm)\nKeliling = 2 × 33 cm = 66 cm."
+            },
+            {
+                topic: "Trapesium • Luas",
+                question: "Trapesium memiliki sisi sejajar masing-masing 10 cm dan 18 cm, serta tinggi 6 cm. Berapakah luas trapesium tersebut?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <polygon points="36,18 84,18 104,64 16,64" fill="#67e8f9" stroke="#0891b2" stroke-width="3"/>
+                        <line x1="36" y1="18" x2="36" y2="64" stroke="#1e293b" stroke-width="1.8" stroke-dasharray="3,2"/>
+                        <text x="60" y="14" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">10 cm</text>
+                        <text x="60" y="79" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">18 cm (t=6)</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "84 cm²", correct: true },
+                    { label: "B", text: "168 cm²", correct: false },
+                    { label: "C", text: "60 cm²", correct: false },
+                    { label: "D", text: "108 cm²", correct: false }
+                ],
+                explanation: "Rumus Luas Trapesium = ½ × (jumlah sisi sejajar) × tinggi\nLuas = ½ × (10 + 18) × 6\nLuas = ½ × 28 × 6 = 14 × 6 = 84 cm²."
+            },
+            {
+                topic: "Persegi Panjang • Luas & Keliling",
+                question: "Luas sebuah karpet persegi panjang adalah 72 m². Jika panjangnya 9 m, berapakah keliling karpet tersebut?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <rect x="18" y="18" width="76" height="46" fill="#fde047" stroke="#eab308" stroke-width="3" rx="4"/>
+                        <text x="56" y="45" font-size="11" font-weight="bold" fill="#713f12" text-anchor="middle">L = 72 m²</text>
+                        <text x="56" y="78" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">p = 9 m</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "17 m", correct: false },
+                    { label: "B", text: "34 m", correct: true },
+                    { label: "C", text: "64 m", correct: false },
+                    { label: "D", text: "26 m", correct: false }
+                ],
+                explanation: "Langkah 1: Cari lebar = Luas ÷ panjang = 72 ÷ 9 = 8 m.\nLangkah 2: Hitung keliling = 2 × (panjang + lebar) = 2 × (9 + 8) = 2 × 17 = 34 m."
+            },
+            {
+                topic: "Segitiga Siku-Siku • Luas & Keliling",
+                question: "Segitiga siku-siku memiliki alas 6 cm, tinggi 8 cm, dan sisi miring 10 cm. Berapa jumlah Luas dan Kelilingnya?",
+                svg: `<svg viewBox="0 0 120 90" class="w-full h-full">
+                        <polygon points="28,16 28,68 92,68" fill="#a7f3d0" stroke="#059669" stroke-width="3"/>
+                        <text x="17" y="45" font-size="11" font-weight="bold" fill="#1e293b">8</text>
+                        <text x="60" y="81" font-size="11" font-weight="bold" fill="#1e293b" text-anchor="middle">6 cm</text>
+                        <text x="68" y="38" font-size="11" font-weight="bold" fill="#1e293b">10</text>
+                      </svg>`,
+                options: [
+                    { label: "A", text: "24", correct: false },
+                    { label: "B", text: "38", correct: false },
+                    { label: "C", text: "48", correct: true },
+                    { label: "D", text: "72", correct: false }
+                ],
+                explanation: "Luas = ½ × alas × tinggi = ½ × 6 × 8 = 24 cm².\nKeliling = 6 + 8 + 10 = 24 cm.\nJumlah nilai Luas + Keliling = 24 + 24 = 48."
+            }
+        ];
+
+        /**
+         * ============================================================================
+         * 2. SISTEM AUDIO SINTETIS (WEB AUDIO API - TANPA FILE EKSTERNAL)
+         * ============================================================================
+         */
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioCtx();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playTone(freq, type, duration, vol = 0.25, slideTo = null) {
+                if (!this.enabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, now);
+                if (slideTo) {
+                    osc.frequency.exponentialRampToValueAtTime(slideTo, now + duration);
+                }
+                gain.gain.setValueAtTime(vol, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + duration);
+            }
+
+            playGrab() {
+                // Suara pop ceria saat mencubit & menangkap bola
+                this.playTone(360, 'sine', 0.12, 0.3, 680);
+            }
+
+            playThrow() {
+                // Suara whoosh saat melempar bola
+                this.playTone(520, 'triangle', 0.22, 0.32, 160);
+            }
+
+            playCorrect() {
+                // Melodi fanfare ceria naik
+                this.playTone(523.25, 'sine', 0.12, 0.25); // C5
+                setTimeout(() => this.playTone(659.25, 'sine', 0.12, 0.25), 90); // E5
+                setTimeout(() => this.playTone(783.99, 'sine', 0.15, 0.25), 180); // G5
+                setTimeout(() => this.playTone(1046.5, 'triangle', 0.35, 0.3), 270); // C6
+            }
+
+            playWrong() {
+                // Suara buzzer rendah
+                this.playTone(190, 'sawtooth', 0.25, 0.25, 130);
+                setTimeout(() => this.playTone(145, 'sawtooth', 0.35, 0.25, 95), 180);
+            }
+
+            playTick() {
+                this.playTone(880, 'sine', 0.05, 0.08);
+            }
+
+            playVictory() {
+                const notes = [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5];
+                notes.forEach((n, i) => {
+                    setTimeout(() => this.playTone(n, 'triangle', 0.2, 0.28), i * 130);
+                });
+            }
+        }
+        const sfx = new SoundFX();
+
+        /**
+         * ============================================================================
+         * 3. VARIABEL STATE PERMAINAN (GRAB & THROW)
+         * ============================================================================
+         */
+        const GAME_STATE = {
+            status: 'START', // START, PLAYING, MODAL, ENDED
+            currentQuestionIndex: 0,
+            score: 0,
+            correctCount: 0,
+            lives: 3,
+            timeLeft: 45,
+            timerInterval: null,
+            // Koordinat kursor/tangan dalam ruang ternormalisasi (-1 s/d 1)
+            pointerX: 0,
+            pointerY: -0.2,
+            prevPointerX: 0,
+            prevPointerY: -0.2,
+            velX: 0,
+            velY: 0,
+            isPinching: false,
+            wasPinching: false,
+            grabbedOrbIndex: -1,
+            hoveredOrbIndex: -1,
+            cameraActive: false
+        };
+
+        /**
+         * ============================================================================
+         * 4. SETUP LINGKUNGAN 3D THREE.JS (ARENA CERAH, PORTAL TARGET, BOLA JAWABAN)
+         * ============================================================================
+         */
+        const canvas = document.getElementById('game-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x38bdf8); // Langit biru cerah
+        scene.fog = new THREE.FogExp2(0x7dd3fc, 0.012);
+
+        const camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 120);
+        camera.position.set(0, 6.2, 13.5);
+        camera.lookAt(0, 2.4, -3);
+
+        // Pencahayaan Terang & Hangat
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x4ade80, 1.0);
+        hemiLight.position.set(0, 25, 0);
+        scene.add(hemiLight);
+
+        const dirLight = new THREE.DirectionalLight(0xfffbeb, 1.05);
+        dirLight.position.set(10, 22, 14);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 1024;
+        dirLight.shadow.mapSize.height = 1024;
+        const d = 16;
+        dirLight.shadow.camera.left = -d;
+        dirLight.shadow.camera.right = d;
+        dirLight.shadow.camera.top = d;
+        dirLight.shadow.camera.bottom = -d;
+        scene.add(dirLight);
+
+        // Pulau Platform Utama Arena
+        const arenaIsland = new THREE.Mesh(
+            new THREE.CylinderGeometry(13.5, 11.5, 2.2, 36),
+            new THREE.MeshStandardMaterial({ color: 0x4ade80, roughness: 0.75 })
+        );
+        arenaIsland.position.set(0, -1.3, -1.5);
+        arenaIsland.receiveShadow = true;
+        scene.add(arenaIsland);
+
+        // Lapisan Tanah Cokelat Cerah di Bawah Rumput
+        const earthBase = new THREE.Mesh(
+            new THREE.CylinderGeometry(11.4, 8.0, 3.0, 36),
+            new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.9 })
+        );
+        earthBase.position.set(0, -3.8, -1.5);
+        scene.add(earthBase);
+
+        // Dekorasi Awan & Pulau Melayang di Latar Belakang
+        const decorGroup = new THREE.Group();
+        scene.add(decorGroup);
+
+        function createCloud(x, y, z, scale) {
+            const cloud = new THREE.Group();
+            const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
+            const puffs = [
+                [0, 0, 0, 1.2], [-1.1, -0.2, 0, 0.9], [1.1, -0.2, 0, 0.9], [0.4, 0.5, 0.2, 0.85]
+            ];
+            puffs.forEach(p => {
+                const mesh = new THREE.Mesh(new THREE.SphereGeometry(p[3], 16, 16), mat);
+                mesh.position.set(p[0], p[1], p[2]);
+                cloud.add(mesh);
+            });
+            cloud.position.set(x, y, z);
+            cloud.scale.setScalar(scale);
+            decorGroup.add(cloud);
+            return cloud;
+        }
+        const clouds = [
+            createCloud(-15, 11, -22, 1.5),
+            createCloud(0, 14, -26, 1.7),
+            createCloud(16, 10, -20, 1.4),
+            createCloud(-22, 8, -14, 1.1)
+        ];
+
+        // Pilar-pilar Geometris Warna-Warni di Pinggir Arena
+        const blockColors = [0xfacc15, 0xf472b6, 0x38bdf8, 0xa78bfa, 0xfb923c];
+        for (let i = 0; i < 10; i++) {
+            const h = 1.4 + (i % 3) * 0.9;
+            const pillar = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.65, 0.65, h, 16),
+                new THREE.MeshStandardMaterial({ color: blockColors[i % blockColors.length], roughness: 0.4 })
+            );
+            const angle = (i / 9) * Math.PI + Math.PI; // Setengah lingkaran belakang
+            pillar.position.set(Math.cos(angle) * 11.2, h / 2 - 0.2, Math.sin(angle) * 9.5 - 1.5);
+            pillar.castShadow = true;
+            pillar.receiveShadow = true;
+            decorGroup.add(pillar);
+        }
+
+        /**
+         * PORTAL TARGET PENGETAHUAN (Di tengah-belakang arena)
+         */
+        const TARGET_POS = new THREE.Vector3(0, 3.8, -6.2);
+        const portalGroup = new THREE.Group();
+        portalGroup.position.copy(TARGET_POS);
+        scene.add(portalGroup);
+
+        // Cincin Utama Portal Emas/Oranye Cerah
+        const outerTorus = new THREE.Mesh(
+            new THREE.TorusGeometry(2.35, 0.26, 20, 48),
+            new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xf59e0b, emissiveIntensity: 0.45, roughness: 0.25 })
+        );
+        portalGroup.add(outerTorus);
+
+        // Cincin Dalam Berputar
+        const innerTorus = new THREE.Mesh(
+            new THREE.TorusGeometry(1.85, 0.14, 16, 40),
+            new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.6 })
+        );
+        portalGroup.add(innerTorus);
+
+        // Pusaran Energi Portal (Disc transparan)
+        const vortexMat = new THREE.MeshBasicMaterial({
+            color: 0x67e8f9,
+            transparent: true,
+            opacity: 0.45,
+            side: THREE.DoubleSide
+        });
+        const vortexDisc = new THREE.Mesh(new THREE.CircleGeometry(2.15, 36), vortexMat);
+        portalGroup.add(vortexDisc);
+
+        // Papan Teks "TARGET PORTAL" di atas cincin
+        function createBannerTexture(text) {
+            const c = document.createElement('canvas');
+            c.width = 512;
+            c.height = 128;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#4f46e5';
+            ctx.beginPath();
+            ctx.roundRect(16, 16, 480, 96, 32);
+            ctx.fill();
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = '#facc15';
+            ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 44px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, 256, 66);
+            return new THREE.CanvasTexture(c);
+        }
+        const targetLabelMesh = new THREE.Mesh(
+            new THREE.PlaneGeometry(3.8, 0.95),
+            new THREE.MeshBasicMaterial({ map: createBannerTexture('🎯 LEMPAR KE SINI!'), transparent: true })
+        );
+        targetLabelMesh.position.set(0, 2.95, 0);
+        portalGroup.add(targetLabelMesh);
+
+        /**
+         * 4 BOLA JAWABAN (ANSWER ORBS) & PEDESTAL DI DEPAN ARENA
+         */
+        const PEDESTAL_POS = [
+            new THREE.Vector3(-4.8, 1.4, 4.2),
+            new THREE.Vector3(-1.6, 1.4, 4.6),
+            new THREE.Vector3(1.6, 1.4, 4.6),
+            new THREE.Vector3(4.8, 1.4, 4.2)
+        ];
+        const ORB_COLORS = [0xff595e, 0xf59e0b, 0x0ea5e9, 0x22c55e];
+        const ORB_HEX = ['#ff595e', '#f59e0b', '#0284c7', '#16a34a'];
+
+        function createOrbLabelTexture(label, text, bgColorHex, isHighlighted = false) {
+            const c = document.createElement('canvas');
+            c.width = 512;
+            c.height = 240;
+            const ctx = c.getContext('2d');
+
+            ctx.fillStyle = isHighlighted ? '#fef08a' : '#ffffff';
+            ctx.beginPath();
+            ctx.roundRect(12, 12, 488, 216, 36);
+            ctx.fill();
+
+            ctx.lineWidth = isHighlighted ? 18 : 14;
+            ctx.strokeStyle = isHighlighted ? '#f97316' : bgColorHex;
+            ctx.stroke();
+
+            // Lingkaran Huruf A/B/C/D
+            ctx.fillStyle = bgColorHex;
+            ctx.beginPath();
+            ctx.arc(88, 120, 56, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 68px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(label, 88, 124);
+
+            // Nilai Jawaban
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 62px Nunito, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, 318, 122, 300);
+
+            const tex = new THREE.CanvasTexture(c);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        const answerOrbs = [];
+
+        function initAnswerOrbs() {
+            answerOrbs.forEach(o => {
+                scene.remove(o.pedestal);
+                scene.remove(o.orbGroup);
+            });
+            answerOrbs.length = 0;
+
+            for (let i = 0; i < 4; i++) {
+                const home = PEDESTAL_POS[i];
+
+                // Pedestal tempat bola melayang
+                const ped = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.95, 1.15, 0.5, 24),
+                    new THREE.MeshStandardMaterial({ color: ORB_COLORS[i], roughness: 0.35 })
+                );
+                ped.position.set(home.x, 0.05, home.z);
+                ped.receiveShadow = true;
+                scene.add(ped);
+
+                // Grup Bola Jawaban + Label
+                const orbGroup = new THREE.Group();
+                orbGroup.position.copy(home);
+
+                // Bola Energi 3D Mengkilap
+                const sphereMesh = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.82, 28, 28),
+                    new THREE.MeshStandardMaterial({
+                        color: ORB_COLORS[i],
+                        roughness: 0.2,
+                        metalness: 0.1,
+                        emissive: ORB_COLORS[i],
+                        emissiveIntensity: 0.18
+                    })
+                );
+                sphereMesh.castShadow = true;
+                orbGroup.add(sphereMesh);
+
+                // Cincin Halo di sekeliling bola
+                const haloMesh = new THREE.Mesh(
+                    new THREE.TorusGeometry(0.98, 0.06, 12, 32),
+                    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.65 })
+                );
+                haloMesh.rotation.x = Math.PI / 2;
+                orbGroup.add(haloMesh);
+
+                // Papan Label Jelas di atas bola
+                const labelMat = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, transparent: true });
+                const labelMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.55, 1.2), labelMat);
+                labelMesh.position.set(0, 1.48, 0.1);
+                orbGroup.add(labelMesh);
+
+                scene.add(orbGroup);
+
+                answerOrbs.push({
+                    index: i,
+                    pedestal: ped,
+                    orbGroup: orbGroup,
+                    sphereMesh: sphereMesh,
+                    haloMesh: haloMesh,
+                    labelMesh: labelMesh,
+                    labelMat: labelMat,
+                    homePos: home.clone(),
+                    optionData: null,
+                    state: 'IDLE', // IDLE, GRABBED, THROWN, RETURNING
+                    vel: new THREE.Vector3(),
+                    phase: i * 1.5
+                });
+            }
+        }
+        initAnswerOrbs();
+
+        /**
+         * TANGAN VIRTUAL 3D PEMAIN (Visualisasi Pinch / Grab di Arena 3D)
+         */
+        const handCursorGroup = new THREE.Group();
+        const handMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.25, emissive: 0xf59e0b, emissiveIntensity: 0.25 });
+        const fingerMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
+
+        // Inti telapak
+        const palmMesh = new THREE.Mesh(new THREE.SphereGeometry(0.36, 20, 20), handMat);
+        handCursorGroup.add(palmMesh);
+
+        // Dua capit (Ibu jari & Telunjuk) yang menutup saat Pinch!
+        const thumbClaw = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16), fingerMat);
+        thumbClaw.position.set(-0.35, -0.25, -0.2);
+        const indexClaw = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16), fingerMat);
+        indexClaw.position.set(0.35, 0.25, -0.2);
+
+        // Cincin indikator jangkauan tangan
+        const cursorRing = new THREE.Mesh(
+            new THREE.RingGeometry(0.55, 0.68, 32),
+            new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+        );
+        handCursorGroup.add(thumbClaw, indexClaw, cursorRing);
+        handCursorGroup.position.set(0, 2.2, 5.2);
+        scene.add(handCursorGroup);
+
+        /**
+         * Sistem Partikel Ledakan Bintang & Konfeti Warna-Warni
+         */
+        const particles = [];
+        function spawnExplosion(pos, baseColor) {
+            const colors = [baseColor, 0xfef08a, 0xffffff, 0x38bdf8, 0xf472b6, 0x4ade80];
+            for (let i = 0; i < 42; i++) {
+                const geo = i % 2 === 0 ? new THREE.OctahedronGeometry(0.24, 0) : new THREE.BoxGeometry(0.24, 0.24, 0.24);
+                const mat = new THREE.MeshBasicMaterial({ color: colors[i % colors.length] });
+                const p = new THREE.Mesh(geo, mat);
+                p.position.copy(pos);
+
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 3 + Math.random() * 9;
+                const vy = 3 + Math.random() * 8;
+
+                scene.add(p);
+                particles.push({
+                    mesh: p,
+                    vel: new THREE.Vector3(Math.cos(angle) * speed, vy, Math.sin(angle) * speed),
+                    rot: new THREE.Vector3(Math.random() * 8, Math.random() * 8, Math.random() * 8),
+                    life: 1.0
+                });
+            }
+        }
+
+        /**
+         * ============================================================================
+         * 5. LOGIKA GAMEPLAY, SOAL, TIMER & MEKANIKA GRAB & THROW
+         * ============================================================================
+         */
+        function updateHUD() {
+            document.getElementById('hud-question-num').textContent = `${GAME_STATE.currentQuestionIndex + 1} / ${QUESTIONS.length}`;
+            document.getElementById('hud-score').textContent = GAME_STATE.score;
+            document.getElementById('hud-timer').textContent = `${GAME_STATE.timeLeft}s`;
+            
+            let hearts = '';
+            for (let i = 0; i < 3; i++) {
+                hearts += i < GAME_STATE.lives ? '❤️' : '🖤';
+            }
+            document.getElementById('hud-lives').textContent = hearts;
+
+            const timerBox = document.getElementById('timer-box');
+            if (GAME_STATE.timeLeft <= 10) {
+                timerBox.classList.remove('border-sky-400');
+                timerBox.classList.add('border-rose-500', 'bg-rose-50');
+            } else {
+                timerBox.classList.add('border-sky-400');
+                timerBox.classList.remove('border-rose-500', 'bg-rose-50');
+            }
+        }
+
+        function loadQuestion(index) {
+            const q = QUESTIONS[index];
+            GAME_STATE.currentQuestionIndex = index;
+            GAME_STATE.timeLeft = 45;
+            GAME_STATE.status = 'PLAYING';
+            GAME_STATE.grabbedOrbIndex = -1;
+            GAME_STATE.hoveredOrbIndex = -1;
+
+            document.getElementById('question-topic').textContent = q.topic;
+            document.getElementById('question-text').textContent = q.question;
+            document.getElementById('question-diagram').innerHTML = q.svg;
+            updateHUD();
+
+            q.options.forEach((opt, i) => {
+                const orb = answerOrbs[i];
+                orb.optionData = opt;
+                orb.state = 'IDLE';
+                orb.orbGroup.position.copy(orb.homePos);
+                orb.orbGroup.scale.setScalar(1);
+                orb.vel.set(0, 0, 0);
+
+                if (orb.labelMat.map) orb.labelMat.map.dispose();
+                orb.labelMat.map = createOrbLabelTexture(opt.label, opt.text, ORB_HEX[i], false);
+                orb.labelMat.needsUpdate = true;
+            });
+
+            startQuestionTimer();
+        }
+
+        function startQuestionTimer() {
+            clearInterval(GAME_STATE.timerInterval);
+            GAME_STATE.timerInterval = setInterval(() => {
+                if (GAME_STATE.status !== 'PLAYING') return;
+                GAME_STATE.timeLeft--;
+                updateHUD();
+
+                if (GAME_STATE.timeLeft <= 5 && GAME_STATE.timeLeft > 0) {
+                    sfx.playTick();
+                }
+
+                if (GAME_STATE.timeLeft <= 0) {
+                    clearInterval(GAME_STATE.timerInterval);
+                    handleAnswerResult(false, null, true);
+                }
+            }, 1000);
+        }
+
+        /**
+         * Mulai Mencubit (Pinch Start) -> Tangkap bola jawaban terdekat
+         */
+        function onPinchStart() {
+            if (GAME_STATE.status !== 'PLAYING' || GAME_STATE.grabbedOrbIndex !== -1) return;
+
+            let closestIdx = -1;
+            let closestDist = 2.4; // Radius toleransi grab agar ramah anak
+
+            answerOrbs.forEach((orb, idx) => {
+                if (orb.state === 'IDLE' || orb.state === 'RETURNING') {
+                    const d = handCursorGroup.position.distanceTo(orb.orbGroup.position);
+                    if (d < closestDist) {
+                        closestDist = d;
+                        closestIdx = idx;
+                    }
+                }
+            });
+
+            if (closestIdx !== -1) {
+                GAME_STATE.grabbedOrbIndex = closestIdx;
+                answerOrbs[closestIdx].state = 'GRABBED';
+                sfx.playGrab();
+                document.getElementById('hand-action-hint').textContent = `✊ Bola ${answerOrbs[closestIdx].optionData.label} tertangkap! Ayunkan & buka jari untuk lempar!`;
+            }
+        }
+
+        /**
+         * Melepas Cubitan (Pinch Release) -> Lempar bola ke arah Portal Target!
+         */
+        function onPinchRelease() {
+            if (GAME_STATE.status !== 'PLAYING' || GAME_STATE.grabbedOrbIndex === -1) return;
+
+            const orb = answerOrbs[GAME_STATE.grabbedOrbIndex];
+            GAME_STATE.grabbedOrbIndex = -1;
+            document.getElementById('hand-action-hint').textContent = `🤏 Cubit bola jawaban & lempar ke Portal!`;
+
+            // Hitung kecepatan tangan & posisi bola saat dilepas
+            const speed = Math.hypot(GAME_STATE.velX, GAME_STATE.velY);
+            const liftedAbovePedestal = orb.orbGroup.position.y > orb.homePos.y + 0.55;
+
+            // Jika pemain mengayunkan tangan (kecepatan cukup) atau mengangkat bola ke arah portal
+            if (speed > 0.018 || liftedAbovePedestal) {
+                orb.state = 'THROWN';
+                sfx.playThrow();
+
+                // Hitung lintasan parabola 3D menuju Portal Target dengan sedikit pengaruh arah lemparan pemain
+                const aimOffsetX = Math.max(-1.6, Math.min(1.6, GAME_STATE.velX * 14));
+                const destination = new THREE.Vector3(
+                    TARGET_POS.x + aimOffsetX * 0.45,
+                    TARGET_POS.y,
+                    TARGET_POS.z
+                );
+
+                const flightTime = 0.68; // detik menuju portal
+                const gravity = 18.0;
+
+                orb.vel.x = (destination.x - orb.orbGroup.position.x) / flightTime;
+                orb.vel.z = (destination.z - orb.orbGroup.position.z) / flightTime;
+                orb.vel.y = (destination.y - orb.orbGroup.position.y + 0.5 * gravity * flightTime * flightTime) / flightTime;
+            } else {
+                // Jika hanya dilepas pelan di tempat, bola kembali ke pedestalnya
+                orb.state = 'RETURNING';
+            }
+        }
+
+        function handleAnswerResult(isCorrect, chosenOption, isTimeout) {
+            GAME_STATE.status = 'MODAL';
+            clearInterval(GAME_STATE.timerInterval);
+
+            const q = QUESTIONS[GAME_STATE.currentQuestionIndex];
+            const correctOpt = q.options.find(o => o.correct);
+
+            const banner = document.getElementById('modal-status-banner');
+            const icon = document.getElementById('modal-status-icon');
+            const title = document.getElementById('modal-status-title');
+            const subtitle = document.getElementById('modal-status-subtitle');
+
+            if (isCorrect) {
+                sfx.playCorrect();
+                const timeBonus = Math.floor(GAME_STATE.timeLeft * 1.5);
+                const earned = 100 + timeBonus;
+                GAME_STATE.score += earned;
+                GAME_STATE.correctCount++;
+
+                banner.className = "flex items-center gap-3 p-4 rounded-2xl mb-4 bg-emerald-100 border-2 border-emerald-400";
+                icon.textContent = "🎉";
+                title.className = "font-display font-bold text-xl text-emerald-800";
+                title.textContent = `Benar! +${earned} Poin`;
+                subtitle.className = "text-xs sm:text-sm font-bold text-emerald-700";
+                subtitle.textContent = `Hebat! Bola jawaban (${chosenOption.label}. ${chosenOption.text}) masuk ke Portal!`;
+            } else {
+                sfx.playWrong();
+                GAME_STATE.lives = Math.max(0, GAME_STATE.lives - 1);
+
+                document.body.classList.remove('shake-effect');
+                void document.body.offsetWidth;
+                document.body.classList.add('shake-effect');
+
+                banner.className = "flex items-center gap-3 p-4 rounded-2xl mb-4 bg-rose-100 border-2 border-rose-400";
+                icon.textContent = isTimeout ? "⏰" : "💥";
+                title.className = "font-display font-bold text-xl text-rose-800";
+                title.textContent = isTimeout ? "Waktu Habis! -1 Nyawa" : `Kurang Tepat! -1 Nyawa`;
+                subtitle.className = "text-xs sm:text-sm font-bold text-rose-700";
+                subtitle.textContent = isTimeout
+                    ? `Waktu 45 detik telah berakhir. Sisa nyawa: ${GAME_STATE.lives}`
+                    : `Kamu melempar ${chosenOption.label}. ${chosenOption.text}. Sisa nyawa: ${GAME_STATE.lives}`;
+            }
+
+            updateHUD();
+
+            document.getElementById('modal-correct-answer').textContent = `Jawaban Benar: ${correctOpt.label}. ${correctOpt.text}`;
+            document.getElementById('modal-explanation-text').textContent = q.explanation;
+
+            const isGameOver = GAME_STATE.lives <= 0 || GAME_STATE.currentQuestionIndex >= QUESTIONS.length - 1;
+            document.getElementById('btn-next-text').textContent = isGameOver ? "Lihat Hasil Akhir 🏆" : "Soal Berikutnya ➡️";
+
+            document.getElementById('explanation-modal').classList.remove('hidden');
+        }
+
+        function proceedNext() {
+            document.getElementById('explanation-modal').classList.add('hidden');
+
+            if (GAME_STATE.lives <= 0 || GAME_STATE.currentQuestionIndex >= QUESTIONS.length - 1) {
+                showEndScreen();
+            } else {
+                loadQuestion(GAME_STATE.currentQuestionIndex + 1);
+            }
+        }
+
+        function showEndScreen() {
+            GAME_STATE.status = 'ENDED';
+            clearInterval(GAME_STATE.timerInterval);
+
+            const isWin = GAME_STATE.lives > 0 && GAME_STATE.correctCount >= 5;
+            if (GAME_STATE.lives > 0) sfx.playVictory();
+
+            const starsCount = GAME_STATE.correctCount >= 8 ? 3 : (GAME_STATE.correctCount >= 5 ? 2 : 1);
+            document.getElementById('end-stars').textContent = '⭐'.repeat(starsCount) + '☆'.repeat(3 - starsCount);
+            document.getElementById('end-trophy-icon').textContent = GAME_STATE.lives > 0 ? "🏆" : "💪";
+            document.getElementById('end-title').textContent = GAME_STATE.lives > 0 ? "Arena Ditaklukkan!" : "Permainan Selesai!";
+            document.getElementById('end-subtitle').textContent = isWin
+                ? "Luar biasa! Kamu berhasil menguasai luas & keliling bangun datar!"
+                : "Terus berlatih menghitung luas & keliling segitiga dan segiempat ya!";
+            document.getElementById('end-final-score').textContent = GAME_STATE.score;
+            document.getElementById('end-correct-count').textContent = `${GAME_STATE.correctCount} / ${QUESTIONS.length}`;
+
+            document.getElementById('end-screen').classList.remove('hidden');
+        }
+
+        function resetAndStartGame() {
+            GAME_STATE.score = 0;
+            GAME_STATE.correctCount = 0;
+            GAME_STATE.lives = 3;
+            GAME_STATE.currentQuestionIndex = 0;
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('hud-container').classList.remove('hidden');
+            document.getElementById('webcam-widget').classList.remove('hidden');
+            document.getElementById('helper-widget').classList.remove('hidden');
+
+            loadQuestion(0);
+        }
+
+        /**
+         * ============================================================================
+         * 6. INTEGRASI MEDIAPIPE HANDS (DETEKSI PINCH IBU JARI & TELUNJUK)
+         * ============================================================================
+         */
+        const videoElement = document.getElementById('input-video');
+        const webcamCanvas = document.getElementById('webcam-canvas');
+        const webcamCtx = webcamCanvas.getContext('2d');
+        const gestureBadge = document.getElementById('gesture-badge');
+
+        const HAND_CONNECTIONS = [
+            [0,1],[1,2],[2,3],[3,4],       // Ibu jari
+            [0,5],[5,6],[6,7],[7,8],       // Telunjuk
+            [5,9],[9,10],[10,11],[11,12],  // Jari tengah
+            [9,13],[13,14],[14,15],[15,16],// Jari manis
+            [13,17],[17,18],[18,19],[19,20],// Kelingking
+            [0,17]                         // Telapak
+        ];
+
+        function onHandsResults(results) {
+            webcamCanvas.width = 320;
+            webcamCanvas.height = 180;
+            webcamCtx.clearRect(0, 0, webcamCanvas.width, webcamCanvas.height);
+
+            if (results.image) {
+                webcamCtx.drawImage(results.image, 0, 0, webcamCanvas.width, webcamCanvas.height);
+            }
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const landmarks = results.multiHandLandmarks[0];
+                const thumbTip = landmarks[4];  // Ujung Ibu Jari
+                const indexTip = landmarks[8];  // Ujung Jari Telunjuk
+                const wrist = landmarks[0];
+                const middleBase = landmarks[9];
+
+                // Hitung ukuran tangan untuk normalisasi jarak pinch agar akurat di berbagai jarak kamera
+                const handSize = Math.hypot(middleBase.x - wrist.x, middleBase.y - wrist.y) || 0.2;
+                const pinchDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+                const normalizedPinch = pinchDist / handSize;
+
+                // Hysteresis agar pinch stabil tidak mudah lepas sendiri
+                const pinchThreshold = GAME_STATE.wasPinching ? 0.42 : 0.32;
+                const isPinching = normalizedPinch < pinchThreshold;
+
+                // Gambar kerangka tangan
+                webcamCtx.lineWidth = 2.5;
+                webcamCtx.strokeStyle = isPinching ? '#facc15' : '#38bdf8';
+                HAND_CONNECTIONS.forEach(([a, b]) => {
+                    const ptA = landmarks[a];
+                    const ptB = landmarks[b];
+                    webcamCtx.beginPath();
+                    webcamCtx.moveTo(ptA.x * webcamCanvas.width, ptA.y * webcamCanvas.height);
+                    webcamCtx.lineTo(ptB.x * webcamCanvas.width, ptB.y * webcamCanvas.height);
+                    webcamCtx.stroke();
+                });
+
+                // Gambar garis & titik khusus antara Ibu Jari (4) dan Telunjuk (8)
+                const tx = thumbTip.x * webcamCanvas.width;
+                const ty = thumbTip.y * webcamCanvas.height;
+                const ix = indexTip.x * webcamCanvas.width;
+                const iy = indexTip.y * webcamCanvas.height;
+
+                webcamCtx.strokeStyle = isPinching ? '#22c55e' : '#f43f5e';
+                webcamCtx.lineWidth = 4;
+                webcamCtx.beginPath();
+                webcamCtx.moveTo(tx, ty);
+                webcamCtx.lineTo(ix, iy);
+                webcamCtx.stroke();
+
+                [thumbTip, indexTip].forEach(pt => {
+                    webcamCtx.fillStyle = isPinching ? '#22c55e' : '#facc15';
+                    webcamCtx.beginPath();
+                    webcamCtx.arc(pt.x * webcamCanvas.width, pt.y * webcamCanvas.height, 6, 0, Math.PI * 2);
+                    webcamCtx.fill();
+                });
+
+                // Titik tengah antara ibu jari dan telunjuk sebagai posisi kursor 3D
+                const midX = (thumbTip.x + indexTip.x) * 0.5;
+                const midY = (thumbTip.y + indexTip.y) * 0.5;
+
+                // Mirror horizontal ((1 - midX) * 2 - 1)
+                const mappedX = Math.max(-1, Math.min(1, ((1 - midX) * 2 - 1) * 1.2));
+                const mappedY = Math.max(-1, Math.min(1, (1 - midY * 2) * 1.15));
+
+                GAME_STATE.prevPointerX = GAME_STATE.pointerX;
+                GAME_STATE.prevPointerY = GAME_STATE.pointerY;
+                GAME_STATE.pointerX = mappedX;
+                GAME_STATE.pointerY = mappedY;
+                GAME_STATE.velX = GAME_STATE.pointerX - GAME_STATE.prevPointerX;
+                GAME_STATE.velY = GAME_STATE.pointerY - GAME_STATE.prevPointerY;
+                GAME_STATE.isPinching = isPinching;
+
+                // Deteksi transisi Pinch (Grab & Throw)
+                if (isPinching && !GAME_STATE.wasPinching) {
+                    onPinchStart();
+                } else if (!isPinching && GAME_STATE.wasPinching) {
+                    onPinchRelease();
+                }
+                GAME_STATE.wasPinching = isPinching;
+
+                // Update Badge UI Webcam
+                if (GAME_STATE.grabbedOrbIndex !== -1) {
+                    const lbl = answerOrbs[GAME_STATE.grabbedOrbIndex].optionData.label;
+                    gestureBadge.textContent = `✊ MEMEGANG BOLA ${lbl} (Lepas = Lempar)`;
+                    gestureBadge.className = "absolute bottom-1.5 left-1.5 right-1.5 bg-amber-500 text-slate-950 text-[11px] font-extrabold py-1 px-2 rounded-xl text-center truncate border border-white";
+                } else if (isPinching) {
+                    gestureBadge.textContent = "🤏 Mencubit (Arahkan ke Bola)";
+                    gestureBadge.className = "absolute bottom-1.5 left-1.5 right-1.5 bg-indigo-600 text-white text-[11px] font-bold py-1 px-2 rounded-xl text-center truncate border border-white/30";
+                } else {
+                    gestureBadge.textContent = "🖐️ Tangan Terbuka (Siap Cubit)";
+                    gestureBadge.className = "absolute bottom-1.5 left-1.5 right-1.5 bg-emerald-600/90 text-white text-[11px] font-bold py-1 px-2 rounded-xl text-center truncate border border-white/30";
+                }
+            } else {
+                // Jika tangan keluar dari frame saat memegang bola, kembalikan bola ke pedestal
+                if (GAME_STATE.grabbedOrbIndex !== -1) {
+                    answerOrbs[GAME_STATE.grabbedOrbIndex].state = 'RETURNING';
+                    GAME_STATE.grabbedOrbIndex = -1;
+                }
+                GAME_STATE.isPinching = false;
+                GAME_STATE.wasPinching = false;
+                gestureBadge.textContent = "🔍 Tangan Tidak Terdeteksi";
+                gestureBadge.className = "absolute bottom-1.5 left-1.5 right-1.5 bg-slate-900/85 text-amber-300 text-[11px] font-bold py-1 px-2 rounded-xl text-center truncate border border-white/20";
+            }
+        }
+
+        async function initMediaPipeHands() {
+            const statusMsg = document.getElementById('camera-status-msg');
+            statusMsg.textContent = "⏳ Menghubungkan kamera & MediaPipe Hand Tracking...";
+
+            try {
+                if (typeof Hands === 'undefined' || typeof Camera === 'undefined') {
+                    throw new Error("Library MediaPipe belum termuat.");
+                }
+
+                const hands = new Hands({
+                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+                });
+
+                hands.setOptions({
+                    maxNumHands: 1,
+                    modelComplexity: 1,
+                    minDetectionConfidence: 0.65,
+                    minTrackingConfidence: 0.6
+                });
+
+                hands.onResults(onHandsResults);
+
+                const mpCamera = new Camera(videoElement, {
+                    onFrame: async () => {
+                        await hands.send({ image: videoElement });
+                    },
+                    width: 640,
+                    height: 360
+                });
+
+                await mpCamera.start();
+                GAME_STATE.cameraActive = true;
+                document.getElementById('control-mode-label').textContent = "Webcam Aktif";
+            } catch (err) {
+                console.warn("Webcam tidak tersedia, beralih ke mode Drag Mouse/Sentuhan:", err);
+                GAME_STATE.cameraActive = false;
+                document.getElementById('control-mode-label').textContent = "Mode Drag Mouse";
+                document.getElementById('control-mode-label').className = "text-amber-600";
+                gestureBadge.textContent = "🖱️ Klik & Drag Bola ke Portal";
+                
+                webcamCanvas.width = 320;
+                webcamCanvas.height = 180;
+                webcamCtx.fillStyle = "#1e293b";
+                webcamCtx.fillRect(0, 0, 320, 180);
+            }
+        }
+
+        /**
+         * ============================================================================
+         * 7. KONTROL FALLBACK (MOUSE & TOUCH DRAG-AND-THROW) + UI EVENTS
+         * ============================================================================
+         */
+        function updatePointerFromClient(clientX, clientY) {
+            GAME_STATE.prevPointerX = GAME_STATE.pointerX;
+            GAME_STATE.prevPointerY = GAME_STATE.pointerY;
+            GAME_STATE.pointerX = (clientX / window.innerWidth) * 2 - 1;
+            GAME_STATE.pointerY = -(clientY / window.innerHeight) * 2 + 1;
+            GAME_STATE.velX = GAME_STATE.pointerX - GAME_STATE.prevPointerX;
+            GAME_STATE.velY = GAME_STATE.pointerY - GAME_STATE.prevPointerY;
+        }
+
+        window.addEventListener('pointermove', (e) => {
+            if (!GAME_STATE.cameraActive && GAME_STATE.status === 'PLAYING') {
+                updatePointerFromClient(e.clientX, e.clientY);
+            }
+        });
+
+        window.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('button')) return;
+            if (!GAME_STATE.cameraActive && GAME_STATE.status === 'PLAYING') {
+                updatePointerFromClient(e.clientX, e.clientY);
+                GAME_STATE.isPinching = true;
+                onPinchStart();
+            }
+        });
+
+        window.addEventListener('pointerup', () => {
+            if (!GAME_STATE.cameraActive && GAME_STATE.status === 'PLAYING') {
+                GAME_STATE.isPinching = false;
+                onPinchRelease();
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Enter' && GAME_STATE.status === 'MODAL') {
+                proceedNext();
+            }
+        });
+
+        document.getElementById('btn-start-game').addEventListener('click', async () => {
+            sfx.init();
+            await initMediaPipeHands();
+            resetAndStartGame();
+        });
+
+        document.getElementById('btn-next-question').addEventListener('click', () => {
+            proceedNext();
+        });
+
+        document.getElementById('btn-restart-game').addEventListener('click', () => {
+            resetAndStartGame();
+        });
+
+        document.getElementById('btn-sound-toggle').addEventListener('click', () => {
+            sfx.enabled = !sfx.enabled;
+            document.getElementById('sound-icon').textContent = sfx.enabled ? '🔊' : '🔇';
+            document.getElementById('sound-text').textContent = sfx.enabled ? 'Suara Nyala' : 'Suara Mati';
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        /**
+         * ============================================================================
+         * 8. ANIMATION LOOP UTAMA (THREE.JS 60 FPS + FISIKA LEMPARAN PARABOLA)
+         * ============================================================================
+         */
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const dt = Math.min(clock.getDelta(), 0.1);
+            const elapsed = clock.getElapsedTime();
+
+            // 1. Animasi Awan & Portal Target Berputar
+            clouds.forEach((c, idx) => {
+                c.position.x += Math.sin(elapsed * 0.2 + idx) * 0.005;
+            });
+            outerTorus.rotation.z = elapsed * 0.6;
+            innerTorus.rotation.z = -elapsed * 1.2;
+            const portalPulse = GAME_STATE.grabbedOrbIndex !== -1 ? 1.12 + Math.sin(elapsed * 8) * 0.05 : 1.0;
+            portalGroup.scale.lerp(new THREE.Vector3(portalPulse, portalPulse, portalPulse), 0.15);
+
+            // 2. Update Posisi Tangan Virtual 3D Pemain
+            const targetHandX = GAME_STATE.pointerX * 6.4;
+            const targetHandY = Math.max(0.8, Math.min(5.2, 2.5 + GAME_STATE.pointerY * 2.4));
+            const targetHandZ = GAME_STATE.grabbedOrbIndex !== -1 ? 3.5 : 4.5;
+
+            handCursorGroup.position.x += (targetHandX - handCursorGroup.position.x) * 0.28;
+            handCursorGroup.position.y += (targetHandY - handCursorGroup.position.y) * 0.28;
+            handCursorGroup.position.z += (targetHandZ - handCursorGroup.position.z) * 0.2;
+
+            // Animasi capit ibu jari & telunjuk saat pinch
+            const clawSpread = GAME_STATE.isPinching ? 0.12 : 0.36;
+            thumbClaw.position.set(-clawSpread, -clawSpread * 0.7, -0.2);
+            indexClaw.position.set(clawSpread, clawSpread * 0.7, -0.2);
+            cursorRing.material.color.setHex(GAME_STATE.isPinching ? 0x22c55e : 0xffffff);
+            cursorRing.scale.setScalar(GAME_STATE.isPinching ? 0.75 : 1.0);
+
+            // 3. Cek Bola Terdekat untuk Highlight Hover
+            let nearestIdx = -1;
+            let minDist = 2.4;
+            if (GAME_STATE.status === 'PLAYING' && GAME_STATE.grabbedOrbIndex === -1) {
+                answerOrbs.forEach((orb, idx) => {
+                    if (orb.state === 'IDLE') {
+                        const d = handCursorGroup.position.distanceTo(orb.orbGroup.position);
+                        if (d < minDist) {
+                            minDist = d;
+                            nearestIdx = idx;
+                        }
+                    }
+                });
+            }
+
+            if (nearestIdx !== GAME_STATE.hoveredOrbIndex) {
+                GAME_STATE.hoveredOrbIndex = nearestIdx;
+                answerOrbs.forEach((orb, idx) => {
+                    const active = idx === nearestIdx || idx === GAME_STATE.grabbedOrbIndex;
+                    if (orb.optionData && orb.labelMat.map) {
+                        orb.labelMat.map.dispose();
+                        orb.labelMat.map = createOrbLabelTexture(
+                            orb.optionData.label,
+                            orb.optionData.text,
+                            ORB_HEX[idx],
+                            active
+                        );
+                        orb.labelMat.needsUpdate = true;
+                    }
+                });
+            }
+
+            // 4. Update Status & Fisika ke-4 Bola Jawaban
+            answerOrbs.forEach((orb, idx) => {
+                orb.haloMesh.rotation.z = elapsed * 1.5 + idx;
+
+                if (orb.state === 'IDLE') {
+                    // Mengapung lembut di atas pedestal
+                    orb.orbGroup.position.x = orb.homePos.x;
+                    orb.orbGroup.position.z = orb.homePos.z;
+                    orb.orbGroup.position.y = orb.homePos.y + Math.sin(elapsed * 3.5 + orb.phase) * 0.16;
+                    const s = idx === GAME_STATE.hoveredOrbIndex ? 1.12 : 1.0;
+                    orb.orbGroup.scale.lerp(new THREE.Vector3(s, s, s), 0.15);
+                } else if (orb.state === 'GRABBED') {
+                    // Mengikuti gerakan tangan pemain
+                    orb.orbGroup.position.lerp(
+                        new THREE.Vector3(handCursorGroup.position.x, handCursorGroup.position.y, handCursorGroup.position.z - 0.5),
+                        0.45
+                    );
+                    orb.orbGroup.scale.lerp(new THREE.Vector3(1.18, 1.18, 1.18), 0.2);
+                } else if (orb.state === 'RETURNING') {
+                    // Kembali mulus ke pedestal jika dilepas tanpa dilempar
+                    orb.orbGroup.position.lerp(orb.homePos, 0.14);
+                    orb.orbGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.14);
+                    if (orb.orbGroup.position.distanceTo(orb.homePos) < 0.08) {
+                        orb.state = 'IDLE';
+                    }
+                } else if (orb.state === 'THROWN') {
+                    // Gerak parabola 3D menuju Portal Target
+                    orb.orbGroup.position.addScaledVector(orb.vel, dt);
+                    orb.vel.y -= 18.0 * dt; // Gravitasi
+                    orb.sphereMesh.rotation.x += 8 * dt;
+
+                    // Cek tabrakan dengan Portal Target
+                    const distToPortal = orb.orbGroup.position.distanceTo(TARGET_POS);
+                    if (distToPortal < 2.35 || orb.orbGroup.position.z <= TARGET_POS.z) {
+                        orb.state = 'HIT';
+                        spawnExplosion(orb.orbGroup.position, ORB_COLORS[idx]);
+                        const isCorrect = orb.optionData.correct;
+                        setTimeout(() => {
+                            handleAnswerResult(isCorrect, orb.optionData, false);
+                        }, 320);
+                    }
+                }
+            });
+
+            // 5. Update Partikel Ledakan
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.mesh.position.addScaledVector(p.vel, dt);
+                p.vel.y -= 18 * dt;
+                p.mesh.rotation.x += p.rot.x * dt;
+                p.mesh.rotation.y += p.rot.y * dt;
+                p.life -= dt * 1.15;
+                p.mesh.scale.setScalar(Math.max(0.01, p.life));
+
+                if (p.life <= 0) {
+                    scene.remove(p.mesh);
+                    p.mesh.geometry.dispose();
+                    p.mesh.material.dispose();
+                    particles.splice(i, 1);
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        window.onload = function () {
+            animate();
+        };
+    </script>
+<div style="position:fixed;bottom:8px;left:0;right:0;text-align:center;font-family:'Nunito',sans-serif;font-size:11px;color:rgba(255,255,255,.55);pointer-events:none;z-index:9999;">Dibangun oleh Dody Adyansyah</div>
+</body>
+</html>

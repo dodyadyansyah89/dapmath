@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monster Punch – Brain Bawl | Teorema Pythagoras</title>
+  <!-- Google Fonts untuk tipografi ceria dan tegas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet" />
+
+  <!-- MediaPipe Hands & Camera Utils CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+  <style>
+    :root {
+      --bg-sky-top: #38bdf8;
+      --bg-sky-bottom: #bae6fd;
+      --sun-yellow: #fde047;
+      --accent-orange: #f97316;
+      --accent-pink: #ec4899;
+      --accent-green: #22c55e;
+      --accent-purple: #8b5cf6;
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --text-dark: #0f172a;
+      --text-muted: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(180deg, var(--bg-sky-top) 0%, var(--bg-sky-bottom) 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Container Utama Fullscreen Responsif */
+    #app-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Canvas Game 2D Platformer */
+    #game-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 1;
+    }
+
+    /* HUD Atas (Skor, Nyawa, Timer, Nomor Soal, Suara) */
+    #hud-top {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      pointer-events: none;
+    }
+
+    .hud-pill {
+      pointer-events: auto;
+      background: var(--card-bg);
+      border: 3px solid #ffffff;
+      border-radius: 999px;
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 6px 0 rgba(15, 23, 42, 0.14);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .lives-container {
+      display: flex;
+      gap: 4px;
+      font-size: 1.35rem;
+    }
+
+    .heart {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+    }
+    .heart.lost {
+      opacity: 0.25;
+      transform: scale(0.75);
+      filter: grayscale(1);
+    }
+
+    .timer-badge {
+      color: #dc2626;
+      min-width: 82px;
+      justify-content: center;
+    }
+
+    .score-badge {
+      color: #0284c7;
+    }
+
+    /* Kotak Soal Matematika di Tengah Atas */
+    #question-banner {
+      position: relative;
+      z-index: 10;
+      margin: 2px auto 0;
+      width: 92%;
+      max-width: 760px;
+      background: linear-gradient(135deg, #ffffff 0%, #fef9c3 100%);
+      border: 4px solid #f59e0b;
+      border-radius: 24px;
+      padding: 12px 22px;
+      text-align: center;
+      box-shadow: 0 8px 0 #d97706, 0 14px 24px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    #question-tag {
+      display: inline-block;
+      background: #f59e0b;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    #question-text {
+      font-size: clamp(1.05rem, 2.2vw, 1.45rem);
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.3;
+    }
+
+    #gesture-hint-bar {
+      margin-top: 5px;
+      font-size: 0.88rem;
+      color: #475569;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .gesture-status-pill {
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      background: #e2e8f0;
+      color: #334155;
+      transition: all 0.2s;
+    }
+    .gesture-status-pill.open {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    .gesture-status-pill.fist {
+      background: #fee2e2;
+      color: #dc2626;
+      transform: scale(1.08);
+    }
+
+    /* Webcam Picture-in-Picture agar pemain melihat dirinya sendiri */
+    #webcam-wrapper {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 20;
+      width: clamp(160px, 21vw, 240px);
+      aspect-ratio: 4 / 3;
+      border-radius: 20px;
+      border: 4px solid #ffffff;
+      background: #0f172a;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    #webcam-wrapper.punch-active {
+      border-color: #ef4444;
+      transform: scale(1.05);
+    }
+
+    #webcam-video {
+      display: none;
+    }
+
+    #webcam-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1); /* Mirror seperti cermin */
+      display: block;
+    }
+
+    #webcam-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(15, 23, 42, 0.72);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      backdrop-filter: blur(4px);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulseDot 1.2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* Tombol Kontrol Bawah (Fallback Mouse/Touch + Toggle Suara) */
+    #bottom-controls {
+      position: fixed;
+      bottom: 18px;
+      left: 18px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-btn {
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #1e293b;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #94a3b8;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .control-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #94a3b8;
+    }
+
+    /* Credit Pembuat Game */
+    #creator-credit {
+      position: fixed;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #334155;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    /* Overlay Modal (Start Screen, Penjelasan Jawaban, Game Over / Menang) */
+    .overlay-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      transition: opacity 0.25s ease;
+    }
+
+    .overlay-screen.hidden {
+      display: none;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 32px;
+      border: 5px solid #38bdf8;
+      max-width: 600px;
+      width: 100%;
+      padding: 28px 26px;
+      text-align: center;
+      box-shadow: 0 12px 0 #0284c7, 0 24px 48px rgba(0, 0, 0, 0.35);
+      animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.82); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .game-title {
+      font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #f97316, #ec4899, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .game-subtitle {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0284c7;
+      margin-bottom: 14px;
+    }
+
+    .info-box {
+      background: #f0f9ff;
+      border: 2px dashed #7dd3fc;
+      border-radius: 18px;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 0.94rem;
+      color: #1e293b;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .info-box ul {
+      padding-left: 20px;
+      margin-top: 6px;
+    }
+
+    .info-box li {
+      margin-bottom: 4px;
+    }
+
+    .primary-btn {
+      background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 20px;
+      padding: 14px 32px;
+      font-family: inherit;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #15803d, 0 10px 20px rgba(22, 163, 74, 0.35);
+      transition: transform 0.12s, box-shadow 0.12s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .primary-btn:hover {
+      filter: brightness(1.06);
+    }
+
+    .primary-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #15803d;
+    }
+
+    .primary-btn:disabled {
+      background: #94a3b8;
+      box-shadow: 0 5px 0 #64748b;
+      cursor: not-allowed;
+    }
+
+    /* Styling Khusus Modal Penjelasan Jawaban */
+    .feedback-header {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .feedback-correct {
+      color: #16a34a;
+    }
+    .feedback-wrong {
+      color: #dc2626;
+    }
+
+    .explanation-box {
+      background: #fefce8;
+      border: 3px solid #facc15;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin: 14px 0 20px;
+      text-align: left;
+      font-size: 0.98rem;
+      line-height: 1.5;
+      color: #1e293b;
+    }
+
+    .formula-highlight {
+      display: inline-block;
+      background: #fef08a;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 700;
+      color: #854d0e;
+      margin-top: 4px;
+    }
+
+    .creator-banner {
+      margin-top: 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #64748b;
+    }
+    .creator-banner span {
+      color: #ec4899;
+    }
+
+    @media (max-width: 640px) {
+      #hud-top {
+        padding: 8px 12px;
+      }
+      .hud-pill {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+      }
+      #webcam-wrapper {
+        width: 135px;
+        bottom: 12px;
+        right: 12px;
+      }
+      #bottom-controls {
+        bottom: 12px;
+        left: 12px;
+      }
+      #creator-credit {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-container">
+    <!-- Canvas Dunia Platformer 2D -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HUD Atas -->
+    <header id="hud-top">
+      <div class="hud-pill score-badge">
+        <span>⭐ Skor:</span>
+        <span id="score-display">0</span>
+      </div>
+
+      <div class="hud-pill">
+        <span>📘 Soal:</span>
+        <span id="question-counter">1 / 10</span>
+      </div>
+
+      <div class="hud-pill timer-badge">
+        <span>⏱️</span>
+        <span id="timer-display">30s</span>
+      </div>
+
+      <div class="hud-pill" aria-label="Nyawa Pemain">
+        <div class="lives-container" id="lives-display">
+          <span class="heart">❤️</span>
+          <span class="heart">❤️</span>
+          <span class="heart">❤️</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Banner Soal Matematika -->
+    <section id="question-banner">
+      <div id="question-tag">Materi: Triple Pythagoras</div>
+      <div id="question-text">Memuat soal matematika...</div>
+      <div id="gesture-hint-bar">
+        <span>✋ Gerakkan tangan untuk mengarahkan sarung tinju • ✊ <b>KEPALKAN TANGAN</b> untuk memukul monster!</span>
+        <span id="gesture-pill" class="gesture-status-pill">Menunggu Kamera...</span>
+      </div>
+    </section>
+
+    <!-- Webcam Picture-in-Picture -->
+    <div id="webcam-wrapper">
+      <video id="webcam-video" playsinline></video>
+      <canvas id="webcam-canvas"></canvas>
+      <div id="webcam-badge">
+        <span class="live-dot"></span>
+        <span>KAMERA PEMAIN</span>
+      </div>
+    </div>
+
+    <!-- Kontrol Bawah (Suara & Mode Cadangan Klik/Sentuh jika kamera tidak tersedia) -->
+    <div id="bottom-controls">
+      <button id="toggle-sound-btn" class="control-btn" type="button">🔊 Suara: ON</button>
+      <button id="fallback-mode-btn" class="control-btn" type="button" title="Gunakan sentuhan/klik langsung ke monster jika webcam bermasalah">🖱️ Mode Klik: OFF</button>
+    </div>
+
+    <!-- Watermark Pembuat -->
+    <div id="creator-credit">
+      🎮 Dibangun oleh <strong>Dody Adyansyah</strong> • Matematika: Teorema Pythagoras
+    </div>
+
+    <!-- LAYAR MULAI (START SCREEN) -->
+    <div id="start-screen" class="overlay-screen">
+      <div class="modal-card">
+        <div class="game-title">🥊 MONSTER PUNCH<br/>BRAIN BAWL</div>
+        <div class="game-subtitle">Misi Matematika: Menaklukkan Triple Pythagoras!</div>
+
+        <div class="info-box">
+          <strong>🎯 Tujuan Pembelajaran:</strong><br/>
+          Siswa dapat menentukan kelompok bilangan yang merupakan <b>Triple Pythagoras</b> ($a^2 + b^2 = c^2$).
+          <ul>
+            <li><b>10 Soal</b> pilihan ganda dengan <b>4 Monster Jawaban</b> di arena platformer.</li>
+            <li>Arahkan <b>tangan terbuka (✋)</b> di depan webcam untuk membidik monster.</li>
+            <li><b>KEPALKAN TANGAN (✊)</b> untuk melancarkan pukulan super ke monster yang membawa jawaban benar!</li>
+            <li>Kamu memiliki <b>3 Nyawa ❤️</b> dan waktu <b>30 detik</b> per soal.</li>
+          </ul>
+        </div>
+
+        <button id="start-game-btn" class="primary-btn" type="button">
+          <span>🚀 NYALAKAN KAMERA & MAIN!</span>
+        </button>
+        <p id="camera-status-msg" style="margin-top: 10px; font-size: 0.85rem; color: #475569; font-weight: 600;">
+          Pastikan izin webcam diaktifkan agar kamu terlihat bermain!
+        </p>
+
+        <div class="creator-banner">
+          Game Edukasi ini dibangun oleh <span>Dody Adyansyah</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYAR PENJELASAN SETELAH MENJAWAB -->
+    <div id="explanation-screen" class="overlay-screen hidden">
+      <div class="modal-card">
+        <div id="feedback-title" class="feedback-header feedback-correct">💥 PUKULAN TEPAT!</div>
+        <div id="feedback-subtitle" style="font-weight: 700; color: #334155; font-size: 1.05rem;">
+          Monster berhasil dikalahkan!
+        </div>
+
+        <div class="explanation-box">
+          <strong>📖 Pembahasan Teorema Pythagoras:</strong>
+          <p id="explanation-text" style="margin-top: 6px;"></p>
+          <div id="explanation-formula" class="formula-highlight"></div>
+        </div>
+
+        <button id="next-question-btn" class="primary-btn" type="button">
+          <span>LANJUT SOAL BERIKUTNYA ➡️</span>
+        </button>
+
+        <div class="creator-banner">
+          Dibangun oleh <span>Dody Adyansyah</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYAR AKHIR (GAME OVER / SELESAI) -->
+    <div id="end-screen" class="overlay-screen hidden">
+      <div class="modal-card">
+        <div id="end-title" class="game-title">🏆 LUAR BIASA!</div>
+        <div id="end-subtitle" class="game-subtitle">Kamu telah menyelesaikan tantangan Triple Pythagoras!</div>
+
+        <div class="info-box" style="text-align: center;">
+          <div style="font-size: 1.15rem; margin-bottom: 6px;">Skor Akhir Kamu:</div>
+          <div id="final-score" style="font-size: 2.6rem; font-weight: 800; color: #f97316;">0</div>
+          <div id="final-summary" style="margin-top: 6px; font-weight: 600; color: #334155;"></div>
+        </div>
+
+        <button id="restart-game-btn" class="primary-btn" type="button">
+          <span>🔄 MAIN LAGI</span>
+        </button>
+
+        <div class="creator-banner">
+          Game Edukasi oleh <span>Dody Adyansyah</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * ============================================================================
+     * MONSTER PUNCH – BRAIN BAWL
+     * Game Edukasi Matematika: Teorema Pythagoras (Triple Pythagoras)
+     * Dibangun oleh: Dody Adyansyah
+     * ============================================================================
+     */
+
+    // ----------------------------------------------------------------------------
+    // 1. BANK SOAL (10 SOAL TRIPLE PYTHAGORAS + 4 PILIHAN + PEMBAHASAN)
+    // ----------------------------------------------------------------------------
+    const QUESTIONS = [
+      {
+        question: "Manakah kelompok tiga bilangan di bawah ini yang merupakan Triple Pythagoras?",
+        options: ["3, 4, 5", "2, 3, 4", "4, 5, 6", "3, 5, 7"],
+        correctIndex: 0,
+        explanation: "Bilangan terbesar adalah c = 5. Kita uji apakah a² + b² = c²:",
+        formula: "3² + 4² = 9 + 16 = 25, dan 5² = 25 (Sama! Jadi 3, 4, 5 adalah Triple Pythagoras)"
+      },
+      {
+        question: "Pilih kelompok bilangan yang membentuk segitiga siku-siku (Triple Pythagoras)!",
+        options: ["5, 10, 12", "5, 12, 13", "6, 12, 13", "5, 11, 13"],
+        correctIndex: 1,
+        explanation: "Sisi terpanjang adalah 13. Uji kuadrat dua sisi lainnya:",
+        formula: "5² + 12² = 25 + 144 = 169 = 13² (Terbukti Triple Pythagoras!)"
+      },
+      {
+        question: "Diketahui dua sisi siku-siku adalah 6 dan 8. Berapa sisi miringnya agar menjadi Triple Pythagoras?",
+        options: ["6, 8, 9", "6, 8, 12", "6, 8, 10", "6, 8, 14"],
+        correctIndex: 2,
+        explanation: "Kelipatan 2 dari triple dasar (3, 4, 5) adalah (6, 8, 10):",
+        formula: "6² + 8² = 36 + 64 = 100 = 10² (Jadi pasangannya adalah 6, 8, 10)"
+      },
+      {
+        question: "Manakah yang termasuk kelompok Triple Pythagoras berikut ini?",
+        options: ["7, 20, 25", "8, 14, 17", "7, 24, 25", "7, 22, 24"],
+        correctIndex: 2,
+        explanation: "Kita cek kuadrat sisi terpanjang c = 25:",
+        formula: "7² + 24² = 49 + 576 = 625 = 25² (7, 24, 25 adalah Triple Pythagoras)"
+      },
+      {
+        question: "Tentukan mana yang merupakan Triple Pythagoras!",
+        options: ["8, 15, 17", "8, 15, 16", "8, 12, 17", "9, 15, 17"],
+        correctIndex: 0,
+        explanation: "Dengan sisi miring c = 17, kita hitung jumlah kuadrat a dan b:",
+        formula: "8² + 15² = 64 + 225 = 289 = 17² (Benar! 8, 15, 17)"
+      },
+      {
+        question: "Jika dua bilangan pertama adalah 9 dan 12, susunan Triple Pythagoras yang tepat adalah...",
+        options: ["9, 12, 14", "9, 12, 16", "9, 12, 18", "9, 12, 15"],
+        correctIndex: 3,
+        explanation: "Ini adalah kelipatan 3 dari triple dasar (3, 4, 5):",
+        formula: "9² + 12² = 81 + 144 = 225 = 15² (Triple Pythagoras: 9, 12, 15)"
+      },
+      {
+        question: "Manakah himpunan tiga bilangan yang merupakan Triple Pythagoras?",
+        options: ["9, 40, 41", "9, 39, 40", "10, 40, 41", "9, 40, 42"],
+        correctIndex: 0,
+        explanation: "Uji dengan sisi terbesar c = 41:",
+        formula: "9² + 40² = 81 + 1600 = 1681 = 41² (9, 40, 41 adalah Triple Pythagoras)"
+      },
+      {
+        question: "Dari pilihan monster berikut, mana yang membawa Triple Pythagoras?",
+        options: ["10, 20, 26", "10, 24, 26", "12, 24, 26", "10, 24, 25"],
+        correctIndex: 1,
+        explanation: "Kelipatan 2 dari triple (5, 12, 13) menghasilkan:",
+        formula: "10² + 24² = 100 + 576 = 676 = 26² (Tepat sekali: 10, 24, 26)"
+      },
+      {
+        question: "Manakah kelompok bilangan yang memenuhi hukum a² + b² = c²?",
+        options: ["11, 50, 61", "11, 60, 62", "11, 60, 61", "12, 60, 61"],
+        correctIndex: 2,
+        explanation: "Kita uji c = 61 sebagai sisi terpanjang:",
+        formula: "11² + 60² = 121 + 3600 = 3721 = 61² (11, 60, 61 adalah Triple Pythagoras)"
+      },
+      {
+        question: "Tantangan Terakhir! Manakah yang merupakan Triple Pythagoras?",
+        options: ["12, 35, 37", "12, 35, 36", "12, 34, 37", "13, 35, 37"],
+        correctIndex: 0,
+        explanation: "Uji kuadrat sisi terpanjang c = 37:",
+        formula: "12² + 35² = 144 + 1225 = 1369 = 37² (Selamat! 12, 35, 37 benar)"
+      }
+    ];
+
+    // ----------------------------------------------------------------------------
+    // 2. AUDIO SYNTHESIZER (WEB AUDIO API - TANPA URL EKSTERNAL)
+    // ----------------------------------------------------------------------------
+    class SoundFX {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playTone(freq, type, duration, vol = 0.25, slideTo = null) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        if (slideTo) {
+          osc.frequency.exponentialRampToValueAtTime(slideTo, now + duration);
+        }
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      }
+
+      playWhoosh() {
+        this.playTone(320, 'triangle', 0.14, 0.2, 110);
+      }
+
+      playPunchHit() {
+        // Suara pukulan mantap + nada menang
+        this.playTone(150, 'sawtooth', 0.18, 0.35, 45);
+        setTimeout(() => this.playTone(523.25, 'sine', 0.15, 0.25), 60);
+        setTimeout(() => this.playTone(659.25, 'sine', 0.15, 0.25), 140);
+        setTimeout(() => this.playTone(783.99, 'sine', 0.28, 0.3), 220);
+      }
+
+      playWrong() {
+        this.playTone(220, 'sawtooth', 0.25, 0.3, 130);
+        setTimeout(() => this.playTone(165, 'sawtooth', 0.32, 0.3, 95), 160);
+      }
+
+      playVictory() {
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((n, i) => {
+          setTimeout(() => this.playTone(n, 'triangle', 0.25, 0.28), i * 120);
+        });
+      }
+    }
+
+    const sfx = new SoundFX();
+
+    // ----------------------------------------------------------------------------
+    // 3. STATE GAME & ELEMEN DOM
+    // ----------------------------------------------------------------------------
+    const gameCanvas = document.getElementById('game-canvas');
+    const ctx = gameCanvas.getContext('2d');
+
+    const webcamVideo = document.getElementById('webcam-video');
+    const webcamCanvas = document.getElementById('webcam-canvas');
+    const webcamCtx = webcamCanvas.getContext('2d');
+    const webcamWrapper = document.getElementById('webcam-wrapper');
+
+    const scoreDisplay = document.getElementById('score-display');
+    const questionCounter = document.getElementById('question-counter');
+    const timerDisplay = document.getElementById('timer-display');
+    const livesDisplay = document.getElementById('lives-display');
+    const questionText = document.getElementById('question-text');
+    const gesturePill = document.getElementById('gesture-pill');
+
+    const startScreen = document.getElementById('start-screen');
+    const explanationScreen = document.getElementById('explanation-screen');
+    const endScreen = document.getElementById('end-screen');
+
+    const state = {
+      phase: 'START', // START, PLAYING, EXPLANATION, ENDED
+      currentQuestionIdx: 0,
+      score: 0,
+      correctCount: 0,
+      lives: 3,
+      timeLeft: 30,
+      timerInterval: null,
+      fallbackClickMode: false,
+
+      // Posisi kursor tinju pemain (0..1 ter-normalisasi)
+      handX: 0.5,
+      handY: 0.55,
+      handDetected: false,
+      isFist: false,
+      prevIsFist: false,
+      punchCooldown: 0,
+      punchAnimTimer: 0,
+
+      // Karakter Hero Platformer (di sisi kiri bawah panggung)
+      hero: {
+        x: 110,
+        y: 0,
+        vy: 0,
+        bobPhase: 0,
+        punchDash: 0
+      },
+
+      // Entitas Monster, Partikel, Awan, Teks Melayang
+      monsters: [],
+      particles: [],
+      floatingTexts: [],
+      clouds: [
+        { x: 0.12, y: 0.22, speed: 0.008, scale: 1.0 },
+        { x: 0.48, y: 0.16, speed: 0.005, scale: 1.3 },
+        { x: 0.82, y: 0.25, speed: 0.007, scale: 0.9 }
+      ],
+      screenShake: 0
+    };
+
+    // Palet warna cerah untuk 4 Monster
+    const MONSTER_THEMES = [
+      { body: '#f43f5e', belly: '#fda4af', horn: '#fde047', name: 'Red Chomper' },
+      { body: '#8b5cf6', belly: '#c4b5fd', horn: '#38bdf8', name: 'Purple Bouncer' },
+      { body: '#10b981', belly: '#6ee7b7', horn: '#fb923c', name: 'Mint Gobbler' },
+      { body: '#f59e0b', belly: '#fde68a', horn: '#ec4899', name: 'Sunny Beast' }
+    ];
+
+    // ----------------------------------------------------------------------------
+    // 4. RESIZE CANVAS RESPONSIF
+    // ----------------------------------------------------------------------------
+    function resizeGameCanvas() {
+      gameCanvas.width = window.innerWidth;
+      gameCanvas.height = window.innerHeight;
+      layoutMonsters();
+    }
+
+    window.addEventListener('resize', resizeGameCanvas);
+
+    // ----------------------------------------------------------------------------
+    // 5. PENGATURAN SOAL & MONSTER DI PLATFORM 2D
+    // ----------------------------------------------------------------------------
+    function loadQuestion(index) {
+      const q = QUESTIONS[index];
+      questionCounter.textContent = `${index + 1} / ${QUESTIONS.length}`;
+      questionText.textContent = q.question;
+
+      // Reset timer 30 detik
+      state.timeLeft = 30;
+      timerDisplay.textContent = `${state.timeLeft}s`;
+      clearInterval(state.timerInterval);
+
+      state.timerInterval = setInterval(() => {
+        if (state.phase !== 'PLAYING') return;
+        state.timeLeft--;
+        timerDisplay.textContent = `${state.timeLeft}s`;
+
+        if (state.timeLeft <= 0) {
+          clearInterval(state.timerInterval);
+          handleAnswerResult(false, "⏰ Waktu Habis! Monster berhasil kabur!");
+        }
+      }, 1000);
+
+      // Buat 4 Monster pada platform 2D bertingkat
+      state.monsters = q.options.map((optText, i) => {
+        const theme = MONSTER_THEMES[i % MONSTER_THEMES.length];
+        return {
+          index: i,
+          text: optText,
+          isCorrect: i === q.correctIndex,
+          theme,
+          x: 0,
+          y: 0,
+          baseY: 0,
+          radius: 56,
+          hopPhase: i * 1.4,
+          defeated: false,
+          defeatAnim: 0,
+          hurtAnim: 0,
+          vx: 0,
+          vy: 0,
+          rotation: 0
+        };
+      });
+
+      layoutMonsters();
+    }
+
+    function layoutMonsters() {
+      if (!state.monsters.length) return;
+      const w = gameCanvas.width;
+      const h = gameCanvas.height;
+
+      // Area platformer berada di tengah-bawah layar (menghindari banner soal atas & webcam kanan bawah)
+      const startX = Math.max(190, w * 0.24);
+      const endX = Math.min(w - 130, w * 0.84);
+      const span = Math.max(260, endX - startX);
+
+      state.monsters.forEach((m, i) => {
+        const ratio = state.monsters.length > 1 ? i / (state.monsters.length - 1) : 0.5;
+        m.x = startX + ratio * span;
+        // Susun platform zig-zag naik-turun agar terasa seperti game platformer 2D
+        const tierOffset = (i % 2 === 0) ? 0 : -65;
+        m.baseY = h * 0.68 + tierOffset;
+        if (!m.defeated) {
+          m.y = m.baseY;
+        }
+        m.radius = Math.max(46, Math.min(62, w * 0.048));
+      });
+    }
+
+    // ----------------------------------------------------------------------------
+    // 6. LOGIKA PUKULAN (HAND GESTURE FIST / KLIK CADANGAN)
+    // ----------------------------------------------------------------------------
+    function triggerPunch(px, py) {
+      if (state.phase !== 'PLAYING' || state.punchCooldown > 0) return;
+
+      state.punchCooldown = 0.45; // Cooldown 450ms agar tidak double-punch tak sengaja
+      state.punchAnimTimer = 0.28;
+      state.hero.punchDash = 1.0;
+      sfx.playWhoosh();
+
+      // Cek apakah pukulan mengenai salah satu monster
+      let hitMonster = null;
+      let minDist = Infinity;
+
+      for (const m of state.monsters) {
+        if (m.defeated) continue;
+        const dx = px - m.x;
+        const dy = py - m.y;
+        const dist = Math.hypot(dx, dy);
+        // Toleransi hitbox sedikit lebih besar agar ramah anak-anak
+        if (dist <= m.radius + 42 && dist < minDist) {
+          minDist = dist;
+          hitMonster = m;
+        }
+      }
+
+      // Efek partikel pukulan di udara
+      spawnParticles(px, py, '#fde047', 12);
+
+      if (!hitMonster) {
+        spawnFloatingText(px, py - 25, "WHIFF! Bidik Monster!", "#475569");
+        return;
+      }
+
+      // Monster terkena pukulan!
+      state.screenShake = 14;
+
+      if (hitMonster.isCorrect) {
+        // JAWABAN BENAR -> MONSTER KALAH TERPENTAL!
+        sfx.playPunchHit();
+        hitMonster.defeated = true;
+        hitMonster.vx = 9;
+        hitMonster.vy = -14;
+        spawnParticles(hitMonster.x, hitMonster.y, '#22c55e', 32);
+        spawnParticles(hitMonster.x, hitMonster.y, '#fde047', 22);
+        spawnFloatingText(hitMonster.x, hitMonster.y - 50, "💥 K.O.! +100", "#16a34a");
+
+        state.score += 100 + state.timeLeft * 2;
+        state.correctCount++;
+        updateHUD();
+
+        clearInterval(state.timerInterval);
+        setTimeout(() => {
+          handleAnswerResult(true, `💥 K.O.! Jawaban "${hitMonster.text}" BENAR!`);
+        }, 700);
+      } else {
+        // JAWABAN SALAH -> MONSTER MENERTAWAKAN & NYAWA BERKURANG
+        sfx.playWrong();
+        hitMonster.hurtAnim = 1.0;
+        spawnParticles(hitMonster.x, hitMonster.y, '#ef4444', 24);
+        spawnFloatingText(hitMonster.x, hitMonster.y - 50, "❌ SALAH! -1 ❤️", "#dc2626");
+
+        clearInterval(state.timerInterval);
+        setTimeout(() => {
+          handleAnswerResult(false, `❌ Monster "${hitMonster.text}" Bukan Triple Pythagoras!`);
+        }, 550);
+      }
+    }
+
+    function handleAnswerResult(isCorrect, headline) {
+      if (state.phase !== 'PLAYING') return;
+      state.phase = 'EXPLANATION';
+
+      const q = QUESTIONS[state.currentQuestionIdx];
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackSubtitle = document.getElementById('feedback-subtitle');
+      const expText = document.getElementById('explanation-text');
+      const expFormula = document.getElementById('explanation-formula');
+
+      if (isCorrect) {
+        feedbackTitle.textContent = "🎉 MONSTER KALAH! JAWABAN BENAR!";
+        feedbackTitle.className = "feedback-header feedback-correct";
+        feedbackSubtitle.textContent = headline;
+      } else {
+        state.lives = Math.max(0, state.lives - 1);
+        updateHUD();
+        feedbackTitle.textContent = "💔 UPS! KURANG TEPAT!";
+        feedbackTitle.className = "feedback-header feedback-wrong";
+        feedbackSubtitle.textContent = `${headline} (Jawaban benar: ${q.options[q.correctIndex]})`;
+      }
+
+      expText.textContent = q.explanation;
+      expFormula.textContent = q.formula;
+
+      const nextBtn = document.getElementById('next-question-btn');
+      if (state.lives <= 0) {
+        nextBtn.innerHTML = "<span>📊 LIHAT HASIL AKHIR</span>";
+      } else if (state.currentQuestionIdx >= QUESTIONS.length - 1) {
+        nextBtn.innerHTML = "<span>🏆 SELESAI & LIHAT SKOR</span>";
+      } else {
+        nextBtn.innerHTML = "<span>LANJUT SOAL BERIKUTNYA ➡️</span>";
+      }
+
+      explanationScreen.classList.remove('hidden');
+    }
+
+    function proceedNextStep() {
+      explanationScreen.classList.add('hidden');
+
+      if (state.lives <= 0 || state.currentQuestionIdx >= QUESTIONS.length - 1) {
+        showEndScreen();
+        return;
+      }
+
+      state.currentQuestionIdx++;
+      state.phase = 'PLAYING';
+      loadQuestion(state.currentQuestionIdx);
+    }
+
+    function showEndScreen() {
+      state.phase = 'ENDED';
+      clearInterval(state.timerInterval);
+      sfx.playVictory();
+
+      const endTitle = document.getElementById('end-title');
+      const endSubtitle = document.getElementById('end-subtitle');
+      const finalScore = document.getElementById('final-score');
+      const finalSummary = document.getElementById('final-summary');
+
+      if (state.lives <= 0) {
+        endTitle.textContent = "💫 NYAWA HABIS!";
+        endSubtitle.textContent = "Jangan menyerah! Ayo berlatih Triple Pythagoras lagi!";
+      } else {
+        endTitle.textContent = "🏆 JUARA PYTHAGORAS!";
+        endSubtitle.textContent = "Luar biasa! Semua monster matematika telah dihadapi!";
+      }
+
+      finalScore.textContent = state.score;
+      finalSummary.textContent = `Kamu berhasil mengalahkan ${state.correctCount} dari ${QUESTIONS.length} monster soal!`;
+      endScreen.classList.remove('hidden');
+    }
+
+    function updateHUD() {
+      scoreDisplay.textContent = state.score;
+      const hearts = livesDisplay.querySelectorAll('.heart');
+      hearts.forEach((h, idx) => {
+        if (idx < state.lives) {
+          h.classList.remove('lost');
+        } else {
+          h.classList.add('lost');
+        }
+      });
+    }
+
+    // ----------------------------------------------------------------------------
+    // 7. EFEK PARTIKEL & TEKS MELAYANG
+    // ----------------------------------------------------------------------------
+    function spawnParticles(x, y, color, count) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 7;
+        state.particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 2,
+          size: 5 + Math.random() * 7,
+          color,
+          life: 1.0
+        });
+      }
+    }
+
+    function spawnFloatingText(x, y, text, color) {
+      state.floatingTexts.push({
+        x,
+        y,
+        text,
+        color,
+        life: 1.0
+      });
+    }
+
+    // ----------------------------------------------------------------------------
+    // 8. MEDIAPIPE HANDS & DETEKSI GESTUR MENGEPAL (FIST / PUNCH)
+    // ----------------------------------------------------------------------------
+    let handsDetector = null;
+    let cameraInstance = null;
+
+    function detectFistGesture(landmarks) {
+      // Landmark kunci MediaPipe Hands:
+      // 0: Wrist (pergelangan)
+      // Tip jari: 8 (telunjuk), 12 (tengah), 16 (manis), 20 (kelingking)
+      // PIP sendi tengah: 6, 10, 14, 18
+      // MCP pangkal jari: 5, 9, 13, 17
+      const wrist = landmarks[0];
+      const fingerIndices = [
+        { tip: 8, pip: 6, mcp: 5 },
+        { tip: 12, pip: 10, mcp: 9 },
+        { tip: 16, pip: 14, mcp: 13 },
+        { tip: 20, pip: 18, mcp: 17 }
+      ];
+
+      let curledCount = 0;
+      for (const f of fingerIndices) {
+        const tipDist = Math.hypot(landmarks[f.tip].x - wrist.x, landmarks[f.tip].y - wrist.y);
+        const pipDist = Math.hypot(landmarks[f.pip].x - wrist.x, landmarks[f.pip].y - wrist.y);
+        // Jika ujung jari lebih dekat ke pergelangan daripada sendi tengah, jari tertekuk
+        if (tipDist < pipDist * 1.05) {
+          curledCount++;
+        }
+      }
+      return curledCount >= 3; // Minimal 3-4 jari tertekuk = Kepalan Tinju!
+    }
+
+    function onHandResults(results) {
+      // Gambar feed webcam & kerangka tangan di Picture-in-Picture
+      webcamCanvas.width = webcamVideo.videoWidth || 320;
+      webcamCanvas.height = webcamVideo.videoHeight || 240;
+
+      webcamCtx.save();
+      webcamCtx.clearRect(0, 0, webcamCanvas.width, webcamCanvas.height);
+      webcamCtx.drawImage(results.image, 0, 0, webcamCanvas.width, webcamCanvas.height);
+
+      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        const landmarks = results.multiHandLandmarks[0];
+        state.handDetected = true;
+
+        // Gambar kerangka tangan bercahaya di layar webcam pemain
+        if (window.drawConnectors && window.HAND_CONNECTIONS) {
+          drawConnectors(webcamCtx, landmarks, HAND_CONNECTIONS, { color: '#38bdf8', lineWidth: 3 });
+          drawLandmarks(webcamCtx, landmarks, { color: '#fde047', lineWidth: 1, radius: 4 });
+        }
+
+        // Gunakan titik tengah telapak tangan (landmark 9) & mirror X agar natural
+        const palm = landmarks[9];
+        const targetX = 1 - palm.x;
+        const targetY = palm.y;
+
+        // Smoothing gerakan agar kursor sarung tinju stabil
+        state.handX += (targetX - state.handX) * 0.45;
+        state.handY += (targetY - state.handY) * 0.45;
+
+        const fistNow = detectFistGesture(landmarks);
+        state.prevIsFist = state.isFist;
+        state.isFist = fistNow;
+
+        if (fistNow) {
+          gesturePill.textContent = "✊ MENGEPAL (PUKUL!)";
+          gesturePill.className = "gesture-status-pill fist";
+          webcamWrapper.classList.add('punch-active');
+
+          // Picu pukulan saat transisi dari tangan terbuka ke mengepal
+          if (!state.prevIsFist && state.phase === 'PLAYING') {
+            triggerPunch(state.handX * gameCanvas.width, state.handY * gameCanvas.height);
+          }
+        } else {
+          gesturePill.textContent = "✋ TANGAN TERBUKA (BIDIK)";
+          gesturePill.className = "gesture-status-pill open";
+          webcamWrapper.classList.remove('punch-active');
+        }
+      } else {
+        state.handDetected = false;
+        state.isFist = false;
+        gesturePill.textContent = "👋 Tunjukkan Tangan ke Kamera";
+        gesturePill.className = "gesture-status-pill";
+        webcamWrapper.classList.remove('punch-active');
+      }
+
+      webcamCtx.restore();
+    }
+
+    async function initWebcamAndMediaPipe() {
+      const statusMsg = document.getElementById('camera-status-msg');
+      try {
+        statusMsg.textContent = "⏳ Menginisialisasi deteksi tangan MediaPipe...";
+
+        handsDetector = new Hands({
+          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+        });
+
+        handsDetector.setOptions({
+          maxNumHands: 1,
+          modelComplexity: 1,
+          minDetectionConfidence: 0.65,
+          minTrackingConfidence: 0.6
+        });
+
+        handsDetector.onResults(onHandResults);
+
+        cameraInstance = new Camera(webcamVideo, {
+          onFrame: async () => {
+            await handsDetector.send({ image: webcamVideo });
+          },
+          width: 480,
+          height: 360
+        });
+
+        await cameraInstance.start();
+        statusMsg.textContent = "✅ Kamera aktif!";
+        return true;
+      } catch (err) {
+        console.warn("Webcam/MediaPipe fallback:", err);
+        statusMsg.textContent = "⚠️ Kamera tidak dapat diakses. Mode Klik/Sentuh otomatis diaktifkan!";
+        enableFallbackMode();
+        return false;
+      }
+    }
+
+    // Mode cadangan jika siswa bermain di perangkat tanpa webcam
+    function enableFallbackMode() {
+      state.fallbackClickMode = true;
+      const btn = document.getElementById('fallback-mode-btn');
+      btn.textContent = "🖱️ Mode Klik: ON";
+      btn.style.background = "#fef08a";
+      btn.style.borderColor = "#eab308";
+      gesturePill.textContent = "🖱️ Klik/Tap Monster untuk Memukul!";
+    }
+
+    gameCanvas.addEventListener('pointermove', (e) => {
+      if (state.fallbackClickMode || !state.handDetected) {
+        state.handX = e.clientX / gameCanvas.width;
+        state.handY = e.clientY / gameCanvas.height;
+      }
+    });
+
+    gameCanvas.addEventListener('pointerdown', (e) => {
+      if (state.phase === 'PLAYING' && (state.fallbackClickMode || !state.handDetected)) {
+        state.handX = e.clientX / gameCanvas.width;
+        state.handY = e.clientY / gameCanvas.height;
+        triggerPunch(e.clientX, e.clientY);
+      }
+    });
+
+    // ----------------------------------------------------------------------------
+    // 9. RENDER DUNIA PLATFORMER 2D CERAH & ANIMASI
+    // ----------------------------------------------------------------------------
+    let lastTime = performance.now();
+
+    function gameLoop(now) {
+      const dt = Math.min(0.05, (now - lastTime) / 1000);
+      lastTime = now;
+
+      update(dt);
+      render();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    function update(dt) {
+      if (state.punchCooldown > 0) state.punchCooldown -= dt;
+      if (state.punchAnimTimer > 0) state.punchAnimTimer -= dt;
+      if (state.screenShake > 0) state.screenShake = Math.max(0, state.screenShake - dt * 45);
+
+      // Animasi awan bergerak
+      for (const c of state.clouds) {
+        c.x += c.speed * dt;
+        if (c.x > 1.15) c.x = -0.15;
+      }
+
+      // Animasi karakter pahlawan di platform kiri
+      state.hero.bobPhase += dt * 5;
+      if (state.hero.punchDash > 0) {
+        state.hero.punchDash = Math.max(0, state.hero.punchDash - dt * 4);
+      }
+
+      // Animasi setiap monster platformer
+      for (const m of state.monsters) {
+        if (m.defeated) {
+          m.x += m.vx;
+          m.y += m.vy;
+          m.vy += 0.65; // Gravitasi terpental
+          m.rotation += 0.18;
+        } else {
+          m.hopPhase += dt * 3.4;
+          const hop = Math.abs(Math.sin(m.hopPhase)) * 18;
+          m.y = m.baseY - hop;
+          if (m.hurtAnim > 0) {
+            m.hurtAnim = Math.max(0, m.hurtAnim - dt * 3);
+          }
+        }
+      }
+
+      // Update partikel
+      for (let i = state.particles.length - 1; i >= 0; i--) {
+        const p = state.particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.25;
+        p.life -= dt * 1.8;
+        if (p.life <= 0) state.particles.splice(i, 1);
+      }
+
+      // Update teks melayang
+      for (let i = state.floatingTexts.length - 1; i >= 0; i--) {
+        const ft = state.floatingTexts[i];
+        ft.y -= 45 * dt;
+        ft.life -= dt * 1.1;
+        if (ft.life <= 0) state.floatingTexts.splice(i, 1);
+      }
+    }
+
+    function render() {
+      const w = gameCanvas.width;
+      const h = gameCanvas.height;
+
+      ctx.save();
+
+      // Efek getar layar saat memukul monster
+      if (state.screenShake > 0) {
+        const sx = (Math.random() - 0.5) * state.screenShake;
+        const sy = (Math.random() - 0.5) * state.screenShake;
+        ctx.translate(sx, sy);
+      }
+
+      // 1. Langit Cerah Bergradasi
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+      skyGrad.addColorStop(0, '#38bdf8');
+      skyGrad.addColorStop(0.65, '#bae6fd');
+      skyGrad.addColorStop(1, '#e0f2fe');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Matahari Ceria di pojok kiri atas
+      ctx.save();
+      ctx.fillStyle = '#fde047';
+      ctx.beginPath();
+      ctx.arc(85, 95, 48, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(253, 224, 71, 0.3)';
+      ctx.beginPath();
+      ctx.arc(85, 95, 66, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Awan Putih Empuk
+      for (const c of state.clouds) {
+        drawCloud(c.x * w, c.y * h, c.scale);
+      }
+
+      // Bukit Hijau Latar Belakang
+      ctx.fillStyle = '#86efac';
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      ctx.quadraticCurveTo(w * 0.25, h * 0.62, w * 0.55, h * 0.78);
+      ctx.quadraticCurveTo(w * 0.82, h * 0.64, w, h * 0.76);
+      ctx.lineTo(w, h);
+      ctx.closePath();
+      ctx.fill();
+
+      // Tanah Platform Utama Bawah
+      const groundY = h * 0.82;
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(0, groundY, w, 24);
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(0, groundY + 24, w, h - groundY);
+
+      // Rumput bergerigi di permukaan tanah
+      ctx.fillStyle = '#16a34a';
+      for (let gx = 0; gx < w; gx += 36) {
+        ctx.beginPath();
+        ctx.moveTo(gx, groundY + 24);
+        ctx.lineTo(gx + 18, groundY + 12);
+        ctx.lineTo(gx + 36, groundY + 24);
+        ctx.fill();
+      }
+
+      // 2. Gambar Karakter Hero Platformer (Si Peninju Pintar) di Kiri
+      drawHero(w, groundY);
+
+      // 3. Gambar Platform Melayang & 4 Monster Jawaban
+      for (const m of state.monsters) {
+        drawPlatform(m.x, m.baseY + m.radius + 10, m.radius * 2.2);
+        drawMonster(m);
+      }
+
+      // 4. Gambar Partikel & Teks Melayang
+      for (const p of state.particles) {
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      for (const ft of state.floatingTexts) {
+        ctx.globalAlpha = Math.max(0, ft.life);
+        ctx.font = '800 24px Fredoka, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 5;
+        ctx.strokeText(ft.text, ft.x, ft.y);
+        ctx.fillStyle = ft.color;
+        ctx.fillText(ft.text, ft.x, ft.y);
+      }
+      ctx.globalAlpha = 1;
+
+      // 5. Gambar Kursor Sarung Tinju Pemain (Hand Tracking)
+      if (state.phase === 'PLAYING') {
+        const gloveX = state.handX * w;
+        const gloveY = state.handY * h;
+        drawBoxingGloveCursor(gloveX, gloveY, state.isFist || state.punchAnimTimer > 0);
+      }
+
+      ctx.restore();
+    }
+
+    function drawCloud(x, y, scale) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.beginPath();
+      ctx.arc(0, 0, 26, 0, Math.PI * 2);
+      ctx.arc(24, -8, 32, 0, Math.PI * 2);
+      ctx.arc(52, 0, 25, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawPlatform(x, y, width) {
+      ctx.save();
+      const left = x - width / 2;
+      // Bayangan platform
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.15)';
+      ctx.beginPath();
+      ctx.roundRect(left + 4, y + 6, width, 22, 11);
+      ctx.fill();
+
+      // Balok kayu platformer
+      ctx.fillStyle = '#f59e0b';
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(left, y, width, 22, 11);
+      ctx.fill();
+      ctx.stroke();
+
+      // Lapisan rumput hijau di atas platform
+      ctx.fillStyle = '#4ade80';
+      ctx.beginPath();
+      ctx.roundRect(left, y, width, 8, [11, 11, 0, 0]);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawHero(w, groundY) {
+      const heroX = Math.max(70, w * 0.09) + state.hero.punchDash * 45;
+      const bob = Math.sin(state.hero.bobPhase) * 4;
+      const heroY = groundY - 38 + bob;
+
+      ctx.save();
+      ctx.translate(heroX, heroY);
+
+      // Badan pahlawan
+      ctx.fillStyle = '#2563eb';
+      ctx.beginPath();
+      ctx.roundRect(-22, -10, 44, 44, 14);
+      ctx.fill();
+
+      // Kepala
+      ctx.fillStyle = '#fed7aa';
+      ctx.beginPath();
+      ctx.arc(0, -28, 22, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ikat kepala merah semangat!
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(-22, -38, 44, 9);
+
+      // Mata hero
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(8, -28, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Sarung tinju mini di hero
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(28 + state.hero.punchDash * 25, 4, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function drawMonster(m) {
+      ctx.save();
+      ctx.translate(m.x, m.y);
+      ctx.rotate(m.rotation);
+
+      if (m.hurtAnim > 0) {
+        ctx.translate(Math.sin(m.hurtAnim * 35) * 8, 0);
+      }
+
+      const r = m.radius;
+
+      // Tanduk Monster
+      ctx.fillStyle = m.theme.horn;
+      ctx.beginPath();
+      ctx.moveTo(-r * 0.55, -r * 0.7);
+      ctx.lineTo(-r * 0.35, -r * 1.15);
+      ctx.lineTo(-r * 0.15, -r * 0.75);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(r * 0.55, -r * 0.7);
+      ctx.lineTo(r * 0.35, -r * 1.15);
+      ctx.lineTo(r * 0.15, -r * 0.75);
+      ctx.fill();
+
+      // Badan Monster Bulat Menggemaskan
+      ctx.fillStyle = m.theme.body;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Mata Monster
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(-r * 0.28, -r * 0.32, r * 0.2, 0, Math.PI * 2);
+      ctx.arc(r * 0.28, -r * 0.32, r * 0.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(-r * 0.26, -r * 0.32, r * 0.09, 0, Math.PI * 2);
+      ctx.arc(r * 0.26, -r * 0.32, r * 0.09, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Papan Jawaban (Triple Pythagoras) yang dibawa Monster
+      const boxW = r * 2.25;
+      const boxH = 38;
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(-boxW / 2, r * 0.12, boxW, boxH, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '800 19px Fredoka, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(m.text, 0, r * 0.12 + boxH / 2 + 1);
+
+      ctx.restore();
+    }
+
+    function drawBoxingGloveCursor(x, y, isPunching) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      const scale = isPunching ? 1.32 : 1.0;
+      ctx.scale(scale, scale);
+
+      // Lingkaran bidikan target
+      ctx.strokeStyle = isPunching ? '#ef4444' : 'rgba(255, 255, 255, 0.9)';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 44, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Sarung Tinju Merah Besar
+      ctx.fillStyle = isPunching ? '#dc2626' : '#ef4444';
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.roundRect(-24, -22, 48, 42, 18);
+      ctx.fill();
+      ctx.stroke();
+
+      // Bagian jempol sarung tinju
+      ctx.beginPath();
+      ctx.arc(-22, 4, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Pergelangan sarung tinju
+      ctx.fillStyle = '#fde047';
+      ctx.beginPath();
+      ctx.roundRect(-18, 16, 36, 12, 6);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // ----------------------------------------------------------------------------
+    // 10. EVENT LISTENERS TOMBOL UI & INISIALISASI AWAL
+    // ----------------------------------------------------------------------------
+    document.getElementById('start-game-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('start-game-btn');
+      btn.disabled = true;
+      btn.innerHTML = "<span>⏳ MENYIAPKAN ARENA...</span>";
+
+      sfx.init();
+      await initWebcamAndMediaPipe();
+
+      startScreen.classList.add('hidden');
+      startNewGame();
+    });
+
+    document.getElementById('next-question-btn').addEventListener('click', () => {
+      proceedNextStep();
+    });
+
+    document.getElementById('restart-game-btn').addEventListener('click', () => {
+      endScreen.classList.add('hidden');
+      startNewGame();
+    });
+
+    document.getElementById('toggle-sound-btn').addEventListener('click', (e) => {
+      sfx.enabled = !sfx.enabled;
+      e.target.textContent = sfx.enabled ? "🔊 Suara: ON" : "🔇 Suara: OFF";
+    });
+
+    document.getElementById('fallback-mode-btn').addEventListener('click', (e) => {
+      state.fallbackClickMode = !state.fallbackClickMode;
+      e.target.textContent = state.fallbackClickMode ? "🖱️ Mode Klik: ON" : "🖱️ Mode Klik: OFF";
+      e.target.style.background = state.fallbackClickMode ? "#fef08a" : "#ffffff";
+    });
+
+    function startNewGame() {
+      state.currentQuestionIdx = 0;
+      state.score = 0;
+      state.correctCount = 0;
+      state.lives = 3;
+      state.phase = 'PLAYING';
+      updateHUD();
+      loadQuestion(0);
+    }
+
+    window.onload = function () {
+      resizeGameCanvas();
+      requestAnimationFrame(gameLoop);
+    };
+  </script>
+</body>
+</html>
